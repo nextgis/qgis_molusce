@@ -12,8 +12,8 @@ from molusce.dataprovider import Raster
 
 class TestRaster (unittest.TestCase):
     def setUp(self):
-        self.r1 = Raster('../models/woe/examples/multifact.tif')
-        self.r2 = Raster('../models/woe/examples/sites.tif')
+        self.r1 = Raster('examples/multifact.tif')
+        self.r2 = Raster('examples/sites.tif')
         
     def test_Raster(self):
         self.assertEqual(self.r1.getBandsCount(), 1)
