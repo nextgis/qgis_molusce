@@ -3,7 +3,7 @@
 import numpy as np
 
 from molusce.dataprovider import Raster
-from model.mpl import MPL
+from molusce.models.mlp.model import MLP
 
 class MlpManagerError(Exception):
     '''Base class for exceptions in this module.'''
