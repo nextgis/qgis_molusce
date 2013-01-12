@@ -16,7 +16,7 @@ class TestWoEManager (unittest.TestCase):
     def setUp(self):
         self.factor = Raster('../../examples/multifact.tif')
         self.sites  = Raster('../../examples/sites.tif')
-        self.sites.binaryzation([2], 0)
+        self.sites.binaryzation([2], 1)
         
         mask = [
             [False, False, False,],

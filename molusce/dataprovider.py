@@ -32,6 +32,20 @@ class Raster(object):
     
     def getBandsCount(self):
         return len(self.bands)
+    
+    def getNeighbours(self, row, col, size):
+        '''Return subset of the bands -- neighbourhood of the central pixel (row,col)'''
+        bcount = self.getBandsCount()
+        pixel_count = (2*size+1)**2 # Count of pixels in the neighbourhood
+        neighbours = []
+        for i in range(1,bcount+1):
+            band = self.getBand(i)
+            neighbourhood = band[row-size:(row+size+1), col-size:(col+size+1)]
+            if len(neighbourhood.flatten()) != pixel_count:
+                raise ProviderError('Incorrect neighbourhood size or the central pixel lies on the raster boundary.')
+            neighbours.append(neighbourhood)
+        return neighbours
+            
         
     def getFileName(self):
         return self.filename
@@ -43,7 +57,7 @@ class Raster(object):
         return band.dtype
     
     def setBand(self, raster, bandNum):
-        self.bands[bandNum] = raster
+        self.bands[bandNum-1] = raster
     
     def setMask(self):
         #TODO: Get mask values from the raster metadata.
