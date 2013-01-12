@@ -14,7 +14,7 @@ class MlpManager(object):
     '''This class gets the data extracted from the UI and
     pass it to multi-layer perceptron, then gets and stores the result.
     '''
-    def __init__(self, inputs, output, hidden_layers, learning_rate, momentum, nz=0):
+    def __init__(self, inputs, output, hidden_layers, learning_rate=0.1, momentum=0.01, ns=0):
         '''
         @param inputs           List of the input rasters.
         @param output           Raster that contains classes to predict.
@@ -24,6 +24,10 @@ class MlpManager(object):
         @param ns               Neighbourhood size.
         '''
         
+        self.ns = ns
+        self.learning_rate = learning_rate
+        self.momentum = momentum
+        
         # input-output rasters 
         # (needed to calculate MLP input/output layer sizes and training)
         self.output = output
@@ -31,42 +35,43 @@ class MlpManager(object):
         if self.output.getBandsCount() != 1:
             raise MplManagerError('Output layer must have one band!')
         
-        self.ns = nz
-        self.learning_rate = learning_rate
-        self.momentum = momentum
-        
         # total input bands count
         total_input_bands = 0
         for raster in self.inputs:
-            total_input_bands = self.total_input_bands + raster.getBandsCount()
+            total_input_bands = total_input_bands + raster.getBandsCount()
         
         # pixel count in the neighbourhood of ns size
-        neighbours = (2*ns+1)**2
+        neighbours = (2*self.ns+1)**2
         
         # inputs of the MLP
         input_neurons = total_input_bands * neighbours
 
         # output class count
         band = output.getBand(1)
-        classes = np.unique(band.compressed())
+        classes = len(np.unique(band.compressed()))
         
         # set neuron counts in the MLP layers
-        self.layers = hidden_layers.inser(0, input_neurons)
+        self.layers = hidden_layers
+        self.layers.insert(0, input_neurons)
         self.layers.append(classes)
         
-        self.MPL = MPL(self.layers)
+        self.MLP = MLP(*self.layers)
     
         
     def getOutput(self):
         pass
     
-    def readMPL(self):
+    def getMlpTopology(self):
+        return self.MLP.shape
+    
+    def readMlp(self):
         pass
     
-    def saveMPL(self):
+    def saveMlp(self):
         pass
         
-        
+    def setTrainData(self):
+        pass
     
     def train(self):
         pass
