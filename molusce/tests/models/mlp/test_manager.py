@@ -20,10 +20,12 @@ class TestMlpManager (unittest.TestCase):
         self.inputs2 = [Raster('../../examples/multifact.tif'), Raster('../../examples/multifact.tif')]
         
     def test_MlpManager(self):
-        mng = MlpManager(self.inputs2, self.output, [10], ns=1)
+        mng = MlpManager()
+        mng.createMlp(self.inputs2, self.output, [10], ns=1)
         assert_array_equal(mng.getMlpTopology(), [18, 10, 3])
         
-        mng = MlpManager(self.inputs, self.output, [10])
+        mng = MlpManager()
+        mng.createMlp(self.inputs, self.output, [10])
         assert_array_equal(mng.getMlpTopology(), [1, 10, 3])
         
         
