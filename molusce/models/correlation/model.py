@@ -5,6 +5,8 @@ import math
 import numpy as np
 from numpy import ma as ma
 
+#from correlation.utils import reclass
+
 class CoeffError(Exception):
     '''Base class for exceptions in this module.'''
     def __init__(self, msg):
@@ -12,25 +14,16 @@ class CoeffError(Exception):
 
 def size_equals(X, Y):
     '''
-    Define dimensions equality of the rasters
-    @param X    First array
-    @param Y    Second array
-    '''
-    x1, y1 = np.shape(X)
-    x2, y2 = np.shape(Y)
-    return (x1,y1) == (x2,y2)
-
-def resize(X):
-    '''
-    Change raster's shape to 1D-dimension (m*n,1),
-    because function numpy.corrcoef are compute the correlation
-    coefficient for 1D-array's rasters
+    Define equality dimensions of the two rasters
     @param X    First raster's array
     @param Y    Second raster's array
     '''
-    sh = np.shape(X)                 #shape=(m,n)
-    X = np.resize(X, (sh[0]*sh[1],)) #X.shape=(m*n,1)
-    return X
+    x1, y1 = np.shape(X)
+    x2, y2 = np.shape(Y)
+    #if the dimensions are equal - return True, else - False
+    if x1 != x2 or y1 != y2:
+        return False
+    return True
 
 def correlation(X, Y):
     '''
@@ -39,9 +32,7 @@ def correlation(X, Y):
     @param X    First raster's array
     @param Y    Second raster's array
     ''' 
-    X = resize(X)
-    Y = resize(Y)
-    R = np.corrcoef(X,Y)   
+    R = np.corrcoef(np.matrix.flatten(X),np.matrix.flatten(Y))   
     # function np.corrcoef return array of coefficients
     # R[0][0] = R[1][1] = 1.0 - correlation X--X and Y--Y
     # R[0][1] = R[1][0] - correlation X--Y and Y--X
@@ -106,17 +97,19 @@ def jiu(X, Y):
      
 def compute_table(X, Y):
     '''
-    This function computes: 
+    This function compute: 
     1. contingency table T
-    2. list sum_r : SUM_j (Tij),  j=[0, ..., (s-1)]
-    3. list sum_s : SUM_i (Tij),  i=[0, ..., (r-1)]
-    4. number r of gradations for raster X
-    5. number s of gradations for raster Y
-    @param X    First array
-    @param Y    Second array   
+    2. list sum_r : SUMj(Tij) j=[0,(s-1)]
+    3. list sum_s : SUMi(Tij) i=[0,(r-1)]
+    4. number r of gradations for rster X
+    5. number s of gradations for rster Y
+    @param X    First raster's array
+    @param Y    Second raster's array   
     '''
     if size_equals(X, Y):
-        m, n = np.shape(X)
+        X = np.ma.compressed(np.matrix.flatten(X))
+        Y = np.ma.compressed(np.matrix.flatten(Y))
+        n = len(X)
         # empty gradations list  creation
         graduation_x = []
         graduation_y = []
@@ -127,12 +120,9 @@ def compute_table(X, Y):
         r = len(graduation_x)
         s = len(graduation_y)
         #compute contingency table T
-        T = np.zeros([r,s])        
-        for k in range(r):
-            for col in range(n):
-                for rows in range(m): 
-                    if X[rows][col] == graduation_x[k]:   
-                        T[k][graduation_y.index(Y[rows][col])] +=1 
+        T = np.zeros([r,s]) 
+        for i in range(n):         
+            T[graduation_x.index(X[i])][graduation_y.index(Y[i])] +=1 
         total = np.sum(T)       #T..
         sum_r = T.sum(axis=1)   #Ti.
         sum_s = T.sum(axis=0)   #T.j
