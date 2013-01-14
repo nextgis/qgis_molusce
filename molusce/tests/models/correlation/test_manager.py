@@ -10,7 +10,7 @@ from numpy import ma as ma
 
 from molusce.dataprovider import Raster
 from molusce.models.correlation.manager import CoeffManager
-from molusce.models.correlation.model import *
+from molusce.models.correlation.model import 
 
 class TestWoEManager (unittest.TestCase):
     def setUp(self):
@@ -19,19 +19,17 @@ class TestWoEManager (unittest.TestCase):
         
     def test_CoeffManager(self):
         coeff = CoeffManager(self.X, self.Y).getCoeff()
-        self.assertEqual(len(coeff), 1)
+        self.assertEqual(len(coeff), 4)
         true_name = self.Y.getFileName()
-        self.Y = self.Y.getBand(0)
-        self.X = self.X.getBand(0)
-        coeff   = coeff[0]
-        coefficients = coeff['second_raster']
-        
-        name = coeff['name']
-        true_coeff  = (correlation(self.X, self.Y),
-                            cramer(self.X, self.Y),
-                               jiu(self.X, self.Y))
+        self.Y = self.Y.getBand(1)
+        self.X = self.X.getBand(1)
+        name  = coeff[0]
+        true_coeff = []
+        true_coeff.append(correlation(self.X, self.Y))
+        true_coeff.append(cramer(self.X, self.Y))
+        true_coeff.append(jiu(self.X, self.Y))
         self.assertEqual(name, true_name)        
-        self.assertEqual(true_coeff, coefficients)
+        self.assertEqual(true_coeff, coeff[1:])
 
     
 if __name__ == "__main__":

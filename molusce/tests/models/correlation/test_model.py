@@ -34,8 +34,7 @@ class TestModel (unittest.TestCase):
             [0, 1, 2,],
             [0, 1, 2,]
         ]
-        X = np.ma.array(self.X, mask=(self.X == 0))
-        Y = np.ma.array(self.Y, mask=(self.Y == 0))
+        
         self.T = [
             [1, 0, 0, 0],
             [0, 2, 0, 3],
