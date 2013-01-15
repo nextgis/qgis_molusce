@@ -28,6 +28,13 @@ class TestMlpManager (unittest.TestCase):
         mng.createMlp(self.inputs, self.output, [10])
         assert_array_equal(mng.getMlpTopology(), [1, 10, 3])
         
+    def test_setTrainingData(self):
+        mng = MlpManager()
+        mng.createMlp(self.inputs, self.output, [10]) # 1-10-3
+        mng.setTrainingData(self.inputs, self.output, ns=0)
+
+        
+        
         
     
 if __name__ == "__main__":
