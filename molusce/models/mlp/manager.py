@@ -115,10 +115,8 @@ class MlpManager(object):
         output_vect_len = self.getOutputVectLen()
         
         (rows,cols) = (output.getXSize(), output.getYSize())
-        first_sample = True             # Is the current pixel the first sample of the stored data?
         for i in xrange(ns, rows - ns):         # Eliminate the raster boundary (of (ns)-size width) because
             for j in xrange(ns, rows-ns):       # the samples are incomplete in that region
-                #sample = ma.zeros(1, dtype=[('input',  float, input_vect_len), ('output', float, output_vect_len)])
                 sample = {'input': np.zeros(input_vect_len), 'output': np.zeros(output_vect_len)}
                 sample_complete = True # Are the pixels in the neighbourhood defined/unmasked?
                 try: 
@@ -137,11 +135,10 @@ class MlpManager(object):
                 except ProviderError:
                     continue
                 if sample_complete:
-                    if first_sample:
-                        self.data = [sample]
-                        first_sample = False
-                    else:
+                    try:
                         self.data.append(sample)
+                    except AttributeError:
+                        self.data = [sample]
         
     
     def train(self):
