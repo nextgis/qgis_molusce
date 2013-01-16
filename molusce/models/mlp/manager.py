@@ -4,7 +4,7 @@ import numpy as np
 from numpy import ma as ma
 
 from molusce.dataprovider import Raster, ProviderError
-from molusce.models.mlp.model import MLP
+from molusce.models.mlp.model import MLP, sigmoid
 
 class MlpManagerError(Exception):
     '''Base class for exceptions in this module.'''
@@ -25,6 +25,9 @@ class MlpManager(object):
             
         self.data = None        # Ttaining data
         self.classlist = None   # List of unique output values of the output raster
+        
+        # Outputs of the activation function for small and big numbers
+        self.sigmLimits = (sigmoid(-1000), sigmoid(1000))
     
     def createMlp(self, inputs, output, hidden_layers, ns=0):
         '''
@@ -45,10 +48,10 @@ class MlpManager(object):
         # pixel count in the neighbourhood of ns size
         neighbours = (2*ns+1)**2
         
-        # inputs of the MLP
+        # Input neuron count of the MLP
         input_neurons = total_input_bands * neighbours
 
-        # output class count
+        # Output class (neuron) count
         band = output.getBand(1)
         self.classlist = np.unique(band.compressed())
         classes = len(self.classlist)
@@ -78,11 +81,13 @@ class MlpManager(object):
         for example, set self.classlist = [1, 3, 4] then
         if val = 1, result = [ 1, -1, -1]
         if val = 3, result = [-1,  1, -1]
+        where -1 is minimum of the sigmoid, 1 is max of the sigmoid
         '''
+        min, max = self.sigmLimits
         size = self.getOutputVectLen()
-        res = np.ones(size) * (-1)
+        res = np.ones(size) * (min)
         ind = np.where(self.classlist==val)
-        res[ind] = 1
+        res[ind] = max
         return res
     
     def getMlpTopology(self):
@@ -111,31 +116,34 @@ class MlpManager(object):
         
         
         (rows,cols) = (output.getXSize(), output.getYSize())
+        first_sample = True
         for i in xrange(ns, rows - ns):         # Eliminate the raster boundary of (ns)-size because
             for j in xrange(ns, rows-ns):       # the samples are incomplete in that region
                 inp = ma.zeros(input_vect_len)
                 outp = ma.zeros(output_vect_len)
                 sample = ma.zeros(1, dtype=[('input',  float, input_vect_len), ('output', float, output_vect_len)])
+                sample_complete = True # Are pixels in the neighbourhood defined/unmasked?
                 try: 
-                    # 
                     out = output.getNeighbours(i,j,0).flatten() # Get the pixel
                     if any(out.mask): # Eliminate incomplete samples
+                        sample_complete = False
                         continue
                     else:
                         sample['output'] = self.getOutputVector(out)
                     for (k,r) in enumerate(inputs):
                         neighbours = r.getNeighbours(i,j,ns).flatten()
                         if any(neighbours.mask): # Eliminate incomplete samples
-                            continue
+                            sample_complete = False
+                            break
                         sample['input'][k*pixel_count: (k+1)*pixel_count] = neighbours
-                    
                 except ProviderError:
                     continue
-                
-                try: # Check if self.data is None
-                    self.data = np.vstack((self.data, sample))
-                except ValueError:
-                    self.data = sample
+                if sample_complete:
+                    if first_sample:
+                        self.data = sample
+                        first_sample = False
+                    else:
+                        self.data = np.vstack((self.data, sample))
         
     
     def train(self):

@@ -1,0 +1,15 @@
+Rasters:
+    multifact.tif       is 1-band 3x3 raster:
+                        [1,1,3]
+                        [3,2,1]
+                        [0,3,1]
+                        
+    sites.tif           is 1-band 3x3 raster:
+                        [1,2,1],
+                        [1,2,1],
+                        [0,1,2]
+                        
+    two_band.tif        is 2-band 3x3 raster (it contains multifact.tif and sites.tif as the bands).
+    
+    
+    

@@ -32,7 +32,22 @@ class TestMlpManager (unittest.TestCase):
         mng = MlpManager()
         mng.createMlp(self.inputs, self.output, [10]) # 1-10-3
         mng.setTrainingData(self.inputs, self.output, ns=0)
-
+        
+        min, max = mng.sigmLimits
+        inp_data = [[1], [1], [3], [3], [2], [1], [0], [3], [1]]
+        assert_array_equal(inp_data, mng.data['input'])
+        out_data = [
+            [[min, max, min]],
+            [[min, min, max]],
+            [[min, max, min]],
+            [[min, max, min]],
+            [[min, min, max]],
+            [[min, max, min]],
+            [[max, min, min]],
+            [[min, max, min]],
+            [[min, min, max]]
+        ]
+        assert_array_equal(out_data, mng.data['output'])
         
         
         
