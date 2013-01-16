@@ -108,21 +108,19 @@ class MlpManager(object):
         '''
         for r in inputs:
             if not output.isGeoDataMatch(r):
-                raise MlpManagerError('Geometries of the inputs and outputs are different!')
+                raise MlpManagerError('Geometries of the inputs and output rasters are different!')
         
         pixel_count = (2*ns+1)**2 # Pixel count in the neighbourhood
         input_vect_len = self.getInputVectLen()
         output_vect_len = self.getOutputVectLen()
         
-        
         (rows,cols) = (output.getXSize(), output.getYSize())
-        first_sample = True
-        for i in xrange(ns, rows - ns):         # Eliminate the raster boundary of (ns)-size because
+        first_sample = True             # Is the current pixel the first sample of the stored data?
+        for i in xrange(ns, rows - ns):         # Eliminate the raster boundary (of (ns)-size width) because
             for j in xrange(ns, rows-ns):       # the samples are incomplete in that region
-                inp = ma.zeros(input_vect_len)
-                outp = ma.zeros(output_vect_len)
-                sample = ma.zeros(1, dtype=[('input',  float, input_vect_len), ('output', float, output_vect_len)])
-                sample_complete = True # Are pixels in the neighbourhood defined/unmasked?
+                #sample = ma.zeros(1, dtype=[('input',  float, input_vect_len), ('output', float, output_vect_len)])
+                sample = {'input': np.zeros(input_vect_len), 'output': np.zeros(output_vect_len)}
+                sample_complete = True # Are the pixels in the neighbourhood defined/unmasked?
                 try: 
                     out = output.getNeighbours(i,j,0).flatten() # Get the pixel
                     if any(out.mask): # Eliminate incomplete samples
@@ -140,10 +138,10 @@ class MlpManager(object):
                     continue
                 if sample_complete:
                     if first_sample:
-                        self.data = sample
+                        self.data = [sample]
                         first_sample = False
                     else:
-                        self.data = np.vstack((self.data, sample))
+                        self.data.append(sample)
         
     
     def train(self):

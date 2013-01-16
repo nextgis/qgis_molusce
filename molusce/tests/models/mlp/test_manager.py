@@ -30,27 +30,38 @@ class TestMlpManager (unittest.TestCase):
         
     def test_setTrainingData(self):
         mng = MlpManager()
-        mng.createMlp(self.inputs, self.output, [10]) # 1-10-3
+        mng.createMlp(self.inputs, self.output, [10])
         mng.setTrainingData(self.inputs, self.output, ns=0)
         
         min, max = mng.sigmLimits
-        inp_data = [[1], [1], [3], [3], [2], [1], [0], [3], [1]]
-        assert_array_equal(inp_data, mng.data['input'])
-        out_data = [
-            [[min, max, min]],
-            [[min, min, max]],
-            [[min, max, min]],
-            [[min, max, min]],
-            [[min, min, max]],
-            [[min, max, min]],
-            [[max, min, min]],
-            [[min, max, min]],
-            [[min, min, max]]
+        
+        data = [
+            {'input': np.array([ 1.]), 'output': np.array([min,  max, min])}, 
+            {'input': np.array([ 1.]), 'output': np.array([min,  min, max])}, 
+            {'input': np.array([ 3.]), 'output': np.array([min,  max, min])}, 
+            {'input': np.array([ 3.]), 'output': np.array([min,  max, min])}, 
+            {'input': np.array([ 2.]), 'output': np.array([min,  min, max])}, 
+            {'input': np.array([ 1.]), 'output': np.array([min,  max, min])}, 
+            {'input': np.array([ 0.]), 'output': np.array([max,  min, min])}, 
+            {'input': np.array([ 3.]), 'output': np.array([min,  max, min])}, 
+            {'input': np.array([ 1.]), 'output': np.array([min,  min, max])}
         ]
-        assert_array_equal(out_data, mng.data['output'])
+        for i in range(len(data)):
+            assert_array_equal(data[i]['input'], mng.data[i]['input'])
+            assert_array_equal(data[i]['output'], mng.data[i]['output'])
+
+        mng = MlpManager()
+        mng.createMlp(self.inputs2, self.output, [10], ns=1)
+        mng.setTrainingData(self.inputs2, self.output, ns=1)
+        data = [
+            {
+            'input': np.array([ 1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.,  
+                                1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.]), 
+            'output': np.array([min, min,  max])
+            }
+        ]
+        assert_array_equal(data[0]['input'], mng.data[0]['input'])
+        assert_array_equal(data[0]['output'], mng.data[0]['output'])
         
-        
-        
-    
 if __name__ == "__main__":
     unittest.main()
