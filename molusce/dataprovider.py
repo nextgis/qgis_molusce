@@ -73,6 +73,14 @@ class Raster(object):
     def getYSize(self):
         return self.geodata['ySize']
     
+    #~ def normalize(self):
+        #~ '''Rescale all bands of the raster: new mean becames 0, new std becames 1'''
+        #~ for i in range(1, self.getBandsCount()+1):
+            #~ r = self.getBand(i)
+            #~ m = np.mean(r)
+            #~ s = np.std(r)
+            #~ self.setBand((r-m)/s,i)
+    
     def setBand(self, raster, bandNum):
         self.bands[bandNum-1] = raster
     

@@ -31,7 +31,7 @@ class TestMlpManager (unittest.TestCase):
     def test_setTrainingData(self):
         mng = MlpManager()
         mng.createMlp(self.inputs, self.output, [10])
-        mng.setTrainingData(self.inputs, self.output, ns=0)
+        mng.setTrainingData(self.inputs, self.output, ns=0, shuffle=False)
         
         min, max = mng.sigmLimits
         
@@ -62,6 +62,26 @@ class TestMlpManager (unittest.TestCase):
         ]
         assert_array_equal(data[0]['input'], mng.data[0]['input'])
         assert_array_equal(data[0]['output'], mng.data[0]['output'])
+    
+    
+    def test_train(self):
+        mng = MlpManager()
+        mng.createMlp(self.inputs, self.output, [10])
+        mng.setTrainingData(self.inputs, self.output, ns=0)
         
+        mng.train(1, valPercent=50)
+        val = mng.getValError()
+        tr  = mng.getTrainError()
+        mng.train(20, valPercent=50)
+        self.assertGreaterEqual(val, mng.getValError())
+        
+        mng.resetMlp()
+        mng.train(1, valPercent=0)
+        tr  = mng.getTrainError()
+        mng.train(20, valPercent=0)
+        self.assertGreaterEqual(tr, mng.getTrainError())
+        
+        
+    
 if __name__ == "__main__":
     unittest.main()
