@@ -44,20 +44,21 @@ def cramer(X, Y):
     @param X    First raster's array
     @param Y    Second raster's array
     '''
-    T, sum_r, sum_s, total, r, s = compute_table(X, Y)
+    #T, sum_r, sum_s, total, r, s = compute_table(X, Y)
+    table = compute_table(X, Y)
     #compute expected contingency table T*
     #creation array : T*ij = (sum_r[i] * sum_s[j])/ total
-    sum_r = np.tile(np.reshape(sum_r, (r,1)),(1,s))
-    sum_s = np.tile(sum_s,(r,1))
-    T_expect = sum_r*sum_s/total
+    sum_r = np.tile(np.reshape(table.compute_sum_r(), (table.compute_r(),1)),(1,table.compute_s()))
+    sum_s = np.tile(table.compute_sum_s(),(table.compute_r(),1))
+    T_expect = sum_r*sum_s/table.compute_total()
     
     # masked T*, because forbid to divide by zero
     T_expect = np.ma.array(T_expect, mask=(T_expect == 0))
     # chi-square coeff = sum((T-T*)^2/T*)
-    x2 = np.sum(np.square(T - T_expect)/T_expect)
+    x2 = np.sum(np.square(table.T - T_expect)/T_expect)
     # CRAMER CONTINGENCY COEF. = sqrt(chi-square / total * min(s-1,r-1))
     # s, r - raster grauations
-    Cramer = math.sqrt(x2/(total*min(s-1,r-1)))   
+    Cramer = math.sqrt(x2/(table.compute_total()*min(table.compute_s()-1,table.compute_r()-1)))   
 
     return Cramer    
 
@@ -70,11 +71,11 @@ def jiu(X, Y):
     @param X    First raster's array
     @param Y    Second raster's array
     '''
-    T, sum_r, sum_s, total, r, s = compute_table(X, Y)
-    
-    T = np.divide(T, total)         #Pij = Tij / total
-    sum_r = np.divide(sum_r, total) #Pi. = Ti. / total  i=[0,(r-1)]
-    sum_s = np.divide(sum_s, total) #P.j = T.j / total  j=[0,(s-1)]
+    #T, sum_r, sum_s, total, r, s = compute_table(X, Y)
+    table = compute_table(X, Y)
+    T = np.divide(table.T, table.compute_total())     #Pij = Tij / total
+    sum_r = np.divide(table.compute_sum_r(), table.compute_total()) #Pi. = Ti. / total  i=[0,(r-1)]
+    sum_s = np.divide(table.compute_sum_s(), table.compute_total()) #P.j = T.j / total  j=[0,(s-1)]
     
     #to calculate the entropy we take the logarithm,
     #logarithm of zero does not exist, so we must masked zero values
@@ -94,39 +95,48 @@ def jiu(X, Y):
      
 def compute_table(X, Y):
     '''
-    This function compute: 
-    1. contingency table T
-    2. list sum_r : SUMj(Tij) j=[0,(s-1)]
-    3. list sum_s : SUMi(Tij) i=[0,(r-1)]
-    4. number r of gradations for raster X
-    5. number s of gradations for raster Y
     @param X    First raster's array
     @param Y    Second raster's array   
     '''
     if not size_equals(X, Y):
         raise CoeffError('Sizes of rasters not equals!')
-        
     X, Y = masks_identity(X, Y)
-    X = np.ma.compressed(X)
-    Y = np.ma.compressed(Y)
-    n = len(X)
-    # Compute gradations
-    graduation_x = list(np.unique(np.array(X)))
-    graduation_y = list(np.unique(np.array(Y)))
-    # Compute gradation lenght
-    r = len(graduation_x)
-    s = len(graduation_y)
-    # Compute contingency table T
-    T = np.zeros([r,s]) 
-    for i in range(n):         
-        T[graduation_x.index(X[i])][graduation_y.index(Y[i])] +=1 
-    total = np.sum(T)       #T..
-    sum_r = T.sum(axis=1)   #Ti.
-    sum_s = T.sum(axis=0)   #T.j
-    return T, sum_r, sum_s, total, r, s
-
-
-
+    table = CoeffTable(X, Y)
     
+    table.T = np.zeros([table.compute_r(), table.compute_s()])
+    for i in range(table.n):         
+        table.T[table.graduation_x.index(table.X[i])][table.graduation_y.index(table.Y[i])] +=1 
     
-    
+    return table
+
+class CoeffTable:
+    '''class for compute gradations, contingency table T'''
+    def __init__(self, raster1, raster2):
+        
+        self.X = np.ma.compressed(raster1)
+        self.Y = np.ma.compressed(raster2)
+        self.n = len(self.X)
+        # Compute gradations
+        self.graduation_x = list(np.unique(np.array(self.X)))
+        self.graduation_y = list(np.unique(np.array(self.Y)))
+        self.T = np.array([0])
+        
+    def compute_r(self):
+        '''This function return gradations lenghts for first rasters'''
+        return   len(self.graduation_x)
+         
+    def compute_s(self):
+        '''This function return gradations lenghts for second rasters'''
+        return   len(self.graduation_y) 
+     
+    def compute_total(self):
+        '''This function return T..'''
+        return np.sum(self.T)
+        
+    def compute_sum_r(self):
+        '''This function return Ti.'''
+        return self.T.sum(axis=1)
+        
+    def compute_sum_s(self):
+        '''This function return T.j'''
+        return self.T.sum(axis=0)
