@@ -21,19 +21,23 @@ class CoeffManager(object):
         '''
         self.X = raster1
         self.Y = raster2 
-        self.coeff = []      
-        
+        self.name = self.Y.getFileName()      
         if self.X.getBandsCount() != 1 or self.Y.getBandsCount() != 1:
             raise CoeffManagerError('The rasters must have one band!')
-        self.coeff.append(self.Y.getFileName())
         self.Y = self.Y.getBand(1)
         self.X = self.X.getBand(1)
-        self.coeff.append(correlation(self.X, self.Y))
-        self.coeff.append(cramer(self.X, self.Y))
-        self.coeff.append(jiu(self.X, self.Y))
         
-    def getCoeff(self):
-        return self.coeff
+    def getCorr(self):
+        return correlation(self.X, self.Y)
+        
+    def getCramer(self):
+        return cramer(self.X, self.Y)
+    
+    def getJIU(self):
+        return jiu(self.X, self.Y)
+        
+    def getName(self):
+        return self.name
         
     
     

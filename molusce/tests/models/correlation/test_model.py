@@ -10,69 +10,74 @@ import numpy as np
 from numpy import ma as ma
 
 
-from molusce.models.correlation.model  import *
+from molusce.models.correlation.model  import size_equals, correlation, compute_table, cramer, jiu, masks_identity
 
 
 class TestModel (unittest.TestCase):
     
     def setUp(self):
         
-        self.X = [
+        self.X = np.array([
             [1, 2, 1,],
             [1, 2, 1,],
             [0, 1, 2,]
-        ]
+        ])
 
-        self.Y = [
+        self.Y = np.array([
             [1, 1, 3,],
             [3, 2, 1,],
             [0, 3, 1,]
-        ]
-        self.X2 = [
+        ])
+        self.X2 = np.array([
             [1, 2, 1,],
             [1, 2, 1,],
             [0, 1, 2,],
             [0, 1, 2,]
-        ]
-        
-        self.T = [
+        ])
+        '''
+        self.T = np.array([
             [1, 0, 0, 0],
             [0, 2, 0, 3],
             [0, 2, 1, 0],
-        ]
-        self.sum_r = [1, 5, 3]
-        self.sum_s = [1, 4, 1, 3]
-        self.total = 9
-        self.r = 3 
-        self.s = 4
+        ])'''
+        self.T = np.array([
+            [2, 0, 3],
+            [2, 1, 0],
+        ])
+        self.sum_r = [5, 3]
+        self.sum_s = [4, 1, 3]
+        self.total = 8
+        self.r = 2 
+        self.s = 3
         
-        self.T_cramer_expect = [
-            [1.0/9, 4.0/9 , 1.0/9, 1.0/3 ],
-            [5.0/9, 20.0/9, 5.0/9, 15.0/9],
-            [1.0/3, 4.0/3 , 1.0/3, 1.0   ]
-        ]
-    
+        self.T_cramer_expect = np.array([
+            [20.0/8, 5.0/8, 15.0/8],
+            [12.0/8, 3.0/8,  9.0/8]
+        ])
+        self.X = np.ma.array(self.X, mask=(self.X == 0))
+        self.Y = np.ma.array(self.Y, mask=(self.Y == 0))
+        self.combo_mask = np.array([
+            [False, False, False,],
+            [False, False, False,],
+            [True , False, False,]
+        ])
+        
     def test_size_equals(self):
         self.assertEqual(size_equals(self.X, self.Y), True, 'incorrent size')
         
     def test_Size_no_equals(self):
         self.assertEqual(size_equals(self.X2, self.Y), False, 'sizes equals')
-    
-    def test_resize(self): 
-        self.assertEqual(np.shape(resize(self.X)),(9,) ,'reshape failed')
-        self.assertEqual(np.shape(resize(self.X2)),(12,) ,'reshape failed')
         
     def test_correlation(self):
-        n = np.shape(self.X)
-        lenght = n[0]*n[1]
+        n = len(np.ma.compressed(self.X))
         mean_x = np.ma.mean(self.X)
         mean_y = np.ma.mean(self.Y)
-        self.cov = np.ma.sum(np.multiply(np.subtract(self.X, mean_x), np.subtract(self.Y, mean_y)))/lenght
+        self.cov = np.ma.sum(np.multiply(np.subtract(self.X, mean_x), np.subtract(self.Y, mean_y)))/n
         self.S_x = np.std(self.X)
         self.S_y = np.std(self.Y)
-        self.R=self.cov / (self.S_x * self.S_y)
-        
+        self.R = self.cov / (self.S_x * self.S_y)
         self.assertEqual(correlation(self.X,self.Y), self.R,'correlation failed')
+        self.assertEqual(correlation(self.X,self.X), 1.0,'correlation failed')
         
     def test_compute_table(self):
         mess = 'compute table failed'
@@ -90,12 +95,19 @@ class TestModel (unittest.TestCase):
         self.T_cramer = np.square(self.T_cramer)
         self.x2 = np.sum(np.divide(self.T_cramer, self.T_cramer_expect))
         self.cramer = math.sqrt(self.x2 / (self.total * min(self.r-1,self.s-1)))
-        
         self.assertEqual(cramer(self.X, self.Y), self.cramer, 'cramer coeff failed')
+        self.assertEqual(cramer(self.X, self.X), 1.0, 'cramer coeff failed')
         
     def test_jiu(self):
-        self.assertAlmostEqual(jiu(self.X, self.Y), 0.584468198124, 9,'joint coeff failed')
-        
+        self.assertAlmostEqual(jiu(self.X, self.Y), 0.385101639127, 9,'joint coeff failed')
+        self.assertEqual(jiu(self.X, self.X), 1.0, 'cramer coeff failed')
+    
+    def test_masks_identity(self): 
+        self.X, self.Y = masks_identity(self.X, self.Y)
+        mask_x = np.matrix.flatten(self.X.mask)
+        self.combo_mask = np.matrix.flatten(self.combo_mask)
+        k = all(np.equal(mask_x, self.combo_mask))
+        self.assertEqual(k, True, 'masks_identify failed')
     
 if __name__ == "__main__":
     unittest.main()

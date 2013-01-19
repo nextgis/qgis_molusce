@@ -18,10 +18,7 @@ def size_equals(X, Y):
     @param X    First raster's array
     @param Y    Second raster's array
     '''
-    x1, y1 = np.shape(X)
-    x2, y2 = np.shape(Y)
-    #if the dimensions are equal - return True, else - False
-    if x1 != x2 or y1 != y2:
+    if np.shape(X)!= np.shape(Y):
         return False
     return True
 
@@ -32,7 +29,8 @@ def correlation(X, Y):
     @param X    First raster's array
     @param Y    Second raster's array
     ''' 
-    R = np.corrcoef(np.matrix.flatten(X),np.matrix.flatten(Y))   
+    X, Y = masks_identity(X, Y)
+    R = np.corrcoef(np.ma.compressed(X),np.ma.compressed(Y))   
     # function np.corrcoef return array of coefficients
     # R[0][0] = R[1][1] = 1.0 - correlation X--X and Y--Y
     # R[0][1] = R[1][0] - correlation X--Y and Y--X
@@ -107,6 +105,7 @@ def compute_table(X, Y):
     @param Y    Second raster's array   
     '''
     if size_equals(X, Y):
+        X, Y = masks_identity(X, Y)
         X = np.ma.compressed(np.matrix.flatten(X))
         Y = np.ma.compressed(np.matrix.flatten(Y))
         n = len(X)
@@ -129,6 +128,25 @@ def compute_table(X, Y):
         return T, sum_r, sum_s, total, r, s
     else:
         raise CoeffError('Sizes of rasters not equals!')
+
+def masks_identity(X, Y):
+    '''
+    Each raster has a mask. This function verify the identity of masks.
+    If the mask is not equal, we have to do both raster mask identical
+    by combining masks. Function return updated arrays
+    @param X    First raster's array
+    @param Y    Second raster's array
+    '''
+    #form the masks as 1-Dimension arrays
+    mask_x = np.ma.array(np.matrix.flatten(X.mask))
+    mask_y = np.ma.array(np.matrix.flatten(Y.mask))
+    #if there are differences between the mask
+    if all(np.equal(mask_x, mask_y))!= True:
+        # np.equal -> array: False if !=; True if ==
+        #combining masks
+        X = np.ma.array(X, mask = mask_y)
+        Y = np.ma.array(Y, mask = mask_x)
+    return X, Y
     
     
     
