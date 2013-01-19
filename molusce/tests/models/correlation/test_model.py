@@ -10,7 +10,7 @@ import numpy as np
 from numpy import ma as ma
 
 
-from molusce.models.correlation.model  import size_equals, correlation, compute_table, cramer, jiu
+from molusce.models.correlation.model  import CoeffTable, size_equals, correlation, compute_table, cramer, jiu
 
 
 class TestModel (unittest.TestCase):
@@ -81,14 +81,14 @@ class TestModel (unittest.TestCase):
         
     def test_compute_table(self):
         mess = 'compute table failed'
-        self.items = compute_table(self.X, self.Y) 
+        self.table = compute_table(self.X, self.Y) 
         for i in range(self.r):
-            self.assertEqual(all(self.items[0][i]), all(self.T[i]), mess)
-        self.assertEqual(all(self.items[1]), all(self.sum_r), mess)   
-        self.assertEqual(all(self.items[2]), all(self.sum_s), mess) 
-        self.assertEqual(self.items[3], self.total, mess)   
-        self.assertEqual(self.items[4], self.r, mess)
-        self.assertEqual(self.items[5], self.s, mess)
+            self.assertEqual(all(self.table.T[i]), all(self.T[i]), mess)
+        self.assertEqual(all(self.table.compute_sum_r()), all(self.sum_r), mess)   
+        self.assertEqual(all(self.table.compute_sum_s()), all(self.sum_s), mess) 
+        self.assertEqual(self.table.compute_total(), self.total, mess)   
+        self.assertEqual(self.table.compute_r(), self.r, mess)
+        self.assertEqual(self.table.compute_s(), self.s, mess)
           
     def test_cramer(self):
         self.T_cramer = np.subtract(self.T, self.T_cramer_expect)
