@@ -20,14 +20,14 @@ class TestWoEManager (unittest.TestCase):
     def test_CoeffManager(self):
         coeff = CoeffManager(self.X, self.Y)
         name = coeff.getName()
+        coeff = coeff.get_correlation()
         true_name = self.Y.getFileName()
-        self.Y = self.Y.getBand(1)
+        self.assertEqual(name, true_name)
         self.X = self.X.getBand(1)
-        self.assertEqual(name, true_name)        
-        self.assertEqual(coeff.getCorr(), correlation(self.X, self.Y))
-        self.assertEqual(coeff.getCramer(), cramer(self.X, self.Y))
-        self.assertEqual(coeff.getJIU(), jiu(self.X, self.Y))
-
-    
+        for i in range(1, self.Y.getBandsCount()+1):
+            band_y = self.Y.getBand(i)
+            coeff = coeff[i-1]
+            self.assertEqual(all(coeff), all([correlation(self.X, band_y),cramer(self.X, band_y),jiu(self.X, band_y)]))
+   
 if __name__ == "__main__":
     unittest.main()
