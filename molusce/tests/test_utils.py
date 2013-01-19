@@ -22,32 +22,6 @@ class TestRaster (unittest.TestCase):
             [3, 2, 1,],
             [0, 3, 1,]
         ])
-        self.X2 = np.array([
-            [1, 2, 1,],
-            [1, 2, 1,],
-            [0, 1, 2,],
-            [0, 1, 2,]
-        ])
-        '''
-        self.T = np.array([
-            [1, 0, 0, 0],
-            [0, 2, 0, 3],
-            [0, 2, 1, 0],
-        ])'''
-        self.T = np.array([
-            [2, 0, 3],
-            [2, 1, 0],
-        ])
-        self.sum_r = [5, 3]
-        self.sum_s = [4, 1, 3]
-        self.total = 8
-        self.r = 2 
-        self.s = 3
-        
-        self.T_cramer_expect = np.array([
-            [20.0/8, 5.0/8, 15.0/8],
-            [12.0/8, 3.0/8,  9.0/8]
-        ])
         self.X = np.ma.array(self.X, mask=(self.X == 0))
         self.Y = np.ma.array(self.Y, mask=(self.Y == 0))
         self.combo_mask = np.array([
