@@ -10,7 +10,7 @@ import numpy as np
 from numpy import ma as ma
 
 
-from molusce.models.correlation.model  import size_equals, correlation, compute_table, cramer, jiu, masks_identity
+from molusce.models.correlation.model  import size_equals, correlation, compute_table, cramer, jiu
 
 
 class TestModel (unittest.TestCase):
@@ -102,12 +102,6 @@ class TestModel (unittest.TestCase):
         self.assertAlmostEqual(jiu(self.X, self.Y), 0.385101639127, 9,'joint coeff failed')
         self.assertEqual(jiu(self.X, self.X), 1.0, 'cramer coeff failed')
     
-    def test_masks_identity(self): 
-        self.X, self.Y = masks_identity(self.X, self.Y)
-        mask_x = np.matrix.flatten(self.X.mask)
-        self.combo_mask = np.matrix.flatten(self.combo_mask)
-        k = all(np.equal(mask_x, self.combo_mask))
-        self.assertEqual(k, True, 'masks_identify failed')
     
 if __name__ == "__main__":
     unittest.main()

@@ -5,7 +5,7 @@ import math
 import numpy as np
 from numpy import ma as ma
 
-#from correlation.utils import reclass
+from molusce.utils import masks_identity
 
 class CoeffError(Exception):
     '''Base class for exceptions in this module.'''
@@ -18,14 +18,13 @@ def size_equals(X, Y):
     @param X    First raster's array
     @param Y    Second raster's array
     '''
-    if np.shape(X)!= np.shape(Y):
-        return False
-    return True
+
+    return (np.shape(X) == np.shape(Y))
 
 def correlation(X, Y):
     '''
     Define correlation coefficient of the two rasters for continuous 
-    values. Coefficient change between [-1, 1]
+    values.
     @param X    First raster's array
     @param Y    Second raster's array
     ''' 
@@ -50,12 +49,12 @@ def cramer(X, Y):
     #creation array : T*ij = (sum_r[i] * sum_s[j])/ total
     sum_r = np.tile(np.reshape(sum_r, (r,1)),(1,s))
     sum_s = np.tile(sum_s,(r,1))
-    T_expect = np.zeros([r, s])
-    T_expect = np.divide(np.multiply(sum_r, sum_s),total)
+    T_expect = sum_r*sum_s/total
+    
     # masked T*, because forbid to divide by zero
     T_expect = np.ma.array(T_expect, mask=(T_expect == 0))
     # chi-square coeff = sum((T-T*)^2/T*)
-    x2 = np.sum(np.divide(np.square(np.subtract(T, T_expect)), T_expect))
+    x2 = np.sum(np.square(T - T_expect)/T_expect)
     # CRAMER CONTINGENCY COEF. = sqrt(chi-square / total * min(s-1,r-1))
     # s, r - raster grauations
     Cramer = math.sqrt(x2/(total*min(s-1,r-1)))   
@@ -82,12 +81,12 @@ def jiu(X, Y):
     sum_r = np.compress(sum_r != 0, sum_r) 
     sum_s = np.compress(sum_s != 0, sum_s)
     #Compute the entropy coeff. of two raster 
-    H_x = -np.sum(np.multiply(sum_r,np.log(sum_r)))
-    H_y = -np.sum(np.multiply(sum_s,np.log(sum_s)))
+    H_x = -np.sum(sum_r * np.log(sum_r))
+    H_y = -np.sum(sum_s * np.log(sum_s))
     #Compute the joint entropy coeff.
     T = np.ma.array(T, mask=(T == 0))
     T = np.ma.compressed(T)
-    H_xy = -np.sum(np.multiply(T, np.log(T))) 
+    H_xy = -np.sum(T * np.log(T)) 
     # Compute the Joint Information Uncertainty 
     U = 2 * ((H_x + H_y - H_xy)/(H_x + H_y))
     
@@ -99,54 +98,35 @@ def compute_table(X, Y):
     1. contingency table T
     2. list sum_r : SUMj(Tij) j=[0,(s-1)]
     3. list sum_s : SUMi(Tij) i=[0,(r-1)]
-    4. number r of gradations for rster X
-    5. number s of gradations for rster Y
+    4. number r of gradations for raster X
+    5. number s of gradations for raster Y
     @param X    First raster's array
     @param Y    Second raster's array   
     '''
-    if size_equals(X, Y):
-        X, Y = masks_identity(X, Y)
-        X = np.ma.compressed(np.matrix.flatten(X))
-        Y = np.ma.compressed(np.matrix.flatten(Y))
-        n = len(X)
-        # empty gradations list  creation
-        graduation_x = []
-        graduation_y = []
-        #compute gradations
-        graduation_x = list(np.unique(np.array(X)))
-        graduation_y = list(np.unique(np.array(Y)))
-        #compute gradations lenght
-        r = len(graduation_x)
-        s = len(graduation_y)
-        #compute contingency table T
-        T = np.zeros([r,s]) 
-        for i in range(n):         
-            T[graduation_x.index(X[i])][graduation_y.index(Y[i])] +=1 
-        total = np.sum(T)       #T..
-        sum_r = T.sum(axis=1)   #Ti.
-        sum_s = T.sum(axis=0)   #T.j
-        return T, sum_r, sum_s, total, r, s
-    else:
+    if not size_equals(X, Y):
         raise CoeffError('Sizes of rasters not equals!')
+        
+    X, Y = masks_identity(X, Y)
+    X = np.ma.compressed(X)
+    Y = np.ma.compressed(Y)
+    n = len(X)
+    # Compute gradations
+    graduation_x = list(np.unique(np.array(X)))
+    graduation_y = list(np.unique(np.array(Y)))
+    # Compute gradation lenght
+    r = len(graduation_x)
+    s = len(graduation_y)
+    # Compute contingency table T
+    T = np.zeros([r,s]) 
+    for i in range(n):         
+        T[graduation_x.index(X[i])][graduation_y.index(Y[i])] +=1 
+    total = np.sum(T)       #T..
+    sum_r = T.sum(axis=1)   #Ti.
+    sum_s = T.sum(axis=0)   #T.j
+    return T, sum_r, sum_s, total, r, s
 
-def masks_identity(X, Y):
-    '''
-    Each raster has a mask. This function verify the identity of masks.
-    If the mask is not equal, we have to do both raster mask identical
-    by combining masks. Function return updated arrays
-    @param X    First raster's array
-    @param Y    Second raster's array
-    '''
-    #form the masks as 1-Dimension arrays
-    mask_x = np.ma.array(np.matrix.flatten(X.mask))
-    mask_y = np.ma.array(np.matrix.flatten(Y.mask))
-    #if there are differences between the mask
-    if all(np.equal(mask_x, mask_y))!= True:
-        # np.equal -> array: False if !=; True if ==
-        #combining masks
-        X = np.ma.array(X, mask = mask_y)
-        Y = np.ma.array(Y, mask = mask_x)
-    return X, Y
+
+
     
     
     
