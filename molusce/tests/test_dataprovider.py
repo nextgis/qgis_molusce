@@ -65,6 +65,12 @@ class TestRaster (unittest.TestCase):
         # Check pixel on the raster bound and nonzero neighbour size
         self.assertRaises(ProviderError, self.r2.getNeighbours, col=1, row=0, size=1)
         self.assertRaises(ProviderError, self.r2.getNeighbours, col=1, row=1, size=2)
+        
+    #~ def test_normalize(self):
+        #~ band = self.data2
+        #~ band = (band - np.mean(band))/np.std(band)
+        #~ self.r2.normalize()
+        #~ assert_array_equal([band], self.r2.bands)
 
     
 if __name__ == "__main__":

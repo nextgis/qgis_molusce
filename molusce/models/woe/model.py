@@ -6,7 +6,7 @@ from numpy import ma as ma
 from molusce.utils import reclass
 
 
-EPSILON = 4*np.finfo(np.float64).eps # Small number > 0
+EPSILON = 4*np.finfo(np.float).eps # Small number > 0
 
 
 class WoeError(Exception):

@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+import copy
+
 import numpy as np
 from numpy import ma as ma
 
@@ -16,6 +18,8 @@ class MlpManager(object):
     pass it to multi-layer perceptron, then gets and stores the result.
     '''
     
+    # TODO: Perform normalization of inputs
+    
     def __init__(self, MLP=None):
         self.MLP = MLP
         
@@ -25,9 +29,36 @@ class MlpManager(object):
             
         self.data = None        # Ttaining data
         self.classlist = None   # List of unique output values of the output raster
+        self.train_error = None # Error on training set
+        self.val_error = None   # Error on validation set
         
         # Outputs of the activation function for small and big numbers
         self.sigmLimits = (sigmoid(-1000), sigmoid(1000))
+    
+    def computeMlpError(self, sample):
+        '''Get MLP error on the sample'''
+        out = self.getOutput( sample['input'] )
+        err = ((sample['output'] - out)**2).sum()/len(out)
+        return err
+    
+    def computePerformance(self, train_indexes, val_ind):
+        '''Check training and validation set errors'''
+        train_error = 0
+        train_sampl = train_indexes[1] - train_indexes[0]
+        for i in range(train_indexes[0], train_indexes[1]):
+            train_error = train_error + self.computeMlpError(sample = self.data[i])
+        self.setTrainError(train_error/train_sampl)
+        
+        if val_ind:
+            val_error = 0
+            val_sampl = val_ind[1] - val_ind[0]
+            for i in range(val_ind[0], val_ind[1]):
+                val_error = val_error + self.computeMlpError(sample = self.data[i])
+            self.setValError(val_error/val_sampl)
+    
+    def copyWeights(self):
+        '''Deep copy of the MLP weights'''
+        return copy.deepcopy(self.MLP.weights)
     
     def createMlp(self, inputs, output, hidden_layers, ns=0):
         '''
@@ -69,13 +100,15 @@ class MlpManager(object):
         return shape[0]
     
     
-    def getOutput(self):
-        pass
+    def getOutput(self, input_vector):
+        out = self.MLP.propagate_forward( input_vector )
+        return out
     
     def getOutputVectLen(self):
         '''Length of input data vector of the MLP'''
         shape = self.getMlpTopology()
         return shape[-1]
+    
     def getOutputVector(self, val):
         '''Convert number val into vector .
         for example, set self.classlist = [1, 3, 4] then
@@ -93,18 +126,35 @@ class MlpManager(object):
     def getMlpTopology(self):
         return self.MLP.shape
     
+    def getTrainError(self):
+        return self.train_error
+    def getValError(self):
+        return self.val_error
+    
     def readMlp(self):
         pass
     
+    def resetErrors(self):
+        self.val_error = np.finfo(np.float).max
+        self.train_error = np.finfo(np.float).max
+    
+    def resetMlp(self):
+        self.MLP.reset()
+        self.resetErrors()
+    
     def saveMlp(self):
         pass
-        
     
-    def setTrainingData(self, inputs, output, ns=0):
+    def setMlpWeights(self, w):
+        '''Set weights of the MLP'''
+        self.MLP.weights = w
+    
+    def setTrainingData(self, inputs, output, ns=0, shuffle=True):
         '''
         @param inputs           List of the input rasters.
         @param output           Raster that contains classes to predict.
         @param ns               Neighbourhood size.
+        @param shuffle          Perform random shuffle.
         '''
         for r in inputs:
             if not output.isGeoDataMatch(r):
@@ -139,10 +189,61 @@ class MlpManager(object):
                         self.data.append(sample)
                     except AttributeError:
                         self.data = [sample]
+        self.resetErrors()
+        if shuffle: 
+            np.random.shuffle(self.data)
+    
+    def setTrainError(self, error):
+        self.train_error = error
+    
+    def setValError(self, error):
+        self.val_error = error
+    
+    def train(self, epochs, valPercent=20, lrate=0.1, momentum=0.1):
+        '''Perform the training procedure on the MLP and save the best neural net
+        @param epoch            Max iteration count.
+        @param valPercent       Percent of the validation set.
+        @param lrate            Learning rate.
+        @param momentum         Learning momentum.
+        '''
+        samples_count = len(self.data)
+        val_sampl_count = samples_count*valPercent/100
+        apply_validation = True if val_sampl_count>0 else False # Use validation set
+        train_sampl_count = samples_count - val_sampl_count
         
-    
-    def train(self):
-        pass
-    
-
+        # Set first train_sampl_count as training set, the other as validation set
+        train_indexes = (0, train_sampl_count)
+        val_indexes = (train_sampl_count, samples_count) if apply_validation else None
+        
+        min_val_error = self.getValError() # The minimum error that is achieved on the validation set
+        last_train_err = self.getTrainError()
+        best_weights = self.copyWeights()
+        
+        for epoch in range(epochs):
+            self.trainEpoch(train_indexes, lrate, momentum)
+            self.computePerformance(train_indexes, val_indexes)
+            if apply_validation and (self.getValError() < min_val_error):
+                min_val_error = self.getValError()
+                last_train_err = self.getTrainError()
+                best_weights = self.copyWeights()
+        if apply_validation:
+            self.setMlpWeights(best_weights)
+            self.setValError(min_val_error)
+            self.setTrainError(last_train_err)
+        
+                
+    def trainEpoch(self, train_indexes, lrate=0.1, momentum=0.1):
+        '''Perform a training epoch on the MLP
+        @param train_ind        Tuple of the min&max indexes of training samples in the samples data.
+        @param val_ind          Tuple of the min&max indexes of validation samples in the samples data.
+        @param lrate            Learning rate.
+        @param momentum         Learning momentum.
+        '''
+        train_sampl = train_indexes[1] - train_indexes[0]
+        
+        for i in range(train_sampl):
+            n = np.random.randint( *train_indexes )
+            sample = self.data[n]
+            self.MLP.propagate_forward( sample['input'] )
+            self.MLP.propagate_backward( sample['output'], lrate, momentum )
 
