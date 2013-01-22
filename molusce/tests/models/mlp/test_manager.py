@@ -74,7 +74,6 @@ class TestMlpManager (unittest.TestCase):
         tr  = mng.getTrainError()
         mng.train(20, valPercent=50)
         self.assertGreaterEqual(val, mng.getValError())
-        
     
 if __name__ == "__main__":
     unittest.main()
