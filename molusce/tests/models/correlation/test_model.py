@@ -9,8 +9,7 @@ import math
 import numpy as np
 from numpy import ma as ma
 
-
-from molusce.models.correlation.model  import CoeffTable, size_equals, correlation, cramer, jiu
+from molusce.models.correlation.model  import correlation, cramer, jiu
 
 
 class TestModel (unittest.TestCase):
@@ -62,11 +61,6 @@ class TestModel (unittest.TestCase):
             [True , False, False,]
         ])
         
-    def test_size_equals(self):
-        self.assertEqual(size_equals(self.X, self.Y), True, 'incorrent size')
-        
-    def test_Size_no_equals(self):
-        self.assertEqual(size_equals(self.X2, self.Y), False, 'sizes equals')
         
     def test_correlation(self):
         n = len(np.ma.compressed(self.X))
@@ -79,17 +73,6 @@ class TestModel (unittest.TestCase):
         self.assertEqual(correlation(self.X,self.Y), self.R,'correlation failed')
         self.assertEqual(correlation(self.X,self.X), 1.0,'correlation failed')
         
-    def test_compute_table(self):
-        mess = 'compute table failed'
-        self.table = CoeffTable(self.X, self.Y)
-        for i in range(self.r):
-            self.assertEqual(all(self.table.T[i]), all(self.T[i]), mess)
-        self.assertEqual(all(self.table.compute_sum_r()), all(self.sum_r), mess)   
-        self.assertEqual(all(self.table.compute_sum_s()), all(self.sum_s), mess) 
-        self.assertEqual(self.table.n, self.total, mess)  
-        r,s = self.table.shape 
-        self.assertEqual(r, self.r, mess)
-        self.assertEqual(s, self.s, mess)
           
     def test_cramer(self):
         self.T_cramer = np.subtract(self.T, self.T_cramer_expect)
@@ -100,8 +83,8 @@ class TestModel (unittest.TestCase):
         self.assertEqual(cramer(self.X, self.X), 1.0, 'cramer coeff failed')
         
     def test_jiu(self):
-        self.assertAlmostEqual(jiu(self.X, self.Y), 0.385101639127, 9,'joint coeff failed')
-        self.assertEqual(jiu(self.X, self.X), 1.0, 'cramer coeff failed')
+        self.assertAlmostEqual(jiu(self.X, self.Y), 0.385101639127, 9, 'joint coeff failed')
+        self.assertEqual(jiu(self.X, self.X), 1.0, 'joint coeff failed')
     
     
 if __name__ == "__main__":

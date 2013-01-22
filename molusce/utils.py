@@ -16,7 +16,16 @@ def reclass( raster, trueList ):
     f = np.vectorize(lambda x: True if x in trueList else False )
     return f(raster)
     
-    
+
+def sizes_equal(X, Y):
+    '''
+    Define equality dimensions of the two rasters
+    @param X    First raster
+    @param Y    Second raster
+    '''
+
+    return (np.shape(X) == np.shape(Y))
+
 def masks_identity(X, Y):
     '''
     Each raster has a mask. This function verify the identity of masks.

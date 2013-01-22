@@ -7,7 +7,7 @@ import unittest
 
 import numpy as np
 
-from molusce.utils import masks_identity
+from molusce.utils import masks_identity, sizes_equal
 
 class TestRaster (unittest.TestCase):
     def setUp(self):
@@ -21,6 +21,12 @@ class TestRaster (unittest.TestCase):
             [1, 1, 3,],
             [3, 2, 1,],
             [0, 3, 1,]
+        ])
+        self.X2 = np.array([
+            [1, 2, 1,],
+            [1, 2, 1,],
+            [0, 1, 2,],
+            [0, 1, 2,]
         ])
         self.X = np.ma.array(self.X, mask=(self.X == 0))
         self.Y = np.ma.array(self.Y, mask=(self.Y == 0))
@@ -36,7 +42,12 @@ class TestRaster (unittest.TestCase):
         self.combo_mask = np.matrix.flatten(self.combo_mask)
         k = all(np.equal(mask_x, self.combo_mask))
         self.assertEqual(k, True, 'masks_identify failed')
-
+    
+    def test_size_equals(self):
+        self.assertEqual(sizes_equal(self.X, self.Y), True, 'incorrent size')
+        
+    def test_Size_no_equals(self):
+        self.assertEqual(sizes_equal(self.X2, self.Y), False, 'sizes are equal')
     
 if __name__ == "__main__":
     unittest.main()
