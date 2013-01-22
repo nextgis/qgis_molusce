@@ -42,7 +42,7 @@ class MlpManager(object):
         return err
     
     def computePerformance(self, train_indexes, val_ind):
-        '''Check training and validation set errors'''
+        '''Check errors of training and validation sets'''
         train_error = 0
         train_sampl = train_indexes[1] - train_indexes[0]
         for i in range(train_indexes[0], train_indexes[1]):
@@ -160,11 +160,13 @@ class MlpManager(object):
             if not output.isGeoDataMatch(r):
                 raise MlpManagerError('Geometries of the inputs and output rasters are different!')
         
-        pixel_count = (2*ns+1)**2 # Pixel count in the neighbourhood
+        n_count = (2*ns+1)**2 # Pixel count in the neighbourhood
         input_vect_len = self.getInputVectLen()
         output_vect_len = self.getOutputVectLen()
         
         (rows,cols) = (output.getXSize(), output.getYSize())
+        
+        # i,j  are pixel indexes
         for i in xrange(ns, rows - ns):         # Eliminate the raster boundary (of (ns)-size width) because
             for j in xrange(ns, rows-ns):       # the samples are incomplete in that region
                 sample = {'input': np.zeros(input_vect_len), 'output': np.zeros(output_vect_len)}
@@ -176,8 +178,10 @@ class MlpManager(object):
                         continue
                     else:
                         sample['output'] = self.getOutputVector(out)
-                    for (k,r) in enumerate(inputs):
-                        neighbours = r.getNeighbours(i,j,ns).flatten()
+                    
+                    for (k,raster) in enumerate(inputs):
+                        neighbours = raster.getNeighbours(i,j,ns).flatten()
+                        pixel_count = n_count * raster.getBandsCount()
                         if any(neighbours.mask): # Eliminate incomplete samples
                             sample_complete = False
                             break
@@ -192,6 +196,7 @@ class MlpManager(object):
         self.resetErrors()
         if shuffle: 
             np.random.shuffle(self.data)
+        print 'Data complete'
     
     def setTrainError(self, error):
         self.train_error = error
@@ -226,10 +231,12 @@ class MlpManager(object):
                 min_val_error = self.getValError()
                 last_train_err = self.getTrainError()
                 best_weights = self.copyWeights()
+        print 'train complete'
         if apply_validation:
             self.setMlpWeights(best_weights)
             self.setValError(min_val_error)
             self.setTrainError(last_train_err)
+        print 'validation complete'
         
                 
     def trainEpoch(self, train_indexes, lrate=0.1, momentum=0.1):
