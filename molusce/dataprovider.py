@@ -29,10 +29,41 @@ class Raster(object):
         self.setBand(r, bandNum)
     
     def isGeoDataMatch(self, raster):
-        '''Return true if RasterSize, Projection and GetGeoTransform of the rasters is matched'''
-        for key in self.geodata.keys():
+        '''Return true if RasterSize, Projection and GetGeoTransform of the rasters are matched'''
+        for key in ['xSize', 'ySize', 'proj']:
             if self.geodata[key] != raster.geodata[key]:
                 return False
+        if not self.geoTransformMatch(raster):
+            return False
+        return True
+        
+    def geoTransformMatch(self, raster):
+        '''Return True if GetGeoTransform of the rasters are matched, ie:
+        the difference of the top left x less then pixel size,
+        the difference of the top left y less then pixel size,
+        for x and y:
+        (difference of the pixel sizes) * (pixel count) < (pixel size),
+        rotations are equal.
+        '''
+        indexes = (156835.0, 90.0, 0.0, 2338905.0, 0.0, -90.0)
+        s_cornerX, s_width, s_rot1, s_cornerY, s_rot2, s_height  = self.geodata['transform']
+        r_cornerX, r_width, r_rot1, r_cornerY, r_rot2, r_height  = raster.geodata['transform']
+        if (s_rot1!=r_rot1) or (s_rot2!=r_rot2):
+            return False
+        
+        dx = abs(s_cornerX - r_cornerX)
+        if dx > min(abs(s_width), abs(r_width)):
+            return False
+        dy = abs(s_cornerY - r_cornerY)
+        if dy > min(abs(s_height), abs(r_height)):
+            return False
+        dw = abs(s_width - r_width)
+        if dw * self.geodata['xSize'] > 1.5* min(abs(s_width), abs(r_width)):
+            return False 
+        dh = abs(s_height - r_height)
+        if dh * self.geodata['ySize'] > 1.5* min(abs(s_height), abs(r_height)):
+            return False
+        
         return True
     
     def getBand(self, band):
