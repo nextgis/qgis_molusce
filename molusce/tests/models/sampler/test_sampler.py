@@ -52,18 +52,18 @@ class TestMlpManager (unittest.TestCase):
         assert_array_equal(data[0]['input'], smp.data[0]['input'])
         assert_array_equal(data[0]['output'], smp.data[0]['output'])
         
-        #~ # Multiband input
-        #~ smp = Sampler(self.inputs3, self.output, ns=1)
-        #~ smp.setTrainingData(self.inputs3, self.output)
-        #~ data = [
-            #~ {
-            #~ 'input': np.array([ 1.,  2.,  1.,  1.,  2.,  1.,  0.,  1.,  2.,  
-                                #~ 1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.]), 
-            #~ 'output': np.array([2])
-            #~ }
-        #~ ]
-        #~ assert_array_equal(data[0]['input'], smp.data[0]['input'])
-        #~ assert_array_equal(data[0]['output'], smp.data[0]['output'])
+        # Multiband input
+        smp = Sampler(self.inputs3, self.output, ns=1)
+        smp.setTrainingData(self.inputs3, self.output)
+        data = [
+            {
+            'input': np.array([ 1.,  2.,  1.,  1.,  2.,  1.,  0.,  1.,  2.,  
+                                1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.]), 
+            'output': np.array([2])
+            }
+        ]
+        assert_array_equal(data[0]['input'], smp.data[0]['input'])
+        assert_array_equal(data[0]['output'], smp.data[0]['output'])
     
 if __name__ == "__main__":
     unittest.main()

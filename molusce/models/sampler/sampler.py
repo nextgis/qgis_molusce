@@ -6,8 +6,7 @@ from numpy import ma as ma
 from molusce.dataprovider import Raster, ProviderError
 
 class Sampler(object):
-    '''Create training set based on input-output rasers
-    '''
+    '''Create training set based on input-output rasters'''
     def __init__(self, inputs, output, ns=0):
         '''
         @param inputs           List of the input rasters.
