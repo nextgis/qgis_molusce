@@ -12,7 +12,7 @@ from molusce.dataprovider import Raster
 from molusce.models.sampler.sampler import Sampler
 
 
-class TestMlpManager (unittest.TestCase):
+class TestSample (unittest.TestCase):
     def setUp(self):
         self.inputs = [Raster('../../examples/multifact.tif')]
         self.output = Raster('../../examples/sites.tif')

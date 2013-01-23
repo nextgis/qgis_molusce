@@ -12,7 +12,7 @@ from numpy import ma as ma
 from molusce.models.crosstabs.model  import CrossTable
 
 
-class TestModel (unittest.TestCase):
+class TestCrossTable (unittest.TestCase):
     
     def setUp(self):
         

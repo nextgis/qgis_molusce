@@ -13,13 +13,13 @@ class ProviderError(Exception):
         self.msg = msg
 
 class Raster(object):
-    def __init__(self, filename):
+    def __init__(self, filename=None):
         # TODO: Get mask values from the raster metadata.
         self.filename = filename
         self.maskVals = None    # List of the "transparent" pixel values
         self.bands = None       # List of the bands (stored as numpy mask array)
         self.geodata = None     # Georeferensing information
-        self._read()
+        if self.filename: self._read()
         
     
     def binaryzation(self, trueVals, bandNum):
@@ -28,7 +28,11 @@ class Raster(object):
         r = reclass(r, trueVals)
         self.setBand(r, bandNum)
     
-    def isGeoDataMatch(self, raster):
+    def create(self, bands, geodata):
+        self.bands = bands
+        self.geodata = geodata
+    
+    def geoDataMatch(self, raster):
         '''Return true if RasterSize, Projection and GetGeoTransform of the rasters are matched'''
         for key in ['xSize', 'ySize', 'proj']:
             if self.geodata[key] != raster.geodata[key]:
@@ -70,7 +74,10 @@ class Raster(object):
         return self.bands[band-1]
     
     def getBandsCount(self):
-        return len(self.bands)
+        if self.bands:
+            return len(self.bands)
+        else:
+            return 0
     
     def getNeighbours(self, row, col, size):
         '''Return subset of the bands -- neighbourhood of the central pixel (row,col)'''
@@ -100,8 +107,10 @@ class Raster(object):
     def get_dtype(self):
         if self.getBandsCount() != 1:
             raise ProviderError('You can get dtype of the one-band raster only!')
-        band = self.getBand(0)
+        band = self.getBand(1)
         return band.dtype
+    def getGeodata(self):
+        return self.geodata
     
     def getXSize(self):
         return self.geodata['xSize']
@@ -117,13 +126,31 @@ class Raster(object):
             #~ s = np.std(r)
             #~ self.setBand((r-m)/s,i)
     
+    def save(self, filename):
+        pass
+    
     def setBand(self, raster, bandNum):
         self.bands[bandNum-1] = raster
     
-    def setMask(self):
+    def setGeoData(self, geodata):
+        # Check raster's geometry
+        if self.getBandsCount() > 0:
+            band = self.getBand(1)
+            if band.shape != (geodata['xSize'], geodata['ySize']):
+                raise ProviderError('Existing bands dont match new geometry!')
+
+        self.geodata['xSize'] = geodata['xSize']
+        self.geodata['ySize'] = geodata['ySize']
+        
+        
+        self.geodata['proj']  = geodata['proj']
+        self.geodata['transform']  = geodata['transform']
+    
+    def setMask(self, maskVals = None):
         #TODO: Get mask values from the raster metadata.
         #      Don't use mask now.
-        maskVals = []
+        
+        if not maskVals: maskVals = []
         
         for i in range(self.getBandsCount()):
             r = self.getBand(i)

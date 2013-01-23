@@ -90,7 +90,7 @@ class TestMlpManager (unittest.TestCase):
         mng.train(20, valPercent=50, continue_train=True)
         self.assertGreaterEqual(val, mng.getValError())
 
-    # Comented while we don't have free rasters to test
+    # Commented while we don't have free rasters to test
     #~ def test_real(self):
         #~ #inputs = [Raster('LPB_dem.tif'), Raster('LPB_luc_2007.tif')]
         #~ inputs = [Raster('LPB_luc_2007.tif'),  Raster('LPB_luc_2007.tif')]

@@ -34,13 +34,13 @@ def masks_identity(X, Y):
     @param X    First raster's array
     @param Y    Second raster's array
     '''
-    #form the masks as 1-Dimension arrays
-    mask_x = np.ma.array(np.matrix.flatten(X.mask))
-    mask_y = np.ma.array(np.matrix.flatten(Y.mask))
-    #if there are differences between the mask
-    if all(np.equal(mask_x, mask_y))!= True:
-        # np.equal -> array: False if !=; True if ==
-        #combining masks
-        X = np.ma.array(X, mask = mask_y)
-        Y = np.ma.array(Y, mask = mask_x)
+    maskX = X.mask
+    maskY = Y.mask
+    mask = np.ma.mask_or(maskX, maskY)
+
+    X = np.ma.array(X, mask = mask)
+    Y = np.ma.array(Y, mask = mask)
     return X, Y
+
+def get_gradations(band):
+    return list(np.unique(np.array(band)))

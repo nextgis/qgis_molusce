@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from molusce.utils import masks_identity, sizes_equal
+from molusce.utils import masks_identity, sizes_equal, get_gradations
 
 class CrossTabError(Exception):
     '''Base class for exceptions in this module.'''
@@ -11,21 +11,21 @@ class CrossTabError(Exception):
         self.msg = msg
 
 
-class CrossTable:
+class CrossTable(object):
     '''Class for compute gradations, contingency (cross)table T'''
-    def __init__(self, raster1, raster2):
+    def __init__(self, band1, band2):
         
-        if not sizes_equal(raster1, raster2):
-            raise CoeffError('Sizes of rasters not equals!')
+        if not sizes_equal(band1, band2):
+            raise CrossTabError('Sizes of rasters are not equal!')
         
-        raster1, raster2 = masks_identity(raster1, raster2)
+        band1, band2 = masks_identity(band1, band2)
         
-        X = np.ma.compressed(raster1)
-        Y = np.ma.compressed(raster2)
+        X = np.ma.compressed(band1)
+        Y = np.ma.compressed(band2)
         
         # Compute gradations of the rasters
-        self.graduation_x = list(np.unique(np.array(X)))
-        self.graduation_y = list(np.unique(np.array(Y)))
+        self.graduation_x = get_gradations(X)
+        self.graduation_y = get_gradations(Y)
         
         rows, cols = len(self.graduation_x), len(self.graduation_y) 
         self.shape = (rows, cols)

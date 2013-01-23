@@ -5,6 +5,12 @@ from numpy import ma as ma
 
 from molusce.dataprovider import Raster, ProviderError
 
+class SamplerError(Exception):
+    '''Base class for exceptions in this module.'''
+    def __init__(self, msg):
+        self.msg = msg
+
+
 class Sampler(object):
     '''Create training set based on input-output rasters'''
     def __init__(self, inputs, output, ns=0):
@@ -30,8 +36,8 @@ class Sampler(object):
         @param shuffle          Perform random shuffle.
         '''
         for r in inputs:
-            if not output.isGeoDataMatch(r):
-                raise MlpManagerError('Geometries of the inputs and output rasters are different!')
+            if not output.geoDataMatch(r):
+                raise SamplerError('Geometries of the inputs and output rasters are different!')
         
         input_vect_len = self.inputVectLen
         output_vect_len = 1

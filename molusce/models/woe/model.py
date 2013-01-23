@@ -3,7 +3,7 @@
 import numpy as np
 from numpy import ma as ma
 
-from molusce.utils import reclass
+from molusce.utils import reclass, get_gradations
 
 
 EPSILON = 4*np.finfo(np.float).eps # Small number > 0
@@ -86,7 +86,7 @@ def woe(factor, sites, unit_cell=1):
     '''
        
     # Get list of classes from the factor raster
-    classes = np.unique(factor.compressed())
+    classes = get_gradations(factor.compressed())
     
     weights = [] # list of the weights of evidence
     if len(classes) > 2:

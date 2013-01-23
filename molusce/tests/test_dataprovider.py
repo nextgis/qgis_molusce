@@ -50,7 +50,7 @@ class TestRaster (unittest.TestCase):
         band = self.r2.getBand(1)
         assert_array_equal(band, self.data2)
         
-        self.assertTrue(self.r1.isGeoDataMatch(self.r2))
+        self.assertTrue(self.r1.geoDataMatch(self.r2))
         
     def test_getNeighbours(self):
         neighbours = self.r2.getNeighbours(row=1,col=0, size=0)
@@ -65,6 +65,13 @@ class TestRaster (unittest.TestCase):
         # Check pixel on the raster bound and nonzero neighbour size
         self.assertRaises(ProviderError, self.r2.getNeighbours, col=1, row=0, size=1)
         self.assertRaises(ProviderError, self.r2.getNeighbours, col=1, row=1, size=2)
+        
+    def test_geodata(self):
+        geodata = self.r1.getGeodata()
+        self.r1.setGeoData(geodata)
+        geodata['xSize'] = geodata['xSize'] + 10
+        self.assertRaises(ProviderError, self.r1.setGeoData, geodata=geodata)
+        
         
     #~ def test_normalize(self):
         #~ band = self.data2
