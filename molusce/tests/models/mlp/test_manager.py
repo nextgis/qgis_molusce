@@ -18,6 +18,7 @@ class TestMlpManager (unittest.TestCase):
         self.output = Raster('../../examples/sites.tif')
         
         self.inputs2 = [Raster('../../examples/multifact.tif'), Raster('../../examples/multifact.tif')]
+        self.inputs3 = [Raster('../../examples/two_band.tif')]
         
     def test_MlpManager(self):
         mng = MlpManager()
@@ -50,6 +51,7 @@ class TestMlpManager (unittest.TestCase):
             assert_array_equal(data[i]['input'], mng.data[i]['input'])
             assert_array_equal(data[i]['output'], mng.data[i]['output'])
 
+        # two input rasters
         mng = MlpManager()
         mng.createMlp(self.inputs2, self.output, [10], ns=1)
         mng.setTrainingData(self.inputs2, self.output, ns=1)
@@ -62,8 +64,21 @@ class TestMlpManager (unittest.TestCase):
         ]
         assert_array_equal(data[0]['input'], mng.data[0]['input'])
         assert_array_equal(data[0]['output'], mng.data[0]['output'])
-    
-    
+        
+        # Multiband input
+        mng = MlpManager()
+        mng.createMlp(self.inputs3, self.output, [10], ns=1)
+        mng.setTrainingData(self.inputs3, self.output, ns=1)
+        data = [
+            {
+            'input': np.array([ 1.,  2.,  1.,  1.,  2.,  1.,  0.,  1.,  2.,  
+                                1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.]), 
+            'output': np.array([min, min,  max])
+            }
+        ]
+        assert_array_equal(data[0]['input'], mng.data[0]['input'])
+        assert_array_equal(data[0]['output'], mng.data[0]['output'])
+
     def test_train(self):
         mng = MlpManager()
         mng.createMlp(self.inputs, self.output, [10])
@@ -72,8 +87,20 @@ class TestMlpManager (unittest.TestCase):
         mng.train(1, valPercent=50)
         val = mng.getValError()
         tr  = mng.getTrainError()
-        mng.train(20, valPercent=50)
+        mng.train(20, valPercent=50, continue_train=True)
         self.assertGreaterEqual(val, mng.getValError())
+
+    # Comented while we don't have free rasters to test
+    #~ def test_real(self):
+        #~ #inputs = [Raster('LPB_dem.tif'), Raster('LPB_luc_2007.tif')]
+        #~ inputs = [Raster('LPB_luc_2007.tif'),  Raster('LPB_luc_2007.tif')]
+        #~ output = Raster('LPB_luc_2007.tif')
+        #~ mng = MlpManager()
+        #~ mng.createMlp(inputs, output, [10])
+        #~ mng.setTrainingData(inputs, output, ns=0)
+        #~ mng.train(1, valPercent=20)
+        
+        
     
 if __name__ == "__main__":
     unittest.main()

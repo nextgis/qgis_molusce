@@ -87,7 +87,12 @@ class Raster(object):
             neighbours[(i-1)*pixel_count: (i)*pixel_count] = neighbourhood
         neighbours.shape = (bcount, row_size, row_size)
         return neighbours
-        
+    
+    def getNeighbourhoodSize(self, ns):
+        '''Return pixel count in the neighbourhood of ns size'''
+        # pixel count in the 1-band neighbourhood of ns size
+        neighbours = (2*ns+1)**2
+        return self.getBandsCount() * neighbours
         
     def getFileName(self):
         return self.filename

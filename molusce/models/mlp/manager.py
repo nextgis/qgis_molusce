@@ -7,6 +7,7 @@ from numpy import ma as ma
 
 from molusce.dataprovider import Raster, ProviderError
 from molusce.models.mlp.model import MLP, sigmoid
+from molusce.models.sampler.sampler import Sampler
 
 class MlpManagerError(Exception):
     '''Base class for exceptions in this module.'''
@@ -27,13 +28,13 @@ class MlpManager(object):
         if self.MLP:
             self.layers = self.getMlpTopology()
             
-        self.data = None        # Ttaining data
+        self.data = None        # Training data
         self.classlist = None   # List of unique output values of the output raster
         self.train_error = None # Error on training set
         self.val_error = None   # Error on validation set
         
         # Outputs of the activation function for small and big numbers
-        self.sigmLimits = (sigmoid(-1000), sigmoid(1000))
+        self.sigmLimits = (sigmoid(-100), sigmoid(100))
     
     def computeMlpError(self, sample):
         '''Get MLP error on the sample'''
@@ -71,16 +72,10 @@ class MlpManager(object):
         if output.getBandsCount() != 1:
             raise MplManagerError('Output layer must have one band!')
         
-        # total input bands count
-        total_input_bands = 0
+        input_neurons = 0
         for raster in inputs:
-            total_input_bands = total_input_bands + raster.getBandsCount()
+            input_neurons = input_neurons+ raster.getNeighbourhoodSize(ns)
         
-        # pixel count in the neighbourhood of ns size
-        neighbours = (2*ns+1)**2
-        
-        # Input neuron count of the MLP
-        input_neurons = total_input_bands * neighbours
 
         # Output class (neuron) count
         band = output.getBand(1)
@@ -156,47 +151,9 @@ class MlpManager(object):
         @param ns               Neighbourhood size.
         @param shuffle          Perform random shuffle.
         '''
-        for r in inputs:
-            if not output.isGeoDataMatch(r):
-                raise MlpManagerError('Geometries of the inputs and output rasters are different!')
-        
-        n_count = (2*ns+1)**2 # Pixel count in the neighbourhood
-        input_vect_len = self.getInputVectLen()
-        output_vect_len = self.getOutputVectLen()
-        
-        (rows,cols) = (output.getXSize(), output.getYSize())
-        
-        # i,j  are pixel indexes
-        for i in xrange(ns, rows - ns):         # Eliminate the raster boundary (of (ns)-size width) because
-            for j in xrange(ns, rows-ns):       # the samples are incomplete in that region
-                sample = {'input': np.zeros(input_vect_len), 'output': np.zeros(output_vect_len)}
-                sample_complete = True # Are the pixels in the neighbourhood defined/unmasked?
-                try: 
-                    out = output.getNeighbours(i,j,0).flatten() # Get the pixel
-                    if any(out.mask): # Eliminate incomplete samples
-                        sample_complete = False
-                        continue
-                    else:
-                        sample['output'] = self.getOutputVector(out)
-                    
-                    for (k,raster) in enumerate(inputs):
-                        neighbours = raster.getNeighbours(i,j,ns).flatten()
-                        pixel_count = n_count * raster.getBandsCount()
-                        if any(neighbours.mask): # Eliminate incomplete samples
-                            sample_complete = False
-                            break
-                        sample['input'][k*pixel_count: (k+1)*pixel_count] = neighbours
-                except ProviderError:
-                    continue
-                if sample_complete:
-                    try:
-                        self.data.append(sample)
-                    except AttributeError:
-                        self.data = [sample]
-        self.resetErrors()
-        if shuffle: 
-            np.random.shuffle(self.data)
-        print 'Data complete'
+        sampler = Sampler(inputs, output, ns)
+        sampler.setTrainingData(inputs, output, shuffle)
+        self.data = [{'input': sample['input'], 'output': self.getOutputVector(sample['output'][0])} for sample in sampler.data] 
     
     def setTrainError(self, error):
         self.train_error = error
@@ -204,12 +161,13 @@ class MlpManager(object):
     def setValError(self, error):
         self.val_error = error
     
-    def train(self, epochs, valPercent=20, lrate=0.1, momentum=0.1):
+    def train(self, epochs, valPercent=20, lrate=0.1, momentum=0.1, continue_train=False):
         '''Perform the training procedure on the MLP and save the best neural net
         @param epoch            Max iteration count.
         @param valPercent       Percent of the validation set.
         @param lrate            Learning rate.
         @param momentum         Learning momentum.
+        @param continue_train   If False then it is new training cycle, reset weights training and validation error. If True, then continue training.
         '''
         samples_count = len(self.data)
         val_sampl_count = samples_count*valPercent/100
@@ -220,6 +178,7 @@ class MlpManager(object):
         train_indexes = (0, train_sampl_count)
         val_indexes = (train_sampl_count, samples_count) if apply_validation else None
         
+        if not continue_train: self.resetMlp()
         min_val_error = self.getValError() # The minimum error that is achieved on the validation set
         last_train_err = self.getTrainError()
         best_weights = self.copyWeights()
@@ -231,12 +190,10 @@ class MlpManager(object):
                 min_val_error = self.getValError()
                 last_train_err = self.getTrainError()
                 best_weights = self.copyWeights()
-        print 'train complete'
         if apply_validation:
             self.setMlpWeights(best_weights)
             self.setValError(min_val_error)
             self.setTrainError(last_train_err)
-        print 'validation complete'
         
                 
     def trainEpoch(self, train_indexes, lrate=0.1, momentum=0.1):
