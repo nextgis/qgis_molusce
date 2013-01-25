@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import sys
+import os
 sys.path.insert(0, '../../')
 
 import unittest
@@ -73,6 +74,19 @@ class TestRaster (unittest.TestCase):
         self.assertRaises(ProviderError, self.r1.setGeoData, geodata=geodata)
         
         
+    def test_save(self):
+        try:
+            filename = 'temp.tiff'
+            self.r1.save(filename)
+            r2 = Raster(filename)
+            self.assertEqual(r2.get_dtype(), self.r1.get_dtype())
+            self.assertEqual(r2.getBandsCount(), self.r1.getBandsCount())
+            for i in range(r2.getBandsCount()):
+                assert_array_equal(r2.getBand(i+1), self.r1.getBand(i+1))
+        finally:
+            os.remove(filename)
+
+    
     #~ def test_normalize(self):
         #~ band = self.data2
         #~ band = (band - np.mean(band))/np.std(band)

@@ -12,6 +12,29 @@ class ProviderError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
+class FormatConverter(object):
+    '''Tarnslates formats between GDAL and numpy data formats'''
+    def __init__(self):
+        self.dtypes = np.bool, np.int, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64, np.float, np.float16, np.float32, np.float64
+        self.GDT = gdal.GDT_Byte, gdal.GDT_UInt16, gdal.GDT_Int16, gdal.GDT_UInt32, gdal.GDT_Int32, gdal.GDT_Float32, gdal.GDT_Float64
+        self.dtype2GDT = {
+            np.dtype('bool'): gdal.GDT_Byte,
+            np.dtype('int'): gdal.GDT_Int32,#!!!
+            np.dtype('int8'): gdal.GDT_Int16,
+            np.dtype('int16'): gdal.GDT_Int16,
+            np.dtype('int32'): gdal.GDT_Int32,
+            np.dtype('int64'): gdal.GDT_Int32,#!!!
+            np.dtype('uint8'): gdal.GDT_Byte,
+            np.dtype('uint16'): gdal.GDT_UInt16,
+            np.dtype('uint32'): gdal.GDT_UInt32,
+            np.dtype('uint64'): gdal.GDT_UInt32,#!!!
+            np.dtype('float'): gdal.GDT_Float64,
+            np.dtype('float16'): gdal.GDT_Float32,
+            np.dtype('float32'): gdal.GDT_Float32,
+            np.dtype('float64'): gdal.GDT_Float64
+        }
+    
+
 class Raster(object):
     def __init__(self, filename=None):
         # TODO: Get mask values from the raster metadata.
@@ -105,10 +128,10 @@ class Raster(object):
         return self.filename
         
     def get_dtype(self):
-        if self.getBandsCount() != 1:
-            raise ProviderError('You can get dtype of the one-band raster only!')
+        # All bands of the raster have the same dtype now
         band = self.getBand(1)
         return band.dtype
+    
     def getGeodata(self):
         return self.geodata
     
@@ -126,8 +149,27 @@ class Raster(object):
             #~ s = np.std(r)
             #~ self.setBand((r-m)/s,i)
     
-    def save(self, filename):
-        pass
+    def save(self, filename, format="GTiff", rastertype=None):
+        driver = gdal.GetDriverByName(format)
+        metadata = driver.GetMetadata()
+        if metadata.has_key(gdal.DCAP_CREATE) and metadata[gdal.DCAP_CREATE] == "YES":
+            if not rastertype:
+                dtype = self.get_dtype()
+                conv = FormatConverter()
+                rastertype = conv.dtype2GDT[dtype]
+            xsize, ysize = self.getXSize(), self.getYSize()
+            bandcount = self.getBandsCount()
+            outRaster = driver.Create(filename, xsize, ysize, bandcount, rastertype)
+            geodata = self.getGeodata()
+            outRaster.SetProjection(geodata['proj'])
+            outRaster.SetGeoTransform(geodata['transform'])
+            for i in range(bandcount):
+                band = self.getBand(i+1)
+                outRaster.GetRasterBand( i + 1 ).WriteArray(band)
+            outRaster = None
+        else:
+          raise ProviderError("Driver %s does not support Create() method!" % format)
+          
     
     def setBand(self, raster, bandNum):
         self.bands[bandNum-1] = raster
