@@ -46,7 +46,7 @@ class Sampler(object):
         
         # i,j  are pixel indexes
         for i in xrange(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
-            for j in xrange(self.ns, rows-self.ns):       # the samples are incomplete in that region
+            for j in xrange(self.ns, cols - self.ns):     # the samples are incomplete in that region
                 sample = {'input': np.zeros(input_vect_len), 'output': np.zeros(output_vect_len)}
                 sample_complete = True # Are the pixels in the neighbourhood defined/unmasked?
                 try: 
