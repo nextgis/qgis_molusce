@@ -38,7 +38,7 @@ class MlpManager(object):
     
     def computeMlpError(self, sample):
         '''Get MLP error on the sample'''
-        out = self.getOutput( sample['input'] )
+        out = self.predict( sample['input'] )
         err = ((sample['output'] - out)**2).sum()/len(out)
         return err
     
@@ -94,11 +94,6 @@ class MlpManager(object):
         shape = self.getMlpTopology()
         return shape[0]
     
-    
-    def getOutput(self, input_vector):
-        out = self.MLP.propagate_forward( input_vector )
-        return out
-    
     def getOutputVectLen(self):
         '''Length of input data vector of the MLP'''
         shape = self.getMlpTopology()
@@ -125,6 +120,10 @@ class MlpManager(object):
         return self.train_error
     def getValError(self):
         return self.val_error
+    
+    def predict(self, input_vector):
+        out = self.MLP.propagate_forward( input_vector )
+        return out
     
     def readMlp(self):
         pass
@@ -208,6 +207,6 @@ class MlpManager(object):
         for i in range(train_sampl):
             n = np.random.randint( *train_indexes )
             sample = self.data[n]
-            self.MLP.propagate_forward( sample['input'] )
+            self.predict( sample['input'] )
             self.MLP.propagate_backward( sample['output'], lrate, momentum )
 
