@@ -27,7 +27,8 @@ class MlpManager(object):
         self.layers = None
         if self.MLP:
             self.layers = self.getMlpTopology()
-            
+        
+        self.ns = None          # Neighbourhood size of training rasters.
         self.data = None        # Training data
         self.classlist = None   # List of unique output values of the output raster
         self.train_error = None # Error on training set
@@ -38,14 +39,17 @@ class MlpManager(object):
     
     def computeMlpError(self, sample):
         '''Get MLP error on the sample'''
-        out = self.predict( sample['input'] )
+        out = self.getOutput( sample['input'] )
         err = ((sample['output'] - out)**2).sum()/len(out)
         return err
     
     def computePerformance(self, train_indexes, val_ind):
-        '''Check errors of training and validation sets'''
+        '''Check errors of training and validation sets
+        @param train_indexes     Tuple that contains indexes of the first and last elements of the training set.
+        @param val_ind           Tuple that contains indexes of the first and last elements of the validation set.
+        '''
         train_error = 0
-        train_sampl = train_indexes[1] - train_indexes[0]
+        train_sampl = train_indexes[1] - train_indexes[0]       # Count of training samples
         for i in range(train_indexes[0], train_indexes[1]):
             train_error = train_error + self.computeMlpError(sample = self.data[i])
         self.setTrainError(train_error/train_sampl)
@@ -72,6 +76,8 @@ class MlpManager(object):
         if output.getBandsCount() != 1:
             raise MplManagerError('Output layer must have one band!')
         
+        self.ns = ns
+        
         input_neurons = 0
         for raster in inputs:
             input_neurons = input_neurons+ raster.getNeighbourhoodSize(ns)
@@ -93,6 +99,11 @@ class MlpManager(object):
         '''Length of input data vector of the MLP'''
         shape = self.getMlpTopology()
         return shape[0]
+    def getOutput(self, input_vector):
+        out = self.MLP.propagate_forward( input_vector )
+        return out
+
+
     
     def getOutputVectLen(self):
         '''Length of input data vector of the MLP'''
@@ -100,10 +111,11 @@ class MlpManager(object):
         return shape[-1]
     
     def getOutputVector(self, val):
-        '''Convert number val into vector .
-        for example, set self.classlist = [1, 3, 4] then
+        '''Convert a number val into vector,
+        for example, let self.classlist = [1, 3, 4] then
         if val = 1, result = [ 1, -1, -1]
         if val = 3, result = [-1,  1, -1]
+        if val = 4, result = [-1, -1,  1]
         where -1 is minimum of the sigmoid, 1 is max of the sigmoid
         '''
         min, max = self.sigmLimits
@@ -121,9 +133,38 @@ class MlpManager(object):
     def getValError(self):
         return self.val_error
     
-    def predict(self, input_vector):
-        out = self.MLP.propagate_forward( input_vector )
-        return out
+    def predict(self, inputs):
+        '''
+        Calculate output raster using MLP model and input rasters
+        @param inputs           List of the input rasters.
+        '''
+        first = inputs[0]           # First input raster
+        
+        rows, cols = first.geodata['xSize'], first.geodata['ySize']
+        for r in inputs:
+            if not first.geoDataMatch(r):
+                raise SamplerError('Geometries of the inputs and output rasters are different!')
+        
+        band = np.zeros([rows, cols])
+        
+        sampler = Sampler(inputs, self.ns)
+        mask = first.getBand(1).mask
+        for i in xrange(rows):
+            for j in xrange(cols):
+                if not mask[i,j]:
+                    input = sampler.get_input(inputs, i,j)
+                    out = self.getOutput(input)
+                    if out != None:
+                        # Get index of the biggest output value as the result
+                        biggest = max(out)
+                        res = list(out).index(biggest)
+                        band[i, j] = res
+                    else: # Input sample is incomplete => mask this pixel
+                        mask[i, j] = True
+        band = [np.ma.array(data = band, mask = mask)]
+        raster = Raster()
+        raster.create(band, first.geodata)
+        return raster
     
     def readMlp(self):
         pass
@@ -143,14 +184,15 @@ class MlpManager(object):
         '''Set weights of the MLP'''
         self.MLP.weights = w
     
-    def setTrainingData(self, inputs, output, ns=0, shuffle=True):
+    def setTrainingData(self, inputs, output, shuffle=True):
         '''
         @param inputs           List of the input rasters.
         @param output           Raster that contains classes to predict.
-        @param ns               Neighbourhood size.
         @param shuffle          Perform random shuffle.
         '''
-        sampler = Sampler(inputs, output, ns)
+        if not self.MLP:
+            raise MlpManagerError('You must create a MLP before!')
+        sampler = Sampler(inputs, output, self.ns)
         sampler.setTrainingData(inputs, output, shuffle)
         self.data = [{'input': sample['input'], 'output': self.getOutputVector(sample['output'][0])} for sample in sampler.data] 
     
@@ -178,9 +220,9 @@ class MlpManager(object):
         val_indexes = (train_sampl_count, samples_count) if apply_validation else None
         
         if not continue_train: self.resetMlp()
-        min_val_error = self.getValError() # The minimum error that is achieved on the validation set
+        min_val_error = self.getValError()  # The minimum error that is achieved on the validation set
         last_train_err = self.getTrainError()
-        best_weights = self.copyWeights()
+        best_weights = self.copyWeights()   # The MLP weights when minimum error that is achieved on the validation set
         
         for epoch in range(epochs):
             self.trainEpoch(train_indexes, lrate, momentum)
@@ -207,6 +249,6 @@ class MlpManager(object):
         for i in range(train_sampl):
             n = np.random.randint( *train_indexes )
             sample = self.data[n]
-            self.predict( sample['input'] )
+            self.getOutput( sample['input'] )
             self.MLP.propagate_backward( sample['output'], lrate, momentum )
 
