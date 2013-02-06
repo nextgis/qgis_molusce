@@ -106,39 +106,45 @@ class Sampler(object):
         @param ns               Neighbourhood size.
         @param shuffle          Perform random shuffle.
         '''
+        
         for r in factors+[state]:
             if not output.geoDataMatch(r):
                 raise SamplerError('Geometries of the inputs and output rasters are different!')
         
+        # Approximate sample count:
+        band = state.getBand(1)
+        nulls  =  band.mask.sum() # Count of NA
+        (rows,cols) = (state.getXSize(), state.getYSize())
+        pixels = rows * cols - nulls
         
-        (rows,cols) = (output.getXSize(), output.getYSize())
+        # Array for samples
+        self.data = np.zeros(pixels, dtype=[('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
+        
+        # Real count of the samples
+        samples_count = 0
         
         # i,j  are pixel indexes
         for i in xrange(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
             for j in xrange(self.ns, cols - self.ns):     # the samples are incomplete in that region
-                sample = np.zeros(1, dtype=[('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
                 try: 
-                    out = output.getNeighbours(i,j,0).flatten() # Get the pixel
-                    if out == None:                            # Eliminate masked samples
+                    out_data = output.getNeighbours(i,j,0).flatten() # Get the pixel
+                    if out_data == None:                            # Eliminate masked samples
                         continue
-                    else:
-                        sample['output'] = out           
                         
-                    neighbours = self.get_state(state, i,j)
-                    if neighbours == None: # Eliminate incomplete samples
+                    state_data = self.get_state(state, i,j)
+                    if state_data == None: # Eliminate incomplete samples
                         continue
-                    sample['state'] = neighbours
                     
-                    neighbours = self.get_factors(factors, i,j)
-                    if neighbours == None: # Eliminate incomplete samples
+                    factors_data = self.get_factors(factors, i,j)
+                    if factors_data == None: # Eliminate incomplete samples
                         continue
-                    sample['factors'] = neighbours
+
                 except ProviderError:
                     continue
-                if self.data !=None:
-                    self.data = np.hstack( (self.data,sample) )
-                else:      # This is the first sample
-                    self.data = sample
+                self.data[samples_count] = (state_data, factors_data, out_data)
+                samples_count = samples_count + 1
+        self.data = self.data[:samples_count]
+        
         if shuffle: 
             np.random.shuffle(self.data)
 

@@ -108,7 +108,7 @@ class Raster(object):
         row_size = 2*size+1 # Length of the neighbourhood square side
         pixel_count = row_size**2 # Count of pixels in the neighbourhood
         neighbours = ma.zeros(pixel_count * bcount)
-        for i in range(1,bcount+1):
+        for i in xrange(1,bcount+1):
             band = self.getBand(i)
             neighbourhood = band[row-size:(row+size+1), col-size:(col+size+1)]
             neighbourhood = neighbourhood.flatten()
