@@ -15,25 +15,25 @@ from molusce.models.mlp.manager import MlpManager, sigmoid
 
 class TestMlpManager (unittest.TestCase):
     def setUp(self):
-        self.inputs = [Raster('../../examples/multifact.tif')]
+        self.factors = [Raster('../../examples/multifact.tif')]
         self.output = Raster('../../examples/sites.tif')
         
-        self.inputs2 = [Raster('../../examples/multifact.tif'), Raster('../../examples/multifact.tif')]
-        self.inputs3 = [Raster('../../examples/two_band.tif')]
+        self.factors2 = [Raster('../../examples/multifact.tif'), Raster('../../examples/multifact.tif')]
+        self.factors3 = [Raster('../../examples/two_band.tif')]
         
     def test_MlpManager(self):
         mng = MlpManager()
-        mng.createMlp(self.inputs2, self.output, [10], ns=1)
-        assert_array_equal(mng.getMlpTopology(), [18, 10, 3])
+        mng.createMlp(self.output, self.factors2, self.output, [10], ns=1)
+        assert_array_equal(mng.getMlpTopology(), [27, 10, 3])
         
         mng = MlpManager()
-        mng.createMlp(self.inputs, self.output, [10])
-        assert_array_equal(mng.getMlpTopology(), [1, 10, 3])
+        mng.createMlp(self.output, self.factors, self.output, [10])
+        assert_array_equal(mng.getMlpTopology(), [2, 10, 3])
         
     def test_setTrainingData(self):
         mng = MlpManager()
-        mng.createMlp(self.inputs, self.output, [10])
-        mng.setTrainingData(self.inputs, self.output, shuffle=False)
+        mng.createMlp(self.output, self.factors, self.output, [10])
+        mng.setTrainingData(self.output, self.factors, self.output, shuffle=False)
         
         min, max = mng.sigmLimits
         
@@ -48,42 +48,63 @@ class TestMlpManager (unittest.TestCase):
             {'input': np.array([ 3.]), 'output': np.array([min,  max, min])}, 
             {'input': np.array([ 1.]), 'output': np.array([min,  min, max])}
         ]
+        data = np.array(
+            [
+                (1.0, 1.0, [min,  max, min]),
+                (2.0, 1.0, [min,  min, max]),
+                (1.0, 3.0, [min,  max, min]),
+                (1.0, 3.0, [min,  max, min]),
+                (2.0, 2.0, [min,  min, max]),
+                (1.0, 1.0, [min,  max, min]),
+                (0.0, 0.0, [max,  min, min]),
+                (1.0, 3.0, [min,  max, min]),
+                (2.0, 1.0, [min,  min, max]),
+            ], 
+            dtype=[('state', float, (1,)), ('factors', float, (1,)), ('output', float, 3)]
+        )
+        self.assertEqual(mng.data.shape, (9,))
         for i in range(len(data)):
-            assert_array_equal(data[i]['input'], mng.data[i]['input'])
+            assert_array_equal(data[i]['factors'], mng.data[i]['factors'])
             assert_array_equal(data[i]['output'], mng.data[i]['output'])
 
         # two input rasters
         mng = MlpManager()
-        mng.createMlp(self.inputs2, self.output, [10], ns=1)
-        mng.setTrainingData(self.inputs2, self.output)
+        mng.createMlp(self.output, self.factors2, self.output, [10], ns=1)
+        mng.setTrainingData(self.output, self.factors2, self.output)
         data = [
             {
-            'input': np.array([ 1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.,  
+            'factors': np.array([ 1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.,  
                                 1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.]), 
-            'output': np.array([min, min,  max])
+            'output': np.array([min, min,  max]),
+            'state': np.array([1,2,1,   1,2,1,  0,1,2])
             }
         ]
-        assert_array_equal(data[0]['input'], mng.data[0]['input'])
+        self.assertEqual(mng.data.shape, (1,))
+        assert_array_equal(data[0]['factors'], mng.data[0]['factors'])
         assert_array_equal(data[0]['output'], mng.data[0]['output'])
+        assert_array_equal(data[0]['state'], mng.data[0]['state'])
         
         # Multiband input
         mng = MlpManager()
-        mng.createMlp(self.inputs3, self.output, [10], ns=1)
-        mng.setTrainingData(self.inputs3, self.output)
+        mng.createMlp(self.output, self.factors3, self.output, [10], ns=1)
+        mng.setTrainingData(self.output, self.factors3, self.output)
         data = [
             {
-            'input': np.array([ 1.,  2.,  1.,  1.,  2.,  1.,  0.,  1.,  2.,  
+            'factors': np.array([ 1.,  2.,  1.,  1.,  2.,  1.,  0.,  1.,  2.,  
                                 1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.]), 
-            'output': np.array([min, min,  max])
+            'output': np.array([min, min,  max]),
+            'state': np.array([1,2,1,   1,2,1,  0,1,2])
             }
         ]
-        assert_array_equal(data[0]['input'], mng.data[0]['input'])
+        self.assertEqual(mng.data.shape, (1,))
+        assert_array_equal(data[0]['factors'], mng.data[0]['factors'])
         assert_array_equal(data[0]['output'], mng.data[0]['output'])
+        assert_array_equal(data[0]['state'], mng.data[0]['state'])
 
     def test_train(self):
         mng = MlpManager()
-        mng.createMlp(self.inputs, self.output, [10])
-        mng.setTrainingData(self.inputs, self.output)
+        mng.createMlp(self.output, self.factors, self.output, [10])
+        mng.setTrainingData(self.output, self.factors, self.output)
         
         mng.train(1, valPercent=50)
         val = mng.getValError()
@@ -93,7 +114,7 @@ class TestMlpManager (unittest.TestCase):
 
     def test_predict(self):
         mng = MlpManager()
-        mng.createMlp(self.inputs, self.output, [10])
+        mng.createMlp(self.output, self.factors, self.output, [10])
         weights = mng.copyWeights()
         
         # Set weights=0
@@ -103,20 +124,17 @@ class TestMlpManager (unittest.TestCase):
             shape = layer.shape
             layers.append(np.zeros(shape))
         mng.setMlpWeights(layers)
-        raster = mng.predict(self.inputs)
+        raster = mng.predict(self.output, self.factors)
         assert_array_equal(raster.getBand(1), sigmoid(0)*np.zeros((3,3)))
-        
-        
-        
-        
+
     # Commented while we don't have free rasters to test
     #~ def test_real(self):
         #~ #inputs = [Raster('LPB_dem.tif'), Raster('LPB_luc_2007.tif')]
         #~ inputs = [Raster('LPB_luc_2007.tif'),  Raster('LPB_luc_2007.tif')]
         #~ output = Raster('LPB_luc_2007.tif')
         #~ mng = MlpManager()
-        #~ mng.createMlp(inputs, output, [10])
-        #~ mng.setTrainingData(inputs, output, ns=0)
+        #~ mng.createMlp(output, inputs, output, [10])
+        #~ mng.setTrainingData(output, inputs, output)
         #~ mng.train(1, valPercent=20)
         
         

@@ -12,20 +12,22 @@ class Simulator(object):
     over a number of cycles
     """
     
-    def __init__(self, inputs, model):
+    def __init__(self, state, factors, model):
         '''
-        @param inputs           List of the input rasters.
+        @param state            Raster of the current state (classes) values.
+        @param factors          List of the factor rasters (predicting variables).
         @param model            Model that is used for predict.
         '''
-        self.inputs = inputs
+        self.state = state
+        self.factors = factors
         self.model  = model
         
     def predict(self):
         '''
         Predict new states via model and save the result into file.
         '''
-        return self.model.predict(self.inputs)
-        
+        return self.model.predict(self.state, self.factors)
+    
     def errorMap(self, answer):
         '''
         Create map of correct and incorrect prediction. 

@@ -39,7 +39,8 @@ class MlpManager(object):
     
     def computeMlpError(self, sample):
         '''Get MLP error on the sample'''
-        out = self.getOutput( sample['input'] )
+        input = np.hstack( (sample['state'], sample['factors']) )
+        out = self.getOutput( input )
         err = ((sample['output'] - out)**2).sum()/len(out)
         return err
     
@@ -65,10 +66,10 @@ class MlpManager(object):
         '''Deep copy of the MLP weights'''
         return copy.deepcopy(self.MLP.weights)
     
-    def createMlp(self, inputs, output, hidden_layers, ns=0):
+    def createMlp(self, state, factors, output, hidden_layers, ns=0):
         '''
-        @param inputs           List of the input rasters.
-        @param output           Raster that contains classes to predict.
+        @param state            Raster of the current state (classes) values.
+        @param factors          List of the factor rasters (predicting variables).
         @param hidden_layers    List of neuron counts in hidden layers.
         @param ns               Neighbourhood size.
         '''
@@ -79,7 +80,7 @@ class MlpManager(object):
         self.ns = ns
         
         input_neurons = 0
-        for raster in inputs:
+        for raster in [state] + factors:
             input_neurons = input_neurons+ raster.getNeighbourhoodSize(ns)
         
 
@@ -99,6 +100,7 @@ class MlpManager(object):
         '''Length of input data vector of the MLP'''
         shape = self.getMlpTopology()
         return shape[0]
+        
     def getOutput(self, input_vector):
         out = self.MLP.propagate_forward( input_vector )
         return out
@@ -128,29 +130,30 @@ class MlpManager(object):
     
     def getTrainError(self):
         return self.train_error
+        
     def getValError(self):
         return self.val_error
     
-    def predict(self, inputs):
+    def predict(self, state, factors):
         '''
         Calculate output raster using MLP model and input rasters
-        @param inputs           List of the input rasters.
+        @param state            Raster of the current state (classes) values.
+        @param factors          List of the factor rasters (predicting variables).
         '''
-        first = inputs[0]           # First input raster
         
-        rows, cols = first.geodata['xSize'], first.geodata['ySize']
-        for r in inputs:
-            if not first.geoDataMatch(r):
-                raise SamplerError('Geometries of the inputs and output rasters are different!')
+        rows, cols = state.geodata['xSize'], state.geodata['ySize']
+        for r in factors:
+            if not state.geoDataMatch(r):
+                raise SamplerError('Geometries of the input rasters are different!')
         
         band = np.zeros([rows, cols])
         
-        sampler = Sampler(inputs, self.ns)
-        mask = first.getBand(1).mask
+        sampler = Sampler(state, factors, self.ns)
+        mask = state.getBand(1).mask
         for i in xrange(rows):
             for j in xrange(cols):
                 if not mask[i,j]:
-                    input = sampler.get_input(inputs, i,j)
+                    input = sampler.get_inputs(state, factors, i,j)
                     out = self.getOutput(input)
                     if out != None:
                         # Get index of the biggest output value as the result
@@ -161,7 +164,7 @@ class MlpManager(object):
                         mask[i, j] = True
         band = [np.ma.array(data = band, mask = mask)]
         raster = Raster()
-        raster.create(band, first.geodata)
+        raster.create(band, state.geodata)
         return raster
     
     def readMlp(self):
@@ -182,17 +185,29 @@ class MlpManager(object):
         '''Set weights of the MLP'''
         self.MLP.weights = w
     
-    def setTrainingData(self, inputs, output, shuffle=True):
+    def setTrainingData(self, state, factors, output, shuffle=True):
         '''
-        @param inputs           List of the input rasters.
+        @param state            Raster of the current state (classes) values.
+        @param factors          List of the factor rasters (predicting variables).
         @param output           Raster that contains classes to predict.
         @param shuffle          Perform random shuffle.
         '''
         if not self.MLP:
             raise MlpManagerError('You must create a MLP before!')
-        sampler = Sampler(inputs, output, self.ns)
-        sampler.setTrainingData(inputs, output, shuffle)
-        self.data = [{'input': sample['input'], 'output': self.getOutputVector(sample['output'][0])} for sample in sampler.data] 
+        
+        sampler = Sampler(state, factors, output, self.ns)
+        sampler.setTrainingData(state, factors, output, shuffle)
+        
+        outputVecLen  = self.getOutputVectLen()
+        stateVecLen   = sampler.stateVecLen
+        factorVectLen = sampler.factorVectLen
+        size = len(sampler.data)
+        
+        self.data = np.zeros(size, dtype=[('state', float, stateVecLen), ('factors',  float, factorVectLen), ('output', float, outputVecLen)])
+        self.data['state'] = sampler.data['state']
+        self.data['factors'] = sampler.data['factors']
+        self.data['output'] = [self.getOutputVector(sample['output']) for sample in sampler.data] 
+            
     
     def setTrainError(self, error):
         self.train_error = error
@@ -247,6 +262,7 @@ class MlpManager(object):
         for i in range(train_sampl):
             n = np.random.randint( *train_indexes )
             sample = self.data[n]
-            self.getOutput( sample['input'] )
+            input = np.hstack( (sample['state'],sample['factors']) )
+            self.getOutput( input )
             self.MLP.propagate_backward( sample['output'], lrate, momentum )
 

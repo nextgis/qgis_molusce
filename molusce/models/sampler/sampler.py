@@ -12,7 +12,30 @@ class SamplerError(Exception):
 
 
 class Sampler(object):
-    '''Create training set based on input-output rasters'''
+    '''Create training set based on input-output rasters.
+    
+    A sample is a set of input data for a model and output data that has to be predicted via the model.
+    
+    input data consists of 2 parts: 
+        state is data readed from 1-band raster, this raster contains initaial states (classes).
+        factors is list of rasters (multiband probably) that explain transition between states (classes).
+    output data is is data readed from 1-band raster, this raster contains final states.
+    
+    In the simplest case we have pixel-by-pixel model. In such case:
+        sample = np.array(
+            (pixel_from_state_raster, [pixel_from_factor1, ..., pixel_from_factorN], pixel_from_output_raster), 
+            dtype=[('state', float, 1),('factors',  float, N), ('output', float, 1)]
+        )
+    But we can use moving windows to collect samples, then input data contains several (eg 3x3) pixels for every raster (band).
+    For example if we use 1-pixel neighbourhood (3x3 moving windows):
+        sample = np.array(
+            ( [1-pixel_from_state_raster, ..., 9-pixel_from_state_raster],
+              [1-pixel_from_factor1, ..., 9-pixel_from_factor1, ..., 1-pixel_from_factorN..., 9-pixel_from_factorN], 
+              pixel_from_output_raster
+            ), 
+            dtype=[('state', float, 9),('factors',  float, 9*N), ('output', float, 1)]
+        )
+    '''
     def __init__(self, state, factors, output=None, ns=0):
         '''
         @param state            Raster of the current state (classes) values.
@@ -30,6 +53,19 @@ class Sampler(object):
         for raster in factors:
             self.factorVectLen = self.factorVectLen + raster.getNeighbourhoodSize(self.ns)
     
+    def get_inputs(self, state, factors, row, col):
+        '''
+        @param state            Raster of the current state (classes) values.
+        @param factors          List of the factor rasters (predicting variables).
+        '''
+        state = self.get_state(state, row,col)
+        if state == None: # Eliminate incomplete samples
+            return None        
+        factors = self.get_factors(factors, row,col)
+        if factors == None: # Eliminate incomplete samples
+            return None
+        
+        return np.hstack( (state, factors) )
     
     def get_factors(self, factors, row, col):
         '''
@@ -43,6 +79,7 @@ class Sampler(object):
             pixel_count = raster.getNeighbourhoodSize(self.ns)
             sample[k*pixel_count: (k+1)*pixel_count] = neighbours
         return sample
+    
     
     def get_state(self, state, row, col):
         '''
