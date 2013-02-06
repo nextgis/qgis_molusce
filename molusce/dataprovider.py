@@ -171,7 +171,7 @@ class Raster(object):
           raise ProviderError("Driver %s does not support Create() method!" % format)
           
     
-    def setBand(self, raster, bandNum):
+    def setBand(self, raster, bandNum=1):
         self.bands[bandNum-1] = raster
     
     def setGeoData(self, geodata):

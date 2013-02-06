@@ -103,8 +103,6 @@ class MlpManager(object):
         out = self.MLP.propagate_forward( input_vector )
         return out
 
-
-    
     def getOutputVectLen(self):
         '''Length of input data vector of the MLP'''
         shape = self.getMlpTopology()
