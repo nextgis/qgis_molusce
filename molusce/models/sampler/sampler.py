@@ -64,8 +64,8 @@ class Sampler(object):
         
     def setTrainingData(self, state, factors, output, shuffle=True):
         '''
-        @param inputs           List of the input rasters.
-        @param output           Raster that contains classes to predict.
+        @param state            Raster of the current state (classes) values.
+        @param factors          List of the factor rasters (predicting variables).
         @param ns               Neighbourhood size.
         @param shuffle          Perform random shuffle.
         '''
