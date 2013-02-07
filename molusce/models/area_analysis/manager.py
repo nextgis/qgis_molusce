@@ -37,22 +37,35 @@ class AreaAnalyst(object):
         
         self.first = first
         self.second = second
+        
         self.classes = get_gradations(self.first.compressed())
         if get_gradations(self.second.compressed()) != self.classes:
             raise AreaAnalizerError('Raster mast have the same classes!')
+        # Check that class numeration encoded without gaps
+        if len(self.classes) != (self.classes[-1] - self.classes[0]) + 1:
+            raise AreaAnalizerError('Raster mast have the class numbers without gaps!')
         
         
+    def encode(self, initialClass, finalClass):
+        '''
+        Encode transition (initialClass -> finalClass):
+            if for a given pixel the initial class is initialClass,
+            the final class finalClass, and there are m classes, the output pixel will have
+            value k = initialClass*m + finalClass
+        '''
+        m = len(self.classes)
+        return initialClass * m + finalClass
+    
     def makeChangeMap(self):
         f, s = self.first, self.second
         rows, cols = self.geodata['xSize'], self.geodata['ySize']
         band = np.zeros([rows, cols])
-        m = len(self.classes)
         for i in xrange(rows):
             for j in xrange(cols):
                 if not f.mask[i,j]:
                     r = self.classes.index(f[i,j])
                     c = self.classes.index(s[i,j])
-                    band[i, j] = r*m + c
+                    band[i, j] = self.encode(r, c)
         band = [np.ma.array(data = band, mask = f.mask)]
         raster = Raster()
         raster.create(band, self.geodata)

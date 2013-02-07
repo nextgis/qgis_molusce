@@ -10,7 +10,7 @@ import numpy as np
 from numpy import ma as ma
 
 from molusce.dataprovider import Raster
-from molusce.models.area_analysis.manager import AreaAnalyst
+from molusce.models.area_analysis.manager import AreaAnalyst, AreaAnalizerError
 
 class TestAreaAnalysisManager (unittest.TestCase):
     def setUp(self):
@@ -30,6 +30,9 @@ class TestAreaAnalysisManager (unittest.TestCase):
             [100, 8, 0,]
         ]
         
+        self.r3 = Raster('../../examples/multifact.tif')
+        self.r3.setMask([2])
+        
     def test_AreaAnalyst(self):
         aa = AreaAnalyst(self.r1, self.r1)
         raster = aa.makeChangeMap()
@@ -41,6 +44,9 @@ class TestAreaAnalysisManager (unittest.TestCase):
         raster = aa.makeChangeMap()
         band = raster.getBand(1)
         assert_array_equal(band, self.r2r2)
+        
+        # Gaps in the class numeration
+        self.assertRaises(AreaAnalizerError, AreaAnalyst, self.r3, self.r3)
         
 if __name__ == "__main__":
     unittest.main()

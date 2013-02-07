@@ -36,18 +36,6 @@ class TestMlpManager (unittest.TestCase):
         mng.setTrainingData(self.output, self.factors, self.output, shuffle=False)
         
         min, max = mng.sigmin, mng.sigmax
-        
-        data = [
-            {'input': np.array([ 1.]), 'output': np.array([min,  max, min])}, 
-            {'input': np.array([ 1.]), 'output': np.array([min,  min, max])}, 
-            {'input': np.array([ 3.]), 'output': np.array([min,  max, min])}, 
-            {'input': np.array([ 3.]), 'output': np.array([min,  max, min])}, 
-            {'input': np.array([ 2.]), 'output': np.array([min,  min, max])}, 
-            {'input': np.array([ 1.]), 'output': np.array([min,  max, min])}, 
-            {'input': np.array([ 0.]), 'output': np.array([max,  min, min])}, 
-            {'input': np.array([ 3.]), 'output': np.array([min,  max, min])}, 
-            {'input': np.array([ 1.]), 'output': np.array([min,  min, max])}
-        ]
         data = np.array(
             [
                 (1.0, 1.0, [min,  max, min]),
