@@ -35,7 +35,7 @@ class TestMlpManager (unittest.TestCase):
         mng.createMlp(self.output, self.factors, self.output, [10])
         mng.setTrainingData(self.output, self.factors, self.output, shuffle=False)
         
-        min, max = mng.sigmLimits
+        min, max = mng.sigmin, mng.sigmax
         
         data = [
             {'input': np.array([ 1.]), 'output': np.array([min,  max, min])}, 
@@ -124,8 +124,14 @@ class TestMlpManager (unittest.TestCase):
             shape = layer.shape
             layers.append(np.zeros(shape))
         mng.setMlpWeights(layers)
-        raster = mng.predict(self.output, self.factors)
+        mng.predict(self.output, self.factors)
+        
+        # Prediction
+        raster = mng.getPrediction()
         assert_array_equal(raster.getBand(1), sigmoid(0)*np.zeros((3,3)))
+        # Confidence
+        confid = mng.getConfidence()
+        assert_array_equal(confid.getBand(1), sigmoid(0)*np.zeros((3,3)))
 
     # Commented while we don't have free rasters to test
     #~ def test_real(self):

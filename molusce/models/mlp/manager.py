@@ -34,8 +34,13 @@ class MlpManager(object):
         self.train_error = None # Error on training set
         self.val_error = None   # Error on validation set
         
+        # Results of the MLP prediction
+        self.prediction = None  # Raster of the MLP prediction results
+        self.confidence = None  # Raster of the MLP results confidence 
+        
         # Outputs of the activation function for small and big numbers
-        self.sigmLimits = (sigmoid(-100), sigmoid(100))
+        self.sigmax, self.sigmin = sigmoid(100), sigmoid(-100)  # Max and Min of the sigmoid function
+        self.sigrange = self.sigmax - self.sigmin               # Range of the sigmoid
     
     def computeMlpError(self, sample):
         '''Get MLP error on the sample'''
@@ -96,6 +101,9 @@ class MlpManager(object):
         
         self.MLP = MLP(*self.layers)
     
+    def getConfidence(self):
+        return self.confidence
+    
     def getInputVectLen(self):
         '''Length of input data vector of the MLP'''
         shape = self.getMlpTopology()
@@ -118,21 +126,35 @@ class MlpManager(object):
         if val = 4, result = [-1, -1,  1]
         where -1 is minimum of the sigmoid, 1 is max of the sigmoid
         '''
-        min, max = self.sigmLimits
         size = self.getOutputVectLen()
-        res = np.ones(size) * (min)
+        res = np.ones(size) * (self.sigmin)
         ind = np.where(self.classlist==val)
-        res[ind] = max
+        res[ind] = self.sigmax
         return res
     
     def getMlpTopology(self):
         return self.MLP.shape
+    
+    def getPrediction(self):
+        return self.prediction
     
     def getTrainError(self):
         return self.train_error
         
     def getValError(self):
         return self.val_error
+    
+    def outputConfidence(self, output):
+        '''
+        Return confidence (difference between 2 biggest values) of the MLP output.
+        '''
+        # Scale the output to range [0,1]
+        out_scl = 1.0 * (output - self.sigmin) / self.sigrange
+        
+        # Calculate the confidence:
+        out_scl.sort()
+        return out_scl[-1] - out_scl[-2]
+    
     
     def predict(self, state, factors):
         '''
@@ -146,7 +168,8 @@ class MlpManager(object):
             if not state.geoDataMatch(r):
                 raise SamplerError('Geometries of the input rasters are different!')
         
-        band = np.zeros([rows, cols])
+        predicted_band  = np.zeros([rows, cols])
+        confidence_band = np.zeros([rows, cols])
         
         sampler = Sampler(state, factors, self.ns)
         mask = state.getBand(1).mask
@@ -159,13 +182,20 @@ class MlpManager(object):
                         # Get index of the biggest output value as the result
                         biggest = max(out)
                         res = list(out).index(biggest)
-                        band[i, j] = res
+                        predicted_band[i, j] = res
+                        
+                        confidence = self.outputConfidence(out)
+                        confidence_band[i, j] = confidence
                     else: # Input sample is incomplete => mask this pixel
                         mask[i, j] = True
-        band = [np.ma.array(data = band, mask = mask)]
-        raster = Raster()
-        raster.create(band, state.geodata)
-        return raster
+        predicted_band  = [np.ma.array(data = predicted_band, mask = mask)]
+        confidence_band = [np.ma.array(data = confidence_band, mask = mask)]
+        
+        self.prediction = Raster()
+        self.prediction.create(predicted_band, state.geodata)
+        self.confidence = Raster()
+        self.confidence.create(confidence_band, state.geodata)
+
     
     def readMlp(self):
         pass
