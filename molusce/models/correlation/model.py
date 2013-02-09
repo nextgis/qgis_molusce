@@ -46,7 +46,7 @@ def cramer(X, Y):
     sum_cols = table.compute_sum_cols()
     sum_rows = np.tile(np.reshape(sum_rows, (rows,1)),(1,cols))
     sum_cols = np.tile(sum_cols, (rows,1))
-    T_expect = sum_rows*sum_cols/table.n
+    T_expect = 1.0*sum_rows*sum_cols/table.n
     
     # Mask T* to prevent division by zero
     T_expect = np.ma.array(T_expect, mask=(T_expect == 0))
@@ -69,9 +69,9 @@ def jiu(X, Y):
     '''
     #T, sum_r, sum_s, total, r, s = compute_table(X, Y)
     table = CrossTable(X, Y)
-    T = table.T / table.n                               #Pij = Tij / total
-    sum_rows = table.compute_sum_rows() / table.n       #Pi. = Ti. / total  i=[0,(r-1)]
-    sum_cols = table.compute_sum_cols() / table.n       #P.j = T.j / total  j=[0,(s-1)]
+    T = 1.0*table.T / table.n                               #Pij = Tij / total
+    sum_rows = 1.0*table.compute_sum_rows() / table.n       #Pi. = Ti. / total  i=[0,(r-1)]
+    sum_cols = 1.0*table.compute_sum_cols() / table.n       #P.j = T.j / total  j=[0,(s-1)]
     
     #to calculate the entropy we take the logarithm,
     #logarithm of zero does not exist, so we must mask zero values
@@ -85,7 +85,7 @@ def jiu(X, Y):
     T = np.ma.compressed(T)
     H_xy = -np.sum(T * np.log(T)) 
     # Compute the Joint Information Uncertainty 
-    U = 2 * ((H_x + H_y - H_xy)/(H_x + H_y))
+    U = 2.0 * ((H_x + H_y - H_xy)/(H_x + H_y))
     
     return U  
      

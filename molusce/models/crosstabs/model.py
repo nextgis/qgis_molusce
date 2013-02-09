@@ -31,7 +31,7 @@ class CrossTable(object):
         self.shape = (rows, cols)
         
         # Compute crosstable
-        self.T = np.zeros([rows, cols])
+        self.T = np.zeros([rows, cols], dtype=int)
         self.n = len(X)                 # Unmasked elements count (= sum of all elements of the table)
         for i in range(self.n):
             class_num_x = self.graduation_x.index(X[i])
