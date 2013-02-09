@@ -45,3 +45,11 @@ class CrossTable(object):
     def compute_sum_cols(self):
         '''This function returns sums in the cols (T.j)'''
         return self.T.sum(axis=0)
+
+    def getTransition(self, fromClass, toClass):
+        '''
+        Return number of transitions from fromClass to toClass
+        '''
+        i = self.graduation_x.index(fromClass)
+        j = self.graduation_y.index(toClass)
+        return self.T[i,j]

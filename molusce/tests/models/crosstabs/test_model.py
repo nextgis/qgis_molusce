@@ -52,6 +52,14 @@ class TestCrossTable (unittest.TestCase):
         r,s = self.table.shape 
         self.assertEqual(r, self.r, mess)
         self.assertEqual(s, self.s, mess)
+        
+    def test_getTransition(self):
+        self.table = CrossTable(self.X, self.Y)
+        
+        fromClass, toClass = 1, 2
+        self.assertEqual(self.table.getTransition(fromClass, toClass), 0)
+        fromClass, toClass = 1, 3
+        self.assertEqual(self.table.getTransition(fromClass, toClass), 3)
     
     
 if __name__ == "__main__":

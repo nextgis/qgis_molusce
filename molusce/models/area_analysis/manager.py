@@ -54,7 +54,8 @@ class AreaAnalyst(object):
             value k = initialClass*m + finalClass
         '''
         m = len(self.classes)
-        return initialClass * m + finalClass
+        return self.classes.index(initialClass) * m + self.classes.index(finalClass)
+    
     
     def makeChangeMap(self):
         f, s = self.first, self.second
@@ -63,8 +64,8 @@ class AreaAnalyst(object):
         for i in xrange(rows):
             for j in xrange(cols):
                 if not f.mask[i,j]:
-                    r = self.classes.index(f[i,j])
-                    c = self.classes.index(s[i,j])
+                    r = f[i,j]
+                    c = s[i,j]
                     band[i, j] = self.encode(r, c)
         band = [np.ma.array(data = band, mask = f.mask)]
         raster = Raster()
