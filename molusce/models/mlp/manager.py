@@ -135,7 +135,8 @@ class MlpManager(object):
     def getMlpTopology(self):
         return self.MLP.shape
     
-    def getPrediction(self):
+    def getPrediction(self, state, factors):
+        self._predict(state, factors)
         return self.prediction
     
     def getTrainError(self):
@@ -156,7 +157,7 @@ class MlpManager(object):
         return out_scl[-1] - out_scl[-2]
     
     
-    def predict(self, state, factors):
+    def _predict(self, state, factors):
         '''
         Calculate output raster using MLP model and input rasters
         @param state            Raster of the current state (classes) values.

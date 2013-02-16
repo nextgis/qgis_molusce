@@ -112,10 +112,10 @@ class TestMlpManager (unittest.TestCase):
             shape = layer.shape
             layers.append(np.zeros(shape))
         mng.setMlpWeights(layers)
-        mng.predict(self.output, self.factors)
+        mng._predict(self.output, self.factors)
         
         # Prediction
-        raster = mng.getPrediction()
+        raster = mng.getPrediction(self.output, self.factors)
         assert_array_equal(raster.getBand(1), sigmoid(0)*np.zeros((3,3)))
         # Confidence
         confid = mng.getConfidence()

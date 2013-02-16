@@ -113,6 +113,5 @@ class Simulator(object):
         '''
         Update prediction using new classes (raster "state")
         '''
-        self.model.predict(state, self.factors)
-        self.predicted = self.model.getPrediction()
+        self.predicted = self.model.getPrediction(state, self.factors)
         

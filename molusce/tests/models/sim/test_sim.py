@@ -21,15 +21,16 @@ class Model(object):
     '''
     def __init__(self, state):
         self.state = state
-        self.predict(state)
+        self._predict(state)
     
     def getConfidence(self):
         return self.confidence
         
-    def getPrediction(self):
+    def getPrediction(self, state, factors=None):
+        self._predict(state, factors)
         return self.prediction
         
-    def predict(self, state, factors = None):
+    def _predict(self, state, factors = None):
         geodata = self.state.getGeodata()
         band = state.getBand(1)
         rows, cols = state.geodata['xSize'], state.geodata['ySize']
