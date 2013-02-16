@@ -21,14 +21,14 @@ class MlpManager(object):
     
     # TODO: Perform normalization of inputs
     
-    def __init__(self, MLP=None):
+    def __init__(self, ns=0, MLP=None):
         self.MLP = MLP
         
         self.layers = None
         if self.MLP:
             self.layers = self.getMlpTopology()
         
-        self.ns = None          # Neighbourhood size of training rasters.
+        self.ns = ns            # Neighbourhood size of training rasters.
         self.data = None        # Training data
         self.classlist = None   # List of unique output values of the output raster
         self.train_error = None # Error on training set
@@ -71,7 +71,7 @@ class MlpManager(object):
         '''Deep copy of the MLP weights'''
         return copy.deepcopy(self.MLP.weights)
     
-    def createMlp(self, state, factors, output, hidden_layers, ns=0):
+    def createMlp(self, state, factors, output, hidden_layers):
         '''
         @param state            Raster of the current state (classes) values.
         @param factors          List of the factor rasters (predicting variables).
@@ -82,11 +82,9 @@ class MlpManager(object):
         if output.getBandsCount() != 1:
             raise MplManagerError('Output layer must have one band!')
         
-        self.ns = ns
-        
         input_neurons = 0
         for raster in [state] + factors:
-            input_neurons = input_neurons+ raster.getNeighbourhoodSize(ns)
+            input_neurons = input_neurons+ raster.getNeighbourhoodSize(self.ns)
         
 
         # Output class (neuron) count

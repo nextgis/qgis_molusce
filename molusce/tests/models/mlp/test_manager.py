@@ -22,8 +22,8 @@ class TestMlpManager (unittest.TestCase):
         self.factors3 = [Raster('../../examples/two_band.tif')]
         
     def test_MlpManager(self):
-        mng = MlpManager()
-        mng.createMlp(self.output, self.factors2, self.output, [10], ns=1)
+        mng = MlpManager(ns=1)
+        mng.createMlp(self.output, self.factors2, self.output, [10])
         assert_array_equal(mng.getMlpTopology(), [27, 10, 3])
         
         mng = MlpManager()
@@ -56,8 +56,8 @@ class TestMlpManager (unittest.TestCase):
             assert_array_equal(data[i]['output'], mng.data[i]['output'])
 
         # two input rasters
-        mng = MlpManager()
-        mng.createMlp(self.output, self.factors2, self.output, [10], ns=1)
+        mng = MlpManager(ns=1)
+        mng.createMlp(self.output, self.factors2, self.output, [10])
         mng.setTrainingData(self.output, self.factors2, self.output)
         data = [
             {
@@ -73,8 +73,8 @@ class TestMlpManager (unittest.TestCase):
         assert_array_equal(data[0]['state'], mng.data[0]['state'])
         
         # Multiband input
-        mng = MlpManager()
-        mng.createMlp(self.output, self.factors3, self.output, [10], ns=1)
+        mng = MlpManager(ns=1)
+        mng.createMlp(self.output, self.factors3, self.output, [10])
         mng.setTrainingData(self.output, self.factors3, self.output)
         data = [
             {
