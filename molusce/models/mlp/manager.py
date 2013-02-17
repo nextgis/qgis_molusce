@@ -1,5 +1,11 @@
 # encoding: utf-8
 
+
+# TODO: make abstract class for all models/managers
+# to prevent code coping of common methods (for example _predict method)
+
+
+
 import copy
 
 import numpy as np
@@ -157,7 +163,7 @@ class MlpManager(object):
     
     def _predict(self, state, factors):
         '''
-        Calculate output raster using MLP model and input rasters
+        Calculate output and confidence rasters using MLP model and input rasters
         @param state            Raster of the current state (classes) values.
         @param factors          List of the factor rasters (predicting variables).
         '''
@@ -165,7 +171,7 @@ class MlpManager(object):
         rows, cols = state.geodata['xSize'], state.geodata['ySize']
         for r in factors:
             if not state.geoDataMatch(r):
-                raise SamplerError('Geometries of the input rasters are different!')
+                raise MlpManagerError('Geometries of the input rasters are different!')
         
         predicted_band  = np.zeros([rows, cols])
         confidence_band = np.zeros([rows, cols])
@@ -176,8 +182,8 @@ class MlpManager(object):
             for j in xrange(cols):
                 if not mask[i,j]:
                     input = sampler.get_inputs(state, factors, i,j)
-                    out = self.getOutput(input)
-                    if out != None:
+                    if input != None:
+                        out = self.getOutput(input)
                         # Get index of the biggest output value as the result
                         biggest = max(out)
                         res = list(out).index(biggest)

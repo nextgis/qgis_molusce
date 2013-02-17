@@ -16,7 +16,8 @@ class Simulator(object):
         '''
         @param state            Raster of the current state (classes) values.
         @param factors          List of the factor rasters (predicting variables).
-        @param model            Model that is used for predict.
+        @param model            Model that is used for predict. The model implements metods:
+                                getConfidence(), getPrediction(state, self.factors)
         @param crosstable       Crosstable, contains transition matrix between states T(i,j). 
                                 The matrix contains number of pixels that are moved
                                 from init class i to final class j.
@@ -49,10 +50,10 @@ class Simulator(object):
     def errorMap(self, answer):
         '''
         Create map of correct and incorrect prediction. 
-        This function compares the answer and the result of predicting procedure,
+        This function compares the known answer and the result of predicting procedure,
         correct pixel is marked as 0, incorrect is marked as 1.
         '''
-        result = self.prediction()
+        result = self.getPrediction()
         b = result.getBand(1)
         a = answer.getBand(1)
         diff = (a-b).astype(int)

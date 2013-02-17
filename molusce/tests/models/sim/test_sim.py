@@ -34,14 +34,14 @@ class Model(object):
         geodata = self.state.getGeodata()
         band = state.getBand(1)
         rows, cols = state.geodata['xSize'], state.geodata['ySize']
-        # Let prediction 1 -> 2, 2- >3, 3 -> 1
+        # Let the prediction is: 1 -> 2, 2- >3, 3 -> 1
         
         predicted_band  = np.copy(band)
         predicted_band[band == 1] = 2
         predicted_band[band == 2] = 3
         predicted_band[band == 3] = 1
         
-        # Let confidence is 1/(1+row+col), where row is row number of the cell, col is column number of the cell.
+        # Let the confidence is 1/(1+row+col), where row is row number of the cell, col is column number of the cell.
         confidence_band = np.zeros([rows, cols])
         for i in xrange(cols):
             for j in xrange(rows):
