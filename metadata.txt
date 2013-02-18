@@ -1,0 +1,20 @@
+[general]
+name=MOLUSCE
+description=Modules for Land Use Change Simulations
+category=Raster
+version=0.0.1
+qgisMinimumVersion=1.9.0
+
+author=NextGIS
+email=info@nextgis.org
+
+icon=icons/molusce.png
+
+tags=raster,land use planning
+
+homepage=http://hub.qgis.org/projects/molusce
+tracker=http://hub.qgis.org/projects/molusce/issues
+repository=https://github.com/asiaairsurvey/molusce
+
+experimental=True
+deprecated=False
