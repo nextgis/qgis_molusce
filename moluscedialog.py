@@ -60,7 +60,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def manageGui(self):
     self.restoreGeometry(self.settings.value("/mainWindow/geometry").toByteArray())
-    self.restoreState(self.settings.value("/mainWindow/windowState").toByteArray())
 
     self.tabWidget.setCurrentIndex(0)
 
@@ -69,7 +68,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     # TODO: restore settings
 
   def closeEvent(self, e):
-    self.settings.setValue("/mainWindow/windowState", QVariant(self.saveState()))
     self.settings.setValue("/mainWindow/geometry", QVariant(self.saveGeometry()))
 
     QDialog.closeEvent(self, e)

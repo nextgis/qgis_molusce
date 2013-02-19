@@ -1,7 +1,9 @@
 SOURCES = __init__.py \
           molusce.py \
           moluscedialog.py \
-          aboutdialog.py
+          aboutdialog.py \
+          molusceutils.py \
+          moluscetablewidget.py
 
 FORMS = moluscedialogbase.ui \
         aboutdialogbase.ui
