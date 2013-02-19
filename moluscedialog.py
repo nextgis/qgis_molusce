@@ -25,6 +25,7 @@
 #
 #******************************************************************************
 
+import datetime
 import locale
 import operator
 
@@ -57,6 +58,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.btnCreateChangeMap.clicked.connect(self.createChangeMap)
 
     self.manageGui()
+    self.__logMessage("Started logging")
 
   def manageGui(self):
     self.restoreGeometry(self.settings.value("/ui/geometry").toByteArray())
@@ -69,6 +71,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def closeEvent(self, e):
     self.settings.setValue("/ui/geometry", QVariant(self.saveGeometry()))
+
+    # TODO: save settings
 
     QDialog.closeEvent(self, e)
 
@@ -136,3 +140,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
         item.setData(Qt.UserRole, layer[0])
 
       self.lstLayers.addItem(item)
+
+  def __logMessage(self, message):
+    self.txtMessages.append(QString("[%1] %2\n")
+                            .arg(datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S"))
+                            .arg(message)
+                           )

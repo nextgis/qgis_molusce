@@ -160,92 +160,10 @@
         </widget>
        </item>
        <item row="1" column="0" colspan="2">
-        <widget class="MolusceTableWidget" name="tblStatistics">
-         <row>
-          <property name="text">
-           <string>Новая строка</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>Новая строка</string>
-          </property>
-         </row>
-         <column>
-          <property name="text">
-           <string>Новый столбец</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Новый столбец</string>
-          </property>
-         </column>
-         <item row="0" column="0">
-          <property name="text">
-           <string>1233</string>
-          </property>
-         </item>
-         <item row="0" column="1">
-          <property name="text">
-           <string>456</string>
-          </property>
-         </item>
-         <item row="1" column="0">
-          <property name="text">
-           <string>345</string>
-          </property>
-         </item>
-         <item row="1" column="1">
-          <property name="text">
-           <string>456</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="MolusceTableWidget" name="tblStatistics"/>
        </item>
        <item row="3" column="0" colspan="2">
-        <widget class="MolusceTableWidget" name="tblTransMatrix">
-         <row>
-          <property name="text">
-           <string>2000</string>
-          </property>
-         </row>
-         <row>
-          <property name="text">
-           <string>1999</string>
-          </property>
-         </row>
-         <column>
-          <property name="text">
-           <string>1</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>2</string>
-          </property>
-         </column>
-         <item row="0" column="0">
-          <property name="text">
-           <string>1</string>
-          </property>
-         </item>
-         <item row="0" column="1">
-          <property name="text">
-           <string>2</string>
-          </property>
-         </item>
-         <item row="1" column="0">
-          <property name="text">
-           <string>3</string>
-          </property>
-         </item>
-         <item row="1" column="1">
-          <property name="text">
-           <string>4</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="MolusceTableWidget" name="tblTransMatrix"/>
        </item>
       </layout>
      </widget>
