@@ -34,6 +34,8 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
+import logisticregressionwidget
+
 from ui_moluscedialogbase import Ui_Dialog
 
 import molusceutils as utils
@@ -44,6 +46,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.setupUi(self)
 
     self.iface = iface
+    self.modelWidget = None
 
     self.settings = QSettings("NextGIS", "MOLUSCE")
 
@@ -57,6 +60,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.btnUpdateStatistics.clicked.connect(self.updateStatisticsTable)
     self.btnCreateChangeMap.clicked.connect(self.createChangeMap)
 
+    self.cmbMethod.currentIndexChanged.connect(self.__modelChanged)
+
     self.manageGui()
     self.__logMessage("Started logging")
 
@@ -66,6 +71,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tabWidget.setCurrentIndex(0)
 
     self.__populateLayers()
+    self.__populateMethods()
 
     # TODO: restore settings
 
@@ -140,6 +146,35 @@ class MolusceDialog(QDialog, Ui_Dialog):
         item.setData(Qt.UserRole, layer[0])
 
       self.lstLayers.addItem(item)
+
+  def __populateMethods(self):
+    self.cmbMethod.addItems([
+                             self.tr("Logistic Regression"),
+                             self.tr("Artificial Neural Network"),
+                             self.tr("Weights of Evidence"),
+                             self.tr("Multi Criteria Evaluation")
+                           ])
+
+  def __modelChanged(self):
+    if self.modelWidget is not None:
+      self.widgetStackMethods.removeWidget(self.modelWidget)
+
+      self.modelWidget = None
+      del self.modelWidget
+
+    modelName = self.cmbMethod.currentText()
+
+    if modelName == self.tr("Logistic Regression"):
+      self.modelWidget = logisticregressionwidget.LogisticRegressionWidget()
+    elif modelName == self.tr("Artificial Neural Network"):
+      self.modelWidget = QWidget()
+    elif modelName == self.tr("Weights of Evidence"):
+      self.modelWidget = QWidget()
+    elif modelName == self.tr("Multi Criteria Evaluation"):
+      self.modelWidget = QWidget()
+
+    self.widgetStackMethods.addWidget(self.modelWidget)
+    self.widgetStackMethods.setCurrentWidget(self.modelWidget)
 
   def __logMessage(self, message):
     self.txtMessages.append(QString("[%1] %2\n")
