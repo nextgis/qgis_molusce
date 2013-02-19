@@ -44,6 +44,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.iface = iface
 
+    self.settings = QSettings("NextGIS", "MOLUSCE")
+
     # connect signals and slots
     self.btnSetInitialRaster.clicked.connect(self.setInitialRaster)
     self.btnSetFinalRaster.clicked.connect(self.setFinalRaster)
@@ -51,14 +53,26 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.btnRemoveFactor.clicked.connect(self.removeFactor)
     self.btnRemoveAllFactors.clicked.connect(self.removeAllFactors)
 
+    self.btnUpdateStatistics.clicked.connect(self.updateStatisticsTable)
+    self.btnCreateChangeMap.clicked.connect(self.createChangeMap)
+
     self.manageGui()
 
   def manageGui(self):
+    self.restoreGeometry(self.settings.value("/mainWindow/geometry").toByteArray())
+    self.restoreState(self.settings.value("/mainWindow/windowState").toByteArray())
+
     self.tabWidget.setCurrentIndex(0)
 
     self.__populateLayers()
 
     # TODO: restore settings
+
+  def closeEvent(self, e):
+    self.settings.setValue("/mainWindow/windowState", QVariant(self.saveState()))
+    self.settings.setValue("/mainWindow/geometry", QVariant(self.saveGeometry()))
+
+    QDialog.closeEvent(self, e)
 
   def setInitialRaster(self):
     layerName = self.lstLayers.selectedItems()[0].text()
@@ -88,6 +102,25 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def removeAllFactors(self):
     self.lstFactors.clear()
+
+  def updateStatisticsTable(self):
+    pass
+
+  def createChangeMap(self):
+    lastDir = self.settings.value("lastUsedDir", ".").toString()
+    fileName = QFileDialog.getSaveFileName(self,
+                                           self.tr("Save change map"),
+                                           lastDir,
+                                           self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)")
+                                          )
+
+    if fileName.isEmpty():
+      return
+
+    if not fileName.toLower().contains(QRegExp("\.tif{1,2}")):
+      fileName += ".tif"
+
+    self.settings.setValue("lastUsedDir", QFileInfo(fileName).absoluteDir().absolutePath())
 
 # ******************************************************************************
 
