@@ -79,7 +79,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def setInitialRaster(self):
     layerName = self.lstLayers.selectedItems()[0].text()
     self.leInitRasterName.setText(layerName)
-    rx = QRegExp("(19|20)\d\d")
+    rx = QRegExp("(19|21)\d\d")
     pos = rx.indexIn(layerName)
     year = rx.cap()
     self.leInitYear.setText(year)
@@ -87,7 +87,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def setFinalRaster(self):
     layerName = self.lstLayers.selectedItems()[0].text()
     self.leFinalRasterName.setText(layerName)
-    rx = QRegExp("(19|20)\d\d")
+    rx = QRegExp("(19|21)\d\d")
     pos = rx.indexIn(layerName)
     year = rx.cap()
     self.leFinalYear.setText(year)
