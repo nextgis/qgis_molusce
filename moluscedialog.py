@@ -59,7 +59,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.manageGui()
 
   def manageGui(self):
-    self.restoreGeometry(self.settings.value("/mainWindow/geometry").toByteArray())
+    self.restoreGeometry(self.settings.value("/ui/geometry").toByteArray())
 
     self.tabWidget.setCurrentIndex(0)
 
@@ -68,7 +68,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     # TODO: restore settings
 
   def closeEvent(self, e):
-    self.settings.setValue("/mainWindow/geometry", QVariant(self.saveGeometry()))
+    self.settings.setValue("/ui/geometry", QVariant(self.saveGeometry()))
 
     QDialog.closeEvent(self, e)
 
@@ -105,7 +105,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     pass
 
   def createChangeMap(self):
-    lastDir = self.settings.value("lastUsedDir", ".").toString()
+    lastDir = self.settings.value("ui/lastRasterDir", ".").toString()
     fileName = QFileDialog.getSaveFileName(self,
                                            self.tr("Save change map"),
                                            lastDir,
@@ -118,7 +118,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if not fileName.toLower().contains(QRegExp("\.tif{1,2}")):
       fileName += ".tif"
 
-    self.settings.setValue("lastUsedDir", QFileInfo(fileName).absoluteDir().absolutePath())
+    self.settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
 
 # ******************************************************************************
 
