@@ -45,6 +45,11 @@ from ui.ui_moluscedialogbase import Ui_Dialog
 
 import molusceutils as utils
 
+from algorithms.models.area_analysis.manager import AreaAnalyst
+from algorithms.dataprovider import Raster
+
+
+
 class MolusceDialog(QDialog, Ui_Dialog):
   def __init__(self, iface):
     QDialog.__init__(self)
@@ -134,6 +139,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
       fileName += ".tif"
 
     self.settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
+    
+    # initRaster  = Raster('path/to/file.tif')
+    # initRaster.setMask([0, 255])      # Let 0 and 255 values are No-data values
+    
+    # finalRaster = Raster('path/to/file.tif')
+    
+    # analyst = AreaAnalyst(initRaster,finalRaster)
+    # changeMapRaster = analyst.makeChangeMap()
+    # changeMapRaster.save(fileName)
+    
 
 # ******************************************************************************
 
