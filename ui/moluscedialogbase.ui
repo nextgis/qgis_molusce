@@ -258,7 +258,7 @@
   <customwidget>
    <class>MolusceTableWidget</class>
    <extends>QTableWidget</extends>
-   <header>moluscetablewidget</header>
+   <header>molusce.moluscetablewidget</header>
   </customwidget>
  </customwidgets>
  <resources/>
