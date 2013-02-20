@@ -59,7 +59,7 @@ class AreaAnalyst(object):
     
     def makeChangeMap(self):
         f, s = self.first, self.second
-        rows, cols = self.geodata['xSize'], self.geodata['ySize']
+        rows, cols = self.geodata['ySize'], self.geodata['xSize']
         band = np.zeros([rows, cols])
         for i in xrange(rows):
             for j in xrange(cols):
