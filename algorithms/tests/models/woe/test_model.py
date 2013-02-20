@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 import sys
-sys.path.insert(0, '../../../../')
+sys.path.insert(0, '../../../../../')
 
 import unittest
 
@@ -9,7 +9,7 @@ import numpy as np
 from numpy import ma as ma
 
 
-from algorithms.models.woe.model import WoeError, binary_woe, woe, EPSILON
+from molusce.algorithms.models.woe.model import WoeError, binary_woe, woe, EPSILON
 
 
 class TestModel (unittest.TestCase):

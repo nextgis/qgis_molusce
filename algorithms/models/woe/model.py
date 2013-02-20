@@ -3,7 +3,7 @@
 import numpy as np
 from numpy import ma as ma
 
-from algorithms.utils import reclass, get_gradations
+from molusce.algorithms.utils import reclass, get_gradations
 
 
 EPSILON = 4*np.finfo(np.float).eps # Small number > 0

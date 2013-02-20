@@ -3,7 +3,7 @@
 import numpy as np
 from numpy import ma as ma
 
-from algorithms.dataprovider import Raster, ProviderError
+from molusce.algorithms.dataprovider import Raster, ProviderError
 
 class SamplerError(Exception):
     '''Base class for exceptions in this module.'''

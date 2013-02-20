@@ -5,8 +5,8 @@ import math
 import numpy as np
 from numpy import ma as ma
 
-from algorithms.utils import masks_identity, sizes_equal
-from algorithms.models.crosstabs.model import CrossTable
+from molusce.algorithms.utils import masks_identity, sizes_equal
+from molusce.algorithms.models.crosstabs.model import CrossTable
 
 
 class CoeffError(Exception):

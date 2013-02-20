@@ -2,14 +2,14 @@
 
 import sys
 import os
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 
 import unittest
 from numpy.testing import assert_array_equal
 import numpy as np
 from numpy import ma as ma
 
-from algorithms.dataprovider import Raster, ProviderError
+from molusce.algorithms.dataprovider import Raster, ProviderError
 
 class TestRaster (unittest.TestCase):
     def setUp(self):

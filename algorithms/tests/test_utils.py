@@ -1,13 +1,13 @@
 # encoding: utf-8
 
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 
 import unittest
 
 import numpy as np
 
-from algorithms.utils import masks_identity, sizes_equal
+from molusce.algorithms.utils import masks_identity, sizes_equal
 
 class TestRaster (unittest.TestCase):
     def setUp(self):

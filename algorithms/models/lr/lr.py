@@ -9,8 +9,8 @@
 import numpy as np
 from sklearn import linear_model as lm
 
-from algorithms.dataprovider import Raster, ProviderError
-from algorithms.models.sampler.sampler import Sampler
+from molusce.algorithms.dataprovider import Raster, ProviderError
+from molusce.algorithms.models.sampler.sampler import Sampler
 
 
 class LRError(Exception):

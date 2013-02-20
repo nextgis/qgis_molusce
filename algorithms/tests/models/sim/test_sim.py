@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 import sys
-sys.path.insert(0, '../../../../')
+sys.path.insert(0, '../../../../../')
 
 import unittest
 from numpy.testing import assert_array_equal
@@ -9,10 +9,10 @@ from numpy.testing import assert_array_equal
 import numpy as np
 from numpy import ma as ma
 
-from algorithms.models.crosstabs.model  import CrossTable
-from algorithms.models.area_analysis.manager import AreaAnalyst
-from algorithms.dataprovider import Raster
-from algorithms.models.simulator.sim import Simulator
+from molusce.algorithms.models.crosstabs.model  import CrossTable
+from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
+from molusce.algorithms.dataprovider import Raster
+from molusce.algorithms.models.simulator.sim import Simulator
 
 
 class Model(object):

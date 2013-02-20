@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 import sys
-sys.path.insert(0, '../../../../')
+sys.path.insert(0, '../../../../../')
 
 import unittest
 import math
@@ -9,7 +9,7 @@ import math
 import numpy as np
 from numpy import ma as ma
 
-from algorithms.models.crosstabs.model  import CrossTable
+from molusce.algorithms.models.crosstabs.model  import CrossTable
 
 
 class TestCrossTable (unittest.TestCase):

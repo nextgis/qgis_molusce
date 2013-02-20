@@ -1,15 +1,15 @@
 # encoding: utf-8
 
 import sys
-sys.path.insert(0, '../../../../')
+sys.path.insert(0, '../../../../../')
 
 import unittest
 
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from algorithms.dataprovider import Raster
-from algorithms.models.sampler.sampler import Sampler
+from molusce.algorithms.dataprovider import Raster
+from molusce.algorithms.models.sampler.sampler import Sampler
 
 
 class TestSample (unittest.TestCase):
