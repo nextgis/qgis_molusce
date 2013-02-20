@@ -34,6 +34,8 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
+import moluscetablewidget
+
 import logisticregressionwidget
 import neuralnetworkwidget
 import weightofevidencewidget
