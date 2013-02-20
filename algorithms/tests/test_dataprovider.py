@@ -9,7 +9,7 @@ from numpy.testing import assert_array_equal
 import numpy as np
 from numpy import ma as ma
 
-from molusce.dataprovider import Raster, ProviderError
+from algorithms.dataprovider import Raster, ProviderError
 
 class TestRaster (unittest.TestCase):
     def setUp(self):

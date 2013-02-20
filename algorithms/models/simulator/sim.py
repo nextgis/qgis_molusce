@@ -2,9 +2,9 @@ import unittest
 
 import numpy as np
 
-from molusce.dataprovider import Raster
-from molusce.models.mlp.manager import MlpManager
-from molusce.models.area_analysis.manager import AreaAnalyst
+from algorithms.dataprovider import Raster
+from algorithms.models.mlp.manager import MlpManager
+from algorithms.models.area_analysis.manager import AreaAnalyst
 
 class Simulator(object):
     """

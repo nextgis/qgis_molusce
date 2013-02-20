@@ -8,9 +8,9 @@ import unittest
 import numpy as np
 from numpy import ma as ma
 
-from molusce.dataprovider import Raster
-from molusce.models.woe.manager import WoeManager
-from molusce.models.woe.model import woe
+from algorithms.dataprovider import Raster
+from algorithms.models.woe.manager import WoeManager
+from algorithms.models.woe.model import woe
 
 class TestWoEManager (unittest.TestCase):
     def setUp(self):

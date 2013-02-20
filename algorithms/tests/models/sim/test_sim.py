@@ -9,10 +9,10 @@ from numpy.testing import assert_array_equal
 import numpy as np
 from numpy import ma as ma
 
-from molusce.models.crosstabs.model  import CrossTable
-from molusce.models.area_analysis.manager import AreaAnalyst
-from molusce.dataprovider import Raster
-from molusce.models.simulator.sim import Simulator
+from algorithms.models.crosstabs.model  import CrossTable
+from algorithms.models.area_analysis.manager import AreaAnalyst
+from algorithms.dataprovider import Raster
+from algorithms.models.simulator.sim import Simulator
 
 
 class Model(object):

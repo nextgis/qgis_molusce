@@ -7,7 +7,7 @@ import unittest
 
 import numpy as np
 
-from molusce.utils import masks_identity, sizes_equal
+from algorithms.utils import masks_identity, sizes_equal
 
 class TestRaster (unittest.TestCase):
     def setUp(self):

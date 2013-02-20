@@ -9,7 +9,7 @@ import math
 import numpy as np
 from numpy import ma as ma
 
-from molusce.models.crosstabs.model  import CrossTable
+from algorithms.models.crosstabs.model  import CrossTable
 
 
 class TestCrossTable (unittest.TestCase):

@@ -11,9 +11,9 @@ import copy
 import numpy as np
 from numpy import ma as ma
 
-from molusce.dataprovider import Raster, ProviderError
-from molusce.models.mlp.model import MLP, sigmoid
-from molusce.models.sampler.sampler import Sampler
+from algorithms.dataprovider import Raster, ProviderError
+from algorithms.models.mlp.model import MLP, sigmoid
+from algorithms.models.sampler.sampler import Sampler
 
 class MlpManagerError(Exception):
     '''Base class for exceptions in this module.'''

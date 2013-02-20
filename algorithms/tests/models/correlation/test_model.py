@@ -9,7 +9,7 @@ import math
 import numpy as np
 from numpy import ma as ma
 
-from molusce.models.correlation.model  import correlation, cramer, jiu
+from algorithms.models.correlation.model  import correlation, cramer, jiu
 
 
 class TestModel (unittest.TestCase):

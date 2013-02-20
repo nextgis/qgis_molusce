@@ -8,8 +8,8 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from molusce.dataprovider import Raster
-from molusce.models.mlp.manager import MlpManager, sigmoid
+from algorithms.dataprovider import Raster
+from algorithms.models.mlp.manager import MlpManager, sigmoid
 
 
 

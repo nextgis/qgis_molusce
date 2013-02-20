@@ -9,7 +9,7 @@ import numpy as np
 from numpy import ma as ma
 
 
-from molusce.models.woe.model import WoeError, binary_woe, woe, EPSILON
+from algorithms.models.woe.model import WoeError, binary_woe, woe, EPSILON
 
 
 class TestModel (unittest.TestCase):

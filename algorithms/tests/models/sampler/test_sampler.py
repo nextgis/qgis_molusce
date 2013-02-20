@@ -8,8 +8,8 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from molusce.dataprovider import Raster
-from molusce.models.sampler.sampler import Sampler
+from algorithms.dataprovider import Raster
+from algorithms.models.sampler.sampler import Sampler
 
 
 class TestSample (unittest.TestCase):

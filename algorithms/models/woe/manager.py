@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from molusce.dataprovider import Raster
+from algorithms.dataprovider import Raster
 from model import woe
 
 class WoeManagerError(Exception):

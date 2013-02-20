@@ -8,8 +8,8 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from molusce.dataprovider import Raster
-from molusce.models.lr.lr import LR
+from algorithms.dataprovider import Raster
+from algorithms.models.lr.lr import LR
 
 
 

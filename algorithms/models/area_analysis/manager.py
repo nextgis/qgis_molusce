@@ -3,8 +3,8 @@
 import numpy as np
 from numpy import ma as ma
 
-from molusce.dataprovider import Raster
-from molusce.utils import masks_identity, get_gradations
+from algorithms.dataprovider import Raster
+from algorithms.utils import masks_identity, get_gradations
 
 
 class AreaAnalizerError(Exception):

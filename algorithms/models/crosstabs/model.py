@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from molusce.utils import masks_identity, sizes_equal, get_gradations
+from algorithms.utils import masks_identity, sizes_equal, get_gradations
 
 class CrossTabError(Exception):
     '''Base class for exceptions in this module.'''
