@@ -90,6 +90,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def setInitialRaster(self):
     layerName = self.lstLayers.selectedItems()[0].text()
+    self.initRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
     self.leInitRasterName.setText(layerName)
     rx = QRegExp("(19|21)\d\d")
     pos = rx.indexIn(layerName)
@@ -98,6 +99,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def setFinalRaster(self):
     layerName = self.lstLayers.selectedItems()[0].text()
+    self.finalRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
     self.leFinalRasterName.setText(layerName)
     rx = QRegExp("(19|21)\d\d")
     pos = rx.indexIn(layerName)
@@ -109,7 +111,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if len(self.lstFactors.findItems(layerName, Qt.MatchExactly)) > 0:
       return
 
-    self.lstFactors.insertItem(self.lstFactors.count() + 1, layerName)
+    item = QListWidgetItem(self.lstLayers.selectedItems()[0])
+    self.lstFactors.insertItem(self.lstFactors.count() + 1, item)
 
   def removeFactor(self):
     self.lstFactors.takeItem(self.lstFactors.currentRow())
@@ -134,11 +137,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if not fileName.toLower().contains(QRegExp("\.tif{1,2}")):
       fileName += ".tif"
 
-    rasterPath = unicode(utils.getRasterLayerByName(self.leInitRasterName.text()).source())
+    rasterPath = unicode(utils.getLayerById(self.initRasterId).source())
     initRaster = Raster(rasterPath)
     initRaster.setMask([0, 255])      # Let 0 and 255 values are No-data values
 
-    rasterPath = unicode(utils.getRasterLayerByName(self.leFinalRasterName.text()).source())
+    rasterPath = unicode(utils.getLayerById(self.finalRasterId).source())
     finalRaster = Raster(rasterPath)
 
     analyst = AreaAnalyst(initRaster, finalRaster)
@@ -148,7 +151,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName)):
 
     self.settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
-
 
 # ******************************************************************************
 
