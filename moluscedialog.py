@@ -92,7 +92,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     layerName = self.lstLayers.selectedItems()[0].text()
     self.initRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
     self.leInitRasterName.setText(layerName)
-    rx = QRegExp("(19|21)\d\d")
+    rx = QRegExp("(19|2\d)\d\d")
     pos = rx.indexIn(layerName)
     year = rx.cap()
     self.leInitYear.setText(year)
@@ -101,7 +101,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     layerName = self.lstLayers.selectedItems()[0].text()
     self.finalRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
     self.leFinalRasterName.setText(layerName)
-    rx = QRegExp("(19|21)\d\d")
+    rx = QRegExp("(19|2\d)\d\d")
     pos = rx.indexIn(layerName)
     year = rx.cap()
     self.leFinalYear.setText(year)
@@ -148,9 +148,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
     changeMapRaster = analyst.makeChangeMap()
     changeMapRaster.save(unicode(fileName))
 
-    self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName)):
+    self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
 
     self.settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
+
 
 # ******************************************************************************
 
