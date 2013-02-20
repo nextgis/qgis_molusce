@@ -35,8 +35,9 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 import logisticregressionwidget
+import neuralnetworkwidget
 
-from ui_moluscedialogbase import Ui_Dialog
+from ui.ui_moluscedialogbase import Ui_Dialog
 
 import molusceutils as utils
 
@@ -167,7 +168,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if modelName == self.tr("Logistic Regression"):
       self.modelWidget = logisticregressionwidget.LogisticRegressionWidget()
     elif modelName == self.tr("Artificial Neural Network"):
-      self.modelWidget = QWidget()
+      self.modelWidget = neuralnetworkwidget.NeuralNetworkWidget()
     elif modelName == self.tr("Weights of Evidence"):
       self.modelWidget = QWidget()
     elif modelName == self.tr("Multi Criteria Evaluation"):

@@ -30,9 +30,9 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
-from ui_annwidgetbase import Ui_Widget
+from ui.ui_neuralnetworkwidgetbase import Ui_Widget
 
-class ANNWidget(QWidget, Ui_Widget):
+class NeuralNetworkWidget(QWidget, Ui_Widget):
   def __init__(self, parent=None):
     QWidget.__init__(self, parent)
     self.setupUi(self)

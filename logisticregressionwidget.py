@@ -30,7 +30,7 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
-from ui_logisticregressionwidgetbase import Ui_Widget
+from ui.ui_logisticregressionwidgetbase import Ui_Widget
 
 class LogisticRegressionWidget(QWidget, Ui_Widget):
   def __init__(self, parent=None):
