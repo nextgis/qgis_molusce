@@ -34,8 +34,6 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
-import moluscetablewidget
-
 import logisticregressionwidget
 import neuralnetworkwidget
 import weightofevidencewidget
@@ -45,10 +43,8 @@ from ui.ui_moluscedialogbase import Ui_Dialog
 
 import molusceutils as utils
 
-from algorithms.models.area_analysis.manager import AreaAnalyst
 from algorithms.dataprovider import Raster
-
-
+from algorithms.models.area_analysis.manager import AreaAnalyst
 
 class MolusceDialog(QDialog, Ui_Dialog):
   def __init__(self, iface):
@@ -73,7 +69,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.cmbMethod.currentIndexChanged.connect(self.__modelChanged)
 
     self.manageGui()
-    self.__logMessage("Started logging")
+    self.__logMessage(self.tr("Started logging"))
 
   def manageGui(self):
     self.restoreGeometry(self.settings.value("/ui/geometry").toByteArray())
@@ -138,17 +134,21 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if not fileName.toLower().contains(QRegExp("\.tif{1,2}")):
       fileName += ".tif"
 
+    rasterPath = unicode(utils.getRasterLayerByName(self.leInitRasterName.text()).source())
+    initRaster = Raster(rasterPath)
+    initRaster.setMask([0, 255])      # Let 0 and 255 values are No-data values
+
+    rasterPath = unicode(utils.getRasterLayerByName(self.leFinalRasterName.text()).source())
+    finalRaster = Raster(rasterPath)
+
+    analyst = AreaAnalyst(initRaster, finalRaster)
+    changeMapRaster = analyst.makeChangeMap()
+    changeMapRaster.save(unicode(fileName))
+
+    self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName)):
+
     self.settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
-    
-    # initRaster  = Raster('path/to/file.tif')
-    # initRaster.setMask([0, 255])      # Let 0 and 255 values are No-data values
-    
-    # finalRaster = Raster('path/to/file.tif')
-    
-    # analyst = AreaAnalyst(initRaster,finalRaster)
-    # changeMapRaster = analyst.makeChangeMap()
-    # changeMapRaster.save(fileName)
-    
+
 
 # ******************************************************************************
 
