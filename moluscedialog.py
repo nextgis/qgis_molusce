@@ -36,6 +36,8 @@ from qgis.core import *
 
 import logisticregressionwidget
 import neuralnetworkwidget
+import weightofevidencewidget
+import multicriteriaevaluationwidget
 
 from ui.ui_moluscedialogbase import Ui_Dialog
 
@@ -170,9 +172,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     elif modelName == self.tr("Artificial Neural Network"):
       self.modelWidget = neuralnetworkwidget.NeuralNetworkWidget()
     elif modelName == self.tr("Weights of Evidence"):
-      self.modelWidget = QWidget()
+      self.modelWidget = weightofevidencewidget.WeightOfEvidenceWidget()
     elif modelName == self.tr("Multi Criteria Evaluation"):
-      self.modelWidget = QWidget()
+      self.modelWidget = multicriteriaevaluationwidget.MultiCriteriaEvaluationWidget()
 
     self.widgetStackMethods.addWidget(self.modelWidget)
     self.widgetStackMethods.setCurrentWidget(self.modelWidget)
