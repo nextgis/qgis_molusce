@@ -12,4 +12,13 @@ Rasters:
     two_band.tif        is 2-band 3x3 raster (it contains multifact.tif and sites.tif as the bands).
     
     
+#########################################
+Rasters that are used in the workflow example:
+
+    443x365 rasters:
+	init.tif	Data for 'initial state'. The raster contains 4 classes: 1,2,3,4. 
+        final.tif	Data for 'final state'. The raster contains 4 classes: 1,2,3,4. 
+	dist_river.tif	Distance from the river.
+	dist_roads.tif	Distance from roads.
+	
     

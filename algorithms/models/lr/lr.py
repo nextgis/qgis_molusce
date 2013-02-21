@@ -116,8 +116,7 @@ class LR(object):
         self.data = sampler.data
         
     def train(self):
-        X = np.vstack( (self.data['state'], self.data['factors']) )
-        X = np.transpose(X)
+        X = np.column_stack( (self.data['state'], self.data['factors']) )
         Y = self.data['output']
         self.logreg.fit(X, Y)
 

@@ -18,7 +18,7 @@ class TestMlpManager (unittest.TestCase):
         self.output  = Raster('../../examples/multifact.tif')
         self.output.setMask([0])
         self.state   = self.output
-        self.factors = [Raster('../../examples/sites.tif')]
+        self.factors = [Raster('../../examples/sites.tif'), Raster('../../examples/sites.tif')]
         
     def test_LR(self):
         data = [
