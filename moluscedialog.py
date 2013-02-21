@@ -54,6 +54,22 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.iface = iface
     self.modelWidget = None
 
+    # Here we'll store all input rasters and then use this dictionary instead of
+    # creating Raster objects each time when we need it. Be careful when processing
+    # large rasters, you can out of memory!
+    # Dictionary has next struct:
+    # {"initial" : Raster(),
+    #  "final" : Raster(),
+    #  "factors" : {"layerId_1" : Raster(),
+    #               "layerId_2" : Raster(),
+    #               ...
+    #               "layerId_N" : Raster()
+    #              }
+    # }
+    # Layer ids are necessary to handle factors changes (e.g. adding new or removing
+    # existing factor)
+    self.inputs = dict()
+
     self.settings = QSettings("NextGIS", "MOLUSCE")
 
     # connect signals and slots
@@ -69,7 +85,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.cmbMethod.currentIndexChanged.connect(self.__modelChanged)
 
     self.manageGui()
-    self.__logMessage(self.tr("Started logging"))
+    self.__logMessage(self.tr("Start logging"))
 
   def manageGui(self):
     self.restoreGeometry(self.settings.value("/ui/geometry").toByteArray())
@@ -97,6 +113,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     year = rx.cap()
     self.leInitYear.setText(year)
 
+    self.inputs["initial"] = Raster(unicode(utils.getLayerById(self.initRasterId).source()))
+    self.__logMessage(self.tr("Set intial layer to %1").arg(layerName))
+
   def setFinalRaster(self):
     layerName = self.lstLayers.selectedItems()[0].text()
     self.finalRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
@@ -106,19 +125,42 @@ class MolusceDialog(QDialog, Ui_Dialog):
     year = rx.cap()
     self.leFinalYear.setText(year)
 
+    self.inputs["final"] = Raster(unicode(utils.getLayerById(self.finalRasterId).source()))
+    self.__logMessage(self.tr("Set final layer to %1").arg(layerName))
+
   def addFactor(self):
     layerName = self.lstLayers.selectedItems()[0].text()
     if len(self.lstFactors.findItems(layerName, Qt.MatchExactly)) > 0:
       return
 
     item = QListWidgetItem(self.lstLayers.selectedItems()[0])
+    layerId = unicode(item.data(Qt.UserRole).toString())
     self.lstFactors.insertItem(self.lstFactors.count() + 1, item)
 
+    if "factors" in self.inputs:
+      self.inputs["factors"][layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
+    else:
+      d = dict()
+      d[layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
+      self.inputs["factors"] = d
+
+    self.__logMessage(self.tr("Added factor layer %1").arg(layerName))
+
   def removeFactor(self):
+    layerId = unicode(self.lstFactors.currentItem().data(Qt.UserRole).toString())
+    layerName = self.lstFactors.currentItem().text()
     self.lstFactors.takeItem(self.lstFactors.currentRow())
+
+    del self.inputs["factors"][layerId]
+
+    self.__logMessage(self.tr("Removed factor layer %1").arg(layerName))
 
   def removeAllFactors(self):
     self.lstFactors.clear()
+
+    del self.inputs["factors"]
+
+    self.__logMessage(self.tr("Factors list cleared"))
 
   def updateStatisticsTable(self):
     pass
@@ -137,21 +179,22 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if not fileName.toLower().contains(QRegExp("\.tif{1,2}")):
       fileName += ".tif"
 
-    rasterPath = unicode(utils.getLayerById(self.initRasterId).source())
-    initRaster = Raster(rasterPath)
-    initRaster.setMask([0, 255])      # Let 0 and 255 values are No-data values
+    #~ rasterPath = unicode(utils.getLayerById(self.initRasterId).source())
+    #~ initRaster = Raster(rasterPath)
+    #~ initRaster.setMask([0, 255])      # Let 0 and 255 values are No-data values
 
-    rasterPath = unicode(utils.getLayerById(self.finalRasterId).source())
-    finalRaster = Raster(rasterPath)
+    #~ rasterPath = unicode(utils.getLayerById(self.finalRasterId).source())
+    #~ finalRaster = Raster(rasterPath)
 
-    analyst = AreaAnalyst(initRaster, finalRaster)
-    changeMapRaster = analyst.makeChangeMap()
-    changeMapRaster.save(unicode(fileName))
+    if ("initial" in self.inputs) and ("final" in self.inputs):
+      analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
+      changeMapRaster = analyst.makeChangeMap()
+      changeMapRaster.save(unicode(fileName))
+      self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
 
-    self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
-
-    self.settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
-
+      self.settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
+    else:
+      self.__logMessage(self.tr("Can't create change map. Initial or final land use map is not set"))
 
 # ******************************************************************************
 
@@ -200,7 +243,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.widgetStackMethods.setCurrentWidget(self.modelWidget)
 
   def __logMessage(self, message):
-    self.txtMessages.append(QString("[%1] %2\n")
+    self.txtMessages.append(QString("[%1] %2")
                             .arg(datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S"))
                             .arg(message)
                            )
