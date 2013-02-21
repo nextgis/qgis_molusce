@@ -84,6 +84,21 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.cmbMethod.currentIndexChanged.connect(self.__modelChanged)
 
+    self.chkRiskFunction.stateChanged.connect(self.__toggleLineEdit)
+    self.chkRiskClasses.stateChanged.connect(self.__toggleLineEdit)
+    self.chkRiskValidation.stateChanged.connect(self.__toggleLineEdit)
+    self.chkMonteCarlo.stateChanged.connect(self.__toggleLineEdit)
+    self.chkReuseMatrix.stateChanged.connect(self.__toggleLineEdit)
+
+    self.btnSelectRiskFunction.clicked.connect(self.__selectSimulationOutput)
+    self.btnSelectRiskClasses.clicked.connect(self.__selectSimulationOutput)
+    self.btnSelectRiskValidation.clicked.connect(self.__selectSimulationOutput)
+    self.btnSelectMonteCarlo.clicked.connect(self.__selectSimulationOutput)
+
+    #self.btnSelectMatrix.clicked.connect()
+
+    self.btnStartSimulation.clicked.connect(self.startSimulation)
+
     self.manageGui()
     self.__logMessage(self.tr("Start logging"))
 
@@ -95,12 +110,12 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__populateLayers()
     self.__populateMethods()
 
-    # TODO: restore settings
+    self.__readSettings()
 
   def closeEvent(self, e):
     self.settings.setValue("/ui/geometry", QVariant(self.saveGeometry()))
 
-    # TODO: save settings
+    self.__writeSettings()
 
     QDialog.closeEvent(self, e)
 
@@ -166,35 +181,25 @@ class MolusceDialog(QDialog, Ui_Dialog):
     pass
 
   def createChangeMap(self):
-    lastDir = self.settings.value("ui/lastRasterDir", ".").toString()
-    fileName = QFileDialog.getSaveFileName(self,
-                                           self.tr("Save change map"),
-                                           lastDir,
-                                           self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)")
-                                          )
+    fileName = utils.saveRasterDialog(self,
+                                      self.settings,
+                                      self.tr("Save change map"),
+                                      self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)")
+                                     )
 
     if fileName.isEmpty():
       return
-
-    if not fileName.toLower().contains(QRegExp("\.tif{1,2}")):
-      fileName += ".tif"
-
-    #~ rasterPath = unicode(utils.getLayerById(self.initRasterId).source())
-    #~ initRaster = Raster(rasterPath)
-    #~ initRaster.setMask([0, 255])      # Let 0 and 255 values are No-data values
-
-    #~ rasterPath = unicode(utils.getLayerById(self.finalRasterId).source())
-    #~ finalRaster = Raster(rasterPath)
 
     if ("initial" in self.inputs) and ("final" in self.inputs):
       analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
       changeMapRaster = analyst.makeChangeMap()
       changeMapRaster.save(unicode(fileName))
       self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
-
-      self.settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
     else:
       self.__logMessage(self.tr("Can't create change map. Initial or final land use map is not set"))
+
+  def startSimulation(self):
+    pass
 
 # ******************************************************************************
 
@@ -242,8 +247,90 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.widgetStackMethods.addWidget(self.modelWidget)
     self.widgetStackMethods.setCurrentWidget(self.modelWidget)
 
+  def __toggleLineEdit(self, state):
+    senderName = self.sender().objectName()
+    if senderName == "chkRiskFunction":
+      if state == Qt.Checked:
+        self.leRiskFunctionPath.setEnabled(True)
+        self.btnSelectRiskFunction.setEnabled(True)
+      else:
+        self.leRiskFunctionPath.setEnabled(False)
+        self.btnSelectRiskFunction.setEnabled(False)
+    elif senderName == "chkRiskClasses":
+      if state == Qt.Checked:
+        self.leRiskClassesPath.setEnabled(True)
+        self.btnSelectRiskClasses.setEnabled(True)
+      else:
+        self.leRiskClassesPath.setEnabled(False)
+        self.btnSelectRiskClasses.setEnabled(False)
+    elif senderName == "chkRiskValidation":
+      if state == Qt.Checked:
+        self.leRiskValidationPath.setEnabled(True)
+        self.btnSelectRiskValidation.setEnabled(True)
+      else:
+        self.leRiskValidationPath.setEnabled(False)
+        self.btnSelectRiskValidation.setEnabled(False)
+    elif senderName == "chkMonteCarlo":
+      if state == Qt.Checked:
+        self.leMonteCarloPath.setEnabled(True)
+        self.btnSelectMonteCarlo.setEnabled(True)
+        self.lblYear.setEnabled(True)
+        self.spnEndYear.setEnabled(True)
+      else:
+        self.leMonteCarloPath.setEnabled(False)
+        self.btnSelectMonteCarlo.setEnabled(False)
+        self.lblYear.setEnabled(False)
+        self.spnEndYear.setEnabled(False)
+    elif senderName == "chkReuseMatrix":
+      if state == Qt.Checked:
+        self.leMatrixPath.setEnabled(True)
+        self.btnSelectMatrix.setEnabled(True)
+      else:
+        self.leMatrixPath.setEnabled(False)
+        self.btnSelectMatrix.setEnabled(False)
+
+  def __selectSimulationOutput(self):
+    senderName = self.sender().objectName()
+
+    fileName = utils.saveRasterDialog(self,
+                                      self.settings,
+                                      self.tr("Save file"),
+                                      self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)")
+                                     )
+    if fileName.isEmpty():
+      return
+
+    if senderName == "btnSelectRiskFunction":
+      self.leRiskFunctionPath.setText(fileName)
+    elif senderName == "btnSelectRiskClasses":
+      self.leRiskClassesPath.setText(fileName)
+    elif senderName == "btnSelectRiskValidation":
+      self.leRiskValidationPath.setText(fileName)
+    elif senderName == "btnSelectMonteCarlo":
+      self.leMonteCarloPath.setText(fileName)
+
   def __logMessage(self, message):
     self.txtMessages.append(QString("[%1] %2")
                             .arg(datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S"))
                             .arg(message)
                            )
+
+  def __writeSettings(self):
+    # simulation tab
+    self.settings.setValue("ui/createRiskFunction", self.chkRiskFunction.isChecked())
+    self.settings.setValue("ui/createRiskClasses", self.chkRiskClasses.isChecked())
+    self.settings.setValue("ui/createRiskValidation", self.chkRiskValidation.isChecked())
+    self.settings.setValue("ui/createMonteCarlo", self.chkMonteCarlo.isChecked())
+    self.settings.setValue("ui/monteCarloLastYear", self.spnEndYear.value())
+
+    self.settings.setValue("ui/reuseMatrix", self.chkReuseMatrix.isChecked())
+
+  def __readSettings(self):
+    # simulation tab
+    self.chkRiskFunction.setChecked(self.settings.value("ui/createRiskFunction", False).toBool())
+    self.chkRiskClasses.setChecked(self.settings.value("ui/createRiskClasses", False).toBool())
+    self.chkRiskValidation.setChecked(self.settings.value("ui/createRiskValidation", False).toBool())
+    self.chkMonteCarlo.setChecked(self.settings.value("ui/createMonteCarlo", False).toBool())
+    self.spnEndYear.setValue(self.settings.value("ui/monteCarloLastYear", 2013).toInt()[0])
+
+    self.chkReuseMatrix.setChecked(self.settings.value("ui/reuseMatrix", False).toBool())

@@ -58,3 +58,21 @@ def getLayerGroup(relations, layerId):
         return group
 
   return group
+
+def saveRasterDialog(parent, settings, title, fileFilter):
+  lastDir = settings.value("ui/lastRasterDir", ".").toString()
+  fileName = QFileDialog.getSaveFileName(parent,
+                                         title,
+                                         lastDir,
+                                         fileFilter
+                                        )
+
+  if fileName.isEmpty():
+    return QString()
+
+  if not fileName.toLower().contains(QRegExp("\.tif{1,2}")):
+    fileName += ".tif"
+
+  settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
+
+  return fileName
