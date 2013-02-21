@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-import gdal
+from osgeo import gdal
 
 import numpy as np
 from numpy import ma as ma
@@ -33,7 +33,7 @@ class FormatConverter(object):
             np.dtype('float32'): gdal.GDT_Float32,
             np.dtype('float64'): gdal.GDT_Float64
         }
-    
+
 
 class Raster(object):
     def __init__(self, filename=None):
@@ -43,18 +43,17 @@ class Raster(object):
         self.bands = None       # List of the bands (stored as numpy mask array)
         self.geodata = None     # Georeferensing information
         if self.filename: self._read()
-        
-    
+
     def binaryzation(self, trueVals, bandNum):
         '''Reclass band bandNum to true/false mode. Set true for pixels from trueVals.'''
         r = self.getBand(bandNum)
         r = reclass(r, trueVals)
         self.setBand(r, bandNum)
-    
+
     def create(self, bands, geodata):
         self.bands = bands
         self.geodata = geodata
-    
+
     def geoDataMatch(self, raster):
         '''Return true if RasterSize, Projection and GetGeoTransform of the rasters are matched'''
         for key in ['xSize', 'ySize', 'proj']:
@@ -63,7 +62,7 @@ class Raster(object):
         if not self.geoTransformMatch(raster):
             return False
         return True
-        
+
     def geoTransformMatch(self, raster):
         '''Return True if GetGeoTransform of the rasters are matched, ie:
         the difference of the top left x less then pixel size,
@@ -77,7 +76,7 @@ class Raster(object):
         r_cornerX, r_width, r_rot1, r_cornerY, r_rot2, r_height  = raster.geodata['transform']
         if (s_rot1!=r_rot1) or (s_rot2!=r_rot2):
             return False
-        
+
         dx = abs(s_cornerX - r_cornerX)
         if dx > min(abs(s_width), abs(r_width)):
             return False
@@ -86,22 +85,22 @@ class Raster(object):
             return False
         dw = abs(s_width - r_width)
         if dw * self.geodata['xSize'] > 1.5* min(abs(s_width), abs(r_width)):
-            return False 
+            return False
         dh = abs(s_height - r_height)
         if dh * self.geodata['ySize'] > 1.5* min(abs(s_height), abs(r_height)):
             return False
-        
+
         return True
-    
+
     def getBand(self, band):
         return self.bands[band-1]
-    
+
     def getBandsCount(self):
         if self.bands:
             return len(self.bands)
         else:
             return 0
-    
+
     def getNeighbours(self, row, col, size):
         '''Return subset of the bands -- neighbourhood of the central pixel (row,col)'''
         bcount = self.getBandsCount()
@@ -117,30 +116,30 @@ class Raster(object):
             neighbours[(i-1)*pixel_count: (i)*pixel_count] = neighbourhood
         neighbours.shape = (bcount, row_size, row_size)
         return neighbours
-    
+
     def getNeighbourhoodSize(self, ns):
         '''Return pixel count in the neighbourhood of ns size'''
         # pixel count in the 1-band neighbourhood of ns size
         neighbours = (2*ns+1)**2
         return self.getBandsCount() * neighbours
-        
+
     def getFileName(self):
         return self.filename
-        
+
     def get_dtype(self):
         # All bands of the raster have the same dtype now
         band = self.getBand(1)
         return band.dtype
-    
+
     def getGeodata(self):
         return self.geodata
-    
+
     def getXSize(self):
         return self.geodata['xSize']
-        
+
     def getYSize(self):
         return self.geodata['ySize']
-    
+
     #~ def normalize(self):
         #~ '''Rescale all bands of the raster: new mean becames 0, new std becames 1'''
         #~ for i in range(1, self.getBandsCount()+1):
@@ -148,7 +147,7 @@ class Raster(object):
             #~ m = np.mean(r)
             #~ s = np.std(r)
             #~ self.setBand((r-m)/s,i)
-    
+
     def save(self, filename, format="GTiff", rastertype=None):
         driver = gdal.GetDriverByName(format)
         metadata = driver.GetMetadata()
@@ -169,11 +168,11 @@ class Raster(object):
             outRaster = None
         else:
           raise ProviderError("Driver %s does not support Create() method!" % format)
-          
-    
+
+
     def setBand(self, raster, bandNum=1):
         self.bands[bandNum-1] = raster
-    
+
     def setGeoData(self, geodata):
         # Check raster's geometry
         if self.getBandsCount() > 0:
@@ -183,40 +182,40 @@ class Raster(object):
 
         self.geodata['xSize'] = geodata['xSize']
         self.geodata['ySize'] = geodata['ySize']
-        
-        
+
+
         self.geodata['proj']  = geodata['proj']
         self.geodata['transform']  = geodata['transform']
-    
+
     def setMask(self, maskVals = None):
         #TODO: Get mask values from the raster metadata.
         #      Don't use mask now.
-        
+
         if not maskVals: maskVals = []
-        
+
         for i in range(self.getBandsCount()):
             r = self.getBand(i)
             mask = reclass(r, maskVals)
             r = ma.array(data = r, mask=mask)
             self.setBand(r, i)
-        
+
     def _read(self):
         data = gdal.Open( self.filename )
         if data is None:
             raise ProviderError("Can't read the file '%s'" % self.filename)
-        
+
         self.geodata = {}
         self.geodata['xSize'] = data.RasterXSize
         self.geodata['ySize'] = data.RasterYSize
         self.geodata['proj']  = data.GetProjection()
         self.geodata['transform']  = data.GetGeoTransform()
-        
+
         self.bands = []
         for i in range(1, data.RasterCount+1):
             r = data.GetRasterBand(i)
             r = r.ReadAsArray()
             self.bands.append(r)
         self.setMask()
-        
-        
-        
+
+
+
