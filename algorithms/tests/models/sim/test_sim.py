@@ -33,7 +33,7 @@ class Model(object):
     def _predict(self, state, factors = None):
         geodata = self.state.getGeodata()
         band = state.getBand(1)
-        rows, cols = state.geodata['xSize'], state.geodata['ySize']
+        rows, cols = state.geodata['ySize'], state.geodata['xSize']
         # Let the prediction is: 1 -> 2, 2- >3, 3 -> 1
         
         predicted_band  = np.copy(band)

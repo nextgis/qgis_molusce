@@ -61,7 +61,7 @@ class LR(object):
         @param factors          List of the factor rasters (predicting variables).
         '''
         
-        rows, cols = state.geodata['xSize'], state.geodata['ySize']
+        rows, cols = state.geodata['ySize'], state.geodata['xSize']
         for r in factors:
             if not state.geoDataMatch(r):
                 raise LRError('Geometries of the input rasters are different!')
@@ -69,7 +69,7 @@ class LR(object):
         predicted_band  = np.zeros([rows, cols])
         confidence_band = np.zeros([rows, cols])
         
-        sampler = Sampler(state, factors, self.ns)
+        sampler = Sampler(state, factors, ns=self.ns)
         mask = state.getBand(1).mask
         for i in xrange(rows):
             for j in xrange(cols):

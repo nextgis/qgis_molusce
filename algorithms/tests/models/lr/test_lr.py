@@ -20,6 +20,10 @@ class TestMlpManager (unittest.TestCase):
         self.state   = self.output
         self.factors = [Raster('../../examples/sites.tif'), Raster('../../examples/sites.tif')]
         
+        self.output1  = Raster('../../examples/data.tif')
+        self.state1   = self.output1
+        self.factors1 = [Raster('../../examples/fact16.tif'), Raster('../../examples/fact16.tif')]
+        
     def test_LR(self):
         data = [
             [1.0, 1.0, 3.0],
@@ -34,6 +38,14 @@ class TestMlpManager (unittest.TestCase):
         predict = lr.getPrediction(self.state, self.factors)
         predict = predict.getBand(1)
         assert_array_equal(predict, result)
+
+        lr = LR(ns=1)
+        lr.setTrainingData(self.state1, self.factors1, self.output1)
+        lr.train()
+        predict = lr.getPrediction(self.state, self.factors)
+        predict = predict.getBand(1)
+        
+
     
 if __name__ == "__main__":
     unittest.main()

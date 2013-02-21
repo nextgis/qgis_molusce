@@ -58,13 +58,15 @@ class Sampler(object):
         @param state            Raster of the current state (classes) values.
         @param factors          List of the factor rasters (predicting variables).
         '''
-        state = self.get_state(state, row,col)
-        if state == None: # Eliminate incomplete samples
-            return None        
-        factors = self.get_factors(factors, row,col)
-        if factors == None: # Eliminate incomplete samples
+        try:
+            state = self.get_state(state, row,col)
+            if state == None: # Eliminate incomplete samples
+                return None        
+            factors = self.get_factors(factors, row,col)
+            if factors == None: # Eliminate incomplete samples
+                return None
+        except ProviderError:
             return None
-        
         return np.hstack( (state, factors) )
     
     def get_factors(self, factors, row, col):

@@ -168,7 +168,7 @@ class MlpManager(object):
         @param factors          List of the factor rasters (predicting variables).
         '''
         
-        rows, cols = state.geodata['xSize'], state.geodata['ySize']
+        rows, cols = state.geodata['ySize'], state.geodata['xSize']
         for r in factors:
             if not state.geoDataMatch(r):
                 raise MlpManagerError('Geometries of the input rasters are different!')
