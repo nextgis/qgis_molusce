@@ -42,10 +42,16 @@ class TestMlpManager (unittest.TestCase):
         lr = LR(ns=1)
         lr.setTrainingData(self.state1, self.factors1, self.output1)
         lr.train()
-        
         predict = lr.getPrediction(self.state1, self.factors1)
         predict = predict.getBand(1)
-
+        data = [
+            [0.0, 0.0, 0.0, 0.0],
+            [0.0, 1.0, 2.0, 0.0],
+            [0.0, 2.0, 2.0, 0.0],
+            [0.0, 0.0, 0.0, 0.0],
+        ]
+        result = np.ma.array(data = data, mask = (data==0))
+        assert_array_equal(predict, result)
     
 if __name__ == "__main__":
     unittest.main()

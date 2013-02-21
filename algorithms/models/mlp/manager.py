@@ -176,8 +176,8 @@ class MlpManager(object):
         predicted_band  = np.zeros([rows, cols])
         confidence_band = np.zeros([rows, cols])
         
-        sampler = Sampler(state, factors, self.ns)
-        mask = state.getBand(1).mask
+        sampler = Sampler(state, factors, ns=self.ns)
+        mask = state.getBand(1).mask.copy()
         for i in xrange(rows):
             for j in xrange(cols):
                 if not mask[i,j]:

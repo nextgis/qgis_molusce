@@ -56,7 +56,7 @@ class Model(object):
     
         
 
-class TestCrossTable (unittest.TestCase):
+class TestSimulator(unittest.TestCase):
     
     def setUp(self):
 

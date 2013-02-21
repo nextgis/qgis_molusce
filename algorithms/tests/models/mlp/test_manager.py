@@ -21,6 +21,10 @@ class TestMlpManager (unittest.TestCase):
         self.factors2 = [Raster('../../examples/multifact.tif'), Raster('../../examples/multifact.tif')]
         self.factors3 = [Raster('../../examples/two_band.tif')]
         
+        self.output1  = Raster('../../examples/data.tif')
+        self.state1   = self.output1
+        self.factors1 = [Raster('../../examples/fact16.tif')]
+        
     def test_MlpManager(self):
         mng = MlpManager(ns=1)
         mng.createMlp(self.output, self.factors2, self.output, [10])
@@ -99,6 +103,16 @@ class TestMlpManager (unittest.TestCase):
         tr  = mng.getTrainError()
         mng.train(20, valPercent=50, continue_train=True)
         self.assertGreaterEqual(val, mng.getValError())
+        
+        mng = MlpManager(ns=1)
+        mng.createMlp(self.state1, self.factors1, self.output1, [10])
+        mng.setTrainingData(self.state1, self.factors1, self.output1)
+        mng.train(1, valPercent=20)
+        predict = mng.getPrediction(self.state1, self.factors1)
+        mask = predict.getBand(1).mask
+        
+        self.assertTrue(not all(mask.flatten()))
+        
 
     def test_predict(self):
         mng = MlpManager()
