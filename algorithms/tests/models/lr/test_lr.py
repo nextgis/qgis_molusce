@@ -22,7 +22,7 @@ class TestMlpManager (unittest.TestCase):
         
         self.output1  = Raster('../../examples/data.tif')
         self.state1   = self.output1
-        self.factors1 = [Raster('../../examples/fact16.tif'), Raster('../../examples/fact16.tif')]
+        self.factors1 = [Raster('../../examples/fact16.tif')]
         
     def test_LR(self):
         data = [
@@ -42,9 +42,9 @@ class TestMlpManager (unittest.TestCase):
         lr = LR(ns=1)
         lr.setTrainingData(self.state1, self.factors1, self.output1)
         lr.train()
-        predict = lr.getPrediction(self.state, self.factors)
-        predict = predict.getBand(1)
         
+        predict = lr.getPrediction(self.state1, self.factors1)
+        predict = predict.getBand(1)
 
     
 if __name__ == "__main__":

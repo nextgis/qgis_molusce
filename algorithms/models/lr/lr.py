@@ -38,9 +38,20 @@ class LR(object):
         self.prediction = None  # Raster of the LR prediction results
         self.confidence = None  # Raster of the LR results confidence 
     
+    
+    def getCoef(self):
+        return self.logreg.coef_
+        
     def getConfidence(self):
         return self.confidence
     
+    def getIntercept(self):
+        return self.logreg.intercept_
+   
+    def getPrediction(self, state, factors):
+        self._predict(state, factors)
+        return self.prediction
+        
     def outputConfidence(self, input):
         '''
         Return confidence (difference between 2 biggest probabilities) of the LR output.
@@ -49,10 +60,6 @@ class LR(object):
         # Calculate the confidence:
         out_scl.sort()
         return out_scl[-1] - out_scl[-2]
-    
-    def getPrediction(self, state, factors):
-        self._predict(state, factors)
-        return self.prediction
         
     def _predict(self, state, factors):
         '''
@@ -70,7 +77,7 @@ class LR(object):
         confidence_band = np.zeros([rows, cols])
         
         sampler = Sampler(state, factors, ns=self.ns)
-        mask = state.getBand(1).mask
+        mask = state.getBand(1).mask.copy()
         for i in xrange(rows):
             for j in xrange(cols):
                 if not mask[i,j]:
@@ -105,7 +112,7 @@ class LR(object):
         if not self.logreg:
             raise LRError('You must create a MLP before!')
         
-        sampler = Sampler(state, factors, output, self.ns)
+        sampler = Sampler(state, factors, output, ns=self.ns)
         sampler.setTrainingData(state, factors, output, shuffle=False)
         
         outputVecLen  = sampler.outputVecLen
