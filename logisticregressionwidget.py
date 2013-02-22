@@ -39,5 +39,12 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     self.btnFitModel.clicked.connect(self.fitModel)
 
+    self.manageGui()
+
+  def manageGui(self):
+    settings = QSettings("NextGIS", "MOLUSCE")
+
+    self.spnNeighbourhood.setValue(settings.value("ui/LR/neighborhood", 1).toInt()[0])
+
   def fitModel(self):
     pass

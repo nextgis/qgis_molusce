@@ -44,6 +44,7 @@ from ui.ui_moluscedialogbase import Ui_Dialog
 import molusceutils as utils
 
 from algorithms.dataprovider import Raster
+from algorithms.models.crosstabs.model import CrossTable
 from algorithms.models.area_analysis.manager import AreaAnalyst
 
 class MolusceDialog(QDialog, Ui_Dialog):
@@ -84,11 +85,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.cmbMethod.currentIndexChanged.connect(self.__modelChanged)
 
-    self.chkRiskFunction.stateChanged.connect(self.__toggleLineEdit)
-    self.chkRiskClasses.stateChanged.connect(self.__toggleLineEdit)
-    self.chkRiskValidation.stateChanged.connect(self.__toggleLineEdit)
-    self.chkMonteCarlo.stateChanged.connect(self.__toggleLineEdit)
-    self.chkReuseMatrix.stateChanged.connect(self.__toggleLineEdit)
+    self.chkRiskFunction.toggled.connect(self.__toggleLineEdit)
+    self.chkRiskClasses.toggled.connect(self.__toggleLineEdit)
+    self.chkRiskValidation.toggled.connect(self.__toggleLineEdit)
+    self.chkMonteCarlo.toggled.connect(self.__toggleLineEdit)
+    self.chkReuseMatrix.toggled.connect(self.__toggleLineEdit)
 
     self.btnSelectRiskFunction.clicked.connect(self.__selectSimulationOutput)
     self.btnSelectRiskClasses.clicked.connect(self.__selectSimulationOutput)
@@ -177,8 +178,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.__logMessage(self.tr("Factors list cleared"))
 
+
   def updateStatisticsTable(self):
-    pass
+    crossTab = CrossTable(self.inputs["initial"].getBand(1), self.inputs["final"].getBand(1))
+    # TODO: populate UI table with data
 
   def createChangeMap(self):
     fileName = utils.saveRasterDialog(self,
@@ -192,14 +195,38 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     if ("initial" in self.inputs) and ("final" in self.inputs):
       analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
-      changeMapRaster = analyst.makeChangeMap()
-      changeMapRaster.save(unicode(fileName))
+      self.inputs["changeMap"] = analyst.makeChangeMap()
+      self.inputs["changeMap"].save(unicode(fileName))
       self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
+      self.__addRasterToCanvas(fileName)
     else:
       self.__logMessage(self.tr("Can't create change map. Initial or final land use map is not set"))
 
   def startSimulation(self):
-    pass
+    if self.chkRiskFunction.isChecked():
+      if not self.leRiskFunctionPath.text.isEmpy():
+        pass
+      else:
+        self.__logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
+
+    if self.chkRiskClasses.isChecked():
+      if not self.leRiskClassesPath.text.isEmpy():
+        pass
+      else:
+        self.__logMessage(self.tr("Output path for observed risk classes map is not set. Skipping this step"))
+
+    if self.chkRiskValidation.isChecked():
+      if not self.leRiskValidationPath.text.isEmpy():
+        pass
+      else:
+        self.__logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
+
+    if self.chkMonteCarlo.isChecked():
+      if not self.leMonteCarloPath.text.isEmpy():
+        pass
+      else:
+        self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
+
 
 # ******************************************************************************
 
@@ -247,31 +274,31 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.widgetStackMethods.addWidget(self.modelWidget)
     self.widgetStackMethods.setCurrentWidget(self.modelWidget)
 
-  def __toggleLineEdit(self, state):
+  def __toggleLineEdit(self, checked):
     senderName = self.sender().objectName()
     if senderName == "chkRiskFunction":
-      if state == Qt.Checked:
+      if checked:
         self.leRiskFunctionPath.setEnabled(True)
         self.btnSelectRiskFunction.setEnabled(True)
       else:
         self.leRiskFunctionPath.setEnabled(False)
         self.btnSelectRiskFunction.setEnabled(False)
     elif senderName == "chkRiskClasses":
-      if state == Qt.Checked:
+      if checked:
         self.leRiskClassesPath.setEnabled(True)
         self.btnSelectRiskClasses.setEnabled(True)
       else:
         self.leRiskClassesPath.setEnabled(False)
         self.btnSelectRiskClasses.setEnabled(False)
     elif senderName == "chkRiskValidation":
-      if state == Qt.Checked:
+      if checked:
         self.leRiskValidationPath.setEnabled(True)
         self.btnSelectRiskValidation.setEnabled(True)
       else:
         self.leRiskValidationPath.setEnabled(False)
         self.btnSelectRiskValidation.setEnabled(False)
     elif senderName == "chkMonteCarlo":
-      if state == Qt.Checked:
+      if checked:
         self.leMonteCarloPath.setEnabled(True)
         self.btnSelectMonteCarlo.setEnabled(True)
         self.lblYear.setEnabled(True)
@@ -282,7 +309,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.lblYear.setEnabled(False)
         self.spnEndYear.setEnabled(False)
     elif senderName == "chkReuseMatrix":
-      if state == Qt.Checked:
+      if checked:
         self.leMatrixPath.setEnabled(True)
         self.btnSelectMatrix.setEnabled(True)
       else:
@@ -314,6 +341,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
                             .arg(datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S"))
                             .arg(message)
                            )
+
+  def __addRasterToCanvas(self, filePath):
+    layer = QgsRasterLayer(filePath, QFileInfo(filePath).baseName())
+    if layer.isValid():
+      QgsMapLayerRegistry.addMapLayers([layer])
+    else:
+      self.__logMessage(self.tr("Can't load raster %1").arg(filePath))
 
   def __writeSettings(self):
     # simulation tab
