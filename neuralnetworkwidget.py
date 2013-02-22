@@ -33,10 +33,11 @@ from qgis.core import *
 from ui.ui_neuralnetworkwidgetbase import Ui_Widget
 
 class NeuralNetworkWidget(QWidget, Ui_Widget):
-  def __init__(self, parent=None):
+  def __init__(self, inputs, parent=None):
     QWidget.__init__(self, parent)
     self.setupUi(self)
 
+    self.inputs = inputs
     self.settings = QSettings("NextGIS", "MOLUSCE")
 
     self.chkCreateReport.toggled.connect(self.__toggleLineEdit)
@@ -60,7 +61,16 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.chkSaveSamples.setChecked(self.settings.value("ui/ANN/saveSamples", False).toBool())
 
   def trainNetwork(self):
-    pass
+    model = MlpManager(ns=self.spnNeigbourhood.value())
+    model.createMlp(self.inputs["initial"],
+                    self.inputs["factors"].values(),
+                    self.inputs["changeMap"],
+                    self.leTopology.text().split(" ")
+                   )
+
+    model.train(self.spnMaxIterations.value(),
+                valPercent=20
+               )
 
   def __selectFile(self):
     senderName = self.sender().objectName()
