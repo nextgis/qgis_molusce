@@ -30,6 +30,11 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
+from matplotlib.figure import Figure
+from matplotlib import rcParams
+
 from algorithms.models.mlp.manager import MlpManager
 
 from ui.ui_neuralnetworkwidgetbase import Ui_Widget
@@ -42,6 +47,24 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.plugin = plugin
     self.inputs = plugin.inputs
     self.settings = QSettings("NextGIS", "MOLUSCE")
+
+    # init plot for learning curve
+    self.figure = Figure()
+    self.axes = self.figure.add_subplot(111)
+    self.figure.suptitle(self.tr("Neural Network learning curve"))
+    self.canvas = FigureCanvas( self.figure)
+    #self.mpltoolbar = NavigationToolbar(self.canvas, self.widgetPlot)
+    #lstActions = self.mpltoolbar.actions()
+    #self.mpltoolbar.removeAction(lstActions[7])
+    self.layoutPlot.addWidget(self.canvas)
+    #self.layoutPlot.addWidget(self.mpltoolbar)
+
+    # and configure matplotlib params
+    rcParams['font.serif'] = "Verdana, Arial, Liberation Serif"
+    rcParams['font.sans-serif'] = "Tahoma, Arial, Liberation Sans"
+    rcParams['font.cursive'] = "Courier New, Arial, Liberation Sans"
+    rcParams['font.fantasy'] = "Comic Sans MS, Arial, Liberation Sans"
+    rcParams['font.monospace'] = "Courier New, Liberation Mono"
 
     self.chkCreateReport.toggled.connect(self.__toggleLineEdit)
     self.chkSaveSamples.toggled.connect(self.__toggleLineEdit)
