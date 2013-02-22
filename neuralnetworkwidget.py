@@ -71,9 +71,13 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
                     self.leTopology.text().split(" ")
                    )
 
+    self.plugin.__logMessage(self.tr("ANN training started"))
     model.train(self.spnMaxIterations.value(),
                 valPercent=20
                )
+    self.plugin.__logMessage(self.tr("ANN training completed"))
+
+    #self.inputs["model"] = model
 
   def __selectFile(self):
     senderName = self.sender().objectName()
