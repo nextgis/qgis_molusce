@@ -263,9 +263,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     modelName = self.cmbMethod.currentText()
 
     if modelName == self.tr("Logistic Regression"):
-      self.modelWidget = logisticregressionwidget.LogisticRegressionWidget()
+      self.modelWidget = logisticregressionwidget.LogisticRegressionWidget(self)
     elif modelName == self.tr("Artificial Neural Network"):
-      self.modelWidget = neuralnetworkwidget.NeuralNetworkWidget()
+      self.modelWidget = neuralnetworkwidget.NeuralNetworkWidget(self)
     elif modelName == self.tr("Weights of Evidence"):
       self.modelWidget = weightofevidencewidget.WeightOfEvidenceWidget()
     elif modelName == self.tr("Multi Criteria Evaluation"):

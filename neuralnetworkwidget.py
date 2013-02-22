@@ -30,14 +30,17 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
+from algorithms.models.mlp.manager import MlpManager
+
 from ui.ui_neuralnetworkwidgetbase import Ui_Widget
 
 class NeuralNetworkWidget(QWidget, Ui_Widget):
-  def __init__(self, inputs, parent=None):
+  def __init__(self, plugin, parent=None):
     QWidget.__init__(self, parent)
     self.setupUi(self)
 
-    self.inputs = inputs
+    self.plugin = plugin
+    self.inputs = plugin.inputs
     self.settings = QSettings("NextGIS", "MOLUSCE")
 
     self.chkCreateReport.toggled.connect(self.__toggleLineEdit)

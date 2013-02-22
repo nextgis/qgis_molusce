@@ -30,12 +30,17 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
+#from algorithms.models.lr.lr import LR
+
 from ui.ui_logisticregressionwidgetbase import Ui_Widget
 
 class LogisticRegressionWidget(QWidget, Ui_Widget):
-  def __init__(self, parent=None):
+  def __init__(self, plugin, parent=None):
     QWidget.__init__(self, parent)
     self.setupUi(self)
+
+    self.plugin = plugin
+    self.inputs = plugin.inputs
 
     self.btnFitModel.clicked.connect(self.fitModel)
 
