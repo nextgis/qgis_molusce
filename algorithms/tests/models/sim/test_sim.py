@@ -65,7 +65,7 @@ class TestSimulator(unittest.TestCase):
             #~ [3, 2, 1,],
             #~ [0, 3, 1,]
         self.raster1 = Raster('../../examples/multifact.tif')
-        self.raster1.setMask([0])
+        self.raster1.resetMask([0])
         
         self.X = np.array([
             [1, 2, 3],

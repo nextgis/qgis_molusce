@@ -187,10 +187,11 @@ class Raster(object):
         self.geodata['proj']  = geodata['proj']
         self.geodata['transform']  = geodata['transform']
 
-    def setMask(self, maskVals = None):
-        #TODO: Get mask values from the raster metadata.
-        #      Don't use mask now.
 
+    def resetMask(self, maskVals = None):
+        '''
+        Set mask of _ALL_ bands.  maskVals is a list of masked values.
+        '''
         if not maskVals: maskVals = []
 
         for i in range(self.getBandsCount()):
@@ -213,9 +214,13 @@ class Raster(object):
         self.bands = []
         for i in range(1, data.RasterCount+1):
             r = data.GetRasterBand(i)
+            nodataValue =  r.GetNoDataValue()
             r = r.ReadAsArray()
+            if nodataValue:
+                mask = reclass(r, [nodataValue])
+                r = ma.array(data = r, mask=mask)
             self.bands.append(r)
-        self.setMask()
+        self.resetMask()
 
 
 

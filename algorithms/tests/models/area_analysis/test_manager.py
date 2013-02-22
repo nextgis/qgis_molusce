@@ -23,7 +23,7 @@ class TestAreaAnalysisManager (unittest.TestCase):
         ]
         
         self.r2  = Raster('../../examples/multifact.tif')
-        self.r2.setMask([0])
+        self.r2.resetMask([0])
         self.r2r2 = [
             [0,   0, 8,],
             [8,   4, 0,],
@@ -31,7 +31,7 @@ class TestAreaAnalysisManager (unittest.TestCase):
         ]
         
         self.r3 = Raster('../../examples/multifact.tif')
-        self.r3.setMask([2])
+        self.r3.resetMask([2])
         
     def test_AreaAnalyst(self):
         aa = AreaAnalyst(self.r1, self.r1)

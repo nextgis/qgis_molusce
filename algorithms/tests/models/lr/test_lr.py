@@ -16,7 +16,7 @@ from molusce.algorithms.models.lr.lr import LR
 class TestMlpManager (unittest.TestCase):
     def setUp(self):
         self.output  = Raster('../../examples/multifact.tif')
-        self.output.setMask([0])
+        self.output.resetMask([0])
         self.state   = self.output
         self.factors = [Raster('../../examples/sites.tif'), Raster('../../examples/sites.tif')]
         
