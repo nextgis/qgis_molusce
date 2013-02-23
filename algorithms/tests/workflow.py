@@ -42,7 +42,7 @@ def main(initRaster, finalRaster, factors):
     #~ # Create and Train LR Model
     #~ model = LR(ns=1)
     #~ print 'Start Setting LR Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, changeMapRaster)
+    #~ model.setTrainingData(initRaster, factors, finalRaster)
     #~ print 'Finish Setting Trainig Data', clock(), '\n'
     #~ print 'Start LR Training...', clock()
     #~ model.train()
@@ -62,14 +62,14 @@ def main(initRaster, finalRaster, factors):
     
     # Create and Train ANN Model
     model = MlpManager(ns=1)
-    model.createMlp(initRaster, factors, changeMapRaster, [10])
+    model.createMlp(initRaster, factors, finalRaster, [10])
     print 'Start Setting MLP Trainig Data...', clock()
-    model.setTrainingData(initRaster, factors, changeMapRaster)
+    model.setTrainingData(initRaster, factors, finalRaster)
     print 'Finish Setting Trainig Data', clock(), '\n'
     print 'Start MLP Training...', clock()
     model.train(1, valPercent=20)
     print 'Finish Trainig', clock(), '\n'
-
+ 
     print 'Start ANN Prediction...', clock()
     predict = model.getPrediction(initRaster, factors)
     filename = 'ann_predict.tiff'

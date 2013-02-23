@@ -39,8 +39,9 @@ class AreaAnalyst(object):
         self.second = second
         
         self.classes = get_gradations(self.first.compressed())
-        if get_gradations(self.second.compressed()) != self.classes:
-            raise AreaAnalizerError('Raster mast have the same classes!')
+        for cl in get_gradations(self.second.compressed()):
+            if cl not in self.classes:
+                raise AreaAnalizerError("List of classes of the first raster doesn't contains a class of the second raster!")
         # Check that class numeration encoded without gaps
         if len(self.classes) != (self.classes[-1] - self.classes[0]) + 1:
             raise AreaAnalizerError('Raster mast have the class numbers without gaps!')
