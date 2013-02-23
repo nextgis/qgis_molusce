@@ -39,46 +39,46 @@ def main(initRaster, finalRaster, factors):
     print 'Finish Making Change Map', clock(), '\n'
     
     
-    #~ # Create and Train LR Model
-    #~ model = LR(ns=1)
-    #~ print 'Start Setting LR Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, finalRaster)
-    #~ print 'Finish Setting Trainig Data', clock(), '\n'
-    #~ print 'Start LR Training...', clock()
-    #~ model.train()
-    #~ print 'Finish Trainig', clock(), '\n'
-    #~ 
-    #~ 
-    #~ print 'Start LR Prediction...', clock()
-    #~ predict = model.getPrediction(initRaster, factors)
-    #~ filename = 'lr_predict.tiff'
-    #~ try:
-        #~ predict.save(filename)
-    #~ finally:
-        #~ #os.remove(filename)
-        #~ pass
-    #~ print 'Finish LR Prediction...', clock(), '\n'
-    
-    
-    # Create and Train ANN Model
-    model = MlpManager(ns=1)
-    model.createMlp(initRaster, factors, finalRaster, [10])
-    print 'Start Setting MLP Trainig Data...', clock()
-    model.setTrainingData(initRaster, factors, finalRaster)
+    # Create and Train LR Model
+    model = LR(ns=1)
+    print 'Start Setting LR Trainig Data...', clock()
+    model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=10000)
     print 'Finish Setting Trainig Data', clock(), '\n'
-    print 'Start MLP Training...', clock()
-    model.train(1, valPercent=20)
+    print 'Start LR Training...', clock()
+    model.train()
     print 'Finish Trainig', clock(), '\n'
- 
-    print 'Start ANN Prediction...', clock()
+    
+    
+    print 'Start LR Prediction...', clock()
     predict = model.getPrediction(initRaster, factors)
-    filename = 'ann_predict.tiff'
+    filename = 'lr_predict.tiff'
     try:
         predict.save(filename)
     finally:
         #os.remove(filename)
         pass
-    print 'Finish ANN Prediction...', clock(), '\n'
+    print 'Finish LR Prediction...', clock(), '\n'
+    
+    
+    #~ # Create and Train ANN Model
+    #~ model = MlpManager(ns=1)
+    #~ model.createMlp(initRaster, factors, finalRaster, [10])
+    #~ print 'Start Setting MLP Trainig Data...', clock()
+    #~ model.setTrainingData(initRaster, factors, finalRaster, mode='Normal', samples=10000)
+    #~ print 'Finish Setting Trainig Data', clock(), '\n'
+    #~ print 'Start MLP Training...', clock()
+    #~ model.train(50, valPercent=20)
+    #~ print 'Finish Trainig', clock(), '\n'
+ 
+    #~ print 'Start ANN Prediction...', clock()
+    #~ predict = model.getPrediction(initRaster, factors)
+    #~ filename = 'ann_predict.tiff'
+    #~ try:
+        #~ predict.save(filename)
+    #~ finally:
+        #~ #os.remove(filename)
+        #~ pass
+    #~ print 'Finish ANN Prediction...', clock(), '\n'
     
     print 'Start Simulation...', clock()
     simulator = Simulator(initRaster, factors, model, crosstab)

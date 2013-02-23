@@ -4,6 +4,8 @@ import numpy as np
 from numpy import ma as ma
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
+from molusce.algorithms.utils import get_gradations
+
 
 class SamplerError(Exception):
     '''Base class for exceptions in this module.'''
@@ -19,7 +21,7 @@ class Sampler(object):
     input data consists of 2 parts: 
         state is data readed from 1-band raster, this raster contains initaial states (classes).
         factors is list of rasters (multiband probably) that explain transition between states (classes).
-    output data is is data readed from 1-band raster, this raster contains final states.
+    output data is read from 1-band raster, this raster contains final states.
     
     In the simplest case we have pixel-by-pixel model. In such case:
         sample = np.array(
@@ -29,8 +31,8 @@ class Sampler(object):
     But we can use moving windows to collect samples, then input data contains several (eg 3x3) pixels for every raster (band).
     For example if we use 1-pixel neighbourhood (3x3 moving windows):
         sample = np.array(
-            ( [1-pixel_from_state_raster, ..., 9-pixel_from_state_raster],
-              [1-pixel_from_factor1, ..., 9-pixel_from_factor1, ..., 1-pixel_from_factorN..., 9-pixel_from_factorN], 
+            ( [1st-pixel_from_state_raster, ..., 9th-pixel_from_state_raster],
+              [1st-pixel_from_factor1, ..., 9th-pixel_from_factor1, ..., 1st-pixel_from_factorN..., 9th-pixel_from_factorN], 
               pixel_from_output_raster
             ), 
             dtype=[('state', float, 9),('factors',  float, 9*N), ('output', float, 1)]
@@ -83,6 +85,15 @@ class Sampler(object):
         return sample
     
     
+    def get_output(self, output, row, col):
+        '''
+        Get output sample at (row, col) pixel and return it as array. Return None if the sample is incomplete.
+        '''
+        sample = output.getNeighbours(i,j,0).flatten() # Get the pixel
+        if any(out.mask): # Eliminate masked samples
+            return None
+        return out
+    
     def get_state(self, state, row, col):
         '''
         Get current state at (row, col) pixel and return it as array. Return None if the sample is incomplete.
@@ -92,61 +103,110 @@ class Sampler(object):
             return None
         return neighbours
     
-    def get_output(self, output, row, col):
+    def _getSample(self, state, factors, output, row, col):
         '''
-        Get output sample at (row, col) pixel and return it as array. Return None if the sample is incomplete.
+        Get one sample from (row,col) pixel. See params in setTrainingData.
         '''
-        sample = output.getNeighbours(i,j,0).flatten() # Get the pixel
-        if any(out.mask): # Eliminate masked samples
+        data = np.zeros(1, dtype=[('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
+        try: 
+            out_data = output.getNeighbours(row,col,0).flatten() # Get the pixel
+            if out_data == None:                            # Eliminate masked samples
+                return None
+            else: data['output'] = out_data
+                
+            state_data = self.get_state(state, row,col)
+            if state_data == None: # Eliminate incomplete samples
+                return None
+            else: data['state'] = state_data
+            
+            factors_data = self.get_factors(factors, row,col)
+            if factors_data == None: # Eliminate incomplete samples
+                return None
+            else: data['factors'] = factors_data
+
+        except ProviderError:
             return None
-        return out
-        
-    def setTrainingData(self, state, factors, output, shuffle=True):
+        return data # (state_data, factors_data, out_data)
+    
+    def setTrainingData(self, state, factors, output, shuffle=True, mode='All', samples=None):
         '''
         @param state            Raster of the current state (classes) values.
         @param factors          List of the factor rasters (predicting variables).
         @param ns               Neighbourhood size.
         @param shuffle          Perform random shuffle.
+        @param mode             Type of sampling method:
+                                    All             Get all pixels
+                                    Normal          Get samples. Count of samples in the data=samples.
+                                    Balanced        Undersampling of major classes and/or oversampling of minor classes.
+        @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
         
         for r in factors+[state]:
             if not output.geoDataMatch(r):
                 raise SamplerError('Geometries of the inputs and output rasters are different!')
         
-        # Approximate sample count:
-        band = state.getBand(1)
-        nulls  =  band.mask.sum() # Count of NA
-        (rows,cols) = (state.getXSize(), state.getYSize())
-        pixels = rows * cols - nulls
-        
-        # Array for samples
-        self.data = np.zeros(pixels, dtype=[('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
-        
-        # Real count of the samples
+        # Real count of the samples 
+        # (if self.ns>0 some samples may be incomplete because a neighbour has NoData value)
         samples_count = 0
         
-        # i,j  are pixel indexes
-        for i in xrange(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
-            for j in xrange(self.ns, cols - self.ns):     # the samples are incomplete in that region
-                try: 
-                    out_data = output.getNeighbours(i,j,0).flatten() # Get the pixel
-                    if out_data == None:                            # Eliminate masked samples
-                        continue
-                        
-                    state_data = self.get_state(state, i,j)
-                    if state_data == None: # Eliminate incomplete samples
-                        continue
-                    
-                    factors_data = self.get_factors(factors, i,j)
-                    if factors_data == None: # Eliminate incomplete samples
-                        continue
-
-                except ProviderError:
-                    continue
-                self.data[samples_count] = (state_data, factors_data, out_data)
-                samples_count = samples_count + 1
-        self.data = self.data[:samples_count]
+        rows, cols = state.getXSize(), state.getYSize()
         
+        if mode == 'All':
+            # Approximate sample count:
+            band = state.getBand(1)
+            nulls  =  band.mask.sum() # Count of NA
+            samples = rows * cols - nulls
+        
+        # Array for samples
+        self.data = np.zeros(samples, dtype=[('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
+        
+        if mode == 'All':
+            # i,j  are pixel indexes
+            for i in xrange(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
+                for j in xrange(self.ns, cols - self.ns):     # the samples are incomplete in that region
+                    sample = self._getSample(state, factors, output, i,j)
+                    if sample != None:
+                        self.data[samples_count] = sample
+                        samples_count = samples_count + 1
+            self.data = self.data[:samples_count]   # Crop unused part of the array
+        
+        elif mode == 'Normal': 
+            while samples_count< samples:
+                row = np.random.randint(rows)
+                col = np.random.randint(cols)
+                sample = self._getSample(state, factors, output, row,col)
+                if sample != None:
+                    self.data[samples_count] = sample
+                    samples_count = samples_count + 1
+        elif mode == 'Balanced':
+            # Analyze output classes:
+            band = output.getBand(1)
+            data = band.compressed()
+            classes = get_gradations(data)
+                      
+            # Select pixels 
+            average = 1.0*samples / len(classes)
+            
+            samples_count = 0
+            # Get counts[i] samples of "cl" class
+            for i,cl in enumerate(classes):
+                # Find indices of "cl"-class pixels
+                rows, cols = np.where(band == cl)
+                indices = [ (rows[i], cols[i]) for i in xrange(len(cols))]
+                
+                # Get samples
+                count = 0
+                while count< average:
+                    index = np.random.randint(len(indices))
+                    row, col = indices[index]
+                    sample = self._getSample(state, factors, output, row,col)
+                    if sample != None:
+                        self.data[samples_count] = sample
+                        samples_count = samples_count + 1
+                        count = count + 1
+        else:
+            raise SamplerError('The mode of sampling is unknown!')
+
         if shuffle: 
             np.random.shuffle(self.data)
 

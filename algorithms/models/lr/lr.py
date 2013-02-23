@@ -103,17 +103,22 @@ class LR(object):
     def save(self):
         pass
         
-    def setTrainingData(self, state, factors, output):
+    def setTrainingData(self, state, factors, output, mode='All', samples=None):
         '''
         @param state            Raster of the current state (classes) values.
         @param factors          List of the factor rasters (predicting variables).
         @param output           Raster that contains classes to predict.
+        @param mode             Type of sampling method:
+                                    All             Get all pixels
+                                    Normal          Get samples. Count of samples in the data=samples.
+                                    Balanced        Undersampling of major classes and/or oversampling of minor classes.
+        @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
         if not self.logreg:
             raise LRError('You must create a MLP before!')
         
         sampler = Sampler(state, factors, output, ns=self.ns)
-        sampler.setTrainingData(state, factors, output, shuffle=False)
+        sampler.setTrainingData(state, factors, output, shuffle=False, mode=mode, samples=samples)
         
         outputVecLen  = sampler.outputVecLen
         stateVecLen   = sampler.stateVecLen

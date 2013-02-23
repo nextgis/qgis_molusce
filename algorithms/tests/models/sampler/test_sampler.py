@@ -38,7 +38,6 @@ class TestSample (unittest.TestCase):
             ], 
             dtype=[('state', float, (1,)), ('factors', float, (1,)), ('output', float, 1)]
         )
-        
         for i in range(len(data)):
             assert_array_equal(data[i]['factors'], smp.data[i]['factors'])
             assert_array_equal(data[i]['output'], smp.data[i]['output'])
@@ -78,6 +77,28 @@ class TestSample (unittest.TestCase):
         assert_array_equal(data[0]['factors'], smp.data[0]['factors'])
         assert_array_equal(data[0]['output'], smp.data[0]['output'])
         assert_array_equal(data[0]['state'],  smp.data[0]['state'])
-    
+        
+        
+        # Mode = Normal
+        # As the previous example, but 10 samples:
+        smp = Sampler(self.output, self.factors3, self.output, ns=1)
+        smp.setTrainingData(self.output, self.factors3, self.output, mode='Normal', samples=10)
+        for i in range(10):
+            assert_array_equal(data[0]['factors'], smp.data[i]['factors'])
+            assert_array_equal(data[0]['output'], smp.data[i]['output'])
+            assert_array_equal(data[0]['state'],  smp.data[i]['state'])
+            
+        # Mode = Balanced
+        smp = Sampler(self.output, self.factors, self.output, ns=0)
+        smp.setTrainingData(self.output, self.factors, self.output, mode='Balanced', samples=15)
+        out =  smp.data['output']
+        out.sort()
+        self.assertEqual(out[0],  0)
+        self.assertEqual(out[4],  0)
+        self.assertEqual(out[5],  1)
+        self.assertEqual(out[9],  1)
+        self.assertEqual(out[10], 2)
+        
+        
 if __name__ == "__main__":
     unittest.main()

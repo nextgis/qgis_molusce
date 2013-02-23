@@ -220,18 +220,23 @@ class MlpManager(object):
         '''Set weights of the MLP'''
         self.MLP.weights = w
     
-    def setTrainingData(self, state, factors, output, shuffle=True):
+    def setTrainingData(self, state, factors, output, shuffle=True, mode='All', samples=None):
         '''
         @param state            Raster of the current state (classes) values.
         @param factors          List of the factor rasters (predicting variables).
         @param output           Raster that contains classes to predict.
         @param shuffle          Perform random shuffle.
+        @param mode             Type of sampling method:
+                                    All             Get all pixels
+                                    Normal          Get samples. Count of samples in the data=samples.
+                                    Balanced        Undersampling of major classes and/or oversampling of minor classes.
+        @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
         if not self.MLP:
             raise MlpManagerError('You must create a MLP before!')
         
         sampler = Sampler(state, factors, output, self.ns)
-        sampler.setTrainingData(state, factors, output, shuffle)
+        sampler.setTrainingData(state, factors, output, shuffle, mode, samples)
         
         outputVecLen  = self.getOutputVectLen()
         stateVecLen   = sampler.stateVecLen
