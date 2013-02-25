@@ -194,27 +194,6 @@
     <layout class="QVBoxLayout" name="layoutPlot"/>
    </item>
   </layout>
-  <zorder>label</zorder>
-  <zorder>spnNeigbourhood</zorder>
-  <zorder>label_2</zorder>
-  <zorder>spnLearnRate</zorder>
-  <zorder>label_3</zorder>
-  <zorder>spnMaxIterations</zorder>
-  <zorder>label_4</zorder>
-  <zorder>spnRMS</zorder>
-  <zorder>btnTrainNetwork</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>chkCreateReport</zorder>
-  <zorder>label_5</zorder>
-  <zorder>leTopology</zorder>
-  <zorder>label_6</zorder>
-  <zorder>label_7</zorder>
-  <zorder>label_8</zorder>
-  <zorder>leRSquared</zorder>
-  <zorder>leKappa</zorder>
-  <zorder>leMapAgreement</zorder>
-  <zorder>layoutWidget_2</zorder>
   <zorder>verticalSpacer</zorder>
  </widget>
  <resources/>

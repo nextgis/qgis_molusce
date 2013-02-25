@@ -52,12 +52,12 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.figure = Figure()
     self.axes = self.figure.add_subplot(111)
     self.figure.suptitle(self.tr("Neural Network learning curve"))
-    self.canvas = FigureCanvas( self.figure)
-    #self.mpltoolbar = NavigationToolbar(self.canvas, self.widgetPlot)
-    #lstActions = self.mpltoolbar.actions()
-    #self.mpltoolbar.removeAction(lstActions[7])
+    self.canvas = FigureCanvas(self.figure)
+    self.mpltoolbar = NavigationToolbar(self.canvas, None)
+    lstActions = self.mpltoolbar.actions()
+    self.mpltoolbar.removeAction(lstActions[7])
     self.layoutPlot.addWidget(self.canvas)
-    #self.layoutPlot.addWidget(self.mpltoolbar)
+    self.layoutPlot.addWidget(self.mpltoolbar)
 
     # and configure matplotlib params
     rcParams['font.serif'] = "Verdana, Arial, Liberation Serif"
