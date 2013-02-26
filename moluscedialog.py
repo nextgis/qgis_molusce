@@ -73,6 +73,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.settings = QSettings("NextGIS", "MOLUSCE")
 
+    self.grpSampling.setSettings(self.settings)
+
     # connect signals and slots
     self.btnSetInitialRaster.clicked.connect(self.setInitialRaster)
     self.btnSetFinalRaster.clicked.connect(self.setFinalRaster)
@@ -83,16 +85,15 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.btnUpdateStatistics.clicked.connect(self.updateStatisticsTable)
     self.btnCreateChangeMap.clicked.connect(self.createChangeMap)
 
-    self.cmbMethod.currentIndexChanged.connect(self.__modelChanged)
+    self.cmbSamplingMode.currentIndexChanged.connect(self.__modeChanged)
+    self.cmbSimulationMethod.currentIndexChanged.connect(self.__modelChanged)
 
     self.chkRiskFunction.toggled.connect(self.__toggleLineEdit)
-    self.chkRiskClasses.toggled.connect(self.__toggleLineEdit)
     self.chkRiskValidation.toggled.connect(self.__toggleLineEdit)
     self.chkMonteCarlo.toggled.connect(self.__toggleLineEdit)
     self.chkReuseMatrix.toggled.connect(self.__toggleLineEdit)
 
     self.btnSelectRiskFunction.clicked.connect(self.__selectSimulationOutput)
-    self.btnSelectRiskClasses.clicked.connect(self.__selectSimulationOutput)
     self.btnSelectRiskValidation.clicked.connect(self.__selectSimulationOutput)
     self.btnSelectMonteCarlo.clicked.connect(self.__selectSimulationOutput)
 
@@ -109,7 +110,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tabWidget.setCurrentIndex(0)
 
     self.__populateLayers()
-    self.__populateMethods()
+    self.__populateSamplingModes()
+    self.__populateSimulationMethods()
 
     self.__readSettings()
 
@@ -209,12 +211,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
       else:
         self.__logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
-    if self.chkRiskClasses.isChecked():
-      if not self.leRiskClassesPath.text.isEmpy():
-        pass
-      else:
-        self.__logMessage(self.tr("Output path for observed risk classes map is not set. Skipping this step"))
-
     if self.chkRiskValidation.isChecked():
       if not self.leRiskValidationPath.text.isEmpy():
         pass
@@ -226,7 +222,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
         pass
       else:
         self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
-
 
 # ******************************************************************************
 
@@ -245,13 +240,27 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
       self.lstLayers.addItem(item)
 
-  def __populateMethods(self):
-    self.cmbMethod.addItems([
-                             self.tr("Logistic Regression"),
-                             self.tr("Artificial Neural Network"),
-                             self.tr("Weights of Evidence"),
-                             self.tr("Multi Criteria Evaluation")
-                           ])
+  def __populateSimulationMethods(self):
+    self.cmbSimulationMethod.addItems([
+                                       self.tr("Logistic Regression"),
+                                       self.tr("Artificial Neural Network"),
+                                       self.tr("Weights of Evidence"),
+                                       self.tr("Multi Criteria Evaluation")
+                                     ])
+
+  def __populateSamplingModes(self):
+    self.cmbSamplingMode.addItem(self.tr("All"), 0)
+    self.cmbSamplingMode.addItem(self.tr("Normal"), 1)
+    self.cmbSamplingMode.addItem(self.tr("Balanced"), 2)
+
+  def __modeChanged(self, index):
+    mode = self.cmbSamplingMode.itemData(index).toInt()[0]
+    if mode == 0:
+      self.inputs["samplingMode"] = "All"
+    elif mode == 1:
+      self.inputs["samplingMode"] = "Normal"
+    elif mode == 2:
+      self.inputs["samplingMode"] = "Balanced"
 
   def __modelChanged(self):
     if self.modelWidget is not None:
@@ -260,7 +269,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.modelWidget = None
       del self.modelWidget
 
-    modelName = self.cmbMethod.currentText()
+    modelName = self.cmbSimulationMethod.currentText()
 
     if modelName == self.tr("Logistic Regression"):
       self.modelWidget = logisticregressionwidget.LogisticRegressionWidget(self)
@@ -283,13 +292,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
       else:
         self.leRiskFunctionPath.setEnabled(False)
         self.btnSelectRiskFunction.setEnabled(False)
-    elif senderName == "chkRiskClasses":
-      if checked:
-        self.leRiskClassesPath.setEnabled(True)
-        self.btnSelectRiskClasses.setEnabled(True)
-      else:
-        self.leRiskClassesPath.setEnabled(False)
-        self.btnSelectRiskClasses.setEnabled(False)
     elif senderName == "chkRiskValidation":
       if checked:
         self.leRiskValidationPath.setEnabled(True)
@@ -329,8 +331,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     if senderName == "btnSelectRiskFunction":
       self.leRiskFunctionPath.setText(fileName)
-    elif senderName == "btnSelectRiskClasses":
-      self.leRiskClassesPath.setText(fileName)
     elif senderName == "btnSelectRiskValidation":
       self.leRiskValidationPath.setText(fileName)
     elif senderName == "btnSelectMonteCarlo":
@@ -350,9 +350,12 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.__logMessage(self.tr("Can't load raster %1").arg(filePath))
 
   def __writeSettings(self):
+    # samples and model tab
+    self.settings.setValue("ui/samplingMode", self.cmbSamplingMode.itemData(self.cmbSamplingMode.currentIndex()).toInt()[0])
+    self.settings.setValue("ui/samplesCount", self.spnSamplesCount.value())
+
     # simulation tab
     self.settings.setValue("ui/createRiskFunction", self.chkRiskFunction.isChecked())
-    self.settings.setValue("ui/createRiskClasses", self.chkRiskClasses.isChecked())
     self.settings.setValue("ui/createRiskValidation", self.chkRiskValidation.isChecked())
     self.settings.setValue("ui/createMonteCarlo", self.chkMonteCarlo.isChecked())
     self.settings.setValue("ui/monteCarloLastYear", self.spnEndYear.value())
@@ -360,9 +363,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.settings.setValue("ui/reuseMatrix", self.chkReuseMatrix.isChecked())
 
   def __readSettings(self):
+    # samples and model tab
+    samplingMode = self.settings.value("ui/samplingMode", 0).toInt()[0]
+    self.cmbSamplingMode.setCurrentIndex(self.cmbSamplingMode.findData(samplingMode))
+    self.spnSamplesCount.setValue(self.settings.value("ui/samplesCount", 10000).toInt()[0])
+
     # simulation tab
     self.chkRiskFunction.setChecked(self.settings.value("ui/createRiskFunction", False).toBool())
-    self.chkRiskClasses.setChecked(self.settings.value("ui/createRiskClasses", False).toBool())
     self.chkRiskValidation.setChecked(self.settings.value("ui/createRiskValidation", False).toBool())
     self.chkMonteCarlo.setChecked(self.settings.value("ui/createMonteCarlo", False).toBool())
     self.spnEndYear.setValue(self.settings.value("ui/monteCarloLastYear", 2013).toInt()[0])

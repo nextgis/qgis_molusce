@@ -167,25 +167,71 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabSamples">
-      <attribute name="title">
-       <string>Sample Data</string>
-      </attribute>
-     </widget>
      <widget class="QWidget" name="tabModel">
       <attribute name="title">
-       <string>Define Model</string>
+       <string>Samples and Model</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
+       <item row="0" column="0" colspan="3">
+        <widget class="QgsCollapsibleGroupBox" name="grpSampling">
+         <property name="title">
+          <string>Define Samples</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="saveCheckedState" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Mode</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="cmbSamplingMode"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Number of samples</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spnSamplesCount">
+            <property name="maximum">
+             <number>100000000</number>
+            </property>
+            <property name="value">
+             <number>10000</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
         <widget class="QLabel" name="label_4">
          <property name="text">
           <string>Method</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="cmbMethod">
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cmbSimulationMethod">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -194,7 +240,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
+       <item row="1" column="2">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -207,7 +253,7 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="0" colspan="3">
+       <item row="2" column="0" colspan="3">
         <widget class="QStackedWidget" name="widgetStackMethods">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -235,7 +281,14 @@
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0" colspan="3">
         <layout class="QGridLayout" name="gridLayout_4">
-         <item row="2" column="2">
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="leRiskValidationPath">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
           <widget class="QPushButton" name="btnSelectRiskValidation">
            <property name="enabled">
             <bool>false</bool>
@@ -270,58 +323,27 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QCheckBox" name="chkRiskClasses">
-           <property name="text">
-            <string>Observed risk classes</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="leRiskClassesPath">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QPushButton" name="btnSelectRiskClasses">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Browse...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
           <widget class="QCheckBox" name="chkRiskValidation">
            <property name="text">
             <string>Risk class validation</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="leRiskValidationPath">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
+         <item row="2" column="0">
           <widget class="QCheckBox" name="chkMonteCarlo">
            <property name="text">
             <string>Monte Carlo simulations</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="2" column="1">
           <widget class="QLineEdit" name="leMonteCarloPath">
            <property name="enabled">
             <bool>false</bool>
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
+         <item row="2" column="2">
           <widget class="QPushButton" name="btnSelectMonteCarlo">
            <property name="enabled">
             <bool>false</bool>
@@ -331,21 +353,21 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="0">
+         <item row="4" column="0">
           <widget class="QCheckBox" name="chkReuseMatrix">
            <property name="text">
             <string>Reuse input matrix</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="1">
+         <item row="4" column="1">
           <widget class="QLineEdit" name="leMatrixPath">
            <property name="enabled">
             <bool>false</bool>
            </property>
           </widget>
          </item>
-         <item row="5" column="2">
+         <item row="4" column="2">
           <widget class="QPushButton" name="btnSelectMatrix">
            <property name="enabled">
             <bool>false</bool>
@@ -355,7 +377,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="3" column="1">
           <widget class="QLabel" name="lblYear">
            <property name="enabled">
             <bool>false</bool>
@@ -365,7 +387,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="2">
+         <item row="3" column="2">
           <widget class="QSpinBox" name="spnEndYear">
            <property name="enabled">
             <bool>false</bool>
@@ -444,6 +466,12 @@
    <class>MolusceTableWidget</class>
    <extends>QTableWidget</extends>
    <header>molusce.moluscetablewidget</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
