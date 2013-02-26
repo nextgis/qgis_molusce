@@ -180,7 +180,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.__logMessage(self.tr("Factors list cleared"))
 
-
   def updateStatisticsTable(self):
     crossTab = CrossTableManager(self.inputs["initial"], self.inputs["final"])
 
@@ -202,6 +201,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.tblTransMatrix.resizeRowsToContents()
     self.tblTransMatrix.resizeColumnsToContents()
+    self.__logMessage(self.tr("Class statistics and transition matrix are updated"))
 
   def createChangeMap(self):
     fileName = utils.saveRasterDialog(self,
