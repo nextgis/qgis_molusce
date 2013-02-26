@@ -183,7 +183,25 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def updateStatisticsTable(self):
     crossTab = CrossTableManager(self.inputs["initial"], self.inputs["final"])
-    # TODO: populate UI table with data
+
+    transition = crossTab.getTransitionMatrix()
+    print transition
+    dimensions = len(transition)
+
+    self.tblTransMatrix.clear()
+    self.tblTransMatrix.setRowCount(dimensions)
+    self.tblTransMatrix.setColumnCount(dimensions)
+
+    for row in xrange(0, dimensions):
+      for col in xrange(0, dimensions):
+        item = QTableWidgetItem(unicode(transition[row, col]))
+        self.tblTransMatrix.setItem(row, col, item)
+
+      #item = QTableWidgetItem(unicode(sum(transition[row])))
+      #self.tblTransMatrix.setItem(row, dimensions, item)
+
+    self.tblTransMatrix.resizeRowsToContents()
+    self.tblTransMatrix.resizeColumnsToContents()
 
   def createChangeMap(self):
     fileName = utils.saveRasterDialog(self,

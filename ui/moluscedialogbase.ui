@@ -148,7 +148,7 @@
        <item row="4" column="0">
         <widget class="QPushButton" name="btnUpdateStatistics">
          <property name="text">
-          <string>Update table</string>
+          <string>Update tables</string>
          </property>
         </widget>
        </item>
