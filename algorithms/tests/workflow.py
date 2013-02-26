@@ -9,7 +9,7 @@ import numpy as np
 from numpy import ma as ma
 
 from molusce.algorithms.dataprovider import Raster
-from molusce.algorithms.models.crosstabs.model  import CrossTable
+from molusce.algorithms.models.crosstabs.manager  import CrossTableManager
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 from molusce.algorithms.models.lr.lr import LR
 from molusce.algorithms.models.mlp.manager import MlpManager
@@ -23,7 +23,7 @@ def main(initRaster, finalRaster, factors):
     print 'Finish Reading Init Data', clock(), '\n'
     
     print "Start Making CrossTable...", clock()
-    crosstab = CrossTable(initRaster.getBand(1), finalRaster.getBand(1))
+    crosstab = CrossTableManager(initRaster, finalRaster)
     print "Finish Making CrossTable", clock(), '\n'
     
     
@@ -39,37 +39,37 @@ def main(initRaster, finalRaster, factors):
     print 'Finish Making Change Map', clock(), '\n'
     
     
-    # Create and Train LR Model
-    model = LR(ns=1)
-    print 'Start Setting LR Trainig Data...', clock()
-    model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=10000)
-    print 'Finish Setting Trainig Data', clock(), '\n'
-    print 'Start LR Training...', clock()
-    model.train()
-    print 'Finish Trainig', clock(), '\n'
-    
-    
-    print 'Start LR Prediction...', clock()
-    predict = model.getPrediction(initRaster, factors)
-    filename = 'lr_predict.tiff'
-    try:
-        predict.save(filename)
-    finally:
-        #os.remove(filename)
-        pass
-    print 'Finish LR Prediction...', clock(), '\n'
-    
-    
-    #~ # Create and Train ANN Model
-    #~ model = MlpManager(ns=1)
-    #~ model.createMlp(initRaster, factors, finalRaster, [10])
-    #~ print 'Start Setting MLP Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, finalRaster, mode='Normal', samples=10000)
+    #~ # Create and Train LR Model
+    #~ model = LR(ns=1)
+    #~ print 'Start Setting LR Trainig Data...', clock()
+    #~ model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=10000)
     #~ print 'Finish Setting Trainig Data', clock(), '\n'
-    #~ print 'Start MLP Training...', clock()
-    #~ model.train(50, valPercent=20)
+    #~ print 'Start LR Training...', clock()
+    #~ model.train()
     #~ print 'Finish Trainig', clock(), '\n'
- 
+    #~ 
+    #~ 
+    #~ print 'Start LR Prediction...', clock()
+    #~ predict = model.getPrediction(initRaster, factors)
+    #~ filename = 'lr_predict.tiff'
+    #~ try:
+        #~ predict.save(filename)
+    #~ finally:
+        #~ #os.remove(filename)
+        #~ pass
+    #~ print 'Finish LR Prediction...', clock(), '\n'
+    
+    
+    # Create and Train ANN Model
+    model = MlpManager(ns=1)
+    model.createMlp(initRaster, factors, finalRaster, [10])
+    print 'Start Setting MLP Trainig Data...', clock()
+    model.setTrainingData(initRaster, factors, finalRaster, mode='Normal', samples=10000)
+    print 'Finish Setting Trainig Data', clock(), '\n'
+    print 'Start MLP Training...', clock()
+    model.train(50, valPercent=20)
+    print 'Finish Trainig', clock(), '\n'
+
     #~ print 'Start ANN Prediction...', clock()
     #~ predict = model.getPrediction(initRaster, factors)
     #~ filename = 'ann_predict.tiff'

@@ -9,7 +9,7 @@ from numpy.testing import assert_array_equal
 import numpy as np
 from numpy import ma as ma
 
-from molusce.algorithms.models.crosstabs.model  import CrossTable
+from molusce.algorithms.models.crosstabs.manager  import CrossTableManager
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.simulator.sim import Simulator
@@ -78,7 +78,7 @@ class TestSimulator(unittest.TestCase):
         
         self.aa = AreaAnalyst(self.raster1, self.raster2)
         
-        self.crosstab = CrossTable(self.raster1.getBand(1), self.raster2.getBand(1))
+        self.crosstab = CrossTableManager(self.raster1, self.raster2)
         
         # Simple model
         self.model = Model(self.raster1)

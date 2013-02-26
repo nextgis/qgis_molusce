@@ -60,6 +60,7 @@ class TestCrossTable (unittest.TestCase):
         self.assertEqual(self.table.getTransition(fromClass, toClass), 0)
         fromClass, toClass = 1, 3
         self.assertEqual(self.table.getTransition(fromClass, toClass), 3)
+        
     
     
 if __name__ == "__main__":

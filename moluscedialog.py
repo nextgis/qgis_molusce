@@ -44,7 +44,7 @@ from ui.ui_moluscedialogbase import Ui_Dialog
 import molusceutils as utils
 
 from algorithms.dataprovider import Raster
-from algorithms.models.crosstabs.model import CrossTable
+from algorithms.models.crosstabs.manager import CrossTableManager
 from algorithms.models.area_analysis.manager import AreaAnalyst
 
 class MolusceDialog(QDialog, Ui_Dialog):
@@ -180,7 +180,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
 
   def updateStatisticsTable(self):
-    crossTab = CrossTable(self.inputs["initial"].getBand(1), self.inputs["final"].getBand(1))
+    crossTab = CrossTableManager(self.inputs["initial"], self.inputs["final"])
     # TODO: populate UI table with data
 
   def createChangeMap(self):

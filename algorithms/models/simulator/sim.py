@@ -65,7 +65,7 @@ class Simulator(object):
         '''
         Make 1 iteracion of simulation.
         '''
-        transition = self.crosstable
+        transition = self.crosstable.getCrosstable()
         
         prediction = self.getPrediction()
         state = self.getState()
@@ -80,7 +80,8 @@ class Simulator(object):
             for finalClass in classes:
                 if initClass == finalClass: continue
                 
-                n = transition.getTransition(initClass, finalClass)   # Number of pixels to be moved
+                # TODO: Calculate number of pixels to be moved via TransitoionMatrix and state raster
+                n = transition.getTransition(initClass, finalClass)   # Number of pixels to be moved as constant.
                 # Find n appropriate places for transition initClass -> finalClass
                 class_code = analyst.encode(initClass, finalClass)
                 places = (changes==class_code)      # Array of places where transitions initClass -> finalClass are occured
