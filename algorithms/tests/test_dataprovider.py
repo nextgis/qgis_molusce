@@ -53,6 +53,8 @@ class TestRaster (unittest.TestCase):
         
         self.assertTrue(self.r1.geoDataMatch(self.r2))
         
+        self.assertTrue(self.r1.isMetricProj())
+        
     def test_getNeighbours(self):
         neighbours = self.r2.getNeighbours(row=1,col=0, size=0)
         self.assertEqual(neighbours, [[1]])

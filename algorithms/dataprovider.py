@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 from osgeo import gdal
+from osgeo import osr
 
 import numpy as np
 from numpy import ma as ma
@@ -64,12 +65,12 @@ class Raster(object):
         return True
 
     def geoTransformMatch(self, raster):
-        '''Return True if GetGeoTransform of the rasters are matched, ie:
-        the difference of the top left x less then pixel size,
-        the difference of the top left y less then pixel size,
-        for x and y:
-        (difference of the pixel sizes) * (pixel count) < (pixel size),
-        rotations are equal.
+        '''Return True if GetGeoTransform of the rasters are matched:
+        1) the difference of the top left x less then pixel size,
+        2) the difference of the top left y less then pixel size,
+        3) for x and y:
+            (difference of the pixel sizes) * (pixel count) < (pixel size),
+        4) rotations are equal.
         '''
         indexes = (156835.0, 90.0, 0.0, 2338905.0, 0.0, -90.0)
         s_cornerX, s_width, s_rot1, s_cornerY, s_rot2, s_height  = self.geodata['transform']
@@ -101,6 +102,17 @@ class Raster(object):
         else:
             return 0
 
+    def get_dtype(self):
+        # All bands of the raster have the same dtype now
+        band = self.getBand(1)
+        return band.dtype
+
+    def getFileName(self):
+        return self.filename
+
+    def getGeodata(self):
+        return self.geodata
+
     def getNeighbours(self, row, col, size):
         '''Return subset of the bands -- neighbourhood of the central pixel (row,col)'''
         bcount = self.getBandsCount()
@@ -123,16 +135,12 @@ class Raster(object):
         neighbours = (2*ns+1)**2
         return self.getBandsCount() * neighbours
 
-    def getFileName(self):
-        return self.filename
+    def getPixelArea(self):
+        cornerX, width, rot1, cornerY, rot2, height  = self.geodata['transform']
+        return {'area': abs(width * height), 'unit': self.getProjUnits()}
 
-    def get_dtype(self):
-        # All bands of the raster have the same dtype now
-        band = self.getBand(1)
-        return band.dtype
-
-    def getGeodata(self):
-        return self.geodata
+    def getProjUnits(self):
+        return self.geodata['units']
 
     def getXSize(self):
         return self.geodata['xSize']
@@ -140,13 +148,12 @@ class Raster(object):
     def getYSize(self):
         return self.geodata['ySize']
 
-    #~ def normalize(self):
-        #~ '''Rescale all bands of the raster: new mean becames 0, new std becames 1'''
-        #~ for i in range(1, self.getBandsCount()+1):
-            #~ r = self.getBand(i)
-            #~ m = np.mean(r)
-            #~ s = np.std(r)
-            #~ self.setBand((r-m)/s,i)
+    def isMetricProj(self):
+        '''
+        Return true if projection of the raster uses metric units
+        '''
+        return self.getProjUnits() in ('metre', 'Meter')
+        
 
     def save(self, filename, format="GTiff", rastertype=None):
         driver = gdal.GetDriverByName(format)
@@ -178,14 +185,9 @@ class Raster(object):
         if self.getBandsCount() > 0:
             band = self.getBand(1)
             if band.shape != (geodata['xSize'], geodata['ySize']):
-                raise ProviderError('Existing bands dont match new geometry!')
+                raise ProviderError("Existing bands don't match new geodata geometry!")
 
-        self.geodata['xSize'] = geodata['xSize']
-        self.geodata['ySize'] = geodata['ySize']
-
-
-        self.geodata['proj']  = geodata['proj']
-        self.geodata['transform']  = geodata['transform']
+        self.geodata = geodata
 
 
     def resetMask(self, maskVals = None):
@@ -210,6 +212,11 @@ class Raster(object):
         self.geodata['ySize'] = data.RasterYSize
         self.geodata['proj']  = data.GetProjection()
         self.geodata['transform']  = data.GetGeoTransform()
+        
+        # Get units of the projection
+        sr = osr.SpatialReference()
+        sr.ImportFromWkt(self.geodata['proj'])
+        self.geodata['units'] = sr.GetLinearUnitsName()
 
         self.bands = []
         for i in range(1, data.RasterCount+1):

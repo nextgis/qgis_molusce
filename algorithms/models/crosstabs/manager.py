@@ -15,6 +15,8 @@ class CrossTableManager(object):
         if not initRaster.geoDataMatch(finalRaster):
             raise CrossTabManagerError('Geomerties of the rasters are different!')
         
+        self.pixelArea = initRaster.getPixelArea()
+        
         self.crosstable = CrossTable(initRaster.getBand(1), finalRaster.getBand(1))
     
     def getCrosstable(self):
@@ -25,3 +27,27 @@ class CrossTableManager(object):
         tab = tab.T
         s = 1.0/np.sum(tab, axis=1)
         return tab*s[:,None]
+        
+    def getTransitionStat(self):
+        pixelArea = self.pixelArea['area']
+        stat = {'unit': self.pixelArea['unit']}
+        tab = self.getCrosstable()
+        
+        initArea = tab.compute_sum_rows()
+        initArea = pixelArea * initArea
+        initPerc = 100.0 * initArea / sum(initArea)
+        stat['init'] = initArea
+        stat['initPerc'] = initPerc
+        
+        finalArea = tab.compute_sum_cols()
+        finalArea = pixelArea * finalArea
+        finalPerc = 100.0 * finalArea / sum(finalArea)
+        stat['final'] = finalArea
+        stat['finalPerc'] = finalPerc
+        
+        deltas = finalArea - initArea
+        deltasPerc = finalPerc - initPerc
+        stat['deltas'] = deltas
+        stat['deltasPerc'] = deltasPerc
+        
+        return stat
