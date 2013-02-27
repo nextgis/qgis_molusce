@@ -26,40 +26,6 @@ def main(initRaster, finalRaster, factors):
     crosstab = CrossTableManager(initRaster, finalRaster)
     print "Finish Making CrossTable", clock(), '\n'
     
-    
-    print 'Start Making Change Map...', clock()
-    analyst = AreaAnalyst(initRaster,finalRaster)
-    changeMapRaster = analyst.makeChangeMap()
-    filename = 'tempChangeMap.tiff'
-    try:
-        changeMapRaster.save(filename)
-    finally:
-        #os.remove(filename)
-        pass
-    print 'Finish Making Change Map', clock(), '\n'
-    
-    
-    #~ # Create and Train LR Model
-    #~ model = LR(ns=1)
-    #~ print 'Start Setting LR Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=10000)
-    #~ print 'Finish Setting Trainig Data', clock(), '\n'
-    #~ print 'Start LR Training...', clock()
-    #~ model.train()
-    #~ print 'Finish Trainig', clock(), '\n'
-    #~ 
-    #~ 
-    #~ print 'Start LR Prediction...', clock()
-    #~ predict = model.getPrediction(initRaster, factors)
-    #~ filename = 'lr_predict.tiff'
-    #~ try:
-        #~ predict.save(filename)
-    #~ finally:
-        #~ #os.remove(filename)
-        #~ pass
-    #~ print 'Finish LR Prediction...', clock(), '\n'
-    
-    
     # Create and Train ANN Model
     model = MlpManager(ns=1)
     model.createMlp(initRaster, factors, finalRaster, [10])
@@ -70,26 +36,36 @@ def main(initRaster, finalRaster, factors):
     model.train(50, valPercent=20)
     print 'Finish Trainig', clock(), '\n'
 
-    #~ print 'Start ANN Prediction...', clock()
-    #~ predict = model.getPrediction(initRaster, factors)
-    #~ filename = 'ann_predict.tiff'
-    #~ try:
-        #~ predict.save(filename)
-    #~ finally:
-        #~ #os.remove(filename)
-        #~ pass
-    #~ print 'Finish ANN Prediction...', clock(), '\n'
-    
-    print 'Start Simulation...', clock()
-    simulator = Simulator(initRaster, factors, model, crosstab)
-    simulator.sim()
-    state = simulator.getState()
-    filename = 'simulation_result.tiff'
+    print 'Start ANN Prediction...', clock()
+    predict = model.getPrediction(initRaster, factors)
+    filename = 'ann_predict.tiff'
     try:
-        state.save(filename)
+        predict.save(filename)
     finally:
         #os.remove(filename)
         pass
+    print 'Finish ANN Prediction...', clock(), '\n'
+
+    # simulation
+    print 'Start Simulation...', clock()
+    simulator = Simulator(initRaster, factors, model, crosstab)
+    # Make 1 cycle of simulation:
+    simulator.sim()
+    monteCarloSim   = simulator.getState()              # Result of MonteCarlo simulation
+    errors          = simulator.errorMap(finalRaster)   # Risk class validation
+    riskFunct       = simulator.getConfidence()         # Risk function
+    
+    # Make K cycles of simulation:
+    # simulator.simN(K)
+    try:
+        monteCarloSim.save('simulation_result.tiff')
+        errors.save('risk_validation.tiff')
+        riskFunct.save('risk_func.tiff')
+    finally:
+        pass
+        # os.remove('simulation_result.tiff')
+        # os.remove('risk_validation.tiff')
+        # os.remove('risk_func.tiff')
     print 'Finish Simulation', clock(), '\n'
     
     print 'Done', clock()
