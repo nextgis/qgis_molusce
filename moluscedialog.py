@@ -183,8 +183,35 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def updateStatisticsTable(self):
     crossTab = CrossTableManager(self.inputs["initial"], self.inputs["final"])
 
+    # class statistics
+    stat = crossTab.getTransitionStat()
+
+    dimensions = len(stat["init"])
+    self.tblStatistics.clear()
+    self.tblStatistics.setRowCount(dimensions)
+    self.tblStatistics.setColumnCount(6)
+
+    labels = [self.leInitYear.text(),
+              self.leFinalYear.text(),
+              u"Δ",
+              self.leInitYear.text() + " %",
+              self.leFinalYear.text() + " %",
+              u"Δ %"
+             ]
+    self.tblStatistics.setHorizontalHeaderLabels(labels)
+
+    self.__addTableColumn(0, stat["init"])
+    self.__addTableColumn(1, stat["final"])
+    self.__addTableColumn(2, stat["deltas"])
+    self.__addTableColumn(3, stat["initPerc"])
+    self.__addTableColumn(4, stat["finalPerc"])
+    self.__addTableColumn(5, stat["deltasPerc"])
+
+    self.tblStatistics.resizeRowsToContents()
+    self.tblStatistics.resizeColumnsToContents()
+
+    # transitional matrix
     transition = crossTab.getTransitionMatrix()
-    print transition
     dimensions = len(transition)
 
     self.tblTransMatrix.clear()
@@ -195,9 +222,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
       for col in xrange(0, dimensions):
         item = QTableWidgetItem(unicode(transition[row, col]))
         self.tblTransMatrix.setItem(row, col, item)
-
-      #item = QTableWidgetItem(unicode(sum(transition[row])))
-      #self.tblTransMatrix.setItem(row, dimensions, item)
 
     self.tblTransMatrix.resizeRowsToContents()
     self.tblTransMatrix.resizeColumnsToContents()
@@ -223,20 +247,34 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.__logMessage(self.tr("Can't create change map. Initial or final land use map is not set"))
 
   def startSimulation(self):
+    # TODO: innit model
+
+    #~ simulator = Simulator(self.inputs["initial"],
+                           #~ self.inputs["factors"],
+                           #~ model,
+                           #~ self.crosstab
+                          #~ )
+
     if self.chkRiskFunction.isChecked():
-      if not self.leRiskFunctionPath.text.isEmpy():
+      if not self.leRiskFunctionPath.text().isEmpy():
+        #res = simulator.getConfidence()
+        #res.save(unicode(self.leRiskFunctionPath.text()))
         pass
       else:
         self.__logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
     if self.chkRiskValidation.isChecked():
-      if not self.leRiskValidationPath.text.isEmpy():
+      if not self.leRiskValidationPath.text().isEmpy():
+        #res = simulator.errorMap(self.inputs["final"])
+        #res.save(unicode(self.leRiskValidationPath.text()))
         pass
       else:
         self.__logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
 
     if self.chkMonteCarlo.isChecked():
-      if not self.leMonteCarloPath.text.isEmpy():
+      if not self.leMonteCarloPath.text().isEmpy():
+        #res = simulator.getState()
+        #res.save(unicode(self.leMonteCarloPath.text()))
         pass
       else:
         self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
@@ -359,6 +397,12 @@ class MolusceDialog(QDialog, Ui_Dialog):
                             .arg(datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S"))
                             .arg(message)
                            )
+
+  def __addTableColumn(self, col, values):
+    dimensions = len(values)
+    for r in xrange(0, dimensions):
+      item = QTableWidgetItem(unicode(values[r]))
+      self.tblStatistics.setItem(r, col, item)
 
   def __addRasterToCanvas(self, filePath):
     layer = QgsRasterLayer(filePath, QFileInfo(filePath).baseName())
