@@ -55,6 +55,20 @@ class TestRaster (unittest.TestCase):
         
         self.assertTrue(self.r1.isMetricProj())
         
+    
+    def test_getBandStat(self):
+        stat = self.r1.getBandStat(1)
+        self.assertAlmostEqual(stat['mean'], 15.0/9)
+        self.assertAlmostEqual(stat['std'], np.sqrt(10.0/9))
+        
+    def test_normalize(self):
+        r1 = Raster('examples/multifact.tif')
+        r1.normalize()
+        r1.denormalize()
+        assert_array_equal(r1.getBand(1), self.data1)
+        
+        
+    
     def test_getNeighbours(self):
         neighbours = self.r2.getNeighbours(row=1,col=0, size=0)
         self.assertEqual(neighbours, [[1]])
@@ -87,13 +101,6 @@ class TestRaster (unittest.TestCase):
                 assert_array_equal(r2.getBand(i+1), self.r1.getBand(i+1))
         finally:
             os.remove(filename)
-
-    
-    #~ def test_normalize(self):
-        #~ band = self.data2
-        #~ band = (band - np.mean(band))/np.std(band)
-        #~ self.r2.normalize()
-        #~ assert_array_equal([band], self.r2.bands)
 
     
 if __name__ == "__main__":

@@ -40,9 +40,11 @@ class Raster(object):
     def __init__(self, filename=None):
         # TODO: Get mask values from the raster metadata.
         self.filename = filename
-        self.maskVals = None    # List of the "transparent" pixel values
-        self.bands = None       # List of the bands (stored as numpy mask array)
-        self.geodata = None     # Georeferensing information
+        self.maskVals = None     # List of the "transparent" pixel values
+        self.bands    = None     # List of the bands (stored as numpy mask array)
+        self.geodata  = None     # Georeferensing information
+        self.stat     = None     # Initial (before normalizing) statistic (means and stds) of the bands
+        self.isNormalazed = None # Is the bands of the raster normalized?
         if self.filename: self._read()
 
     def binaryzation(self, trueVals, bandNum):
@@ -54,6 +56,18 @@ class Raster(object):
     def create(self, bands, geodata):
         self.bands = bands
         self.geodata = geodata
+        
+    def denormalize(self):
+        '''
+        Denormalisation (see self.normalize)
+        '''
+        if self.isNormalazed:
+            bandcount = self.getBandsCount()
+            for i in range(1, bandcount+1):
+                stat = self.stat[i-1]
+                newBand = self.getBand(i)*stat['std'] + stat['mean']
+                self.setBand(newBand, i)
+            self.isNormalazed = False
 
     def geoDataMatch(self, raster):
         '''Return true if RasterSize, Projection and GetGeoTransform of the rasters are matched'''
@@ -93,14 +107,25 @@ class Raster(object):
 
         return True
 
-    def getBand(self, band):
-        return self.bands[band-1]
+    def getBand(self, bandNo):
+        return self.bands[bandNo-1]
 
     def getBandsCount(self):
         if self.bands:
             return len(self.bands)
         else:
             return 0
+
+    def getBandStat(self, bandNo):
+        '''
+        Return mean and std of the raster's band
+        '''
+        band = self.getBand(bandNo)
+        result = np.zeros(1, dtype=[('mean', float, 1),('std',  float, 1)])
+        result['mean'] = np.mean(band)
+        result['std']  = np.std (band)
+        return result
+
 
     def get_dtype(self):
         # All bands of the raster have the same dtype now
@@ -154,6 +179,20 @@ class Raster(object):
         '''
         return self.getProjUnits() in ('metre', 'Meter')
         
+    def normalize(self):
+        '''
+        Linear normalisation of the bands: new = (old-mean(old)/std(old))
+        '''
+        if not self.isNormalazed:
+            bandcount = self.getBandsCount()
+            self.stat = []
+            for i in range(1, bandcount+1):
+                stat = self.getBandStat(i)
+                self.stat.append(stat)
+                newBand = (self.getBand(i) - stat['mean'])/stat['std']
+                self.setBand(newBand, i)
+            self.isNormalazed = True
+
 
     def save(self, filename, format="GTiff", rastertype=None):
         driver = gdal.GetDriverByName(format)
@@ -228,6 +267,7 @@ class Raster(object):
                 r = ma.array(data = r, mask=mask)
             self.bands.append(r)
         self.resetMask()
+        self.isNormalazed = False
 
 
 

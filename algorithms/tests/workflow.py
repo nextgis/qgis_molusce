@@ -27,10 +27,10 @@ def main(initRaster, finalRaster, factors):
     print "Finish Making CrossTable", clock(), '\n'
     
     # Create and Train ANN Model
-    model = MlpManager(ns=1)
+    model = MlpManager(ns=0)
     model.createMlp(initRaster, factors, finalRaster, [10])
     print 'Start Setting MLP Trainig Data...', clock()
-    model.setTrainingData(initRaster, factors, finalRaster, mode='Normal', samples=10000)
+    model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=10000)    
     print 'Finish Setting Trainig Data', clock(), '\n'
     print 'Start MLP Training...', clock()
     model.train(50, valPercent=20)
