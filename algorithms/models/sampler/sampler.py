@@ -3,6 +3,8 @@
 import numpy as np
 from numpy import ma as ma
 
+from PyQt4.QtCore import *
+
 from molusce.algorithms.dataprovider import Raster, ProviderError
 from molusce.algorithms.utils import get_gradations
 
@@ -13,7 +15,7 @@ class SamplerError(Exception):
         self.msg = msg
 
 
-class Sampler(object):
+class Sampler(QObject):
     '''Create training set based on input-output rasters.
     
     A sample is a set of input data for a model and output data that has to be predicted via the model.
@@ -38,6 +40,12 @@ class Sampler(object):
             dtype=[('state', float, 9),('factors',  float, 9*N), ('output', float, 1)]
         )
     '''
+    
+    rangeChanged = pyqtSignal(str, int)
+    updateProgress = pyqtSignal()
+    processFinished = pyqtSignal()
+    logMessage = pyqtSignal(str)
+    
     def __init__(self, state, factors, output=None, ns=0):
         '''
         @param state            Raster of the current state (classes) values.
@@ -45,6 +53,7 @@ class Sampler(object):
         @param output           Raster that contains states (classes) to predict.
         @param ns               Neighbourhood size.
         '''
+        QObject.__init__(self)
         
         self.data = None        # Training data
         self.ns = ns
@@ -161,6 +170,7 @@ class Sampler(object):
         self.data = np.zeros(samples, dtype=[('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
         
         if mode == 'All':
+            self.rangeChanged.emit(self.tr("Sampling..."), rows - 2*self.ns)
             # i,j  are pixel indexes
             for i in xrange(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
                 for j in xrange(self.ns, cols - self.ns):     # the samples are incomplete in that region
@@ -168,9 +178,11 @@ class Sampler(object):
                     if sample != None:
                         self.data[samples_count] = sample
                         samples_count = samples_count + 1
+                self.updateProgress.emit()
             self.data = self.data[:samples_count]   # Crop unused part of the array
         
-        elif mode == 'Normal': 
+        elif mode == 'Normal':
+            self.rangeChanged.emit(self.tr("Sampling..."), samples)
             while samples_count< samples:
                 row = np.random.randint(rows)
                 col = np.random.randint(cols)
@@ -178,6 +190,7 @@ class Sampler(object):
                 if sample != None:
                     self.data[samples_count] = sample
                     samples_count = samples_count + 1
+                    self.updateProgress.emit()
         elif mode == 'Balanced':
             # Analyze output classes:
             band = output.getBand(1)
@@ -188,6 +201,7 @@ class Sampler(object):
             average = 1.0*samples / len(classes)
             
             samples_count = 0
+            self.rangeChanged.emit(self.tr("Sampling..."), samples)
             # Get counts[i] samples of "cl" class
             for i,cl in enumerate(classes):
                 # Find indices of "cl"-class pixels
@@ -204,9 +218,10 @@ class Sampler(object):
                         self.data[samples_count] = sample
                         samples_count = samples_count + 1
                         count = count + 1
+                        self.updateProgress.emit()
         else:
             raise SamplerError('The mode of sampling is unknown!')
 
         if shuffle: 
             np.random.shuffle(self.data)
-
+        self.processFinished.emit()

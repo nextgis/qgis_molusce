@@ -3,6 +3,8 @@
 import numpy as np
 from numpy import ma as ma
 
+from PyQt4.QtCore import *
+
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.utils import masks_identity, get_gradations
 
@@ -13,7 +15,7 @@ class AreaAnalizerError(Exception):
         self.msg = msg
 
 
-class AreaAnalyst(object):
+class AreaAnalyst(QObject):
     '''Generates an output raster, with geometry
     copied from the initial land use map.  The output is a 1-band raster
     with classes corresponding the (r,c) elements of the m-matrix of
@@ -21,16 +23,24 @@ class AreaAnalyst(object):
     the final class c, and there are m classes, the output pixel will have
     value k = r*m + c
     '''
+    
+    rangeChanged = pyqtSignal(str, int)
+    updateProgress = pyqtSignal()
+    processFinished = pyqtSignal()
+    logMessage = pyqtSignal(str)
+    
     def __init__(self, first, second):
         '''
         @param first        Raster of the first stage (the state before transition).
         @param second       Raster of the second stage (the state after transition).
         '''
+        QObject.__init__(self)
+        
         
         if not first.geoDataMatch(second):
             raise AreaAnalizerError('Geometries of the rasters are different!')
         if first.getBandsCount() + second.getBandsCount() > 2:
-            raise AreaAnalizerError('Raster mast have 1 band!')
+            raise AreaAnalizerError('Rasters mast have 1 band!')
         
         self.geodata = first.getGeodata()
         first, second = masks_identity(first.getBand(1), second.getBand(1))
@@ -62,15 +72,18 @@ class AreaAnalyst(object):
         f, s = self.first, self.second
         rows, cols = self.geodata['ySize'], self.geodata['xSize']
         band = np.zeros([rows, cols])
+        self.rangeChanged.emit(self.tr("Creating change map"), rows)
         for i in xrange(rows):
             for j in xrange(cols):
                 if not f.mask[i,j]:
                     r = f[i,j]
                     c = s[i,j]
                     band[i, j] = self.encode(r, c)
+            self.updateProgress.emit()
         band = [np.ma.array(data = band, mask = f.mask)]
         raster = Raster()
         raster.create(band, self.geodata)
+        self.processFinished.emit()
         return raster
     
     

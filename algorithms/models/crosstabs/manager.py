@@ -11,9 +11,10 @@ class CrossTabManagerError(Exception):
         self.msg = msg
     
 class CrossTableManager(object):
+
     def __init__(self, initRaster, finalRaster):
         if not initRaster.geoDataMatch(finalRaster):
-            raise CrossTabManagerError('Geomerties of the rasters are different!')
+            raise CrossTabManagerError('Geometries of the raster maps are different!')
         
         self.pixelArea = initRaster.getPixelArea()
         
