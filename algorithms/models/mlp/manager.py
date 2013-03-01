@@ -173,6 +173,10 @@ class MlpManager(object):
             if not state.geoDataMatch(r):
                 raise MlpManagerError('Geometries of the input rasters are different!')
         
+        # Normalize factors before prediction:
+        for f in factors:
+            f.normalize()
+        
         predicted_band  = np.zeros([rows, cols])
         confidence_band = np.zeros([rows, cols])
         
@@ -234,6 +238,10 @@ class MlpManager(object):
         '''
         if not self.MLP:
             raise MlpManagerError('You must create a MLP before!')
+        
+        # Normalize factors before sampling:
+        for f in factors:
+            f.normalize()
         
         sampler = Sampler(state, factors, output, self.ns)
         sampler.setTrainingData(state, factors, output, shuffle, mode, samples)

@@ -181,7 +181,7 @@ class Raster(object):
         
     def normalize(self):
         '''
-        Linear normalisation of the bands: new = (old-mean(old)/std(old))
+        Linear normalization of the bands: new = (old-mean(old)/std(old))
         '''
         if not self.isNormalazed:
             bandcount = self.getBandsCount()
