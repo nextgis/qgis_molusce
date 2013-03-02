@@ -194,7 +194,7 @@ class Raster(object):
             self.isNormalazed = True
 
 
-    def save(self, filename, format="GTiff", rastertype=None):
+    def save(self, filename, format="GTiff", rastertype=None, nodata=0):
         driver = gdal.GetDriverByName(format)
         metadata = driver.GetMetadata()
         if metadata.has_key(gdal.DCAP_CREATE) and metadata[gdal.DCAP_CREATE] == "YES":
@@ -210,7 +210,8 @@ class Raster(object):
             outRaster.SetGeoTransform(geodata['transform'])
             for i in range(bandcount):
                 band = self.getBand(i+1)
-                outRaster.GetRasterBand( i + 1 ).WriteArray(band)
+                outRaster.GetRasterBand( i + 1 ).WriteArray(band.filled(fill_value=nodata))
+                outRaster.GetRasterBand( i + 1 ).SetNoDataValue(nodata)
             outRaster = None
         else:
           raise ProviderError("Driver %s does not support Create() method!" % format)
