@@ -99,7 +99,7 @@ class Simulator(QObject):
                 places = (changes==class_code)      # Array of places where transitions initClass -> finalClass are occured
                 placesCount = np.sum(places)
                 if placesCount < n:
-                    self.logMessage.emit(self.tr("There are %s transitions in the transition matrix, but the model finds %s transitions (%s class -> %s class), but ") % (n, initClass, finalClass, placesCount))
+                    self.logMessage.emit(self.tr("There are more transitions in the transition matrix, then the model have found"))
                 
                 confidence = self.getConfidence().getBand(1)
                 confidence = confidence * places # The higher is number in cell, the higer is probability of transition in the cell

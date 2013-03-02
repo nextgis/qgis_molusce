@@ -96,8 +96,6 @@ class TestMlpManager (unittest.TestCase):
             }
         ]
         self.assertEqual(mng.data.shape, (1,))
-        print mng.data[0]['factors'].shape
-        print data[0]['factors'].shape
         assert_array_equal(data[0]['factors'], mng.data[0]['factors'])
         assert_array_equal(data[0]['output'], mng.data[0]['output'])
         assert_array_equal(data[0]['state'], mng.data[0]['state'])

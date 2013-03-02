@@ -191,7 +191,7 @@ class MlpManager(object):
                         # Get index of the biggest output value as the result
                         biggest = max(out)
                         res = list(out).index(biggest)
-                        predicted_band[i, j] = res
+                        predicted_band[i, j] = self.classlist[res]
                         
                         confidence = self.outputConfidence(out)
                         confidence_band[i, j] = confidence

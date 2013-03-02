@@ -52,9 +52,6 @@ class AreaAnalyst(QObject):
         for cl in get_gradations(self.second.compressed()):
             if cl not in self.classes:
                 raise AreaAnalizerError("List of classes of the first raster doesn't contains a class of the second raster!")
-        # Check that class numeration encoded without gaps
-        if len(self.classes) != (self.classes[-1] - self.classes[0]) + 1:
-            raise AreaAnalizerError('Raster mast have the class numbers without gaps!')
         
         
     def encode(self, initialClass, finalClass):

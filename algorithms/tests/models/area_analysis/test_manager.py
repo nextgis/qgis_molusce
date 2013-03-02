@@ -45,8 +45,5 @@ class TestAreaAnalysisManager (unittest.TestCase):
         band = raster.getBand(1)
         assert_array_equal(band, self.r2r2)
         
-        # Gaps in the class numeration
-        self.assertRaises(AreaAnalizerError, AreaAnalyst, self.r3, self.r3)
-        
 if __name__ == "__main__":
     unittest.main()
