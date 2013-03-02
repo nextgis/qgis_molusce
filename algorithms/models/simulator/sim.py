@@ -60,14 +60,14 @@ class Simulator(QObject):
         '''
         Create map of correct and incorrect prediction. 
         This function compares the known answer and the result of predicting procedure,
-        correct pixel is marked as 0, incorrect is marked as 1.
+        correct pixel is marked as 0.
         '''
-        result = self.getPrediction()
-        b = result.getBand(1)
+        state = self.getState()
+        b = state.getBand(1)
         a = answer.getBand(1)
         diff = (a-b).astype(int)
-        result.setBand(diff)
-        
+        result = Raster()
+        result.create([diff], state.getGeodata())
         return result
         
     def sim(self):
