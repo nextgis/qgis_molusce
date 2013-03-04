@@ -91,16 +91,22 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     model.createMlp(self.inputs["initial"],
                     self.inputs["factors"].values(),
                     self.inputs["changeMap"],
-                    self.leTopology.text().split(" ")
+                    [int(n) for n in self.leTopology.text().split(" ")]
                    )
+
+    model.setTrainingData(self.inputs["initial"],
+                          self.inputs["factors"].values(),
+                          self.inputs["final"],
+                          mode=self.inputs["samplingMode"],
+                          samples=self.plugin.spnSamplesCount.value())
 
     self.plugin.__logMessage(self.tr("ANN training started"))
     model.train(self.spnMaxIterations.value(),
                 valPercent=20
                )
-    self.plugin.__logMessage(self.tr("ANN training completed"))
+    #self.plugin.__logMessage(self.tr("ANN training completed"))
 
-    #self.inputs["model"] = model
+    self.inputs["model"] = model
 
   def __selectFile(self):
     senderName = self.sender().objectName()

@@ -407,7 +407,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def __addRasterToCanvas(self, filePath):
     layer = QgsRasterLayer(filePath, QFileInfo(filePath).baseName())
     if layer.isValid():
-      QgsMapLayerRegistry.addMapLayers([layer])
+      QgsMapLayerRegistry.instance().addMapLayers([layer])
     else:
       self.__logMessage(self.tr("Can't load raster %1").arg(filePath))
 
