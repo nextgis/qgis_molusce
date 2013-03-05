@@ -33,4 +33,5 @@ Rasters that are used in the workflow example:
 	dist_river.tif	Distance from the river.
 	dist_roads.tif	Distance from roads.
 	
+	two_dist.tif	Stack of dist_roads and dist_river
     

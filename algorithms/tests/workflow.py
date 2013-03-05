@@ -30,10 +30,10 @@ def main(initRaster, finalRaster, factors):
     model = MlpManager(ns=0)
     model.createMlp(initRaster, factors, finalRaster, [10])
     print 'Start Setting MLP Trainig Data...', clock()
-    model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=10000)    
+    model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=1000)    
     print 'Finish Setting Trainig Data', clock(), '\n'
     print 'Start MLP Training...', clock()
-    model.train(50, valPercent=20)
+    model.train(1000, valPercent=20)
     print 'Finish Trainig', clock(), '\n'
 
     print 'Start ANN Prediction...', clock()
@@ -72,6 +72,6 @@ def main(initRaster, finalRaster, factors):
     
     
 if __name__=="__main__":
-    main('examples/init.tif', 'examples/final.tif', ['examples/dist_river.tif', 'examples/dist_roads.tif'])
+    main('examples/init.tif', 'examples/final.tif', ['examples/two_dist.tif'])
     
     
