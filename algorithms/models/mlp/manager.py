@@ -4,7 +4,7 @@
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
-
+from PyQt4.QtCore import *
 
 import copy
 
@@ -20,14 +20,21 @@ class MlpManagerError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
-class MlpManager(object):
+class MlpManager(QObject):
     '''This class gets the data extracted from the UI and
     pass it to multi-layer perceptron, then gets and stores the result.
     '''
     
-    # TODO: Perform normalization of inputs
+    updateGraph = pyqtSignal(float, float)      # Train error, val. error
+    updateDeltaRMS = pyqtSignal(float)          # Delta of RMS: min(valError) - currentValError
+    processFinished = pyqtSignal()
+    logMessage = pyqtSignal(str)
+    
     
     def __init__(self, ns=0, MLP=None):
+        
+        QObject.__init__(self)
+        
         self.MLP = MLP
         
         self.layers = None
@@ -69,7 +76,7 @@ class MlpManager(object):
         if val_ind:
             val_error = 0
             val_sampl = val_ind[1] - val_ind[0]
-            for i in range(val_ind[0], val_ind[1]):
+            for i in xrange(val_ind[0], val_ind[1]):
                 val_error = val_error + self.computeMlpError(sample = self.data[i])
             self.setValError(val_error/val_sampl)
     
@@ -271,6 +278,7 @@ class MlpManager(object):
         @param momentum         Learning momentum.
         @param continue_train   If False then it is new training cycle, reset weights training and validation error. If True, then continue training.
         '''
+        
         samples_count = len(self.data)
         val_sampl_count = samples_count*valPercent/100
         apply_validation = True if val_sampl_count>0 else False # Use validation set
@@ -288,15 +296,17 @@ class MlpManager(object):
         for epoch in range(epochs):
             self.trainEpoch(train_indexes, lrate, momentum)
             self.computePerformance(train_indexes, val_indexes)
+            self.updateGraph.emit(self.getTrainError(), self.getValError())
+            self.updateDeltaRMS.emit(min_val_error - self.getValError())
             if apply_validation and (self.getValError() < min_val_error):
                 min_val_error = self.getValError()
                 last_train_err = self.getTrainError()
                 best_weights = self.copyWeights()
-        if apply_validation:
-            self.setMlpWeights(best_weights)
-            self.setValError(min_val_error)
-            self.setTrainError(last_train_err)
-        
+            if apply_validation:
+                self.setMlpWeights(best_weights)
+                self.setValError(min_val_error)
+                self.setTrainError(last_train_err)
+        self.processFinished.emit()
                 
     def trainEpoch(self, train_indexes, lrate=0.1, momentum=0.1):
         '''Perform a training epoch on the MLP
