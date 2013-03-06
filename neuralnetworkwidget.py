@@ -100,7 +100,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
                           mode=self.inputs["samplingMode"],
                           samples=self.plugin.spnSamplesCount.value())
 
-    self.plugin.__logMessage(self.tr("ANN training started"))
+    #self.plugin.__logMessage(self.tr("ANN training started"))
     model.train(self.spnMaxIterations.value(),
                 valPercent=20
                )
