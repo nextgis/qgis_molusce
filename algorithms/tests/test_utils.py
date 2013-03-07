@@ -6,8 +6,9 @@ sys.path.insert(0, '../../../')
 import unittest
 
 import numpy as np
+from numpy.testing import assert_array_equal
 
-from molusce.algorithms.utils import masks_identity, sizes_equal
+from molusce.algorithms.utils import masks_identity, sizes_equal, reclass
 
 class TestRaster (unittest.TestCase):
     def setUp(self):
@@ -24,9 +25,9 @@ class TestRaster (unittest.TestCase):
         ])
         self.X2 = np.array([
             [1, 2, 1,],
-            [1, 2, 1,],
-            [0, 1, 2,],
-            [0, 1, 2,]
+            [1, 3, 1,],
+            [0, 1, 4,],
+            [0, 1, 7,]
         ])
         self.X = np.ma.array(self.X, mask=(self.X == 0))
         self.Y = np.ma.array(self.Y, mask=(self.Y == 0))
@@ -48,6 +49,16 @@ class TestRaster (unittest.TestCase):
         
     def test_Size_no_equals(self):
         self.assertEqual(sizes_equal(self.X2, self.Y), False, 'sizes are equal')
+        
+    def test_reclass(self):
+        X = reclass(self.X2, [1.1, 3.1, 4])
+        answer = np.array([
+            [1, 2, 1,],
+            [1, 2, 1,],
+            [1, 1, 3,],
+            [1, 1, 4,]
+        ])
+        assert_array_equal(X, answer)
     
 if __name__ == "__main__":
     unittest.main()

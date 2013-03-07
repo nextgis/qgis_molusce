@@ -6,25 +6,26 @@ Some array utilites
 
 import numpy as np
 
+class UtilsError(Exception):
+    '''Base class for exceptions in this module.'''
+    def __init__(self, msg):
+        self.msg = msg
 
-def reclass( raster, trueList ):
-    '''Raster binning.
+
+
+def binaryzation( raster, trueList ):
+    '''Raster binarization.
     
     @param trueList     List of raster values converted into true
     @return raster      Binary raster
     '''
     f = np.vectorize(lambda x: True if x in trueList else False )
     return f(raster)
-    
 
-def sizes_equal(X, Y):
-    '''
-    Define equality dimensions of the two rasters
-    @param X    First raster
-    @param Y    Second raster
-    '''
 
-    return (np.shape(X) == np.shape(Y))
+def get_gradations(band):
+    return list(np.unique(np.array(band)))
+
 
 def masks_identity(X, Y):
     '''
@@ -42,5 +43,38 @@ def masks_identity(X, Y):
     Y = np.ma.array(Y, mask = mask)
     return X, Y
 
-def get_gradations(band):
-    return list(np.unique(np.array(band)))
+def reclass(X, bins):
+        '''Reclass X to new categories.
+        @param bins     List of bins (category bounds):
+                Interval         ->   New Class Number
+                (-Inf,   bin[0]) ->     2
+                [bin[0], bin[1]) ->     2
+                [bin[1], bin[2]) ->     3
+                ...
+                [bin[n-1], bin[n]) ->   n
+                [bin[n],      Inf) ->   n+1
+        '''
+        def findClass(x):
+            try:
+                m = max([t for t in bins if t<x])
+                result = bins.index(m) + 2
+            except ValueError:
+                return 1
+            return result
+
+        tmp = bins[:]
+        tmp.sort()
+        if bins!=tmp:
+            raise UtilsError('Reclassification error: bins must be sorted!')
+        f = np.vectorize(findClass)
+        return f(X)
+
+def sizes_equal(X, Y):
+    '''
+    Define equality dimensions of the two rasters
+    @param X    First raster
+    @param Y    Second raster
+    '''
+
+    return (np.shape(X) == np.shape(Y))
+

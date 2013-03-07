@@ -6,7 +6,7 @@ from osgeo import osr
 import numpy as np
 from numpy import ma as ma
 
-from utils import reclass
+from utils import binaryzation, reclass
 
 class ProviderError(Exception):
     '''Base class for exceptions in this module.'''
@@ -50,7 +50,7 @@ class Raster(object):
     def binaryzation(self, trueVals, bandNum):
         '''Reclass band bandNum to true/false mode. Set true for pixels from trueVals.'''
         r = self.getBand(bandNum)
-        r = reclass(r, trueVals)
+        r = binaryzation(r, trueVals)
         self.setBand(r, bandNum)
 
     def create(self, bands, geodata):
@@ -193,6 +193,64 @@ class Raster(object):
                 self.setBand(newBand, i)
             self.isNormalazed = True
 
+    def _read(self):
+        data = gdal.Open( self.filename )
+        if data is None:
+            raise ProviderError("Can't read the file '%s'" % self.filename)
+
+        self.geodata = {}
+        self.geodata['xSize'] = data.RasterXSize
+        self.geodata['ySize'] = data.RasterYSize
+        self.geodata['proj']  = data.GetProjection()
+        self.geodata['transform']  = data.GetGeoTransform()
+        
+        # Get units of the projection
+        sr = osr.SpatialReference()
+        sr.ImportFromWkt(self.geodata['proj'])
+        self.geodata['units'] = sr.GetLinearUnitsName()
+
+        self.bands = []
+        for i in range(1, data.RasterCount+1):
+            r = data.GetRasterBand(i)
+            nodataValue =  r.GetNoDataValue()
+            r = r.ReadAsArray()
+            if nodataValue:
+                mask = binaryzation(r, [nodataValue])
+                r = ma.array(data = r, mask=mask)
+            self.bands.append(r)
+        self.resetMask()
+        self.isNormalazed = False
+
+
+    def resetMask(self, maskVals = None):
+        '''
+        Set mask of _ALL_ bands.  maskVals is a list of masked values.
+        '''
+        if not maskVals: maskVals = []
+
+        for i in range(self.getBandsCount()):
+            r = self.getBand(i)
+            mask = binaryzation(r, maskVals)
+            r = ma.array(data = r, mask=mask)
+            self.setBand(r, i)
+
+    def reclass(self, bins, bandNum):
+        '''Reclass band bandNum to new categories.
+        @param bins     List of bins (category bounds):
+                Interval         ->   New Class Number
+                [bin[0], bin[1]) ->     1
+                [bin[1], bin[2]) ->     2
+                ...
+                [bin[n-1], bin[n]) ->   n
+        '''
+        tmp = bins[:]
+        tmp.sort()
+        if x!=tmp:
+            raise ProviderError('Reclassification error: bins must be sorted!')
+        
+        r = self.getBand(bandNum)
+        r = reclass(r, bins)
+        self.setBand(r, bandNum)
 
     def save(self, filename, format="GTiff", rastertype=None, nodata=0):
         driver = gdal.GetDriverByName(format)
@@ -229,46 +287,6 @@ class Raster(object):
 
         self.geodata = geodata
 
-
-    def resetMask(self, maskVals = None):
-        '''
-        Set mask of _ALL_ bands.  maskVals is a list of masked values.
-        '''
-        if not maskVals: maskVals = []
-
-        for i in range(self.getBandsCount()):
-            r = self.getBand(i)
-            mask = reclass(r, maskVals)
-            r = ma.array(data = r, mask=mask)
-            self.setBand(r, i)
-
-    def _read(self):
-        data = gdal.Open( self.filename )
-        if data is None:
-            raise ProviderError("Can't read the file '%s'" % self.filename)
-
-        self.geodata = {}
-        self.geodata['xSize'] = data.RasterXSize
-        self.geodata['ySize'] = data.RasterYSize
-        self.geodata['proj']  = data.GetProjection()
-        self.geodata['transform']  = data.GetGeoTransform()
-        
-        # Get units of the projection
-        sr = osr.SpatialReference()
-        sr.ImportFromWkt(self.geodata['proj'])
-        self.geodata['units'] = sr.GetLinearUnitsName()
-
-        self.bands = []
-        for i in range(1, data.RasterCount+1):
-            r = data.GetRasterBand(i)
-            nodataValue =  r.GetNoDataValue()
-            r = r.ReadAsArray()
-            if nodataValue:
-                mask = reclass(r, [nodataValue])
-                r = ma.array(data = r, mask=mask)
-            self.bands.append(r)
-        self.resetMask()
-        self.isNormalazed = False
 
 
 
