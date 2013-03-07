@@ -9,7 +9,7 @@ import numpy as np
 from numpy import ma as ma
 
 
-from molusce.algorithms.models.woe.model import WoeError, binary_woe, woe, EPSILON
+from molusce.algorithms.models.woe.model import WoeError, _binary_woe, woe, EPSILON
 
 
 class TestModel (unittest.TestCase):
@@ -90,21 +90,21 @@ class TestModel (unittest.TestCase):
     def test_binary_woe(self):
         wPlus  = np.math.log ( (2.0/3 + EPSILON)/(2.0/5 + EPSILON) ) 
         wMinus = np.math.log ( (1.0/3 + EPSILON)/(3.0/5 + EPSILON) )        
-        self.assertEqual(binary_woe(self.factor, self.sites), (wPlus, wMinus))
+        self.assertEqual(_binary_woe(self.factor, self.sites), (wPlus, wMinus))
         
         wPlus  = np.math.log ( (5.0/7 + EPSILON)/(0.5/3.5 + EPSILON) ) 
         wMinus = np.math.log ( (2.0/7 + EPSILON)/(3.0/3.5 + EPSILON) ) 
-        self.assertEqual(binary_woe(self.bigfactor, self.bigsite, unitcell=2), (wPlus, wMinus))
+        self.assertEqual(_binary_woe(self.bigfactor, self.bigsite, unitcell=2), (wPlus, wMinus))
         
         # if Sites=Factor:
         wPlus  = np.math.log ( (1 + EPSILON)/EPSILON )
         wMinus = np.math.log ( EPSILON/(1 + EPSILON)  )
-        self.assertEqual(binary_woe(self.factor, self.factor), (wPlus, wMinus))
+        self.assertEqual(_binary_woe(self.factor, self.factor), (wPlus, wMinus))
         
         # Check areas size
-        self.assertRaises(WoeError, binary_woe, self.factor, self.zero)
-        self.assertRaises(WoeError, binary_woe, self.zero,   self.sites)
-        self.assertRaises(WoeError, binary_woe, self.bigfactor, self.bigsite, 3)
+        self.assertRaises(WoeError, _binary_woe, self.factor, self.zero)
+        self.assertRaises(WoeError, _binary_woe, self.zero,   self.sites)
+        self.assertRaises(WoeError, _binary_woe, self.bigfactor, self.bigsite, 3)
         
         # Non-binary sites
         self.assertRaises(WoeError, woe, self.fact1, self.sites1)
@@ -121,11 +121,11 @@ class TestModel (unittest.TestCase):
         wMinus3 = np.math.log ( (1.0 + EPSILON)/(2.0/5 + EPSILON) )
         
         # Binary classes
-        self.assertEqual(woe(self.factor, self.sites), [(wPlus1, wMinus1)])
+        self.assertEqual(woe(self.factor, self.sites), [wPlus1])
         
         # Multiclass
-        weights = woe(self.multifact, self.sites)        
-        self.assertEqual(weights, [(wPlus1, wMinus1), (wPlus2, wMinus2), (wPlus3, wMinus3)])
+        weights = woe(self.multifact, self.sites)
+        self.assertEqual(weights, [(wPlus1 + wMinus2+wMinus3), (wPlus2 + wMinus1 + wMinus3), (wPlus3 + wMinus1 + wMinus2)])
         
         
         

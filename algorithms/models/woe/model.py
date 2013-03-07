@@ -2,11 +2,15 @@
 
 import numpy as np
 from numpy import ma as ma
+from collections import namedtuple
 
-from molusce.algorithms.utils import reclass, get_gradations
+
+from molusce.algorithms.utils import binaryzation, get_gradations
 
 
 EPSILON = 4*np.finfo(np.float).eps # Small number > 0
+
+Weights = namedtuple('Weights', ['wPlus', 'wMinus'])
 
 
 class WoeError(Exception):
@@ -14,7 +18,7 @@ class WoeError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
-def binary_woe(factor, sites, unitcell=1):
+def _binary_woe(factor, sites, unitcell=1):
     '''
     Weight of evidence method (binary form).
     
@@ -73,7 +77,7 @@ def binary_woe(factor, sites, unitcell=1):
     wPlus  = np.math.log(pSiteFactor/pNonSiteFactor)
     wMinus = np.math.log(pSiteNonFactor/pNonSiteNonFactor)
 
-    return (wPlus, wMinus)
+    return Weights(wPlus, wMinus)
     
 def woe(factor, sites, unit_cell=1):
     '''Weight of evidence method (multiclass form).
@@ -82,7 +86,7 @@ def woe(factor, sites, unit_cell=1):
     @param sites      Raster layer consisting of the locations at which the point objects are known to occur.
     @param unit_cell  Method parameter, pixelsize of resampled rasters.
     
-    @return [(W+, W-), ...]  Tuples of the factor's weights (w+, w-).
+    @return [wMap1, wMap2, ...]   Total weights of each factor.
     '''
        
     # Get list of classes from the factor raster
@@ -92,14 +96,17 @@ def woe(factor, sites, unit_cell=1):
     if len(classes) > 2:
         # Loop over classes if the factor raster is not binary
         for cl in classes:
-            fct = reclass(factor, [cl])
-            weights.append(binary_woe(fct, sites, unit_cell))
+            fct = binaryzation(factor, [cl])
+            weights.append(_binary_woe(fct, sites, unit_cell))
     elif len(classes) == 2:
-        weights.append(binary_woe(factor, sites, unit_cell))
+        weights.append(_binary_woe(factor, sites, unit_cell))
     else:
         raise WoeError('Wrong count of classes in the factor raster!') 
     
-    return weights
+    wTotalMin = sum([w[1] for w in weights])
+    wMap = [w[0] + wTotalMin - w[1] for w in weights]
+    
+    return wMap
     
     
 def contrast(wPlus, wMinus):
