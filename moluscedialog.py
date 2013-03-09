@@ -238,13 +238,21 @@ class MolusceDialog(QDialog, Ui_Dialog):
       return
 
     if ("initial" in self.inputs) and ("final" in self.inputs):
-      analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
-      self.inputs["changeMap"] = analyst.makeChangeMap()
-      self.inputs["changeMap"].save(unicode(fileName))
-      self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
-      self.__addRasterToCanvas(fileName)
-    else:
-      self.__logMessage(self.tr("Can't create change map. Initial or final land use map is not set"))
+      self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
+      self.analyst.processFinished.connect(self.changeMapDone())
+
+      #self.inputs["changeMap"] = analyst.makeChangeMap()
+      #self.inputs["changeMap"].save(unicode(fileName))
+      #self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
+      #self.__addRasterToCanvas(fileName)
+    #else:
+      #self.__logMessage(self.tr("Can't create change map. Initial or final land use map is not set"))
+
+  def changeMapDone(self, raster):
+    self.inputs["changeMap"] = raster
+    self.inputs["changeMap"].save(unicode(fileName))
+    self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
+    self.__addRasterToCanvas(fileName)
 
   def startSimulation(self):
     # TODO: innit model
