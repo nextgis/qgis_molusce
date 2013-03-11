@@ -69,7 +69,7 @@ class AreaAnalyst(QObject):
         f, s = self.first, self.second
         rows, cols = self.geodata['ySize'], self.geodata['xSize']
         band = np.zeros([rows, cols])
-        self.rangeChanged.emit(self.tr("Creating change map"), rows)
+        self.rangeChanged.emit(self.tr("Creating change map %p%"), rows)
         for i in xrange(rows):
             for j in xrange(cols):
                 if not f.mask[i,j]:

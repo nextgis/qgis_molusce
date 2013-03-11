@@ -242,7 +242,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
       self.analyst.moveToThread(self.workThread)
       self.workThread.started.connect(self.analyst.makeChangeMap)
-      self.analyst.updateProgress.connect(self.showProgress)
+      self.analyst.rangeChanged.connect(self.__setProgressRange)
+      self.analyst.updateProgress.connect(self.__showProgress)
       self.analyst.processFinished.connect(self.changeMapDone)
       self.analyst.processFinished.connect(self.workThread.quit)
       self.workThread.start()
@@ -254,9 +255,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     #else:
       #self.__logMessage(self.tr("Can't create change map. Initial or final land use map is not set"))
 
-  def showProgress(self):
-    print "step"
-
   def changeMapDone(self, raster):
     self.inputs["changeMap"] = raster
     #self.inputs["changeMap"].save(unicode(fileName))
@@ -264,6 +262,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     #self.__addRasterToCanvas(fileName)
     self.inputs["changeMap"].save("/home/alex/samples/123.tif")
     self.__addRasterToCanvas("/home/alex/samples/123.tif")
+    self.__restoreProgressState()
 
   def startSimulation(self):
     # TODO: innit model
@@ -429,6 +428,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
       QgsMapLayerRegistry.instance().addMapLayers([layer])
     else:
       self.__logMessage(self.tr("Can't load raster %1").arg(filePath))
+
+  def __setProgressRange(self, message, maxValue):
+    self.progressBar.setFormat(message)
+    self.progressBar.setRange(0, maxValue)
+
+  def __showProgress(self):
+    self.progressBar.setValue(self.progressBar.value() + 1)
+
+  def __restoreProgressState(self):
+    self.progressBar.setFormat("%p%")
+    self.progressBar.setRange(0, 1)
+    self.progressBar.setValue(0)
 
   def __writeSettings(self):
     # samples and model tab
