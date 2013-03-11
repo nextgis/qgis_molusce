@@ -265,7 +265,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__restoreProgressState()
 
   def startSimulation(self):
-    # TODO: innit model
+    # TODO: init model
 
     #~ simulator = Simulator(self.inputs["initial"],
                            #~ self.inputs["factors"],

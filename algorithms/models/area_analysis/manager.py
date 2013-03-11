@@ -81,6 +81,3 @@ class AreaAnalyst(QObject):
         raster = Raster()
         raster.create(band, self.geodata)
         self.processFinished.emit(raster)
-        print "DONE"
-
-
