@@ -87,26 +87,46 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.chkSaveSamples.setChecked(self.settings.value("ui/ANN/saveSamples", False).toBool())
 
   def trainNetwork(self):
-    model = MlpManager(ns=self.spnNeigbourhood.value())
-    model.createMlp(self.inputs["initial"],
-                    self.inputs["factors"].values(),
-                    self.inputs["changeMap"],
-                    [int(n) for n in self.leTopology.text().split(" ")]
-                   )
+    self.model = MlpManager(ns=self.spnNeigbourhood.value())
+    print "model initialized"
+    self.model.createMlp(self.inputs["initial"],
+                         self.inputs["factors"].values(),
+                         self.inputs["changeMap"],
+                         [int(n) for n in self.leTopology.text().split(" ")]
+                        )
+    print "mlp created"
 
-    model.setTrainingData(self.inputs["initial"],
-                          self.inputs["factors"].values(),
-                          self.inputs["final"],
-                          mode=self.inputs["samplingMode"],
-                          samples=self.plugin.spnSamplesCount.value())
+    self.model.setTrainingData(self.inputs["initial"],
+                               self.inputs["factors"].values(),
+                               self.inputs["final"],
+                               mode=self.inputs["samplingMode"],
+                               samples=self.plugin.spnSamplesCount.value()
+                              )
+    print "train data set"
 
-    #self.plugin.__logMessage(self.tr("ANN training started"))
-    model.train(self.spnMaxIterations.value(),
-                valPercent=20
-               )
-    #self.plugin.__logMessage(self.tr("ANN training completed"))
+    self.model.setEpochs(self.spnMaxIterations.value())
+    self.model.setValPercent(20)
+    self.model.setLRate()
+    self.model.setMomentum()
+    self.model.setContinueTrain()
 
-    self.inputs["model"] = model
+    self.model.moveToThread(self.plugin.workThread)
+
+    self.plugin.workThread.started.connect(self.model.startTrain)
+    self.model.updateGraph.connect(self.__updateGraph)
+    #self.model.updateDeltaRMS.connect(self.__showProgress)
+    self.model.processFinished.connect(self.__trainFinished)
+    self.model.processFinished.connect(self.plugin.workThread.quit)
+
+    self.plugin.workThread.start()
+
+    self.inputs["model"] = self.model
+
+  def __trainFinished(self):
+    print "Finished"
+
+  def __updateGraph(self, errTrain, errVal):
+    print errTrain, errVal
 
   def __selectFile(self):
     senderName = self.sender().objectName()

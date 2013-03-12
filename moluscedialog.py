@@ -238,6 +238,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if fileName.isEmpty():
       return
 
+    self.inputs["changeMapName"] = unicode(fileName)
+
     if ("initial" in self.inputs) and ("final" in self.inputs):
       self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
       self.analyst.moveToThread(self.workThread)
@@ -248,20 +250,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.analyst.processFinished.connect(self.workThread.quit)
       self.workThread.start()
 
-      #self.inputs["changeMap"] = analyst.makeChangeMap()
-      #self.inputs["changeMap"].save(unicode(fileName))
-      #self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
-      #self.__addRasterToCanvas(fileName)
-    #else:
-      #self.__logMessage(self.tr("Can't create change map. Initial or final land use map is not set"))
-
   def changeMapDone(self, raster):
     self.inputs["changeMap"] = raster
-    #self.inputs["changeMap"].save(unicode(fileName))
-    #self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
-    #self.__addRasterToCanvas(fileName)
-    self.inputs["changeMap"].save("/home/alex/samples/123.tif")
-    self.__addRasterToCanvas("/home/alex/samples/123.tif")
+    self.inputs["changeMap"].save(self.inputs["changeMapName"])
+    self.__addRasterToCanvas(self.inputs["changeMapName"])
+    del self.inputs["changeMapName"]
+    self.workThread.started.disconnect(self.analyst.makeChangeMap)
+    self.analyst = None
     self.__restoreProgressState()
 
   def startSimulation(self):
