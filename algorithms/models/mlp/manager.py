@@ -299,7 +299,7 @@ class MlpManager(QObject):
 
         samples_count = len(self.data)
         val_sampl_count = samples_count*valPercent/100
-        apply_validation = True if val_sampl_count>0 else False # Use validation set
+        apply_validation = True if val_sampl_count>0 else False # Use or not use validation set
         train_sampl_count = samples_count - val_sampl_count
 
         # Set first train_sampl_count as training set, the other as validation set
@@ -316,14 +316,14 @@ class MlpManager(QObject):
             self.computePerformance(train_indexes, val_indexes)
             self.updateGraph.emit(self.getTrainError(), self.getValError())
             self.updateDeltaRMS.emit(min_val_error - self.getValError())
+            
+            last_train_err = self.getTrainError()
+            self.setTrainError(last_train_err)
             if apply_validation and (self.getValError() < min_val_error):
                 min_val_error = self.getValError()
-                last_train_err = self.getTrainError()
                 best_weights = self.copyWeights()
-            if apply_validation:
-                self.setMlpWeights(best_weights)
-                self.setValError(min_val_error)
-                self.setTrainError(last_train_err)
+                
+        self.setMlpWeights(best_weights)
         self.processFinished.emit()
 
     def trainEpoch(self, train_indexes, lrate=0.1, momentum=0.1):
