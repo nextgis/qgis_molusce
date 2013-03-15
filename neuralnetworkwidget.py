@@ -110,8 +110,8 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.setMomentum()
     self.model.setContinueTrain()
 
-    self.dataTrain = [0]
-    self.dataVal = [0]
+    self.dataTrain = [1]
+    self.dataVal = [1]
     self.plotTrain = self.axes.plot(self.dataTrain,
                                     linewidth=1,
                                     color="green",
