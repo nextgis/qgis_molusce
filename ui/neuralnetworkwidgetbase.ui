@@ -19,9 +19,6 @@
      <item row="10" column="1" colspan="3">
       <widget class="QLineEdit" name="leMapAgreement"/>
      </item>
-     <item row="3" column="1" colspan="3">
-      <widget class="QDoubleSpinBox" name="spnRMS"/>
-     </item>
      <item row="0" column="1" colspan="3">
       <widget class="QSpinBox" name="spnNeigbourhood">
        <property name="suffix">
@@ -29,13 +26,6 @@
        </property>
        <property name="minimum">
         <number>1</number>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Network topology</string>
        </property>
       </widget>
      </item>
@@ -96,9 +86,6 @@
         <number>1000000</number>
        </property>
       </widget>
-     </item>
-     <item row="4" column="1" colspan="3">
-      <widget class="QLineEdit" name="leTopology"/>
      </item>
      <item row="8" column="1" colspan="3">
       <widget class="QLineEdit" name="leRSquared"/>
@@ -168,12 +155,25 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="1" colspan="3">
+      <widget class="QLineEdit" name="leTopology"/>
+     </item>
      <item row="3" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Network topology</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
         <string>Δ RMS</string>
        </property>
       </widget>
+     </item>
+     <item row="4" column="1" colspan="3">
+      <widget class="QLineEdit" name="leDeltaRMS"/>
      </item>
     </layout>
    </item>

@@ -54,6 +54,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.iface = iface
     self.modelWidget = None
+    self.workThread = QThread()
 
     # Here we'll store all input rasters and then use this dictionary instead of
     # creating Raster objects each time when we need it. Be careful when processing
@@ -237,17 +238,29 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if fileName.isEmpty():
       return
 
+    self.inputs["changeMapName"] = unicode(fileName)
+
     if ("initial" in self.inputs) and ("final" in self.inputs):
-      analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
-      self.inputs["changeMap"] = analyst.makeChangeMap()
-      self.inputs["changeMap"].save(unicode(fileName))
-      self.__logMessage(self.tr("Change map image saved to: %1").arg(fileName))
-      self.__addRasterToCanvas(fileName)
-    else:
-      self.__logMessage(self.tr("Can't create change map. Initial or final land use map is not set"))
+      self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
+      self.analyst.moveToThread(self.workThread)
+      self.workThread.started.connect(self.analyst.makeChangeMap)
+      self.analyst.rangeChanged.connect(self.__setProgressRange)
+      self.analyst.updateProgress.connect(self.__showProgress)
+      self.analyst.processFinished.connect(self.changeMapDone)
+      self.analyst.processFinished.connect(self.workThread.quit)
+      self.workThread.start()
+
+  def changeMapDone(self, raster):
+    self.inputs["changeMap"] = raster
+    self.inputs["changeMap"].save(self.inputs["changeMapName"])
+    self.__addRasterToCanvas(self.inputs["changeMapName"])
+    del self.inputs["changeMapName"]
+    self.workThread.started.disconnect(self.analyst.makeChangeMap)
+    self.analyst = None
+    self.__restoreProgressState()
 
   def startSimulation(self):
-    # TODO: innit model
+    # TODO: init model
 
     #~ simulator = Simulator(self.inputs["initial"],
                            #~ self.inputs["factors"],
@@ -410,6 +423,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
       QgsMapLayerRegistry.instance().addMapLayers([layer])
     else:
       self.__logMessage(self.tr("Can't load raster %1").arg(filePath))
+
+  def __setProgressRange(self, message, maxValue):
+    self.progressBar.setFormat(message)
+    self.progressBar.setRange(0, maxValue)
+
+  def __showProgress(self):
+    self.progressBar.setValue(self.progressBar.value() + 1)
+
+  def __restoreProgressState(self):
+    self.progressBar.setFormat("%p%")
+    self.progressBar.setRange(0, 1)
+    self.progressBar.setValue(0)
 
   def __writeSettings(self):
     # samples and model tab

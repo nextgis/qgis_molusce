@@ -23,37 +23,37 @@ class AreaAnalyst(QObject):
     the final class c, and there are m classes, the output pixel will have
     value k = r*m + c
     '''
-    
+
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
-    processFinished = pyqtSignal()
+    processFinished = pyqtSignal(object)
     logMessage = pyqtSignal(str)
-    
+
     def __init__(self, first, second):
         '''
         @param first        Raster of the first stage (the state before transition).
         @param second       Raster of the second stage (the state after transition).
         '''
         QObject.__init__(self)
-        
-        
+
+
         if not first.geoDataMatch(second):
             raise AreaAnalizerError('Geometries of the rasters are different!')
         if first.getBandsCount() + second.getBandsCount() > 2:
             raise AreaAnalizerError('Rasters mast have 1 band!')
-        
+
         self.geodata = first.getGeodata()
         first, second = masks_identity(first.getBand(1), second.getBand(1))
-        
+
         self.first = first
         self.second = second
-        
+
         self.classes = get_gradations(self.first.compressed())
         for cl in get_gradations(self.second.compressed()):
             if cl not in self.classes:
                 raise AreaAnalizerError("List of classes of the first raster doesn't contains a class of the second raster!")
-        
-        
+
+
     def encode(self, initialClass, finalClass):
         '''
         Encode transition (initialClass -> finalClass):
@@ -63,13 +63,13 @@ class AreaAnalyst(QObject):
         '''
         m = len(self.classes)
         return self.classes.index(initialClass) * m + self.classes.index(finalClass)
-    
-    
+
+
     def makeChangeMap(self):
         f, s = self.first, self.second
         rows, cols = self.geodata['ySize'], self.geodata['xSize']
         band = np.zeros([rows, cols])
-        self.rangeChanged.emit(self.tr("Creating change map"), rows)
+        self.rangeChanged.emit(self.tr("Creating change map %p%"), rows)
         for i in xrange(rows):
             for j in xrange(cols):
                 if not f.mask[i,j]:
@@ -80,7 +80,4 @@ class AreaAnalyst(QObject):
         band = [np.ma.array(data = band, mask = f.mask)]
         raster = Raster()
         raster.create(band, self.geodata)
-        self.processFinished.emit()
-        return raster
-    
-    
+        self.processFinished.emit(raster)

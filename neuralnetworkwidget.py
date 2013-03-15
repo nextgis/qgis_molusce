@@ -30,6 +30,8 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
+import numpy
+
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 from matplotlib.figure import Figure
@@ -51,6 +53,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     # init plot for learning curve
     self.figure = Figure()
     self.axes = self.figure.add_subplot(111)
+    self.axes.grid(True)
     self.figure.suptitle(self.tr("Neural Network learning curve"))
     self.canvas = FigureCanvas(self.figure)
     self.mpltoolbar = NavigationToolbar(self.canvas, None)
@@ -80,33 +83,79 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.spnNeigbourhood.setValue(self.settings.value("ui/ANN/neighborhood", 1).toInt()[0])
     self.spnLearnRate.setValue(self.settings.value("ui/ANN/learningRate", 0.1).toFloat()[0])
     self.spnMaxIterations.setValue(self.settings.value("ui/ANN/maxIterations", 1000).toInt()[0])
-    self.spnRMS.setValue(self.settings.value("ui/ANN/rms", 0.001).toFloat()[0])
+    #self.spnRMS.setValue(self.settings.value("ui/ANN/rms", 0.001).toFloat()[0])
     self.leTopology.setText(self.settings.value("ui/ANN/topology", "10").toString())
 
     self.chkCreateReport.setChecked(self.settings.value("ui/ANN/createReport", False).toBool())
     self.chkSaveSamples.setChecked(self.settings.value("ui/ANN/saveSamples", False).toBool())
 
   def trainNetwork(self):
-    model = MlpManager(ns=self.spnNeigbourhood.value())
-    model.createMlp(self.inputs["initial"],
-                    self.inputs["factors"].values(),
-                    self.inputs["changeMap"],
-                    [int(n) for n in self.leTopology.text().split(" ")]
-                   )
+    self.model = MlpManager(ns=self.spnNeigbourhood.value())
+    self.model.createMlp(self.inputs["initial"],
+                         self.inputs["factors"].values(),
+                         self.inputs["changeMap"],
+                         [int(n) for n in self.leTopology.text().split(" ")]
+                        )
 
-    model.setTrainingData(self.inputs["initial"],
-                          self.inputs["factors"].values(),
-                          self.inputs["final"],
-                          mode=self.inputs["samplingMode"],
-                          samples=self.plugin.spnSamplesCount.value())
+    self.model.setTrainingData(self.inputs["initial"],
+                               self.inputs["factors"].values(),
+                               self.inputs["final"],
+                               mode=self.inputs["samplingMode"],
+                               samples=self.plugin.spnSamplesCount.value()
+                              )
 
-    #self.plugin.__logMessage(self.tr("ANN training started"))
-    model.train(self.spnMaxIterations.value(),
-                valPercent=20
-               )
-    #self.plugin.__logMessage(self.tr("ANN training completed"))
+    self.model.setEpochs(self.spnMaxIterations.value())
+    self.model.setValPercent(20)
+    self.model.setLRate()
+    self.model.setMomentum()
+    self.model.setContinueTrain()
 
-    self.inputs["model"] = model
+    self.dataTrain = [0]
+    self.dataVal = [0]
+    self.plotTrain = self.axes.plot(self.dataTrain,
+                                    linewidth=1,
+                                    color="green",
+                                   )[0]
+    self.plotVal = self.axes.plot(self.dataVal,
+                                  linewidth=1,
+                                  color="red",
+                                 )[0]
+
+    self.model.moveToThread(self.plugin.workThread)
+
+    self.plugin.workThread.started.connect(self.model.startTrain)
+    self.model.updateGraph.connect(self.__updateGraph)
+    self.model.updateDeltaRMS.connect(self.__updateRMS)
+    self.model.processFinished.connect(self.__trainFinished)
+    self.model.processFinished.connect(self.plugin.workThread.quit)
+
+    self.plugin.workThread.start()
+
+    self.inputs["model"] = self.model
+
+  def __trainFinished(self):
+    print "Finished"
+
+  def __updateRMS(self, dRMS):
+    self.leDeltaRMS.setText(QString.number(dRMS))
+
+  def __updateGraph(self, errTrain, errVal):
+    self.dataTrain.append(errTrain)
+    self.dataVal.append(errVal)
+
+    ymin = min([min(self.dataTrain), min(self.dataVal)])
+    ymax = max([max(self.dataTrain), max(self.dataVal)])
+
+    self.axes.set_xbound(lower=0, upper=len(self.dataVal))
+    self.axes.set_ybound(lower=ymin, upper=ymax)
+
+    self.plotTrain.set_xdata(numpy.arange(len(self.dataTrain)))
+    self.plotTrain.set_ydata(numpy.array(self.dataTrain))
+
+    self.plotVal.set_xdata(numpy.arange(len(self.dataVal)))
+    self.plotVal.set_ydata(numpy.array(self.dataVal))
+
+    self.canvas.draw()
 
   def __selectFile(self):
     senderName = self.sender().objectName()
