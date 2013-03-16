@@ -42,12 +42,12 @@ class TestModel (unittest.TestCase):
             [None,  False, False,]
         ]
         
-        mask = [
+        self.mask = [
             [False, False, False,],
             [False, False, False,],
             [True,  False, False,]
         ]
-        mask1 = [
+        self.mask1 = [
             [False, False, False,],
             [False, False, False,],
             [False,  False, False,]
@@ -70,22 +70,22 @@ class TestModel (unittest.TestCase):
             [None,  False, False, None,  True,  True, ],
             [False, False, True,  None,  False, False,]
         ]
-        bigmask = [
+        self.bigmask = [
             [False, False, False, False, False, False,],
             [False, False, False, False, False, False,],
             [True,  False, False, True,  False, False, ],
             [False, False, False, True,  False, False,]
         ]
         
-        self.factor     = ma.array(data = fact,      mask=mask,     dtype=np.bool)
-        self.fact1      = ma.array(data = fact,      mask=mask1,    dtype=np.bool)
-        self.multifact  = ma.array(data = multifact, mask=mask,     dtype=np.int)
-        self.sites      = ma.array(data = site,      mask=mask,     dtype=np.bool)
-        self.sites1     = ma.array(data = site1,     mask=mask1,    dtype=np.int)
-        self.sites2     = ma.array(data = site1,     mask=mask,     dtype=np.int)
-        self.zero       = ma.array(data = zero,      mask=mask,     dtype=np.bool)
-        self.bigfactor  = ma.array(data = bigfact,   mask=bigmask,  dtype=np.bool)
-        self.bigsite    = ma.array(data = bigsite,   mask=bigmask,  dtype=np.bool)
+        self.factor     = ma.array(data = fact,      mask=self.mask,     dtype=np.bool)
+        self.fact1      = ma.array(data = fact,      mask=self.mask1,    dtype=np.bool)
+        self.multifact  = ma.array(data = multifact, mask=self.mask,     dtype=np.int)
+        self.sites      = ma.array(data = site,      mask=self.mask,     dtype=np.bool)
+        self.sites1     = ma.array(data = site1,     mask=self.mask1,    dtype=np.int)
+        self.sites2     = ma.array(data = site1,     mask=self.mask,     dtype=np.int)
+        self.zero       = ma.array(data = zero,      mask=self.mask,     dtype=np.bool)
+        self.bigfactor  = ma.array(data = bigfact,   mask=self.bigmask,  dtype=np.bool)
+        self.bigsite    = ma.array(data = bigsite,   mask=self.bigmask,  dtype=np.bool)
     
     def test_binary_woe(self):
         wPlus  = np.math.log ( (2.0/3 + EPSILON)/(2.0/5 + EPSILON) ) 
@@ -121,11 +121,25 @@ class TestModel (unittest.TestCase):
         wMinus3 = np.math.log ( (1.0 + EPSILON)/(2.0/5 + EPSILON) )
         
         # Binary classes
-        self.assertEqual(woe(self.factor, self.sites), [wPlus1])
+        ans = [
+            [wPlus1,  wPlus1,  wMinus1,],
+            [wMinus1, wMinus1, wPlus1, ],
+            [None,   wMinus1,  wPlus1, ]
+        ]
+        ans = ma.array(data=ans, mask=self.mask)
+        np.testing.assert_equal(woe(self.factor, self.sites), ans)
         
         # Multiclass
+        w1, w2, w3 = (wPlus1 + wMinus2+wMinus3), (wPlus2 + wMinus1 + wMinus3), (wPlus3 + wMinus1 + wMinus2)
+        ans = [
+            [w1, w1, w3,],
+            [w3, w2, w1,],
+            [ 0, w3, w1,]
+        ]
+        ans = ma.array(data=ans, mask=self.mask)
         weights = woe(self.multifact, self.sites)
-        self.assertEqual(weights, [(wPlus1 + wMinus2+wMinus3), (wPlus2 + wMinus1 + wMinus3), (wPlus3 + wMinus1 + wMinus2)])
+        
+        np.testing.assert_equal(ans, weights)
         
         
         

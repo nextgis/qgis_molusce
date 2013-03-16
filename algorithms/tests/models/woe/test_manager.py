@@ -4,6 +4,7 @@ import sys
 sys.path.insert(0, '../../../../../')
 
 import unittest
+from numpy.testing import assert_array_equal
 
 import numpy as np
 from numpy import ma as ma
@@ -46,7 +47,7 @@ class TestWoEManager (unittest.TestCase):
         true_weights = woe(self.factraster, self.sitesraster)
 
         self.assertEqual(name, self.factor.getFileName())        
-        self.assertEqual(true_weights, weights)
+        assert_array_equal(true_weights, weights)
 
     
 if __name__ == "__main__":

@@ -82,31 +82,38 @@ def _binary_woe(factor, sites, unitcell=1):
 def woe(factor, sites, unit_cell=1):
     '''Weight of evidence method (multiclass form).
     
-    @param factor     Multiclass pattern raster used for prediction of point objects (sites).
-    @param sites      Raster layer consisting of the locations at which the point objects are known to occur.
+    @param factor     Multiclass pattern array used for prediction of point objects (sites).
+    @param sites      Array layer consisting of the locations at which the point objects are known to occur.
     @param unit_cell  Method parameter, pixelsize of resampled rasters.
     
     @return [wMap1, wMap2, ...]   Total weights of each factor.
     '''
-       
+    
+    result =np.zeros(ma.shape(factor))
     # Get list of classes from the factor raster
     classes = get_gradations(factor.compressed())
     
     weights = [] # list of the weights of evidence
-    if len(classes) > 2:
-        # Loop over classes if the factor raster is not binary
+    if len(classes) >= 2:
         for cl in classes:
             fct = binaryzation(factor, [cl])
             weights.append(_binary_woe(fct, sites, unit_cell))
-    elif len(classes) == 2:
-        weights.append(_binary_woe(factor, sites, unit_cell))
     else:
         raise WoeError('Wrong count of classes in the factor raster!') 
     
     wTotalMin = sum([w[1] for w in weights])
     wMap = [w[0] + wTotalMin - w[1] for w in weights]
     
-    return wMap
+    # If len(classes) = 2, then [w[0] + wTotalMin - w[1] for w in weights] increases the answer.
+    # In this case:
+    if len(classes) == 2:
+        wMap = [w/2 for w in wMap]
+    
+    for i,cl in enumerate(classes):
+        result[factor==cl] = wMap[i]
+    
+    result = ma.array(data=result, mask=factor.mask)
+    return result
     
     
 def contrast(wPlus, wMinus):
