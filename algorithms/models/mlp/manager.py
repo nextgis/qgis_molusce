@@ -26,7 +26,8 @@ class MlpManager(QObject):
     '''
 
     updateGraph = pyqtSignal(float, float)      # Train error, val. error
-    updateDeltaRMS = pyqtSignal(float)          # Delta of RMS: min(valError) - currentValError
+    updateMinValErr = pyqtSignal(float)         # Min validation error
+    updateDeltaRMS  = pyqtSignal(float)         # Delta of RMS: min(valError) - currentValError
     processFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
 
@@ -279,7 +280,7 @@ class MlpManager(QObject):
     def setLRate(self, value=0.1):
         self.lrate = value
 
-    def setMomentum(self, value=0.1):
+    def setMomentum(self, value=0.01):
         self.momentum = value
 
     def setContinueTrain(self, value=False):
@@ -288,7 +289,7 @@ class MlpManager(QObject):
     def startTrain(self):
         self.train(self.epochs, self.valPercent, self.lrate, self.momentum, self.continueTrain)
 
-    def train(self, epochs, valPercent=20, lrate=0.1, momentum=0.1, continue_train=False):
+    def train(self, epochs, valPercent=20, lrate=0.1, momentum=0.01, continue_train=False):
         '''Perform the training procedure on the MLP and save the best neural net
         @param epoch            Max iteration count.
         @param valPercent       Percent of the validation set.
@@ -322,11 +323,12 @@ class MlpManager(QObject):
             if apply_validation and (self.getValError() < min_val_error):
                 min_val_error = self.getValError()
                 best_weights = self.copyWeights()
+                self.updateMinValErr.emit(min_val_error)
                 
         self.setMlpWeights(best_weights)
         self.processFinished.emit()
 
-    def trainEpoch(self, train_indexes, lrate=0.1, momentum=0.1):
+    def trainEpoch(self, train_indexes, lrate=0.1, momentum=0.01):
         '''Perform a training epoch on the MLP
         @param train_ind        Tuple of the min&max indexes of training samples in the samples data.
         @param val_ind          Tuple of the min&max indexes of validation samples in the samples data.
