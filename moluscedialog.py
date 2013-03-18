@@ -46,6 +46,7 @@ import molusceutils as utils
 from algorithms.dataprovider import Raster
 from algorithms.models.crosstabs.manager import CrossTableManager
 from algorithms.models.area_analysis.manager import AreaAnalyst
+from algorithms.models.simulator.sim import Simulator
 
 class MolusceDialog(QDialog, Ui_Dialog):
   def __init__(self, iface):
@@ -182,10 +183,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__logMessage(self.tr("Factors list cleared"))
 
   def updateStatisticsTable(self):
-    crossTab = CrossTableManager(self.inputs["initial"], self.inputs["final"])
+    self.inputs["crosstab"] = CrossTableManager(self.inputs["initial"], self.inputs["final"])
 
     # class statistics
-    stat = crossTab.getTransitionStat()
+    stat = self.inputs["crosstab"].getTransitionStat()
 
     dimensions = len(stat["init"])
     self.tblStatistics.clear()
@@ -212,7 +213,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblStatistics.resizeColumnsToContents()
 
     # transitional matrix
-    transition = crossTab.getTransitionMatrix()
+    transition = self.inputs["crosstab"].getTransitionMatrix()
     dimensions = len(transition)
 
     self.tblTransMatrix.clear()
@@ -256,41 +257,52 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__addRasterToCanvas(self.inputs["changeMapName"])
     del self.inputs["changeMapName"]
     self.workThread.started.disconnect(self.analyst.getChangeMap)
+    self.analyst.rangeChanged.disconnect(self.__setProgressRange)
+    self.analyst.updateProgress.disconnect(self.__showProgress)
     self.analyst = None
     self.__restoreProgressState()
 
   def startSimulation(self):
-    # TODO: init model
+    self.simulator = Simulator(self.inputs["initial"],
+                               self.inputs["factors"].values(),
+                               self.inputs["model"],
+                               self.inputs["crosstab"]
+                              )
 
-    #~ simulator = Simulator(self.inputs["initial"],
-                           #~ self.inputs["factors"],
-                           #~ model,
-                           #~ self.crosstab
-                          #~ )
+    self.simulator.moveToThread(self.workThread)
 
+    self.workThread.started.connect(self.simulator.sim)
+    self.simulator.rangeChanged.connect(self.__setProgressRange)
+    self.analyst.updateProgress.connect(self.__showProgress)
+    self.analyst.processFinished.connect(self.simulationDone)
+    self.analyst.processFinished.connect(self.workThread.quit)
+    self.workThread.start()
+
+  def simulationDone(self):
     if self.chkRiskFunction.isChecked():
       if not self.leRiskFunctionPath.text().isEmpty():
-        #res = simulator.getConfidence()
-        #res.save(unicode(self.leRiskFunctionPath.text()))
-        pass
+        res = simulator.getConfidence()
+        res.save(unicode(self.leRiskFunctionPath.text()))
       else:
         self.__logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
     if self.chkRiskValidation.isChecked():
       if not self.leRiskValidationPath.text().isEmpty():
-        #res = simulator.errorMap(self.inputs["final"])
-        #res.save(unicode(self.leRiskValidationPath.text()))
-        pass
+        res = simulator.errorMap(self.inputs["final"])
+        res.save(unicode(self.leRiskValidationPath.text()))
       else:
         self.__logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
 
     if self.chkMonteCarlo.isChecked():
       if not self.leMonteCarloPath.text().isEmpty():
-        #res = simulator.getState()
-        #res.save(unicode(self.leMonteCarloPath.text()))
-        pass
+        res = simulator.getState()
+        res.save(unicode(self.leMonteCarloPath.text()))
       else:
         self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
+
+    self.workThread.started.disconnect(self.simulator.sim)
+    self.simulator = None
+    self.__restoreProgressState()
 
 # ******************************************************************************
 
@@ -372,13 +384,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
       if checked:
         self.leMonteCarloPath.setEnabled(True)
         self.btnSelectMonteCarlo.setEnabled(True)
-        self.lblYear.setEnabled(True)
-        self.spnEndYear.setEnabled(True)
+        self.lblIterations.setEnabled(True)
+        self.spnIterations.setEnabled(True)
       else:
         self.leMonteCarloPath.setEnabled(False)
         self.btnSelectMonteCarlo.setEnabled(False)
-        self.lblYear.setEnabled(False)
-        self.spnEndYear.setEnabled(False)
+        self.lblIterations.setEnabled(False)
+        self.spnIterations.setEnabled(False)
     elif senderName == "chkReuseMatrix":
       if checked:
         self.leMatrixPath.setEnabled(True)
@@ -445,7 +457,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.settings.setValue("ui/createRiskFunction", self.chkRiskFunction.isChecked())
     self.settings.setValue("ui/createRiskValidation", self.chkRiskValidation.isChecked())
     self.settings.setValue("ui/createMonteCarlo", self.chkMonteCarlo.isChecked())
-    self.settings.setValue("ui/monteCarloLastYear", self.spnEndYear.value())
+    self.settings.setValue("ui/monteCarloIterations", self.spnIterations.value())
 
     self.settings.setValue("ui/reuseMatrix", self.chkReuseMatrix.isChecked())
 
@@ -459,6 +471,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.chkRiskFunction.setChecked(self.settings.value("ui/createRiskFunction", False).toBool())
     self.chkRiskValidation.setChecked(self.settings.value("ui/createRiskValidation", False).toBool())
     self.chkMonteCarlo.setChecked(self.settings.value("ui/createMonteCarlo", False).toBool())
-    self.spnEndYear.setValue(self.settings.value("ui/monteCarloLastYear", 2013).toInt()[0])
+    self.spnIterations.setValue(self.settings.value("ui/monteCarloIterations", 1).toInt()[0])
 
     self.chkReuseMatrix.setChecked(self.settings.value("ui/reuseMatrix", False).toBool())
