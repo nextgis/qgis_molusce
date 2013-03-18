@@ -38,16 +38,11 @@ class TestWoEManager (unittest.TestCase):
         self.sitesraster = ma.array(data = site, mask=mask, dtype=np.bool)
         
     def test_WoeManager(self):
-        w = WoeManager([self.factor], self.sites).getWoe()
-        self.assertEqual(len(w), 1)
-        
-        w = w[0]
-        name = w['name']
-        weights = w['band1']
-        true_weights = woe(self.factraster, self.sitesraster)
+        w1 = WoeManager([self.factor], self.sites).getWoe()
+        w2 = WoeManager([self.factor, self.factor], self.sites).getWoe()
+        print w2
+        print w1
 
-        self.assertEqual(name, self.factor.getFileName())        
-        assert_array_equal(true_weights, weights)
 
     
 if __name__ == "__main__":

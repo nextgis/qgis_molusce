@@ -52,7 +52,7 @@ class LR(object):
         self._predict(state, factors)
         return self.prediction
         
-    def outputConfidence(self, input):
+    def _outputConfidence(self, input):
         '''
         Return confidence (difference between 2 biggest probabilities) of the LR output.
         '''
@@ -63,7 +63,7 @@ class LR(object):
         
     def _predict(self, state, factors):
         '''
-        Calculate output and confidence rasters using MLP model and input rasters
+        Calculate output and confidence rasters using LR model and input rasters
         @param state            Raster of the current state (classes) values.
         @param factors          List of the factor rasters (predicting variables).
         '''
@@ -85,7 +85,7 @@ class LR(object):
                     if input != None:
                         out = self.logreg.predict(input)
                         predicted_band[i,j] = out
-                        confidence = self.outputConfidence(input)
+                        confidence = self._outputConfidence(input)
                         confidence_band[i, j] = confidence
                     else: # Input sample is incomplete => mask this pixel
                         mask[i, j] = True
