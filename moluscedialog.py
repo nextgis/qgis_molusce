@@ -269,7 +269,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           #~ )
 
     if self.chkRiskFunction.isChecked():
-      if not self.leRiskFunctionPath.text().isEmpy():
+      if not self.leRiskFunctionPath.text().isEmpty():
         #res = simulator.getConfidence()
         #res.save(unicode(self.leRiskFunctionPath.text()))
         pass
@@ -277,7 +277,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.__logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
     if self.chkRiskValidation.isChecked():
-      if not self.leRiskValidationPath.text().isEmpy():
+      if not self.leRiskValidationPath.text().isEmpty():
         #res = simulator.errorMap(self.inputs["final"])
         #res.save(unicode(self.leRiskValidationPath.text()))
         pass
@@ -285,7 +285,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.__logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
 
     if self.chkMonteCarlo.isChecked():
-      if not self.leMonteCarloPath.text().isEmpy():
+      if not self.leMonteCarloPath.text().isEmpty():
         #res = simulator.getState()
         #res.save(unicode(self.leMonteCarloPath.text()))
         pass
