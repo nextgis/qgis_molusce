@@ -44,6 +44,18 @@ class TestAreaAnalysisManager (unittest.TestCase):
         raster = aa.makeChangeMap()
         band = raster.getBand(1)
         assert_array_equal(band, self.r2r2)
+    
+    def test_encode(self):
+        aa = AreaAnalyst(self.r1, self.r1)
+        self.assertEqual(aa.classes, [0,1,2,3])
+        self.assertEqual(aa.encode(1,2), 6)
+        for initClass in range(4):
+            for finalClass in range(4):
+                k = aa.encode(initClass, finalClass)
+                self.assertEqual(aa.decode(k), (initClass, finalClass))
+        self.assertEqual(aa.finalCodes(0), [0,1,2,3])
+        self.assertEqual(aa.finalCodes(1), [4,5,6,7])
+        
         
 if __name__ == "__main__":
     unittest.main()

@@ -53,6 +53,18 @@ class AreaAnalyst(QObject):
             if cl not in self.classes:
                 raise AreaAnalizerError("List of classes of the first raster doesn't contains a class of the second raster!")
 
+    def decode(self, code):
+        '''
+        Decode transition (initialClass -> finalClass).
+        The procedure is the back operation of "encode" (see bellow):
+            code = initialClass*m + finalClass,
+            the result is tuple of (initialClass, finalClass).
+        '''
+        m = len(self.classes)
+        initialClass = code/m
+        finalClass   = code - initialClass*m
+        return (initialClass, finalClass)
+        
 
     def encode(self, initialClass, finalClass):
         '''
@@ -64,6 +76,11 @@ class AreaAnalyst(QObject):
         m = len(self.classes)
         return self.classes.index(initialClass) * m + self.classes.index(finalClass)
 
+    def finalCodes(self, initialClass):
+        '''
+        For given initial class return codes of possible final classes. (see 'encode')
+        '''
+        return [self.encode(initialClass, c) for c in self.classes]
 
     def makeChangeMap(self):
         f, s = self.first, self.second
