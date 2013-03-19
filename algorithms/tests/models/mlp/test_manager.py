@@ -106,10 +106,10 @@ class TestMlpManager (unittest.TestCase):
         mng.setTrainingData(self.output, self.factors, self.output)
         
         mng.train(1, valPercent=50)
-        val = mng.getValError()
+        val = mng.getMinValError()
         tr  = mng.getTrainError()
         mng.train(20, valPercent=50, continue_train=True)
-        self.assertGreaterEqual(val, mng.getValError())
+        self.assertGreaterEqual(val, mng.getMinValError())
         
         mng = MlpManager(ns=1)
         mng.createMlp(self.state1, self.factors1, self.output1, [10])
