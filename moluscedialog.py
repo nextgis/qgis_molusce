@@ -243,7 +243,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if ("initial" in self.inputs) and ("final" in self.inputs):
       self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
       self.analyst.moveToThread(self.workThread)
-      self.workThread.started.connect(self.analyst.makeChangeMap)
+      self.workThread.started.connect(self.analyst.getChangeMap)
       self.analyst.rangeChanged.connect(self.__setProgressRange)
       self.analyst.updateProgress.connect(self.__showProgress)
       self.analyst.processFinished.connect(self.changeMapDone)
@@ -255,7 +255,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.inputs["changeMap"].save(self.inputs["changeMapName"])
     self.__addRasterToCanvas(self.inputs["changeMapName"])
     del self.inputs["changeMapName"]
-    self.workThread.started.disconnect(self.analyst.makeChangeMap)
+    self.workThread.started.disconnect(self.analyst.getChangeMap)
     self.analyst = None
     self.__restoreProgressState()
 

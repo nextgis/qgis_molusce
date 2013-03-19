@@ -52,6 +52,8 @@ class AreaAnalyst(QObject):
         for cl in get_gradations(self.second.compressed()):
             if cl not in self.classes:
                 raise AreaAnalizerError("List of classes of the first raster doesn't contains a class of the second raster!")
+        
+        self.changeMap = None
 
     def decode(self, code):
         '''
@@ -82,6 +84,11 @@ class AreaAnalyst(QObject):
         '''
         return [self.encode(initialClass, c) for c in self.classes]
 
+    def getChangeMap(self):
+        if self.changeMap == None:
+            self.makeChangeMap()
+        return self.changeMap
+
     def makeChangeMap(self):
         f, s = self.first, self.second
         rows, cols = self.geodata['ySize'], self.geodata['xSize']
@@ -98,4 +105,4 @@ class AreaAnalyst(QObject):
         raster = Raster()
         raster.create(band, self.geodata)
         self.processFinished.emit(raster)
-        return raster
+        self.changeMap = raster

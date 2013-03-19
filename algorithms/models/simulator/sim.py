@@ -74,7 +74,7 @@ class Simulator(QObject):
         '''
         Make 1 iteracion of simulation.
         '''
-        #TODO: eleminate AreaAnalyst.makeChangeMap() from the process, use simple prediction an state difference.
+        #TODO: eleminate AreaAnalyst.getChangeMap() from the process, use simple prediction an state difference.
         
         transition = self.crosstable.getCrosstable()
         
@@ -83,7 +83,7 @@ class Simulator(QObject):
         new_state = state.getBand(1).copy()         # New states (the result of simulation) will be stored there.
         analyst = AreaAnalyst(state, prediction)
         classes = analyst.classes
-        changes = analyst.makeChangeMap().getBand(1)
+        changes = analyst.getChangeMap().getBand(1)
         
         # Make transition between classes according to 
         # number of moved pixel in crosstable

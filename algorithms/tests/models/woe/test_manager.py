@@ -38,10 +38,11 @@ class TestWoEManager (unittest.TestCase):
         self.sitesraster = ma.array(data = site, mask=mask, dtype=np.bool)
         
     def test_WoeManager(self):
-        w1 = WoeManager([self.factor], self.sites).getWoe()
-        w2 = WoeManager([self.factor, self.factor], self.sites).getWoe()
-        print w2
-        print w1
+        #w1 = WoeManager([self.factor], self.sites).getWoe()
+        #w2 = WoeManager([self.factor, self.factor], self.sites).getWoe()
+        #print w2
+        #print w1
+        pass
 
 
     

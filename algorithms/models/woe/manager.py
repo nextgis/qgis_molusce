@@ -16,7 +16,7 @@ class WoeManager(object):
     '''This class gets the data extracted from the UI and
     pass it to woe function, then gets and stores the result.
     '''
-    def __init__(self, factors, changeMap, unit_cell=1):
+    def __init__(self, factors, areaAnalyst, unit_cell=1):
         '''
         @param factors    List of the pattern rasters used for prediction of point objects (sites).
         @param sites      Binary raster layer consisting of the locations at which the point objects are known to occur.
@@ -24,7 +24,7 @@ class WoeManager(object):
         '''
         
         self.factors = factors
-        self.changeMap   = changeMap
+        self.changeMap   = areaAnalyst.getChangeMap()
         
         rows, cols = self.changeMap.geodata['ySize'], self.changeMap.geodata['xSize']
         for r in self.factors:
@@ -49,9 +49,6 @@ class WoeManager(object):
                     weights = woe(band, sites, unit_cell)
                     wMap = wMap + weights
             self.woe[cl]=wMap
-        
-        self.prediction = np.ma.zeros(cMap.shape)
-        self.confidence = np.ma.zeros(cMap.shape)
     
     def getConfidence(self):
         return self.confidence
@@ -61,4 +58,10 @@ class WoeManager(object):
     
     def getWoe(self):
         return self.woe
+    
+    def _predict(self, state):
+        '''
+        Predict changes.
+        '''
+        
     

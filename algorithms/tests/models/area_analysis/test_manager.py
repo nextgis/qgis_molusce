@@ -35,13 +35,13 @@ class TestAreaAnalysisManager (unittest.TestCase):
         
     def test_AreaAnalyst(self):
         aa = AreaAnalyst(self.r1, self.r1)
-        raster = aa.makeChangeMap()
+        raster = aa.getChangeMap()
         band = raster.getBand(1)
         assert_array_equal(band, self.r1r1)
         
         # Masked raster
         aa = AreaAnalyst(self.r2, self.r2)
-        raster = aa.makeChangeMap()
+        raster = aa.getChangeMap()  
         band = raster.getBand(1)
         assert_array_equal(band, self.r2r2)
     
