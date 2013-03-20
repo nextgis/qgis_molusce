@@ -259,6 +259,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.started.disconnect(self.analyst.getChangeMap)
     self.analyst.rangeChanged.disconnect(self.__setProgressRange)
     self.analyst.updateProgress.disconnect(self.__showProgress)
+    self.analyst.processFinished.disconnect(self.changeMapDone)
+    self.analyst.processFinished.disconnect(self.workThread.quit)
     self.analyst = None
     self.__restoreProgressState()
 
@@ -273,9 +275,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.workThread.started.connect(self.simulator.sim)
     self.simulator.rangeChanged.connect(self.__setProgressRange)
-    self.analyst.updateProgress.connect(self.__showProgress)
-    self.analyst.processFinished.connect(self.simulationDone)
-    self.analyst.processFinished.connect(self.workThread.quit)
+    self.simulator.updateProgress.connect(self.__showProgress)
+    self.simulator.processFinished.connect(self.simulationDone)
+    self.simulator.processFinished.connect(self.workThread.quit)
     self.workThread.start()
 
   def simulationDone(self):
@@ -301,6 +303,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
 
     self.workThread.started.disconnect(self.simulator.sim)
+    self.simulator.rangeChanged.disconnect(self.__setProgressRange)
+    self.simulator.updateProgress.disconnect(self.__showProgress)
+    self.simulator.processFinished.disconnect(self.simulationDone)
+    self.simulator.processFinished.disconnect(self.workThread.quit)
     self.simulator = None
     self.__restoreProgressState()
 
