@@ -47,7 +47,7 @@ def reclass(X, bins):
         '''Reclass X to new categories.
         @param bins     List of bins (category bounds):
                 Interval         ->   New Class Number
-                (-Inf,   bin[0]) ->     2
+                (-Inf,   bin[0]) ->     1
                 [bin[0], bin[1]) ->     2
                 [bin[1], bin[2]) ->     3
                 ...
