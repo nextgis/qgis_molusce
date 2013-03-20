@@ -56,7 +56,7 @@ def reclass(X, bins):
         '''
         def findClass(x):
             try:
-                m = max([t for t in bins if t<x])
+                m = max([t for t in bins if t<=x])
                 result = bins.index(m) + 2
             except ValueError:
                 return 1

@@ -49,8 +49,8 @@ class TestWoEManager (unittest.TestCase):
         initState = Raster('../../examples/data.tif')
         finalState = Raster('../../examples/data1.tif')
         aa = AreaAnalyst(initState, finalState)
-        w1 = WoeManager([initState], aa)
-        p = w1.getPrediction(initState).getBand(1)
+        w = WoeManager([initState], aa)
+        p = w.getPrediction(initState).getBand(1)
 
         # Calculate by hands:
         #1->1 transition raster:
@@ -136,6 +136,9 @@ class TestWoEManager (unittest.TestCase):
             [1, 1, 1, 1]
         ]
         assert_array_equal(p, answer)
+
+        w = WoeManager([initState], aa, bins = {0: [[2], ],})
+        p = w.getPrediction(initState).getBand(1)
     
 if __name__ == "__main__":
     unittest.main()

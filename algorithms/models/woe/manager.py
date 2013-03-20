@@ -4,7 +4,7 @@ import numpy as np
 
 from molusce.algorithms.dataprovider import Raster
 from model import woe
-from molusce.algorithms.utils import get_gradations, binaryzation, masks_identity
+from molusce.algorithms.utils import get_gradations, binaryzation, masks_identity, reclass
 
 
 def sigmoid(x):
@@ -19,11 +19,15 @@ class WoeManager(object):
     '''This class gets the data extracted from the UI and
     pass it to woe function, then gets and stores the result.
     '''
-    def __init__(self, factors, areaAnalyst, unit_cell=1):
+    def __init__(self, factors, areaAnalyst, unit_cell=1, bins = None):
         '''
         @param factors      List of the pattern rasters used for prediction of point objects (sites).
         @param areaAnalyst  AreaAnalyst that contains map of the changes, encodes and decodes class numbers.
         @param unit_cell    Method parameter, pixelsize of resampled rasters.
+        @param bins         Dictionary of bins. Bins are binning boundaries that used for reduce count of classes.
+                                For example if factors = [f0, f1], then bins could be (for example) {0:[bins for f0], 1:[bins for f1]} = {0:[[10, 100, 250]],1:[[0.2, 1, 1.5, 4]]}.
+                                List of list used because a factor can be a multiband raster, we need get a list of bins for every band. For example: 
+                                factors = [f0, 2-band-factor], bins= {0: [[10, 100, 250]], 1:[[0.2, 1, 1.5, 4], [3, 4, 7]] }
         '''
         
         self.factors = factors
@@ -32,6 +36,9 @@ class WoeManager(object):
         
         self.prediction = None
         self.confidence = None
+
+        if (bins != None) and (len(factors) != len(bins.keys())):
+            raise WoeManagerError('Lengths of bins and factors are different!')
 
         for r in self.factors:
             if not self.changeMap.geoDataMatch(r):
@@ -49,9 +56,17 @@ class WoeManager(object):
             sites = binaryzation(cMap, [code])
             # TODO: reclass factors (continuous factor -> ordinal factor)
             wMap = np.ma.zeros(cMap.shape)
-            for fact in factors:
+            for k in xrange(len(factors)):
+                fact = factors[k]
+                if bins: # Get bins of the factor
+                    bin = bins[k]
+                    if fact.getBandsCount() != len(bin):
+                        raise WoeManagerError("Count of bins list for multiband factor is't equal to band count!")
+                else: bin = None
                 for i in range(1, fact.getBandsCount()+1):
                     band = fact.getBand(i)
+                    if bin:
+                        band = reclass(band, bin[i-1])
                     band, sites = masks_identity(band, sites)   # Combine masks of the rasters
                     weights = woe(band, sites, unit_cell)       # WoE for the 'code' (initState->finalState) transition and current 'factor'.
                     wMap = wMap + weights
