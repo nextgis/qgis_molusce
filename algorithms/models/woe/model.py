@@ -51,7 +51,7 @@ def _binary_woe(factor, sites, unitcell=1):
     # Count of sites inside area where the factor occurs:
     siteAndPatten = fm&sm       # Sites inside area where the factor occurs
     Nb = 1.0 * len(siteAndPatten[siteAndPatten==True]) # Count of sites inside factor area 
-    
+
     # Check areas size
     if A == 0:
         raise WoeError('Unmasked area is zero-size!')
@@ -92,6 +92,12 @@ def woe(factor, sites, unit_cell=1):
     result =np.zeros(ma.shape(factor))
     # Get list of classes from the factor raster
     classes = get_gradations(factor.compressed())
+
+    # Try to binarize sites:
+    sClasses = get_gradations(sites.compressed())
+    if len(sClasses) != 2:
+        raise WoeError('Site raster must be binary!')
+    sites = binaryzation(sites, [sClasses[1]])
     
     weights = [] # list of the weights of evidence
     if len(classes) >= 2:

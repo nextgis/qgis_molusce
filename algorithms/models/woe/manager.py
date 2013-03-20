@@ -4,8 +4,11 @@ import numpy as np
 
 from molusce.algorithms.dataprovider import Raster
 from model import woe
-from molusce.algorithms.utils import get_gradations, binaryzation
+from molusce.algorithms.utils import get_gradations, binaryzation, masks_identity
 
+
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
 
 class WoeManagerError(Exception):
     '''Base class for exceptions in this module.'''
@@ -18,15 +21,18 @@ class WoeManager(object):
     '''
     def __init__(self, factors, areaAnalyst, unit_cell=1):
         '''
-        @param factors    List of the pattern rasters used for prediction of point objects (sites).
-        @param sites      Binary raster layer consisting of the locations at which the point objects are known to occur.
-        @param unit_cell  Method parameter, pixelsize of resampled rasters.
+        @param factors      List of the pattern rasters used for prediction of point objects (sites).
+        @param areaAnalyst  AreaAnalyst that contains map of the changes, encodes and decodes class numbers.
+        @param unit_cell    Method parameter, pixelsize of resampled rasters.
         '''
         
         self.factors = factors
+        self.analyst = areaAnalyst
         self.changeMap   = areaAnalyst.getChangeMap()
         
-        rows, cols = self.changeMap.geodata['ySize'], self.changeMap.geodata['xSize']
+        self.prediction = None
+        self.confidence = None
+
         for r in self.factors:
             if not self.changeMap.geoDataMatch(r):
                 raise WoeManagerError('Geometries of the input rasters are different!')
@@ -34,26 +40,29 @@ class WoeManager(object):
         if self.changeMap.getBandsCount() != 1:
             raise WoeManagerError('Change map must have one band!')
         
-        # Get list of classes from the changeMap raster
+        # Get list of codes from the changeMap raster
         cMap = self.changeMap.getBand(1)
-        self.classes = get_gradations(cMap.compressed())
+        self.codes = [int(c) for c in get_gradations(cMap.compressed())]    # Codes of transitions initState->finalState (see AreaAnalyst.encode)
         
         self.woe = {}
-        for cl in self.classes:
-            sites = binaryzation(cMap, [cl])
+        for code in self.codes:
+            sites = binaryzation(cMap, [code])
             # TODO: reclass factors (continuous factor -> ordinal factor)
             wMap = np.ma.zeros(cMap.shape)
             for fact in factors:
                 for i in range(1, fact.getBandsCount()+1):
                     band = fact.getBand(i)
-                    weights = woe(band, sites, unit_cell)
+                    band, sites = masks_identity(band, sites)   # Combine masks of the rasters
+                    weights = woe(band, sites, unit_cell)       # WoE for the 'code' (initState->finalState) transition and current 'factor'.
                     wMap = wMap + weights
-            self.woe[cl]=wMap
+            self.woe[code]=wMap             # WoE for all factors and the transition.
+    
     
     def getConfidence(self):
         return self.confidence
     
-    def getPrediction(self, state, factors):
+    def getPrediction(self, state):
+        self._predict(state)
         return self.prediction
     
     def getWoe(self):
@@ -61,7 +70,47 @@ class WoeManager(object):
     
     def _predict(self, state):
         '''
-        Predict changes.
+        Predict the changes.
         '''
+        geodata = self.changeMap.getGeodata()
+        rows, cols = geodata['ySize'], geodata['xSize']
+        if not self.changeMap.geoDataMatch(state):
+            raise WoeManagerError('Geometries of the state and changeMap rasters are different!')
+        
+        prediction = np.zeros((rows,cols))
+        confidence = np.zeros((rows,cols))
+        mask = np.zeros((rows,cols))
+
+        woe = self.getWoe()
+        stateBand = state.getBand(1)
+        
+        for r in xrange(rows):
+            for c in xrange(cols):
+                oldMax, currMax = -1000, -1000  # Small numbers
+                indexMax = -1                   # Index of Max weight
+                initClass = stateBand[r,c]      # Init class (state before transition)
+                try:
+                    codes = self.analyst.codes(initClass)   # Possible final states
+                    for code in codes:
+                        try: # If not all possible transitions are presented in the changeMap
+                            map = woe[code]     # Get WoE map of transition 'code'
+                        except KeyError:
+                            continue
+                        w = map[r,c]        # The weight in the (r,c)-pixel
+                        if w > currMax:
+                            indexMax, oldMax, currMax = code, currMax, w
+                    decode = self.analyst.decode(indexMax)    # Get init & final classes (initState, finalState)
+                    prediction[r,c] = decode[1]               # final class
+                    confidence[r,c] = sigmoid(currMax) - sigmoid(oldMax)
+                except ValueError:
+                    mask[r,c] = 1
+
+        predicted_band = np.ma.array(data=prediction, mask=mask)
+        self.prediction = Raster()
+        self.prediction.create([predicted_band], geodata)
+        confidence_band = np.ma.array(data=confidence, mask=mask)
+        self.confidence = Raster()
+        self.confidence.create([confidence_band], geodata)
+        
         
     

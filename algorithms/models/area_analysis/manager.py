@@ -55,17 +55,27 @@ class AreaAnalyst(QObject):
         
         self.changeMap = None
 
+    def codes(self, initialClass):
+        '''
+        Get list of possible encodes for initialClass (see 'encode').
+        '''
+        return [self.encode(initialClass, f) for f in self.classes]
+
     def decode(self, code):
         '''
         Decode transition (initialClass -> finalClass).
-        The procedure is the back operation of "encode" (see bellow):
+        The procedure is the back operation of "encode" (see encode):
             code = initialClass*m + finalClass,
             the result is tuple of (initialClass, finalClass).
         '''
         m = len(self.classes)
-        initialClass = code/m
-        finalClass   = code - initialClass*m
-        return (initialClass, finalClass)
+        initialClassIndex = code/m
+        finalClassIndex   = code - initialClassIndex*m
+        try:
+            initClass, finalClass = (self.classes[initialClassIndex], self.classes[finalClassIndex])
+        except ValueError:
+            raise AreaAnalizerError('The code is not in list!')
+        return (initClass, finalClass)
         
 
     def encode(self, initialClass, finalClass):
@@ -101,8 +111,8 @@ class AreaAnalyst(QObject):
                     c = s[i,j]
                     band[i, j] = self.encode(r, c)
             self.updateProgress.emit()
-        band = [np.ma.array(data = band, mask = f.mask)]
+        bands = [np.ma.array(data = band, mask = f.mask)]
         raster = Raster()
-        raster.create(band, self.geodata)
+        raster.create(bands, self.geodata)
         self.processFinished.emit(raster)
         self.changeMap = raster

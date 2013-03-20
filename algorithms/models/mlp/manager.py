@@ -179,8 +179,8 @@ class MlpManager(QObject):
         @param state            Raster of the current state (classes) values.
         @param factors          List of the factor rasters (predicting variables).
         '''
-
-        rows, cols = state.geodata['ySize'], state.geodata['xSize']
+        geodata = state.getGeodata()
+        rows, cols = geodata['ySize'], geodata['xSize']
         for r in factors:
             if not state.geoDataMatch(r):
                 raise MlpManagerError('Geometries of the input rasters are different!')
@@ -209,13 +209,13 @@ class MlpManager(QObject):
                         confidence_band[i, j] = confidence
                     else: # Input sample is incomplete => mask this pixel
                         mask[i, j] = True
-        predicted_band  = [np.ma.array(data = predicted_band, mask = mask)]
-        confidence_band = [np.ma.array(data = confidence_band, mask = mask)]
+        predicted_bands  = [np.ma.array(data = predicted_band, mask = mask)]
+        confidence_bands = [np.ma.array(data = confidence_band, mask = mask)]
 
         self.prediction = Raster()
-        self.prediction.create(predicted_band, state.geodata)
+        self.prediction.create(predicted_bands, geodata)
         self.confidence = Raster()
-        self.confidence.create(confidence_band, state.geodata)
+        self.confidence.create(confidence_bands, geodata)
 
 
     def readMlp(self):

@@ -33,7 +33,7 @@ class Model(object):
     def _predict(self, state, factors = None):
         geodata = self.state.getGeodata()
         band = state.getBand(1)
-        rows, cols = state.geodata['ySize'], state.geodata['xSize']
+        rows, cols = geodata['ySize'], geodata['xSize']
         # Let the prediction is: 1 -> 2, 2- >3, 3 -> 1
         
         predicted_band  = np.copy(band)
@@ -47,12 +47,12 @@ class Model(object):
             for j in xrange(rows):
                 confidence_band[i,j] = 1.0/(1+i+j)
         
-        predicted_band  = [np.ma.array(data = predicted_band, mask = band.mask)]
-        confidence_band = [np.ma.array(data = confidence_band, mask = band.mask)]
+        predicted_bands  = [np.ma.array(data = predicted_band, mask = band.mask)]
+        confidence_bands = [np.ma.array(data = confidence_band, mask = band.mask)]
         self.prediction = Raster()
-        self.prediction.create(predicted_band, state.geodata)
+        self.prediction.create(predicted_bands, state.geodata)
         self.confidence = Raster()
-        self.confidence.create(confidence_band, state.geodata)
+        self.confidence.create(confidence_bands, state.geodata)
     
         
 

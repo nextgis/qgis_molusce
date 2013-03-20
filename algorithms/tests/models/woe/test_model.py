@@ -100,6 +100,7 @@ class TestModel (unittest.TestCase):
         wPlus  = np.math.log ( (1 + EPSILON)/EPSILON )
         wMinus = np.math.log ( EPSILON/(1 + EPSILON)  )
         self.assertEqual(_binary_woe(self.factor, self.factor), (wPlus, wMinus))
+
         
         # Check areas size
         self.assertRaises(WoeError, _binary_woe, self.factor, self.zero)
@@ -108,7 +109,8 @@ class TestModel (unittest.TestCase):
         
         # Non-binary sites
         self.assertRaises(WoeError, woe, self.fact1, self.sites1)
-        self.assertRaises(WoeError, woe, self.multifact, self.sites2)
+        # Assert does not raises
+        woe(self.multifact, self.sites2)
         
     def test_woe(self):
         wPlus1  = np.math.log ( (2.0/3 + EPSILON)/(2.0/5 + EPSILON) ) 

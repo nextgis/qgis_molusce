@@ -111,7 +111,7 @@ class Raster(object):
         return self.bands[bandNo-1]
 
     def getBandsCount(self):
-        if self.bands:
+        if self.bands != None:
             return len(self.bands)
         else:
             return 0
