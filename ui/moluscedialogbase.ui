@@ -378,17 +378,17 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QLabel" name="lblYear">
+          <widget class="QLabel" name="lblIterations">
            <property name="enabled">
             <bool>false</bool>
            </property>
            <property name="text">
-            <string>End year</string>
+            <string>Number of simulation iterations</string>
            </property>
           </widget>
          </item>
          <item row="3" column="2">
-          <widget class="QSpinBox" name="spnEndYear">
+          <widget class="QSpinBox" name="spnIterations">
            <property name="enabled">
             <bool>false</bool>
            </property>
@@ -399,13 +399,13 @@
             </sizepolicy>
            </property>
            <property name="minimum">
-            <number>1900</number>
+            <number>1</number>
            </property>
            <property name="maximum">
-            <number>2100</number>
+            <number>100</number>
            </property>
            <property name="value">
-            <number>2013</number>
+            <number>1</number>
            </property>
           </widget>
          </item>

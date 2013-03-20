@@ -83,8 +83,8 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.spnNeigbourhood.setValue(self.settings.value("ui/ANN/neighborhood", 1).toInt()[0])
     self.spnLearnRate.setValue(self.settings.value("ui/ANN/learningRate", 0.1).toFloat()[0])
     self.spnMaxIterations.setValue(self.settings.value("ui/ANN/maxIterations", 1000).toInt()[0])
-    #self.spnRMS.setValue(self.settings.value("ui/ANN/rms", 0.001).toFloat()[0])
     self.leTopology.setText(self.settings.value("ui/ANN/topology", "10").toString())
+    self.spnMomentum.setValue(self.settings.value("ui/ANN/momentum", 0.05).toFloat()[0])
 
     self.chkCreateReport.setChecked(self.settings.value("ui/ANN/createReport", False).toBool())
     self.chkSaveSamples.setChecked(self.settings.value("ui/ANN/saveSamples", False).toBool())
@@ -106,8 +106,8 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
 
     self.model.setEpochs(self.spnMaxIterations.value())
     self.model.setValPercent(20)
-    self.model.setLRate()
-    self.model.setMomentum()
+    self.model.setLRate(self.spnLearnRate.value())
+    self.model.setMomentum(self.spnMomentum.value())
     self.model.setContinueTrain()
 
     self.dataTrain = [1]
@@ -126,6 +126,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.plugin.workThread.started.connect(self.model.startTrain)
     self.model.updateGraph.connect(self.__updateGraph)
     self.model.updateDeltaRMS.connect(self.__updateRMS)
+    self.model.updateMinValErr.connect(self.__updateValidationError)
     self.model.processFinished.connect(self.__trainFinished)
     self.model.processFinished.connect(self.plugin.workThread.quit)
 
@@ -134,10 +135,13 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.inputs["model"] = self.model
 
   def __trainFinished(self):
-    print "Finished"
+    self.plugin.workThread.started.disconnect(self.model.startTrain)
 
   def __updateRMS(self, dRMS):
     self.leDeltaRMS.setText(QString.number(dRMS))
+
+  def __updateValidationError(self, error):
+    self.leValidationError.setText(QString.number(error))
 
   def __updateGraph(self, errTrain, errVal):
     self.dataTrain.append(errTrain)
