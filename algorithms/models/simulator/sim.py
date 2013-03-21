@@ -74,7 +74,7 @@ class Simulator(QObject):
         '''
         Make 1 iteracion of simulation.
         '''
-        #TODO: eleminate AreaAnalyst.getChangeMap() from the process, use simple prediction an state difference.
+        #TODO: eleminate AreaAnalyst.getChangeMap() from the process
 
         transition = self.crosstable.getCrosstable()
 

@@ -4,10 +4,10 @@
     <mapcanvas>
         <units>meters</units>
         <extent>
-            <xmin>356772.541863</xmin>
-            <ymin>6226714.233155</ymin>
-            <xmax>369851.696036</xmax>
-            <ymax>6233789.447973</ymax>
+            <xmin>350232.964776</xmin>
+            <ymin>6223146.222735</ymin>
+            <xmax>376391.273123</xmax>
+            <ymax>6237357.458393</ymax>
         </extent>
         <projections>1</projections>
         <destinationsrs>
@@ -24,16 +24,6 @@
         </destinationsrs>
     </mapcanvas>
     <legend updateDrawingOrder="true">
-        <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="dist_river" showFeatureCount="0">
-            <filegroup open="false" hidden="false">
-                <legendlayerfile isInOverview="0" layerid="dist_river20130221120215636" visible="0"/>
-            </filegroup>
-        </legendlayer>
-        <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="dist_roads" showFeatureCount="0">
-            <filegroup open="false" hidden="false">
-                <legendlayerfile isInOverview="0" layerid="dist_roads20130221120200840" visible="0"/>
-            </filegroup>
-        </legendlayer>
         <legendlayer drawingOrder="-1" open="false" checked="Qt::Checked" name="final" showFeatureCount="0">
             <filegroup open="false" hidden="false">
                 <legendlayerfile isInOverview="0" layerid="final20130221120155328" visible="1"/>
@@ -42,6 +32,16 @@
         <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="init" showFeatureCount="0">
             <filegroup open="false" hidden="false">
                 <legendlayerfile isInOverview="0" layerid="init20130221120145487" visible="0"/>
+            </filegroup>
+        </legendlayer>
+        <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="dist_roads" showFeatureCount="0">
+            <filegroup open="false" hidden="false">
+                <legendlayerfile isInOverview="0" layerid="dist_roads20130221120200840" visible="0"/>
+            </filegroup>
+        </legendlayer>
+        <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="dist_river" showFeatureCount="0">
+            <filegroup open="false" hidden="false">
+                <legendlayerfile isInOverview="0" layerid="dist_river20130221120215636" visible="0"/>
             </filegroup>
         </legendlayer>
     </legend>
@@ -79,7 +79,7 @@
             </rasterrenderer>
             <rasterresampler maxOversampling="2"/>
         </maplayer>
-        <maplayer minimumScale="-4.65661e-10" maximumScale="1e+08" type="raster" hasScaleBasedVisibilityFlag="0">
+        <maplayer minimumScale="0" maximumScale="1e+08" type="raster" hasScaleBasedVisibilityFlag="0">
             <id>dist_roads20130221120200840</id>
             <datasource>./dist_roads.tif</datasource>
             <title></title>
@@ -102,7 +102,7 @@
                 <property key="identify/format" value="Value"/>
             </customproperties>
             <provider>gdal</provider>
-            <rasterrenderer gradient="BlackToWhite" opacity="1" alphaBand="0" type="singlebandgray" grayBand="1">
+            <rasterrenderer gradient="BlackToWhite" opacity="1" alphaBand="-1" type="singlebandgray" grayBand="1">
                 <rasterTransparency/>
                 <contrastEnhancement>
                     <minValue>0</minValue>

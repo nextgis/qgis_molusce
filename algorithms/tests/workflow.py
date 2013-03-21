@@ -13,6 +13,7 @@ from molusce.algorithms.models.crosstabs.manager  import CrossTableManager
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 from molusce.algorithms.models.lr.lr import LR
 from molusce.algorithms.models.mlp.manager import MlpManager
+from molusce.algorithms.models.woe.manager import WoeManager
 from molusce.algorithms.models.simulator.sim import Simulator
 
 def main(initRaster, finalRaster, factors):
@@ -26,25 +27,34 @@ def main(initRaster, finalRaster, factors):
     crosstab = CrossTableManager(initRaster, finalRaster)
     print "Finish Making CrossTable", clock(), '\n'
     
-    # Create and Train ANN Model
-    model = MlpManager(ns=0)
-    model.createMlp(initRaster, factors, finalRaster, [10])
-    print 'Start Setting MLP Trainig Data...', clock()
-    model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=1000)    
-    print 'Finish Setting Trainig Data', clock(), '\n'
-    print 'Start MLP Training...', clock()
-    model.train(1000, valPercent=20)
-    print 'Finish Trainig', clock(), '\n'
+    #~ # Create and Train ANN Model
+    #~ model = MlpManager(ns=0)
+    #~ model.createMlp(initRaster, factors, finalRaster, [10])
+    #~ print 'Start Setting MLP Trainig Data...', clock()
+    #~ model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=1000)    
+    #~ print 'Finish Setting Trainig Data', clock(), '\n'
+    #~ print 'Start MLP Training...', clock()
+    #~ model.train(1000, valPercent=20)
+    #~ print 'Finish Trainig', clock(), '\n'
+#~ 
+    #~ print 'Start ANN Prediction...', clock()
+    #~ predict = model.getPrediction(initRaster, factors)
+    #~ filename = 'ann_predict.tiff'
+    #~ try:
+        #~ predict.save(filename)
+    #~ finally:
+        #~ #os.remove(filename)
+        #~ pass
+    #~ print 'Finish ANN Prediction...', clock(), '\n'
 
-    print 'Start ANN Prediction...', clock()
-    predict = model.getPrediction(initRaster, factors)
-    filename = 'ann_predict.tiff'
-    try:
-        predict.save(filename)
-    finally:
-        #os.remove(filename)
-        pass
-    print 'Finish ANN Prediction...', clock(), '\n'
+    # Create and Train WoE Model
+    print 'Start creating AreaAnalyst...', clock()
+    analyst = AreaAnalyst(initRaster, finalRaster)
+    print 'Finish creating AreaAnalyst ...', clock(), '\n'
+    print 'Start creating WoE model...', clock()
+    bins = {0: [[1000, 2000, 3000]], 1: [[200, 500, 1000, 1500]]}
+    model = WoeManager(factors, analyst, bins= bins)
+    print 'Finish creating WoE model...', clock(), '\n'
 
     # simulation
     print 'Start Simulation...', clock()
@@ -72,6 +82,6 @@ def main(initRaster, finalRaster, factors):
     
     
 if __name__=="__main__":
-    main('examples/init.tif', 'examples/final.tif', ['examples/two_dist.tif'])
+    main('examples/init.tif', 'examples/final.tif', ['examples/dist_river.tif', 'examples/dist_roads.tif'])
     
     

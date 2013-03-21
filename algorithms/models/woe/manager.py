@@ -60,7 +60,7 @@ class WoeManager(object):
                 fact = factors[k]
                 if bins: # Get bins of the factor
                     bin = bins[k]
-                    if fact.getBandsCount() != len(bin):
+                    if (bin != None) and fact.getBandsCount() != len(bin):
                         raise WoeManagerError("Count of bins list for multiband factor is't equal to band count!")
                 else: bin = None
                 for i in range(1, fact.getBandsCount()+1):
@@ -76,7 +76,10 @@ class WoeManager(object):
     def getConfidence(self):
         return self.confidence
     
-    def getPrediction(self, state):
+    def getPrediction(self, state, factors=None):
+        '''
+        Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
+        '''
         self._predict(state)
         return self.prediction
     
