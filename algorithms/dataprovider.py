@@ -121,7 +121,8 @@ class Raster(object):
         Return mean and std of the raster's band
         '''
         band = self.getBand(bandNo)
-        result = np.zeros(1, dtype=[('mean', float, 1),('std',  float, 1)])
+        result = {}
+        #result = np.zeros(1, dtype=[('mean', float, 1),('std',  float, 1)])
         result['mean'] = np.mean(band)
         result['std']  = np.std (band)
         return result

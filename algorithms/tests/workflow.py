@@ -36,7 +36,7 @@ def main(initRaster, finalRaster, factors):
     #~ print 'Start MLP Training...', clock()
     #~ model.train(1000, valPercent=20)
     #~ print 'Finish Trainig', clock(), '\n'
-#~ 
+    #~ 
     #~ print 'Start ANN Prediction...', clock()
     #~ predict = model.getPrediction(initRaster, factors)
     #~ filename = 'ann_predict.tiff'
@@ -46,6 +46,26 @@ def main(initRaster, finalRaster, factors):
         #~ #os.remove(filename)
         #~ pass
     #~ print 'Finish ANN Prediction...', clock(), '\n'
+
+    #~ # Create and Train LR Model
+    #~ model = LR(ns=1)
+    #~ print 'Start Setting LR Trainig Data...', clock()
+    #~ model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=1000)
+    #~ print 'Finish Setting Trainig Data', clock(), '\n'
+    #~ print 'Start LR Training...', clock()
+    #~ model.train()
+    #~ print 'Finish Trainig', clock(), '\n'
+    #~ 
+    #~ 
+    #~ print 'Start LR Prediction...', clock()
+    #~ predict = model.getPrediction(initRaster, factors)
+    #~ filename = 'lr_predict.tiff'
+    #~ try:
+    #~ predict.save(filename)
+    #~ finally:
+    #~ #os.remove(filename)
+    #~ pass
+    #~ print 'Finish LR Prediction...', clock(), '\n'
 
     # Create and Train WoE Model
     print 'Start creating AreaAnalyst...', clock()

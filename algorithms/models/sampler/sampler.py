@@ -85,12 +85,14 @@ class Sampler(QObject):
         Get input sample at (row, col) pixel and return it as array. Return None if the sample is incomplete.
         '''
         sample = np.zeros(self.factorVectLen)
+        n = 0 # The number of samples item processed
         for (k,raster) in enumerate(factors):
             neighbours = raster.getNeighbours(row,col, self.ns).flatten()
             if any(neighbours.mask): # Eliminate incomplete samples
                 return None
             pixel_count = raster.getNeighbourhoodSize(self.ns)
-            sample[k*pixel_count: (k+1)*pixel_count] = neighbours
+            sample[n: n + pixel_count] = neighbours
+            n = n + pixel_count
         return sample
     
     
@@ -168,7 +170,7 @@ class Sampler(QObject):
         
         # Array for samples
         self.data = np.zeros(samples, dtype=[('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
-        
+
         if mode == 'All':
             self.rangeChanged.emit(self.tr("Sampling..."), rows - 2*self.ns)
             # i,j  are pixel indexes

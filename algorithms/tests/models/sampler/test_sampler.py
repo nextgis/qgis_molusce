@@ -19,6 +19,7 @@ class TestSample (unittest.TestCase):
         
         self.factors2 = [Raster('../../examples/multifact.tif'), Raster('../../examples/multifact.tif')]
         self.factors3 = [Raster('../../examples/two_band.tif')]
+        self.factors4 = [Raster('../../examples/two_band.tif'), Raster('../../examples/multifact.tif')]
         
     def test_setTrainingData(self):
         smp = Sampler(self.output, self.factors,  self.output, ns=0)
@@ -43,7 +44,7 @@ class TestSample (unittest.TestCase):
             assert_array_equal(data[i]['output'], smp.data[i]['output'])
             assert_array_equal(data[i]['state'],  smp.data[i]['state'])
 
-        # two factor rasters
+        # two factor_rasters
         smp = Sampler(self.output, self.factors2, self.output, ns=1)
         smp.setTrainingData(self.output, self.factors2, self.output)
         
@@ -77,10 +78,35 @@ class TestSample (unittest.TestCase):
         assert_array_equal(data[0]['factors'], smp.data[0]['factors'])
         assert_array_equal(data[0]['output'], smp.data[0]['output'])
         assert_array_equal(data[0]['state'],  smp.data[0]['state'])
-        
+
+        # Several factor bands, several factor rasters
+        smp = Sampler(self.output, self.factors4, self.output, ns=1)
+        smp.setTrainingData(self.output, self.factors4, self.output)
+        data = np.array(
+            [
+                ([1,2,1,   1,2,1,  0,1,2], 
+                 [ 1.,  2.,  1.,  1.,  2.,  1.,  0.,  1.,  2.,  
+                                1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.,
+                                     1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.], 
+                 2.0)
+            ],
+            dtype=[('state', float, (9,)), ('factors', float, (27,)), ('output', float, 1)]
+        )
+        assert_array_equal(data[0]['factors'], smp.data[0]['factors'])
+        assert_array_equal(data[0]['output'], smp.data[0]['output'])
+        assert_array_equal(data[0]['state'],  smp.data[0]['state'])
         
         # Mode = Normal
-        # As the previous example, but 10 samples:
+        # As the Multiband factors example, but 10 samples:
+        data = np.array(
+            [
+                ([1,2,1,   1,2,1,  0,1,2], 
+                 [ 1.,  2.,  1.,  1.,  2.,  1.,  0.,  1.,  2.,  
+                                1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.], 
+                 2.0)
+            ],
+            dtype=[('state', float, (9,)), ('factors', float, (18,)), ('output', float, 1)]
+        )
         smp = Sampler(self.output, self.factors3, self.output, ns=1)
         smp.setTrainingData(self.output, self.factors3, self.output, mode='Normal', samples=10)
         for i in range(10):

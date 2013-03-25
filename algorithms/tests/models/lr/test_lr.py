@@ -32,14 +32,14 @@ class TestMlpManager (unittest.TestCase):
         ]
         result = np.ma.array(data = data, mask = (data==0))
         
-        lr = LR(ns=0)
+        lr = LR(ns=0)   # 3-class problem
         lr.setTrainingData(self.state, self.factors, self.output)
         lr.train()
         predict = lr.getPrediction(self.state, self.factors)
         predict = predict.getBand(1)
         assert_array_equal(predict, result)
 
-        lr = LR(ns=1)
+        lr = LR(ns=1) # Two-class problem (it's because of boundary effect)
         lr.setTrainingData(self.state1, self.factors1, self.output1)
         lr.train()
         predict = lr.getPrediction(self.state1, self.factors1)
