@@ -13,17 +13,17 @@ from molusce.algorithms.models.lr.lr import LR
 
 
 
-class TestMlpManager (unittest.TestCase):
+class TestLRManager (unittest.TestCase):
     def setUp(self):
         self.output  = Raster('../../examples/multifact.tif')
         self.output.resetMask([0])
         self.state   = self.output
         self.factors = [Raster('../../examples/sites.tif'), Raster('../../examples/sites.tif')]
-        
+
         self.output1  = Raster('../../examples/data.tif')
         self.state1   = self.output1
         self.factors1 = [Raster('../../examples/fact16.tif')]
-        
+
     def test_LR(self):
         data = [
             [1.0, 1.0, 3.0],
@@ -31,7 +31,7 @@ class TestMlpManager (unittest.TestCase):
             [0,   3.0, 1.0]
         ]
         result = np.ma.array(data = data, mask = (data==0))
-        
+
         lr = LR(ns=0)   # 3-class problem
         lr.setTrainingData(self.state, self.factors, self.output)
         lr.train()
@@ -52,6 +52,6 @@ class TestMlpManager (unittest.TestCase):
         ]
         result = np.ma.array(data = data, mask = (data==0))
         assert_array_equal(predict, result)
-    
+
 if __name__ == "__main__":
     unittest.main()
