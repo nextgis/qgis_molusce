@@ -56,14 +56,28 @@ class MCE(object):
         38: 1.70,
         39: 1.70
     }
-    def __init__(self, wMatr):
+    def __init__(self, factors, wMatr, areaAnalyst, initStateNum, finalStateNum):
         '''
-        Multicriteria evaluation based on Saaty method.
-        @param wMatr    List of lists -- NxN comparison matrix.
+        Multicriteria evaluation based on Saaty method. It defines transition probability of two classes (initStateNum, finalStateNum).
+        @param factors          List of the factor rasters used for prediction.
+        @param wMatr            List of lists -- NxN comparison matrix.
+        @param areaAnalyst      AreaAnalyst that contains map of the changes, encodes and decodes class numbers.
+        @param initStateNum     Number of initial state (the state before transition).
+        @param finalStateNum    Number of final state (the state after transition).
         '''
 
-        self.dim = len(wMatr)
-        # Check if matrix is valid
+        self.factors = factors
+        self.analyst = areaAnalyst
+        self.changeMap   = areaAnalyst.getChangeMap()
+
+        self.dim = 0
+        for f in factors:
+            self.dim = self.dim + f.getBandsCount()
+
+        if self.dim != len(wMatr):
+            raise MCEError('Matrix size is different from the number of variables!')
+
+        # Check if the matrix is valid
         for i in xrange(self.dim):
             if len(wMatr[i]) != self.dim:
                 raise MCEError('The weight matrix is not NxN!')
@@ -78,11 +92,32 @@ class MCE(object):
         self.weights = None     # Weigths of the factors, calculated using wMatr
         self.consistency =None  # Consistency ratio of the comparison matrix.
 
+        self.prediction = None
+        self.confidence = None
+
+
+    def getConsistency(self):
+        if self.consistency == None:
+            self.setWeights()
+        return self.consistency
+
+    def getConfidence(self):
+        return self.confidence
+
+    def getPrediction(self, state, factors=None):
+        '''
+        Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
+        '''
+        self._predict(state)
+        return self.prediction
 
     def getWeights(self):
         if self.weights == None:
             self.setWeights()
         return self.weights
+
+    def _predict(self, state):
+        pass
 
     def setWeights(self):
         '''
@@ -92,17 +127,22 @@ class MCE(object):
         w, v = np.linalg.eig(self.wMatr)
         maxW = np.max(w)
         maxInd = list(w).index(maxW)    # Index of the biggest eigenvalue
+        maxW = maxW.real
         v = v[:,maxInd]       # The eigen vector
-        self.weights = [x.real for x in v]
-        self.weights =  self.weights/sum(self.weights)
+        self.weights = [x.real for x in v]  # Maxtix v can be complex
+        self.weights = self.weights/sum(self.weights)
 
         # Consistency ratio
-        ci = (maxW - self.dim)/(self.dim - 1)
-        try:
-            ri = self.randomConsistencyIndex[self.dim]
-            self.consistency = ci/ri
-        except KeyError:
-            self.consistency = -1
+        if self.dim > 2:
+            ci = (maxW - self.dim)/(self.dim - 1)
+            try:
+                ri = self.randomConsistencyIndex[self.dim]
+                self.consistency = ci/ri
+            except KeyError:
+                self.consistency = -1
+        else:
+            self.consistency = 0
+
 
 
 
