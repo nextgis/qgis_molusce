@@ -44,7 +44,7 @@ class Raster(object):
         self.bands    = None     # List of the bands (stored as numpy mask array)
         self.geodata  = None     # Georeferensing information
         self.stat     = None     # Initial (before normalizing) statistic (means and stds) of the bands
-        self.isNormalazed = None # Is the bands of the raster normalized?
+        self.isNormalazed = None # Is the bands of the raster normalized? It contains the mode of normalization.
         if self.filename: self._read()
 
     def binaryzation(self, trueVals, bandNum):
@@ -57,11 +57,13 @@ class Raster(object):
         self.bands = bands
         self.geodata = geodata
 
-    def denormalize(self, mode='mean'):
+    def denormalize(self):
         '''
         Denormalisation (see self.normalize)
         '''
+
         if self.isNormalazed:
+            mode = self.isNormalazed
             bandcount = self.getBandsCount()
             for i in range(1, bandcount+1):
                 stat = self.stat[i-1]
@@ -195,7 +197,10 @@ class Raster(object):
                 maxmin  new = (old-min(old)/(max(old)-min(old))
         '''
 
-        if not self.isNormalazed:
+
+
+        if self.isNormalazed != mode:
+            self.denormalize()          # Reset raster values to initail
             bandcount = self.getBandsCount()
             self.stat = []
             for i in range(1, bandcount+1):
@@ -208,7 +213,7 @@ class Raster(object):
                 else:
                     raise ProviderError('The normalization mode is unknown!')
                 self.setBand(newBand, i)
-            self.isNormalazed = True
+            self.isNormalazed = mode
 
     def _read(self):
         data = gdal.Open( self.filename )

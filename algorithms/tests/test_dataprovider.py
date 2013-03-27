@@ -67,15 +67,31 @@ class TestRaster (unittest.TestCase):
             [3,2,1],
             [0,3,1],
         ]
+
+        # Normalize using std and mean
         r1 = Raster('examples/multifact.tif')
         r1.normalize()
         r1.denormalize()
         assert_array_equal(r1.getBand(1), multifact)
 
+        # Normalize using min and max
         r1 = Raster('examples/multifact.tif')
         r1.normalize(mode='maxmin')
-        r1.denormalize(mode='maxmin')
+        r1.denormalize()
         assert_array_equal(r1.getBand(1), multifact)
+
+        # Two normalization procedures
+        r1 = Raster('examples/multifact.tif')
+        r1.normalize()
+        r1.normalize(mode='maxmin')
+        r1.denormalize()
+        assert_array_equal(r1.getBand(1), multifact)
+        r1 = Raster('examples/multifact.tif')
+        r1.normalize(mode='maxmin')
+        r1.normalize()
+        r1.denormalize()
+        assert_array_equal(r1.getBand(1), multifact)
+
 
 
 
