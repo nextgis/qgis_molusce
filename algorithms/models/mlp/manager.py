@@ -144,10 +144,10 @@ class MlpManager(QObject):
         ind = np.where(self.classlist==val)
         res[ind] = self.sigmax
         return res
-    
+
     def getMinValError(self):
         return self.minValError
-    
+
     def getMlpTopology(self):
         return self.MLP.shape
 
@@ -187,7 +187,7 @@ class MlpManager(QObject):
 
         # Normalize factors before prediction:
         for f in factors:
-            f.normalize()
+            f.normalize(mode = 'mean')
 
         predicted_band  = np.zeros([rows, cols])
         confidence_band = np.zeros([rows, cols])
@@ -253,7 +253,7 @@ class MlpManager(QObject):
 
         # Normalize factors before sampling:
         for f in factors:
-            f.normalize()
+            f.normalize(mode = 'mean')
 
         sampler = Sampler(state, factors, output, self.ns)
         sampler.setTrainingData(state, factors, output, shuffle, mode, samples)
@@ -321,14 +321,14 @@ class MlpManager(QObject):
             self.computePerformance(train_indexes, val_indexes)
             self.updateGraph.emit(self.getTrainError(), self.getValError())
             self.updateDeltaRMS.emit(self.getMinValError() - self.getValError())
-            
+
             last_train_err = self.getTrainError()
             self.setTrainError(last_train_err)
             if apply_validation and (self.getValError() < self.getMinValError()):
                 self.minValError = self.getValError()
                 best_weights = self.copyWeights()
                 self.updateMinValErr.emit(self.getMinValError())
-                
+
         self.setMlpWeights(best_weights)
         self.processFinished.emit()
 

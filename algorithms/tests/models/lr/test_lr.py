@@ -16,9 +16,16 @@ from molusce.algorithms.models.lr.lr import LR
 class TestLRManager (unittest.TestCase):
     def setUp(self):
         self.output  = Raster('../../examples/multifact.tif')
+            #~ [1,1,3]
+            #~ [3,2,1]
+            #~ [0,3,1]
         self.output.resetMask([0])
         self.state   = self.output
         self.factors = [Raster('../../examples/sites.tif'), Raster('../../examples/sites.tif')]
+            #~ [1,2,1],
+            #~ [1,2,1],
+            #~ [0,1,2]
+
 
         self.output1  = Raster('../../examples/data.tif')
         self.state1   = self.output1
@@ -26,8 +33,8 @@ class TestLRManager (unittest.TestCase):
 
     def test_LR(self):
         data = [
-            [1.0, 1.0, 3.0],
-            [3.0, 1.0, 1.0],
+            [3.0, 1.0, 3.0],
+            [3.0, 1.0, 3.0],
             [0,   3.0, 1.0]
         ]
         result = np.ma.array(data = data, mask = (data==0))

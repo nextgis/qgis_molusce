@@ -93,10 +93,6 @@ class TestRaster (unittest.TestCase):
         assert_array_equal(r1.getBand(1), multifact)
 
 
-
-
-
-
     def test_getNeighbours(self):
         neighbours = self.r2.getNeighbours(row=1,col=0, size=0)
         self.assertEqual(neighbours, [[1]])
