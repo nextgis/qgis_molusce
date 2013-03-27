@@ -56,8 +56,8 @@ class Raster(object):
     def create(self, bands, geodata):
         self.bands = bands
         self.geodata = geodata
-        
-    def denormalize(self):
+
+    def denormalize(self, mode='mean'):
         '''
         Denormalisation (see self.normalize)
         '''
@@ -65,7 +65,12 @@ class Raster(object):
             bandcount = self.getBandsCount()
             for i in range(1, bandcount+1):
                 stat = self.stat[i-1]
-                newBand = self.getBand(i)*stat['std'] + stat['mean']
+                if mode == 'mean':
+                    newBand = 1.0*self.getBand(i)*stat['std'] + stat['mean']
+                elif mode == 'maxmin':
+                    newBand = 1.0*self.getBand(i)*(stat['max'] - stat['min']) - stat['min']
+                else:
+                    raise ProviderError('The normalization mode is unknown!')
                 self.setBand(newBand, i)
             self.isNormalazed = False
 
@@ -122,9 +127,10 @@ class Raster(object):
         '''
         band = self.getBand(bandNo)
         result = {}
-        #result = np.zeros(1, dtype=[('mean', float, 1),('std',  float, 1)])
         result['mean'] = np.mean(band)
         result['std']  = np.std (band)
+        result['min']  = np.min (band)
+        result['max']  = np.max (band)
         return result
 
 
@@ -179,18 +185,28 @@ class Raster(object):
         Return true if projection of the raster uses metric units
         '''
         return self.getProjUnits() in ('metre', 'Meter')
-        
-    def normalize(self):
+
+    def normalize(self, mode='mean'):
         '''
         Linear normalization of the bands: new = (old-mean(old)/std(old))
+
+        @param mode     Type of normalization:
+                mean    new = (old-mean(old)/std(old))
+                maxmin  new = (old-min(old)/(max(old)-min(old))
         '''
+
         if not self.isNormalazed:
             bandcount = self.getBandsCount()
             self.stat = []
             for i in range(1, bandcount+1):
                 stat = self.getBandStat(i)
                 self.stat.append(stat)
-                newBand = (self.getBand(i) - stat['mean'])/stat['std']
+                if mode == 'mean':
+                    newBand = 1.0*(self.getBand(i) - stat['mean'])/stat['std']
+                elif mode == 'maxmin':
+                    newBand = 1.0*(self.getBand(i) - stat['min'])/(stat['max'] - stat['min'])
+                else:
+                    raise ProviderError('The normalization mode is unknown!')
                 self.setBand(newBand, i)
             self.isNormalazed = True
 
@@ -204,7 +220,7 @@ class Raster(object):
         self.geodata['ySize'] = data.RasterYSize
         self.geodata['proj']  = data.GetProjection()
         self.geodata['transform']  = data.GetGeoTransform()
-        
+
         # Get units of the projection
         sr = osr.SpatialReference()
         sr.ImportFromWkt(self.geodata['proj'])
@@ -248,7 +264,7 @@ class Raster(object):
         tmp.sort()
         if x!=tmp:
             raise ProviderError('Reclassification error: bins must be sorted!')
-        
+
         r = self.getBand(bandNum)
         r = reclass(r, bins)
         self.setBand(r, bandNum)
