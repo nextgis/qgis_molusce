@@ -100,6 +100,7 @@ class Simulator(QObject):
                 placesCount = np.sum(places)
                 if placesCount < n:
                     self.logMessage.emit(self.tr("There are more transitions in the transition matrix, then the model have found"))
+                    n = placesCount
 
                 confidence = self.getConfidence().getBand(1)
                 confidence = confidence * places # The higher is number in cell, the higer is probability of transition in the cell
