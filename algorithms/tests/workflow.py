@@ -15,6 +15,8 @@ from molusce.algorithms.models.lr.lr import LR
 from molusce.algorithms.models.mlp.manager import MlpManager
 from molusce.algorithms.models.woe.manager import WoeManager
 from molusce.algorithms.models.simulator.sim import Simulator
+from molusce.algorithms.models.mce.mce import MCE
+
 
 def main(initRaster, finalRaster, factors):
     print 'Start Reading Init Data...', clock()
@@ -22,21 +24,21 @@ def main(initRaster, finalRaster, factors):
     finalRaster = Raster(finalRaster)
     factors = [Raster(rasterName) for rasterName in factors]
     print 'Finish Reading Init Data', clock(), '\n'
-    
+
     print "Start Making CrossTable...", clock()
     crosstab = CrossTableManager(initRaster, finalRaster)
     print "Finish Making CrossTable", clock(), '\n'
-    
+
     #~ # Create and Train ANN Model
     #~ model = MlpManager(ns=0)
     #~ model.createMlp(initRaster, factors, finalRaster, [10])
     #~ print 'Start Setting MLP Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=1000)    
+    #~ model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=1000)
     #~ print 'Finish Setting Trainig Data', clock(), '\n'
     #~ print 'Start MLP Training...', clock()
     #~ model.train(1000, valPercent=20)
     #~ print 'Finish Trainig', clock(), '\n'
-    #~ 
+    #~
     #~ print 'Start ANN Prediction...', clock()
     #~ predict = model.getPrediction(initRaster, factors)
     #~ filename = 'ann_predict.tiff'
@@ -55,8 +57,8 @@ def main(initRaster, finalRaster, factors):
     #~ print 'Start LR Training...', clock()
     #~ model.train()
     #~ print 'Finish Trainig', clock(), '\n'
-    #~ 
-    #~ 
+    #~
+    #~
     #~ print 'Start LR Prediction...', clock()
     #~ predict = model.getPrediction(initRaster, factors)
     #~ filename = 'lr_predict.tiff'
@@ -67,14 +69,23 @@ def main(initRaster, finalRaster, factors):
     #~ pass
     #~ print 'Finish LR Prediction...', clock(), '\n'
 
-    # Create and Train WoE Model
-    print 'Start creating AreaAnalyst...', clock()
-    analyst = AreaAnalyst(initRaster, finalRaster)
-    print 'Finish creating AreaAnalyst ...', clock(), '\n'
-    print 'Start creating WoE model...', clock()
-    bins = {0: [[1000, 2000, 3000]], 1: [[200, 500, 1000, 1500]]}
-    model = WoeManager(factors, analyst, bins= bins)
-    print 'Finish creating WoE model...', clock(), '\n'
+    #~ # Create and Train WoE Model
+    #~ print 'Start creating AreaAnalyst...', clock()
+    #~ analyst = AreaAnalyst(initRaster, finalRaster)
+    #~ print 'Finish creating AreaAnalyst ...', clock(), '\n'
+    #~ print 'Start creating WoE model...', clock()
+    #~ bins = {0: [[1000, 2000, 3000]], 1: [[200, 500, 1000, 1500]]}
+    #~ model = WoeManager(factors, analyst, bins= bins)
+    #~ print 'Finish creating WoE model...', clock(), '\n'
+
+    # Create and Train MCE Model
+    print 'Start creating MCE model...', clock()
+    matrix = [
+        [1,     6],
+        [1.0/6,   1]
+    ]
+    model = MCE(factors, matrix, 2, 3)
+    print 'Finish creating MCE model...', clock(), '\n'
 
     # simulation
     print 'Start Simulation...', clock()
@@ -84,7 +95,7 @@ def main(initRaster, finalRaster, factors):
     monteCarloSim   = simulator.getState()              # Result of MonteCarlo simulation
     errors          = simulator.errorMap(finalRaster)   # Risk class validation
     riskFunct       = simulator.getConfidence()         # Risk function
-    
+
     # Make K cycles of simulation:
     # simulator.simN(K)
     try:
@@ -97,11 +108,11 @@ def main(initRaster, finalRaster, factors):
         # os.remove('risk_validation.tiff')
         # os.remove('risk_func.tiff')
     print 'Finish Simulation', clock(), '\n'
-    
+
     print 'Done', clock()
-    
-    
+
+
 if __name__=="__main__":
     main('examples/init.tif', 'examples/final.tif', ['examples/dist_river.tif', 'examples/dist_roads.tif'])
-    
-    
+
+
