@@ -52,6 +52,8 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.spnNeighbourhood.setValue(self.settings.value("ui/LR/neighborhood", 1).toInt()[0])
 
   def fitModel(self):
+    self.settings.setValue("ui/LR/neighborhood", self.spnNeighbourhood.value())
+
     self.model = LR(ns=self.spnNeigbourhood.value())
 
     self.model.setTrainingData(self.inputs["initial"],

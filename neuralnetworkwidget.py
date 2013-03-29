@@ -90,6 +90,15 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.chkSaveSamples.setChecked(self.settings.value("ui/ANN/saveSamples", False).toBool())
 
   def trainNetwork(self):
+    self.settings.setValue("ui/ANN/neighborhood", self.spnNeigbourhood.value())
+    self.settings.setValue("ui/ANN/learningRate", self.spnLearnRate.value())
+    self.settings.setValue("ui/ANN/maxIterations", self.spnMaxIterations.value())
+    self.settings.setValue("ui/ANN/topology", self.leTopology.text())
+    self.settings.setValue("ui/ANN/momentum", self.spnMomentum.value())
+
+    self.settings.setValue("ui/ANN/createReport", self.chkCreateReport.isChecked())
+    self.settings.setValue("ui/ANN/saveSamples", self.chkSaveSamples.isChecked())
+
     self.model = MlpManager(ns=self.spnNeigbourhood.value())
     self.model.createMlp(self.inputs["initial"],
                          self.inputs["factors"].values(),
