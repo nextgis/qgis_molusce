@@ -30,7 +30,7 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
-#from algorithms.models.lr.lr import LR
+from algorithms.models.lr.lr import LR
 
 from ui.ui_logisticregressionwidgetbase import Ui_Widget
 
@@ -42,14 +42,24 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.plugin = plugin
     self.inputs = plugin.inputs
 
+    self.settings = QSettings("NextGIS", "MOLUSCE")
+
     self.btnFitModel.clicked.connect(self.fitModel)
 
     self.manageGui()
 
   def manageGui(self):
-    settings = QSettings("NextGIS", "MOLUSCE")
-
-    self.spnNeighbourhood.setValue(settings.value("ui/LR/neighborhood", 1).toInt()[0])
+    self.spnNeighbourhood.setValue(self.settings.value("ui/LR/neighborhood", 1).toInt()[0])
 
   def fitModel(self):
-    pass
+    self.model = LR(ns=self.spnNeigbourhood.value())
+
+    self.model.setTrainingData(self.inputs["initial"],
+                               self.inputs["factors"].values(),
+                               self.inputs["final"],
+                               mode=self.inputs["samplingMode"],
+                               samples=self.plugin.spnSamplesCount.value()
+                              )
+
+    self.model.train()
+    self.inputs["model"] = self.model
