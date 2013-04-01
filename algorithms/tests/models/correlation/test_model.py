@@ -11,11 +11,10 @@ from numpy import ma as ma
 
 from molusce.algorithms.models.correlation.model  import correlation, cramer, jiu
 
-
 class TestModel (unittest.TestCase):
-    
+
     def setUp(self):
-        
+
         self.X = np.array([
             [1, 2, 1,],
             [1, 2, 1,],
@@ -46,9 +45,9 @@ class TestModel (unittest.TestCase):
         self.sum_r = [5, 3]
         self.sum_s = [4, 1, 3]
         self.total = 8
-        self.r = 2 
+        self.r = 2
         self.s = 3
-        
+
         self.T_cramer_expect = np.array([
             [20.0/8, 5.0/8, 15.0/8],
             [12.0/8, 3.0/8,  9.0/8]
@@ -60,8 +59,8 @@ class TestModel (unittest.TestCase):
             [False, False, False,],
             [True , False, False,]
         ])
-        
-        
+
+
     def test_correlation(self):
         n = len(np.ma.compressed(self.X))
         mean_x = np.ma.mean(self.X)
@@ -72,8 +71,8 @@ class TestModel (unittest.TestCase):
         self.R = self.cov / (self.S_x * self.S_y)
         self.assertEqual(correlation(self.X,self.Y), self.R,'correlation failed')
         self.assertEqual(correlation(self.X,self.X), 1.0,'correlation failed')
-        
-          
+
+
     def test_cramer(self):
         self.T_cramer = np.subtract(self.T, self.T_cramer_expect)
         self.T_cramer = np.square(self.T_cramer)
@@ -81,11 +80,14 @@ class TestModel (unittest.TestCase):
         self.cramer = math.sqrt(self.x2 / (self.total * min(self.r-1,self.s-1)))
         self.assertEqual(cramer(self.X, self.Y), self.cramer, 'cramer coeff failed')
         self.assertEqual(cramer(self.X, self.X), 1.0, 'cramer coeff failed')
-        
+
     def test_jiu(self):
         self.assertAlmostEqual(jiu(self.X, self.Y), 0.385101639127, 9, 'joint coeff failed')
         self.assertEqual(jiu(self.X, self.X), 1.0, 'joint coeff failed')
-    
-    
+
+
+
+
+
 if __name__ == "__main__":
     unittest.main()
