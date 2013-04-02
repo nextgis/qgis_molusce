@@ -41,7 +41,7 @@ def cramer(X, Y):
     '''
     table = CrossTable(X, Y)
     rows, cols = table.shape
-    t_expect =  table.getExpectedCrosstable()
+    t_expect =  table.getExpectedTable()
 
     # Mask T* to prevent division by zero
     t_expect = np.ma.array(t_expect, mask=(t_expect == 0))
@@ -65,9 +65,9 @@ def jiu(X, Y):
     '''
     #T, sum_r, sum_s, total, r, s = compute_table(X, Y)
     table = CrossTable(X, Y)
-    T = 1.0*table.T / table.n                         #Pij = Tij / total
-    sum_rows = 1.0*table.getSumRows() / table.n       #Pi. = Ti. / total  i=[0,(r-1)]
-    sum_cols = 1.0*table.getSumCols() / table.n       #P.j = T.j / total  j=[0,(s-1)]
+    T = table.getProbtable()             #Pij = Tij / total
+    sum_rows = table.getProbRows()       #Pi. = Ti. / total  i=[0,(r-1)]
+    sum_cols = table.getProbCols()       #P.j = T.j / total  j=[0,(s-1)]
 
     #to calculate the entropy we take the logarithm,
     #logarithm of zero does not exist, so we must mask zero values
@@ -85,6 +85,23 @@ def jiu(X, Y):
 
     return U
 
+
+def kappa(X, Y):
+    '''
+    Kappa statistic
+    '''
+    table = CrossTable(X, Y)
+    rows, cols = table.shape
+    if rows != cols:
+        raise CoeffError('Kappa is applicable for NxN crosstable only!')
+    t_expect =  table.getProbtable()
+    pa = 0
+    for i in range(rows):
+        pa = pa + t_expect[i,i]
+    prows = table.getProbRows()
+    pcols = table.getProbCols()
+    pexpect = sum(prows * pcols)
+    return (pa - pexpect)/(1-pexpect)
 
 
 

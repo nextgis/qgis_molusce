@@ -32,13 +32,23 @@ class CrossTable(object):
 
         # Compute crosstable
         self.T = np.zeros([rows, cols], dtype=int)
-        self.n = len(X)                 # Unmasked elements count (= sum of all elements of the table)
+        self.n = len(X)                 # Count of unmasked elements  (= sum of all elements of the table)
         for i in range(self.n):
             class_num_x = self.graduation_x.index(X[i])
             class_num_y = self.graduation_y.index(Y[i])
             self.T[class_num_x][class_num_y] +=1
 
-    def getExpectedCrosstable(self):
+    def getCrosstable(self):
+        return self.T
+
+    def getExpectedProbtable(self):
+        '''
+        Return expected probabilities table. (if dependencies between X, Y are not present).
+        '''
+        t = self.getExpectedTable()
+        return t/self.n
+
+    def getExpectedTable(self):
         '''
         Return expected crosstable. (if dependencies between X, Y are not present).
         '''
@@ -50,6 +60,18 @@ class CrossTable(object):
         sum_rows = np.tile(np.reshape(sum_rows, (rows,1)),(1,cols))
         sum_cols = np.tile(sum_cols, (rows,1))
         return 1.0*sum_rows*sum_cols/self.n
+
+    def getProbCols(self):
+        return 1.0*self.getSumCols() / self.n
+
+    def getProbRows(self):
+        return 1.0*self.getSumRows() / self.n
+
+    def getProbtable(self):
+        '''
+        Return probability table of transitions
+        '''
+        return 1.0*self.getCrosstable() / self.n
 
     def getSumRows(self):
         '''This function returns sums in the rows (Ti.)'''

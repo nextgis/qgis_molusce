@@ -61,19 +61,28 @@ class TestCrossTable (unittest.TestCase):
         fromClass, toClass = 1, 3
         self.assertEqual(self.table.getTransition(fromClass, toClass), 3)
 
-    def test_expectedCrosstable(self):
+    def test_expectedTable(self):
         # CrossTable:
         # [2, 0, 3],
         # [2, 1, 0],
 
         table = CrossTable(self.X, self.Y)
-        tab = table.getExpectedCrosstable()
+        tab = table.getExpectedTable()
         answer = [
-            [20/11.0, 0/11.0, 30/11.0],
-            [24/11.0, 6/11.0, 18/11.0]
+            [20/8.0, 5/8.0, 15/8.0],
+            [12/8.0, 3/8.0,  9/8.0]
         ]
-        for i in range(self.r):
-            self.assertEqual(all(tab[i]), all(tab[i]))
+        np.testing.assert_array_equal(answer, tab)
+
+        tab = table.getExpectedProbtable()
+        answer = [
+            [20/64.0, 5/64.0, 15/64.0],
+            [12/64.0, 3/64.0,  9/64.0]
+        ]
+        np.testing.assert_array_equal(answer, tab)
+
+        np.testing.assert_array_equal(table.getProbCols(), [4.0/8, 1.0/8, 3.0/8])
+        np.testing.assert_array_equal(table.getProbRows(), [5.0/8, 3.0/8])
 
 
 
