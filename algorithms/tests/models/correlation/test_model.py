@@ -100,10 +100,16 @@ class TestModel (unittest.TestCase):
         #~ ])
         Pa = 3.0/8
         Pe = 21.0/64
+        Pmax = 6.0/8
+
         answer = (Pa - Pe)/(1 - Pe)
         self.assertEqual(kappa(self.Y, self.Y1), answer)
 
+        answer = (Pa - Pe)/(Pmax - Pe)
+        self.assertEqual(kappa(self.Y, self.Y1, mode='loc'), answer)
 
+        answer = (Pmax - Pe)/(1 - Pe)
+        self.assertEqual(kappa(self.Y, self.Y1, mode='histo'), answer)
 
 
 if __name__ == "__main__":

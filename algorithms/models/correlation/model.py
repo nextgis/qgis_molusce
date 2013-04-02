@@ -86,9 +86,15 @@ def jiu(X, Y):
     return U
 
 
-def kappa(X, Y):
+def kappa(X, Y, mode=None):
     '''
     Kappa statistic
+    @param X    Raster array.
+    @param Y    Raster array.
+    @param mode Kappa sttistic to compute:
+        mode = None:    classic kappa
+        mode = loc:     kappa location
+        mode = histo    kappa histogram
     '''
     table = CrossTable(X, Y)
     rows, cols = table.shape
@@ -101,7 +107,17 @@ def kappa(X, Y):
     prows = table.getProbRows()
     pcols = table.getProbCols()
     pexpect = sum(prows * pcols)
-    return (pa - pexpect)/(1-pexpect)
+    pmax = sum(np.min([prows, pcols], axis=0))
+
+    if mode == None:
+        result = (pa - pexpect)/(1-pexpect)
+    elif mode == "loc":
+        result = (pa - pexpect)/(pmax - pexpect)
+    elif mode == "histo":
+        result = (pmax - pexpect)/(1 - pexpect)
+    else:
+        raise CoeffError('Unknown mode of kappa statistics!')
+    return result
 
 
 
