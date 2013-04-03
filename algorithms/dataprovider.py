@@ -6,7 +6,7 @@ from osgeo import osr
 import numpy as np
 from numpy import ma as ma
 
-from utils import binaryzation, reclass
+from utils import binaryzation, reclass, get_gradations
 
 class ProviderError(Exception):
     '''Base class for exceptions in this module.'''
@@ -133,6 +133,7 @@ class Raster(object):
         result['std']  = np.std (band)
         result['min']  = np.min (band)
         result['max']  = np.max (band)
+        result['gradation'] = get_gradations(band.compressed())
         return result
 
 

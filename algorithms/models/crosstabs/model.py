@@ -23,7 +23,7 @@ class CrossTable(object):
         X = np.ma.compressed(band1)
         Y = np.ma.compressed(band2)
 
-        # Compute gradations of the rasters
+        # Compute gradations of the bands
         self.graduation_x = get_gradations(X)
         self.graduation_y = get_gradations(Y)
 

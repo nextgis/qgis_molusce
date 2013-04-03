@@ -4,7 +4,7 @@ import numpy as np
 
 from molusce.algorithms.dataprovider import Raster
 from model import woe
-from molusce.algorithms.utils import get_gradations, binaryzation, masks_identity, reclass
+from molusce.algorithms.utils import binaryzation, masks_identity, reclass
 
 
 def sigmoid(x):
@@ -26,14 +26,14 @@ class WoeManager(object):
         @param unit_cell    Method parameter, pixelsize of resampled rasters.
         @param bins         Dictionary of bins. Bins are binning boundaries that used for reduce count of classes.
                                 For example if factors = [f0, f1], then bins could be (for example) {0:[bins for f0], 1:[bins for f1]} = {0:[[10, 100, 250]],1:[[0.2, 1, 1.5, 4]]}.
-                                List of list used because a factor can be a multiband raster, we need get a list of bins for every band. For example: 
+                                List of list used because a factor can be a multiband raster, we need get a list of bins for every band. For example:
                                 factors = [f0, 2-band-factor], bins= {0: [[10, 100, 250]], 1:[[0.2, 1, 1.5, 4], [3, 4, 7]] }
         '''
-        
+
         self.factors = factors
         self.analyst = areaAnalyst
         self.changeMap   = areaAnalyst.getChangeMap()
-        
+
         self.prediction = None
         self.confidence = None
 
@@ -43,14 +43,16 @@ class WoeManager(object):
         for r in self.factors:
             if not self.changeMap.geoDataMatch(r):
                 raise WoeManagerError('Geometries of the input rasters are different!')
-        
+
         if self.changeMap.getBandsCount() != 1:
             raise WoeManagerError('Change map must have one band!')
-        
+
         # Get list of codes from the changeMap raster
+        classes = self.changeMap.getBandStat(1)['gradation']
         cMap = self.changeMap.getBand(1)
-        self.codes = [int(c) for c in get_gradations(cMap.compressed())]    # Codes of transitions initState->finalState (see AreaAnalyst.encode)
-        
+
+        self.codes = [int(c) for c in classes]    # Codes of transitions initState->finalState (see AreaAnalyst.encode)
+
         self.woe = {}
         for code in self.codes:
             sites = binaryzation(cMap, [code])
@@ -71,21 +73,21 @@ class WoeManager(object):
                     weights = woe(band, sites, unit_cell)       # WoE for the 'code' (initState->finalState) transition and current 'factor'.
                     wMap = wMap + weights
             self.woe[code]=wMap             # WoE for all factors and the transition.
-    
-    
+
+
     def getConfidence(self):
         return self.confidence
-    
+
     def getPrediction(self, state, factors=None):
         '''
         Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
         '''
         self._predict(state)
         return self.prediction
-    
+
     def getWoe(self):
         return self.woe
-    
+
     def _predict(self, state):
         '''
         Predict the changes.
@@ -94,14 +96,14 @@ class WoeManager(object):
         rows, cols = geodata['ySize'], geodata['xSize']
         if not self.changeMap.geoDataMatch(state):
             raise WoeManagerError('Geometries of the state and changeMap rasters are different!')
-        
+
         prediction = np.zeros((rows,cols))
         confidence = np.zeros((rows,cols))
         mask = np.zeros((rows,cols))
 
         woe = self.getWoe()
         stateBand = state.getBand(1)
-        
+
         for r in xrange(rows):
             for c in xrange(cols):
                 oldMax, currMax = -1000, -1000  # Small numbers
@@ -129,6 +131,6 @@ class WoeManager(object):
         confidence_band = np.ma.array(data=confidence, mask=mask)
         self.confidence = Raster()
         self.confidence.create([confidence_band], geodata)
-        
-        
-    
+
+
+

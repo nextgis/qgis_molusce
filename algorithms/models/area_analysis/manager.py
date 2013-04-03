@@ -6,7 +6,7 @@ from numpy import ma as ma
 from PyQt4.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
-from molusce.algorithms.utils import masks_identity, get_gradations
+from molusce.algorithms.utils import masks_identity
 
 
 class AreaAnalizerError(Exception):
@@ -43,16 +43,20 @@ class AreaAnalyst(QObject):
             raise AreaAnalizerError('Rasters mast have 1 band!')
 
         self.geodata = first.getGeodata()
+        statFirst    = first.getBandStat(1)
+        statSecong   = second.getBandStat(1)
+        self.classes = statFirst['gradation']
+        self.classesSecond = statSecong['gradation']
+
         first, second = masks_identity(first.getBand(1), second.getBand(1))
 
         self.first = first
         self.second = second
 
-        self.classes = get_gradations(self.first.compressed())
-        for cl in get_gradations(self.second.compressed()):
+        for cl in self.classesSecond:
             if cl not in self.classes:
                 raise AreaAnalizerError("List of classes of the first raster doesn't contains a class of the second raster!")
-        
+
         self.changeMap = None
 
     def codes(self, initialClass):
@@ -76,7 +80,7 @@ class AreaAnalyst(QObject):
         except ValueError:
             raise AreaAnalizerError('The code is not in list!')
         return (initClass, finalClass)
-        
+
 
     def encode(self, initialClass, finalClass):
         '''
