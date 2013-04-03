@@ -67,7 +67,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     #               "layerId_2" : Raster(),
     #               ...
     #               "layerId_N" : Raster()
-    #              }
+    #              },
+    #  "bandCount" : 0,
+    #  "model" : object
     # }
     # Layer ids are necessary to handle factors changes (e.g. adding new or removing
     # existing factor)
@@ -164,6 +166,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
       d[layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
       self.inputs["factors"] = d
 
+    self.inputs["bandCount"] = self.__bandCount()
+
     self.__logMessage(self.tr("Added factor layer %1").arg(layerName))
 
   def removeFactor(self):
@@ -173,12 +177,15 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     del self.inputs["factors"][layerId]
 
+    self.inputs["bandCount"] = self.__bandCount()
+
     self.__logMessage(self.tr("Removed factor layer %1").arg(layerName))
 
   def removeAllFactors(self):
     self.lstFactors.clear()
 
     del self.inputs["factors"]
+    del self.inputs["bandCount"]
 
     self.__logMessage(self.tr("Factors list cleared"))
 
@@ -363,9 +370,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     elif modelName == self.tr("Artificial Neural Network"):
       self.modelWidget = neuralnetworkwidget.NeuralNetworkWidget(self)
     elif modelName == self.tr("Weights of Evidence"):
-      self.modelWidget = weightofevidencewidget.WeightOfEvidenceWidget()
+      self.modelWidget = weightofevidencewidget.WeightOfEvidenceWidget(self)
     elif modelName == self.tr("Multi Criteria Evaluation"):
-      self.modelWidget = multicriteriaevaluationwidget.MultiCriteriaEvaluationWidget()
+      self.modelWidget = multicriteriaevaluationwidget.MultiCriteriaEvaluationWidget(self)
 
     self.widgetStackMethods.addWidget(self.modelWidget)
     self.widgetStackMethods.setCurrentWidget(self.modelWidget)
@@ -441,6 +448,12 @@ class MolusceDialog(QDialog, Ui_Dialog):
       QgsMapLayerRegistry.instance().addMapLayers([layer])
     else:
       self.__logMessage(self.tr("Can't load raster %1").arg(filePath))
+
+  def __bandCount(self):
+    bands = 0
+    for k, v in self.inputs["factors"].iteritems():
+      bands += len(v.bands)
+    return bands
 
   def __setProgressRange(self, message, maxValue):
     self.progressBar.setFormat(message)
