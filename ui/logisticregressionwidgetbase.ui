@@ -87,11 +87,18 @@
        </item>
       </layout>
      </widget>
-     <widget class="QTableWidget" name="tblCoefficients"/>
+     <widget class="MolusceTableWidget" name="tblCoefficients"/>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MolusceTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>molusce.moluscetablewidget</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

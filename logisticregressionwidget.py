@@ -54,7 +54,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
   def fitModel(self):
     self.settings.setValue("ui/LR/neighborhood", self.spnNeighbourhood.value())
 
-    self.model = LR(ns=self.spnNeigbourhood.value())
+    self.model = LR(ns=self.spnNeighbourhood.value())
 
     self.model.setTrainingData(self.inputs["initial"],
                                self.inputs["factors"].values(),
@@ -64,4 +64,26 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
                               )
 
     self.model.train()
+
+    # populate table
+    self.showCoefficients()
+
     self.inputs["model"] = self.model
+
+  def showCoefficients(self):
+    fm = self.model.getIntercept()
+    coef = self.model.getCoef()
+
+    self.tblCoefficients.clear()
+    self.tblCoefficients.setColumnCount(len(fm))
+    self.tblCoefficients.setRowCount(len(coef[0]) + 1)
+
+    for i in xrange(len(fm)):
+      item = QTableWidgetItem(unicode(fm[i]))
+      self.tblCoefficients.setItem(0, i, item)
+      for j in xrange(len(coef[i])):
+        item = QTableWidgetItem(unicode(coef[i][j]))
+        self.tblCoefficients.setItem(j + 1, i, item)
+
+    self.tblCoefficients.resizeRowsToContents()
+    self.tblCoefficients.resizeColumnsToContents()
