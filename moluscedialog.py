@@ -34,7 +34,16 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
-import logisticregressionwidget
+sklearnMissed = False
+
+try:
+  import sklearn
+except ImportError:
+  sklearnMissed = True
+
+if not sklearnMissed:
+  import logisticregressionwidget
+
 import neuralnetworkwidget
 import weightofevidencewidget
 import multicriteriaevaluationwidget
@@ -336,11 +345,12 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __populateSimulationMethods(self):
     self.cmbSimulationMethod.addItems([
-                                       self.tr("Logistic Regression"),
                                        self.tr("Artificial Neural Network"),
                                        self.tr("Weights of Evidence"),
                                        self.tr("Multi Criteria Evaluation")
                                      ])
+    if not sklearnMissed:
+      self.cmbSimulationMethod.addItem(self.tr("Logistic Regression"))
 
   def __populateSamplingModes(self):
     self.cmbSamplingMode.addItem(self.tr("All"), 0)
