@@ -7,7 +7,6 @@
 
 
 import numpy as np
-from sklearn import linear_model as lm
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
 from molusce.algorithms.models.sampler.sampler import Sampler
@@ -25,6 +24,10 @@ class LR(object):
     """
 
     def __init__(self, ns=0, logreg=None):
+
+        from sklearn import linear_model as lm
+
+
         if logreg:
             self.logreg = logreg
         else:
