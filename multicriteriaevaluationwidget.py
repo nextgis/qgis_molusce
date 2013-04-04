@@ -41,12 +41,14 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
     self.plugin = plugin
     self.inputs = plugin.inputs
+    self.model = None
 
     self.settings = QSettings("NextGIS", "MOLUSCE")
 
     self.manageGui()
 
     self.btnTrainModel.clicked.connect(self.trainModel)
+    self.btnConsistency.clicked.connect(self.checkConsistency)
     self.tblMatrix.cellChanged.connect(self.__checkValue)
 
   def manageGui(self):
@@ -79,6 +81,22 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
                     )
 
     self.inputs["model"] = self.model
+
+  def checkConsistency(self):
+    if self.model is None:
+      return
+
+    c = self.model.getConsistency()
+    if c < 0.1:
+      QMessageBox.warning(self.plugin,
+                          self.tr("Consistent matrix"),
+                          self.tr("Matrix filled correctly. Consistency value is: %1").arg(c)
+                         )
+    else:
+      QMessageBox.warning(self.plugin,
+                          self.tr("Inconsistent matrix"),
+                          self.tr("Please adjust matrix before starting simulation. Consistency value is: %1").arg(c)
+                         )
 
   def __prepareTable(self):
     bandCount = self.inputs["bandCount"]
