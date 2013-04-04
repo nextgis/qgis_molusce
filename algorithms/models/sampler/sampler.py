@@ -19,8 +19,8 @@ class Sampler(QObject):
     A sample is a set of input data for a model and output data that has to be predicted via the model.
 
     input data consists of 2 parts:
-        state is data readed from 1-band raster, this raster contains initaial states (classes).
-        factors is list of rasters (multiband probably) that explain transition between states (classes).
+        state is data readed from 1-band raster, this raster contains initaial states (categories).
+        factors is list of rasters (multiband probably) that explain transition between states (categories).
     output data is read from 1-band raster, this raster contains final states.
 
     In the simplest case we have pixel-by-pixel model. In such case:
@@ -46,9 +46,9 @@ class Sampler(QObject):
 
     def __init__(self, state, factors, output=None, ns=0):
         '''
-        @param state            Raster of the current state (classes) values.
+        @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
-        @param output           Raster that contains states (classes) to predict.
+        @param output           Raster that contains states (categories) to predict.
         @param ns               Neighbourhood size.
         '''
         QObject.__init__(self)
@@ -64,7 +64,7 @@ class Sampler(QObject):
 
     def get_inputs(self, state, factors, row, col):
         '''
-        @param state            Raster of the current state (classes) values.
+        @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         '''
         try:
@@ -139,14 +139,14 @@ class Sampler(QObject):
 
     def setTrainingData(self, state, factors, output, shuffle=True, mode='All', samples=None):
         '''
-        @param state            Raster of the current state (classes) values.
+        @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param ns               Neighbourhood size.
         @param shuffle          Perform random shuffle.
         @param mode             Type of sampling method:
                                     All             Get all pixels
                                     Normal          Get samples. Count of samples in the data=samples.
-                                    Balanced        Undersampling of major classes and/or oversampling of minor classes.
+                                    Balanced        Undersampling of major categories and/or oversampling of minor categories.
         @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
 
@@ -192,20 +192,20 @@ class Sampler(QObject):
                     samples_count = samples_count + 1
                     self.updateProgress.emit()
         elif mode == 'Balanced':
-            # Analyze output classes:
+            # Analyze output categories:
             stat = output.getBandStat(1)
-            classes = stat['gradation']
+            categories = stat['gradation']
             band = output.getBand(1)
 
             # Select pixels
-            average = 1.0*samples / len(classes)
+            average = 1.0*samples / len(categories)
 
             samples_count = 0
             self.rangeChanged.emit(self.tr("Sampling..."), samples)
-            # Get counts[i] samples of "cl" class
-            for i,cl in enumerate(classes):
-                # Find indices of "cl"-class pixels
-                rows, cols = np.where(band == cl)
+            # Get counts[i] samples of "cat" categories
+            for i,cat in enumerate(categories):
+                # Find indices of "cat"-category pixels
+                rows, cols = np.where(band == cat)
                 indices = [ (rows[i], cols[i]) for i in xrange(len(cols))]
 
                 # Get samples

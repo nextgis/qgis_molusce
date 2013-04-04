@@ -21,19 +21,19 @@ class Simulator(QObject):
 
     def __init__(self, state, factors, model, crosstable):
         '''
-        @param state            Raster of the current state (classes) values.
+        @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param model            Model that is used for predict. The model implements metods:
                                 getConfidence(), getPrediction(state, self.factors)
         @param crosstable       Crosstable, contains transition matrix between states T(i,j).
                                 The matrix contains number of pixels that are moved
-                                from init class i to final class j.
+                                from init category i to final category j.
         '''
         QObject.__init__(self)
 
         self.state = state
         self.factors = factors
-        self.predicted = None      # Raster of predicted classes
+        self.predicted = None      # Raster of predicted categories
 
         self.model  = model
         self.crosstable = crosstable
@@ -82,21 +82,21 @@ class Simulator(QObject):
         state = self.getState()
         new_state = state.getBand(1).copy()         # New states (the result of simulation) will be stored there.
         analyst = AreaAnalyst(state, prediction)
-        classes = analyst.classes
+        categories = analyst.categories
         changes = analyst.getChangeMap().getBand(1)
 
-        # Make transition between classes according to
+        # Make transition between categories according to
         # number of moved pixel in crosstable
-        self.rangeChanged.emit(self.tr("Simulation process %p%"), len(classes)**2 - len(classes))
-        for initClass in classes:
-            for finalClass in classes:
+        self.rangeChanged.emit(self.tr("Simulation process %p%"), len(categories)**2 - len(categories))
+        for initClass in categories:
+            for finalClass in categories:
                 if initClass == finalClass: continue
 
                 # TODO: Calculate number of pixels to be moved via TransitoionMatrix and state raster
                 n = transition.getTransition(initClass, finalClass)   # Number of pixels to be moved (constant count now).
                 # Find n appropriate places for transition initClass -> finalClass
-                class_code = analyst.encode(initClass, finalClass)
-                places = (changes==class_code)      # Array of places where transitions initClass -> finalClass are occured
+                cat_code = analyst.encode(initClass, finalClass)
+                places = (changes==cat_code)      # Array of places where transitions initClass -> finalClass are occured
                 placesCount = np.sum(places)
                 if placesCount < n:
                     self.logMessage.emit(self.tr("There are more transitions in the transition matrix, then the model have found"))
@@ -132,7 +132,7 @@ class Simulator(QObject):
 
     def updatePrediction(self, state):
         '''
-        Update prediction using new classes (raster "state")
+        Update prediction using new categories (raster "state")
         '''
         self.predicted = self.model.getPrediction(state, self.factors)
 

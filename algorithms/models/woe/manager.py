@@ -22,9 +22,9 @@ class WoeManager(object):
     def __init__(self, factors, areaAnalyst, unit_cell=1, bins = None):
         '''
         @param factors      List of the pattern rasters used for prediction of point objects (sites).
-        @param areaAnalyst  AreaAnalyst that contains map of the changes, encodes and decodes class numbers.
+        @param areaAnalyst  AreaAnalyst that contains map of the changes, encodes and decodes category numbers.
         @param unit_cell    Method parameter, pixelsize of resampled rasters.
-        @param bins         Dictionary of bins. Bins are binning boundaries that used for reduce count of classes.
+        @param bins         Dictionary of bins. Bins are binning boundaries that used for reduce count of categories.
                                 For example if factors = [f0, f1], then bins could be (for example) {0:[bins for f0], 1:[bins for f1]} = {0:[[10, 100, 250]],1:[[0.2, 1, 1.5, 4]]}.
                                 List of list used because a factor can be a multiband raster, we need get a list of bins for every band. For example:
                                 factors = [f0, 2-band-factor], bins= {0: [[10, 100, 250]], 1:[[0.2, 1, 1.5, 4], [3, 4, 7]] }
@@ -48,10 +48,10 @@ class WoeManager(object):
             raise WoeManagerError('Change map must have one band!')
 
         # Get list of codes from the changeMap raster
-        classes = self.changeMap.getBandStat(1)['gradation']
+        categories = self.changeMap.getBandStat(1)['gradation']
         cMap = self.changeMap.getBand(1)
 
-        self.codes = [int(c) for c in classes]    # Codes of transitions initState->finalState (see AreaAnalyst.encode)
+        self.codes = [int(c) for c in categories]    # Codes of transitions initState->finalState (see AreaAnalyst.encode)
 
         self.woe = {}
         for code in self.codes:
@@ -108,9 +108,9 @@ class WoeManager(object):
             for c in xrange(cols):
                 oldMax, currMax = -1000, -1000  # Small numbers
                 indexMax = -1                   # Index of Max weight
-                initClass = stateBand[r,c]      # Init class (state before transition)
+                initCat = stateBand[r,c]        # Init category (state before transition)
                 try:
-                    codes = self.analyst.codes(initClass)   # Possible final states
+                    codes = self.analyst.codes(initCat)   # Possible final states
                     for code in codes:
                         try: # If not all possible transitions are presented in the changeMap
                             map = woe[code]     # Get WoE map of transition 'code'
@@ -119,8 +119,8 @@ class WoeManager(object):
                         w = map[r,c]        # The weight in the (r,c)-pixel
                         if w > currMax:
                             indexMax, oldMax, currMax = code, currMax, w
-                    decode = self.analyst.decode(indexMax)    # Get init & final classes (initState, finalState)
-                    prediction[r,c] = decode[1]               # final class
+                    decode = self.analyst.decode(indexMax)    # Get init & final categories (initState, finalState)
+                    prediction[r,c] = decode[1]               # final category
                     confidence[r,c] = sigmoid(currMax) - sigmoid(oldMax)
                 except ValueError:
                     mask[r,c] = 1

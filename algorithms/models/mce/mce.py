@@ -59,7 +59,7 @@ class MCE(object):
     }
     def __init__(self, factors, wMatr, initStateNum, finalStateNum):
         '''
-        Multicriteria evaluation based on Saaty method. It defines transition probability of two classes (initStateNum, finalStateNum).
+        Multicriteria evaluation based on Saaty method. It defines transition probability of two categories (initStateNum, finalStateNum).
         @param factors          List of the factor rasters used for prediction.
         @param wMatr            List of lists -- NxN comparison matrix.
         @param initStateNum     Number of initial state (the state before transition).

@@ -44,7 +44,7 @@ class MlpManager(QObject):
 
         self.ns = ns            # Neighbourhood size of training rasters.
         self.data = None        # Training data
-        self.classlist   = None # List of unique output values of the output raster
+        self.catlist     = None # List of unique output values of the output raster
         self.train_error = None # Error on training set
         self.val_error   = None # Error on validation set
         self.minValError = None # The minimum error that is achieved on the validation set
@@ -88,7 +88,7 @@ class MlpManager(QObject):
 
     def createMlp(self, state, factors, output, hidden_layers):
         '''
-        @param state            Raster of the current state (classes) values.
+        @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param hidden_layers    List of neuron counts in hidden layers.
         @param ns               Neighbourhood size.
@@ -102,15 +102,15 @@ class MlpManager(QObject):
             input_neurons = input_neurons+ raster.getNeighbourhoodSize(self.ns)
 
 
-        # Output class (neuron) count
+        # Output category (neuron) count
         band = output.getBand(1)
-        self.classlist = np.unique(band.compressed())
-        classes = len(self.classlist)
+        self.catlist = np.unique(band.compressed())
+        categories = len(self.catlist)
 
         # set neuron counts in the MLP layers
         self.layers = hidden_layers
         self.layers.insert(0, input_neurons)
-        self.layers.append(classes)
+        self.layers.append(categories)
 
         self.MLP = MLP(*self.layers)
 
@@ -133,7 +133,7 @@ class MlpManager(QObject):
 
     def getOutputVector(self, val):
         '''Convert a number val into vector,
-        for example, let self.classlist = [1, 3, 4] then
+        for example, let self.catlist = [1, 3, 4] then
         if val = 1, result = [ 1, -1, -1]
         if val = 3, result = [-1,  1, -1]
         if val = 4, result = [-1, -1,  1]
@@ -141,7 +141,7 @@ class MlpManager(QObject):
         '''
         size = self.getOutputVectLen()
         res = np.ones(size) * (self.sigmin)
-        ind = np.where(self.classlist==val)
+        ind = np.where(self.catlist==val)
         res[ind] = self.sigmax
         return res
 
@@ -176,7 +176,7 @@ class MlpManager(QObject):
     def _predict(self, state, factors):
         '''
         Calculate output and confidence rasters using MLP model and input rasters
-        @param state            Raster of the current state (classes) values.
+        @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         '''
         geodata = state.getGeodata()
@@ -203,7 +203,7 @@ class MlpManager(QObject):
                         # Get index of the biggest output value as the result
                         biggest = max(out)
                         res = list(out).index(biggest)
-                        predicted_band[i, j] = self.classlist[res]
+                        predicted_band[i, j] = self.catlist[res]
 
                         confidence = self.outputConfidence(out)
                         confidence_band[i, j] = confidence
@@ -238,14 +238,14 @@ class MlpManager(QObject):
 
     def setTrainingData(self, state, factors, output, shuffle=True, mode='All', samples=None):
         '''
-        @param state            Raster of the current state (classes) values.
+        @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
-        @param output           Raster that contains classes to predict.
+        @param output           Raster that contains categories to predict.
         @param shuffle          Perform random shuffle.
         @param mode             Type of sampling method:
                                     All             Get all pixels
                                     Normal          Get samples. Count of samples in the data=samples.
-                                    Balanced        Undersampling of major classes and/or oversampling of minor classes.
+                                    Balanced        Undersampling of major categories and/or oversampling of minor categories.
         @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
         if not self.MLP:

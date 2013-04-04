@@ -18,9 +18,9 @@ class AreaAnalizerError(Exception):
 class AreaAnalyst(QObject):
     '''Generates an output raster, with geometry
     copied from the initial land use map.  The output is a 1-band raster
-    with classes corresponding the (r,c) elements of the m-matrix of
-    classes transitions, so that if for a given pixel the initial class is r,
-    the final class c, and there are m classes, the output pixel will have
+    with categories corresponding the (r,c) elements of the m-matrix of
+    categories transitions, so that if for a given pixel the initial category is r,
+    the final category c, and there are m categories, the output pixel will have
     value k = r*m + c
     '''
 
@@ -45,17 +45,17 @@ class AreaAnalyst(QObject):
         self.geodata = first.getGeodata()
         statFirst    = first.getBandStat(1)
         statSecong   = second.getBandStat(1)
-        self.classes = statFirst['gradation']
-        self.classesSecond = statSecong['gradation']
+        self.categories = statFirst['gradation']
+        self.categoriesSecond = statSecong['gradation']
 
         first, second = masks_identity(first.getBand(1), second.getBand(1))
 
         self.first = first
         self.second = second
 
-        for cl in self.classesSecond:
-            if cl not in self.classes:
-                raise AreaAnalizerError("List of classes of the first raster doesn't contains a class of the second raster!")
+        for cat in self.categoriesSecond:
+            if cat not in self.categories:
+                raise AreaAnalizerError("List of categories of the first raster doesn't contains a category of the second raster!")
 
         self.changeMap = None
 
@@ -63,7 +63,7 @@ class AreaAnalyst(QObject):
         '''
         Get list of possible encodes for initialClass (see 'encode').
         '''
-        return [self.encode(initialClass, f) for f in self.classes]
+        return [self.encode(initialClass, f) for f in self.categories]
 
     def decode(self, code):
         '''
@@ -72,11 +72,11 @@ class AreaAnalyst(QObject):
             code = initialClass*m + finalClass,
             the result is tuple of (initialClass, finalClass).
         '''
-        m = len(self.classes)
+        m = len(self.categories)
         initialClassIndex = code/m
         finalClassIndex   = code - initialClassIndex*m
         try:
-            initClass, finalClass = (self.classes[initialClassIndex], self.classes[finalClassIndex])
+            initClass, finalClass = (self.categories[initialClassIndex], self.categories[finalClassIndex])
         except ValueError:
             raise AreaAnalizerError('The code is not in list!')
         return (initClass, finalClass)
@@ -85,18 +85,18 @@ class AreaAnalyst(QObject):
     def encode(self, initialClass, finalClass):
         '''
         Encode transition (initialClass -> finalClass):
-            if for a given pixel the initial class is initialClass,
-            the final class finalClass, and there are m classes, the output pixel will have
+            if for a given pixel the initial category is initialClass,
+            the final category finalClass, and there are m categories, the output pixel will have
             value k = initialClass*m + finalClass
         '''
-        m = len(self.classes)
-        return self.classes.index(initialClass) * m + self.classes.index(finalClass)
+        m = len(self.categories)
+        return self.categories.index(initialClass) * m + self.categories.index(finalClass)
 
     def finalCodes(self, initialClass):
         '''
-        For given initial class return codes of possible final classes. (see 'encode')
+        For given initial category return codes of possible final categories. (see 'encode')
         '''
-        return [self.encode(initialClass, c) for c in self.classes]
+        return [self.encode(initialClass, c) for c in self.categories]
 
     def getChangeMap(self):
         if self.changeMap == None:

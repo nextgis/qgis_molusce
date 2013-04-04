@@ -32,7 +32,7 @@ class LR(object):
 
         self.ns = ns            # Neighbourhood size of training rasters.
         self.data = None        # Training data
-        self.classlist = None   # List of unique output values of the output raster
+        #self.catlist = None     # List of unique output values of the output raster
 
         # Results of the LR prediction
         self.prediction = None  # Raster of the LR prediction results
@@ -64,7 +64,7 @@ class LR(object):
     def _predict(self, state, factors):
         '''
         Calculate output and confidence rasters using LR model and input rasters
-        @param state            Raster of the current state (classes) values.
+        @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         '''
         geodata = state.getGeodata()
@@ -109,13 +109,13 @@ class LR(object):
 
     def setTrainingData(self, state, factors, output, mode='All', samples=None):
         '''
-        @param state            Raster of the current state (classes) values.
+        @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
-        @param output           Raster that contains classes to predict.
+        @param output           Raster that contains categories to predict.
         @param mode             Type of sampling method:
                                     All             Get all pixels
                                     Normal          Get samples. Count of samples in the data=samples.
-                                    Balanced        Undersampling of major classes and/or oversampling of minor classes.
+                                    Balanced        Undersampling of major categories and/or oversampling of minor categories.
         @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
         if not self.logreg:

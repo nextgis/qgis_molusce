@@ -21,7 +21,7 @@ class TestAreaAnalysisManager (unittest.TestCase):
             [15, 10, 5, ],
             [0,  15, 5, ]
         ]
-        
+
         self.r2  = Raster('../../examples/multifact.tif')
         self.r2.resetMask([0])
         self.r2r2 = [
@@ -29,25 +29,25 @@ class TestAreaAnalysisManager (unittest.TestCase):
             [8,   4, 0,],
             [100, 8, 0,]
         ]
-        
+
         self.r3 = Raster('../../examples/multifact.tif')
         self.r3.resetMask([2])
-        
+
     def test_AreaAnalyst(self):
         aa = AreaAnalyst(self.r1, self.r1)
         raster = aa.getChangeMap()
         band = raster.getBand(1)
         assert_array_equal(band, self.r1r1)
-        
+
         # Masked raster
         aa = AreaAnalyst(self.r2, self.r2)
-        raster = aa.getChangeMap()  
+        raster = aa.getChangeMap()
         band = raster.getBand(1)
         assert_array_equal(band, self.r2r2)
-    
+
     def test_encode(self):
         aa = AreaAnalyst(self.r1, self.r1)
-        self.assertEqual(aa.classes, [0,1,2,3])
+        self.assertEqual(aa.categories, [0,1,2,3])
         self.assertEqual(aa.encode(1,2), 6)
         for initClass in range(4):
             for finalClass in range(4):
@@ -55,7 +55,7 @@ class TestAreaAnalysisManager (unittest.TestCase):
                 self.assertEqual(aa.decode(k), (initClass, finalClass))
         self.assertEqual(aa.finalCodes(0), [0,1,2,3])
         self.assertEqual(aa.finalCodes(1), [4,5,6,7])
-        
-        
+
+
 if __name__ == "__main__":
     unittest.main()
