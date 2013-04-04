@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import sys
+
 import math
 import numpy as np
 from numpy import ma as ma
