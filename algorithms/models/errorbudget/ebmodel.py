@@ -60,10 +60,9 @@ class EBudget(object):
             if not s in self.categories:
                 raise EBError('Categories in the reference and simulated rasters are different!')
 
-        self.R  = referenceMap.getBand(1)
-        self.Rw = 1 - np.ma.getmask(self.R)     # Array for weight of R
-        self.S  = simulatedMap.getBand(1)
-        self.Sw = 1 - np.ma.getmask(self.S)     # Array for weight of S
+        self.R = referenceMap.getBand(1)
+        self.W = 1 - np.ma.getmask(self.R)     # Array for weight
+        self.S = simulatedMap.getBand(1)
         self.shape = self.R.shape
 
         # Proportion of category j in pixel n at the beginning resolution of the reference map
@@ -88,8 +87,19 @@ class EBudget(object):
         size = len(self.categories)
         for j in self.categories:
             arr = arr + np.minimum(self.Rj[j], 1.0/size)
-        arr = self.Rw * arr
-        return np.sum(arr)/np.sum(self.Rw)
+        arr = self.W * arr
+        return np.sum(arr)/np.sum(self.W)
+
+    def NoMed(self):
+        """
+        No information about quantity, medium information about location
+        """
+        arr = np.ma.zeros(self.shape)
+        for j in self.categories:
+            S = weightedSum(self.Sj[j], self.W)
+            arr = arr + np.minimum(self.Rj[j], S)
+        arr = self.W * arr
+        return np.sum(arr)/np.sum(self.W)
 
 
 
