@@ -126,6 +126,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__populateSamplingModes()
     self.__populateSimulationMethods()
 
+    if not sklearnMissed:
+      self.lblWarning.hide()
+    else:
+      self.lblWarning.show()
+
     self.__readSettings()
 
   def closeEvent(self, e):
