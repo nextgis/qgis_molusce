@@ -92,7 +92,17 @@ class TestModel (unittest.TestCase):
         answer = (6.0*5/16 + 6.0*3/16 + 4.0*8/16)/16
         np.testing.assert_almost_equal(noM, answer)
 
+    def test_MedMed(self):
+        eb = EBudget(self.reference, self.simulated)
+        medM= eb.MedMed()
+        answer = 5.0/16
+        np.testing.assert_almost_equal(medM, answer)
 
+    def test_MedPer(self):
+        eb = EBudget(self.reference, self.simulated)
+        medP= eb.MedPer()
+        answer = min(6.0/16, 5.0/16) + min(6.0/16, 3.0/16) + min(4.0/16, 8.0/16)
+        np.testing.assert_almost_equal(medP, answer)
 
 
 

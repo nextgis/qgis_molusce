@@ -75,9 +75,9 @@ class EBudget(object):
             self.Sj[j] = 1.0*binaryzation(self.S, [j])
 
 
-        # Proportion correct between the two
-        # maps after the predicted map has been adjusted for
-        # various levels of information of quantity and/or location.
+    # Proportion correct between the two
+    # maps after the predicted map has been adjusted for
+    # various levels of information of quantity and/or location.
 
     def NoNo(self):
         """
@@ -100,6 +100,33 @@ class EBudget(object):
             arr = arr + np.minimum(self.Rj[j], S)
         arr = self.W * arr
         return np.sum(arr)/np.sum(self.W)
+
+    def MedMed(self):
+        """
+        Medium information about quantity, medium information about location
+        """
+        arr = np.ma.zeros(self.shape)
+        for j in self.categories:
+            arr = arr + np.minimum(self.Rj[j], self.Sj[j])
+        arr = self.W * arr
+        return np.sum(arr)/np.sum(self.W)
+
+    def MedPer(self):
+        """
+        Medium information about quantity, perfect information about location
+        """
+        arr = np.ma.zeros(self.shape)
+        for j in self.categories:
+            S = weightedSum(self.Sj[j], self.W)
+            R = weightedSum(self.Rj[j], self.W)
+            arr = arr + np.minimum(R, S)
+        return arr
+
+    def PerPer(self):
+        """
+        Perfect information about quantity, perfect information about location
+        """
+        return 1.0
 
 
 
