@@ -18,7 +18,7 @@
 import numpy as np
 from numpy import ma as ma
 
-from molusce.algorithms.utils import binaryzation
+from molusce.algorithms.utils import binaryzation, masks_identity
 
 class EBError(Exception):
     '''Base class for exceptions in this module.'''
@@ -60,19 +60,20 @@ class EBudget(object):
             if not s in self.categories:
                 raise EBError('Categories in the reference and simulated rasters are different!')
 
-        self.R = referenceMap.getBand(1)
-        self.W = 1 - np.ma.getmask(self.R)     # Array for weight
-        self.S = simulatedMap.getBand(1)
-        self.shape = self.R.shape
+        R = referenceMap.getBand(1)
+        S = simulatedMap.getBand(1)
+        self.shape = R.shape
+        R, S = masks_identity(R,S)
+        self.W = 1 - np.ma.getmask(R)     # Array for weight
 
         # Proportion of category j in pixel n at the beginning resolution of the reference map
         self.Rj = {}
         for j in self.categories:
-            self.Rj[j] = 1.0*binaryzation(self.R, [j])
+            self.Rj[j] = 1.0*binaryzation(R, [j])
         # Proportion of category j in pixel n at the beginning resolution of the simulated map
         self.Sj = {}
         for j in self.categories:
-            self.Sj[j] = 1.0*binaryzation(self.S, [j])
+            self.Sj[j] = 1.0*binaryzation(S, [j])
 
 
     # Proportion correct between the two

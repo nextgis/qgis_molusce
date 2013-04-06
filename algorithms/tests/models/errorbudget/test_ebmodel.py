@@ -104,6 +104,33 @@ class TestModel (unittest.TestCase):
         answer = min(6.0/16, 5.0/16) + min(6.0/16, 3.0/16) + min(4.0/16, 8.0/16)
         np.testing.assert_almost_equal(medP, answer)
 
+    def test_Mask(self):
+        reference = Raster('../../examples/data.tif')
+        simulated = Raster('../../examples/data1.tif')
+        reference.resetMask([2])
+        simulated.resetMask([2])
+
+        eb = EBudget(reference, simulated)
+        W = eb.W
+
+        S1 = weightedSum(eb.Sj[1], W)
+        S3 = weightedSum(eb.Sj[3], W)
+        np.testing.assert_almost_equal(S1, 5.0/8)
+        np.testing.assert_almost_equal(S3, 3.0/8)
+
+
+        noNo = eb.NoNo()
+        np.testing.assert_almost_equal(noNo, 0.5)
+
+        noM = eb.NoMed()
+        np.testing.assert_almost_equal(noM, (5.0*5/8 + 3.0*3/8)/8)
+
+        medM= eb.MedMed()
+        np.testing.assert_almost_equal(medM, 4.0/8)
+
+        medP= eb.MedPer()
+        np.testing.assert_almost_equal(medP, 1.0)
+
 
 
 if __name__ == "__main__":
