@@ -131,6 +131,60 @@ class TestModel (unittest.TestCase):
         medP= eb.MedPer()
         np.testing.assert_almost_equal(medP, 1.0)
 
+    def test_coarse(self):
+        reference = Raster('../../examples/data.tif')
+        simulated = Raster('../../examples/data1.tif')
+        reference.resetMask([2])
+        simulated.resetMask([2])
+
+        eb = EBudget(reference, simulated)
+        eb.coarse(2)
+        # W
+        answer = np.array([[1.0, 0.25], [0.5, 0.25]])
+        np.testing.assert_array_equal(eb.W, answer)
+        # Rj
+        answer1 = np.array([[1.0, 1.0], [0, 0]])
+        answer3 = np.array([[0, 0], [1.0, 1.0]])
+        ans = {1: answer1, 3: answer3}
+        np.testing.assert_equal(eb.Rj, ans)
+        # Sj
+        answer1 = np.array([[3.0/4, 0.0], [1.0, 0]])
+        answer3 = np.array([[1.0/4, 1.0], [0, 1.0]])
+        ans = {1: answer1, 3: answer3}
+        np.testing.assert_equal(eb.Sj, ans)
+
+        eb.coarse(2)
+        # W
+        answer = np.array([[0.5]])
+        np.testing.assert_array_equal(eb.W, answer)
+        # Rj
+        answer1 = np.array([[(1+1.0/4)/2]])
+        answer3 = np.array([[(1.0/2 + 1.0/4)/2]])
+        ans = {1: answer1, 3: answer3}
+        np.testing.assert_equal(eb.Rj, ans)
+        # Sj
+        answer1 = np.array([[(3.0/4 + 0.5)/2]])
+        answer3 = np.array([[(1.0/4 + 1.0/4 + 1.0/4 )/2]])
+        ans = {1: answer1, 3: answer3}
+        np.testing.assert_equal(eb.Sj, ans)
+
+    def test_getStat(self):
+        reference = Raster('../../examples/data.tif')
+        simulated = Raster('../../examples/data1.tif')
+        reference.resetMask([2])
+        simulated.resetMask([2])
+
+        eb = EBudget(reference, simulated)
+        stat = eb.getStat(nIter=3)
+        ans0 =  {'NoNo': 0.5, 'NoMed': (5.0*5/8 + 3.0*3/8)/8, 'MedMed': 4.0/8, 'MedPer': 1.0, 'PerPer': 1.0}
+        for k in stat[0].keys():
+            np.testing.assert_almost_equal(stat[0][k],ans0[k])
+        ans1 = {'NoNo': 0.5, 'NoMed': (5.0/8+5.0/32 + 3.0/16 + 3.0/32)/2, 'MedMed': 4.0/8, 'MedPer': 1.0, 'PerPer': 1.0}
+        for k in stat[1].keys():
+            np.testing.assert_almost_equal(stat[0][k],ans1[k])
+
+
+
 
 
 if __name__ == "__main__":

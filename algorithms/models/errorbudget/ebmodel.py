@@ -65,6 +65,8 @@ class EBudget(object):
         self.shape = R.shape
         R, S = masks_identity(R,S)
         self.W = 1 - np.ma.getmask(R)     # Array for weight
+        R = np.ma.filled(R, 0)
+        S = np.ma.filled(S, 0)
 
         # Proportion of category j in pixel n at the beginning resolution of the reference map
         self.Rj = {}
@@ -74,6 +76,53 @@ class EBudget(object):
         self.Sj = {}
         for j in self.categories:
             self.Sj[j] = 1.0*binaryzation(S, [j])
+
+
+    def coarse(self, scale):
+        """Coarsen the scale of Rj and Sj.
+
+        @param scale    An integer number is the number of merged raster cells.
+        """
+        rows, cols = self.shape
+        if (rows < scale) or (cols< scale): # Nothing to do
+            return
+
+        newRows, newCols = rows/scale, cols/scale
+
+        newW = np.zeros((newRows, newCols))
+        newSj, newRj = {}, {}
+        for cat in self.categories:
+            newSj[cat] = np.zeros((newRows, newCols))
+            newRj[cat] = np.zeros((newRows, newCols))
+        r = 0
+        while r < rows:
+            c = 0
+            while c < cols:
+                newW[r/scale, c/scale] = 1.0*np.sum(self.W[r: r+scale, c: c+scale])/(scale*scale)
+                for cat in self.categories:
+                    S = self.Sj[cat]
+                    newSj[cat][r/scale, c/scale] = 1.0*np.sum(S[r: r+scale, c: c+scale]*self.W[r: r+scale, c: c+scale])/(np.sum(self.W[r: r+scale, c: c+scale]))
+                    R = self.Rj[cat]
+                    newRj[cat][r/scale, c/scale] = 1.0*np.sum(R[r: r+scale, c: c+scale]*self.W[r: r+scale, c: c+scale])/(np.sum(self.W[r: r+scale, c: c+scale]))
+                c = c + scale
+            r = r + scale
+
+        self.W = newW
+        self.Rj = newRj
+        self.Sj = newSj
+        self.shape = (newRows, newCols)
+
+
+    def getStat(self, nIter, scale=2):
+        '''
+        Perform nIter iterations of error budget calculation and rescaling to coarse scale.
+        '''
+        result = {}
+        for i in xrange(nIter):
+            result[i] = {'NoNo': self.NoNo(), 'NoMed': self.NoMed(), 'MedMed': self.MedMed(), 'MedPer': self.MedPer(), 'PerPer': self.PerPer()}
+            self.coarse(scale)
+
+        return result
 
 
     # Proportion correct between the two
@@ -116,7 +165,7 @@ class EBudget(object):
         """
         Medium information about quantity, perfect information about location
         """
-        arr = np.ma.zeros(self.shape)
+        arr = 0
         for j in self.categories:
             S = weightedSum(self.Sj[j], self.W)
             R = weightedSum(self.Rj[j], self.W)
