@@ -110,8 +110,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.btnSelectRiskValidation.clicked.connect(self.__selectSimulationOutput)
     self.btnSelectMonteCarlo.clicked.connect(self.__selectSimulationOutput)
 
-    #self.btnSelectMatrix.clicked.connect()
-
     self.btnStartSimulation.clicked.connect(self.startSimulation)
 
     self.manageGui()

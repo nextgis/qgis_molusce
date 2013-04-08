@@ -13,7 +13,43 @@
   <property name="windowTitle">
    <string/>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="MolusceTableWidget" name="tblReclass">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>Factor</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Reclass list</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="btnTrainModel">
+     <property name="text">
+      <string>Train model</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MolusceTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header>molusce.moluscetablewidget</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

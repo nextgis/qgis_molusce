@@ -30,9 +30,65 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
+from algorithms.models.area_analysis.manager import AreaAnalyst
+from algorithms.models.woe.manager import WoeManager
+
 from ui.ui_weightofevidencewidgetbase import Ui_Widget
 
+MAX_CATEGORIES = 15
+
 class WeightOfEvidenceWidget(QWidget, Ui_Widget):
-  def __init__(self, parent=None):
+  def __init__(self, plugin, parent=None):
     QWidget.__init__(self, parent)
     self.setupUi(self)
+
+    self.plugin = plugin
+    self.inputs = plugin.inputs
+
+    self.settings = QSettings("NextGIS", "MOLUSCE")
+
+    self.btnTrainModel.clicked.connect(self.trainModel)
+
+    self.manageGui()
+
+  def manageGui(self):
+    self.tblReclass.clearContents()
+
+    row = 0
+
+    for k, v in self.inputs["factors"].iteritems():
+      for b in xrange(v.getBandsCount()):
+        if len(v.getBandStat(b)['gradation']) > MAX_CATEGORIES:
+          self.tblReclass.insertRow(row)
+          item = QTableWidgetItem(k + self.tr("(band %1)").arg(b))
+          item.setFlags(item.flags() ^ Qt.ItemIsEditable)
+          self.tblReclass.setItem(row, 0, item)
+          row += 1
+
+    self.tblReclass.resizeRowsToContents()
+    self.tblReclass.resizeColumnsToContents()
+
+  def trainModel(self):
+    analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
+
+    myBins = self.__getBins()
+
+    self.model = WoeManager(self.inputs["factors"].values(), analyst, bins=myBins)
+    self.inputs["model"] = self.model
+
+  def __getBins(self):
+    bins = dict()
+    n = 0
+    for k, v in self.inputs["factors"].iteritems():
+      lst = []
+      for b in xrange(v.getBandsCount()):
+        lst.append(None)
+        if len(v.getBandStat(b)['gradation']) > MAX_CATEGORIES:
+          items = self.tblReclass.findItems(k + self.tr("(band %1)").arg(b), Qt.MatchExactly)
+          idx = self.tblReclass.indexFromItem(items[0])
+          reclassList = self.tblReclass.item(idx.row(), 1).text()
+          lst[b] = [int(j) for j in reclassList.split(" ")]
+      bins[n] = lst
+      n += 1
+
+    return bins
