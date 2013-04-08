@@ -60,7 +60,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       for b in xrange(v.getBandsCount()):
         if len(v.getBandStat(b)['gradation']) > MAX_CATEGORIES:
           self.tblReclass.insertRow(row)
-          item = QTableWidgetItem(k + self.tr("(band %1)").arg(b))
+          item = QTableWidgetItem(k + self.tr(" (band %1)").arg(b))
           item.setFlags(item.flags() ^ Qt.ItemIsEditable)
           self.tblReclass.setItem(row, 0, item)
           row += 1
@@ -84,7 +84,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       for b in xrange(v.getBandsCount()):
         lst.append(None)
         if len(v.getBandStat(b)['gradation']) > MAX_CATEGORIES:
-          items = self.tblReclass.findItems(k + self.tr("(band %1)").arg(b), Qt.MatchExactly)
+          items = self.tblReclass.findItems(k + self.tr(" (band %1)").arg(b), Qt.MatchExactly)
           idx = self.tblReclass.indexFromItem(items[0])
           reclassList = self.tblReclass.item(idx.row(), 1).text()
           lst[b] = [int(j) for j in reclassList.split(" ")]
