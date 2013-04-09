@@ -50,12 +50,12 @@ import multicriteriaevaluationwidget
 
 from ui.ui_moluscedialogbase import Ui_Dialog
 
-import molusceutils as utils
-
 from algorithms.dataprovider import Raster
 from algorithms.models.crosstabs.manager import CrossTableManager
 from algorithms.models.area_analysis.manager import AreaAnalyst
 from algorithms.models.simulator.sim import Simulator
+
+import molusceutils as utils
 
 class MolusceDialog(QDialog, Ui_Dialog):
   def __init__(self, iface):
@@ -78,6 +78,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     #               "layerId_N" : Raster()
     #              },
     #  "bandCount" : 0,
+    #  "crosstab" : list,
     #  "model" : object
     # }
     # Layer ids are necessary to handle factors changes (e.g. adding new or removing
@@ -202,6 +203,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__logMessage(self.tr("Factors list cleared"))
 
   def updateStatisticsTable(self):
+    if not utils.checkInputRasters(self.inputs):
+      QMessageBox.warning(self,
+                          self.tr("Missed input data"),
+                          self.tr("Initial or final raster is not set. Please specify input data and try again")
+                         )
+      return
+
     self.inputs["crosstab"] = CrossTableManager(self.inputs["initial"], self.inputs["final"])
 
     # class statistics
@@ -249,6 +257,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__logMessage(self.tr("Class statistics and transition matrix are updated"))
 
   def createChangeMap(self):
+    if not utils.checkInputRasters(self.inputs):
+      QMessageBox.warning(self,
+                          self.tr("Missed input data"),
+                          self.tr("Initial or final raster is not set. Please specify input data and try again")
+                         )
+      return
+
     fileName = utils.saveRasterDialog(self,
                                       self.settings,
                                       self.tr("Save change map"),
@@ -256,19 +271,19 @@ class MolusceDialog(QDialog, Ui_Dialog):
                                      )
 
     if fileName.isEmpty():
+      self.__logMessage(self.tr("No file selected"))
       return
 
     self.inputs["changeMapName"] = unicode(fileName)
 
-    if ("initial" in self.inputs) and ("final" in self.inputs):
-      self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
-      self.analyst.moveToThread(self.workThread)
-      self.workThread.started.connect(self.analyst.getChangeMap)
-      self.analyst.rangeChanged.connect(self.__setProgressRange)
-      self.analyst.updateProgress.connect(self.__showProgress)
-      self.analyst.processFinished.connect(self.changeMapDone)
-      self.analyst.processFinished.connect(self.workThread.quit)
-      self.workThread.start()
+    self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
+    self.analyst.moveToThread(self.workThread)
+    self.workThread.started.connect(self.analyst.getChangeMap)
+    self.analyst.rangeChanged.connect(self.__setProgressRange)
+    self.analyst.updateProgress.connect(self.__showProgress)
+    self.analyst.processFinished.connect(self.changeMapDone)
+    self.analyst.processFinished.connect(self.workThread.quit)
+    self.workThread.start()
 
   def changeMapDone(self, raster):
     self.inputs["changeMap"] = raster
@@ -284,6 +299,34 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__restoreProgressState()
 
   def startSimulation(self):
+    if not utils.checkInputRasters(self.inputs):
+      QMessageBox.warning(self,
+                          self.tr("Missed input data"),
+                          self.tr("Initial raster is not set. Please specify it and try again")
+                         )
+      return
+
+    if not utils.checkFactors(self.inputs):
+      QMessageBox.warning(self,
+                          self.tr("Missed input data"),
+                          self.tr("Factors rasters is not set. Please specify them and try again")
+                         )
+      return
+
+    if not "model" in self.inputs:
+      QMessageBox.warning(self,
+                          self.tr("Missed model"),
+                          self.tr("Model not selected please select and train model")
+                         )
+      return
+
+    if not "crosstab" in self.inputs:
+      QMessageBox.warning(self,
+                          self.tr("Missed transition matrix"),
+                          self.tr("Please calculate transition matrix and try again")
+                         )
+      return
+
     self.simulator = Simulator(self.inputs["initial"],
                                self.inputs["factors"].values(),
                                self.inputs["model"],

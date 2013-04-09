@@ -76,3 +76,22 @@ def saveRasterDialog(parent, settings, title, fileFilter):
   settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
 
   return fileName
+
+def checkInputRasters(userData):
+  if ("initial" in userData) and ("final" in userData):
+    return True
+  else:
+    return False
+
+def checkFactors(userData):
+  if "factors" in userData:
+    return True
+  else:
+    return False
+
+def checkChangeMap(userData):
+  if "changeMap" in userData:
+    return True
+  else:
+    return False
+

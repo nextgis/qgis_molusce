@@ -41,6 +41,8 @@ from algorithms.models.mlp.manager import MlpManager
 
 from ui.ui_neuralnetworkwidgetbase import Ui_Widget
 
+import molusceutils as utils
+
 class NeuralNetworkWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):
     QWidget.__init__(self, parent)
@@ -90,6 +92,34 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.chkSaveSamples.setChecked(self.settings.value("ui/ANN/saveSamples", False).toBool())
 
   def trainNetwork(self):
+    if not utils.checkInputRasters(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Initial or final raster is not set. Please specify input data and try again")
+                         )
+      return
+
+    if not utils.checkFactors(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Factors rasters is not set. Please specify them and try again")
+                         )
+      return
+
+    if not utils.checkChangeMap(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Change map raster is not set. Please create it try again")
+                         )
+      return
+
+    if self.leTopology.text().isEmpty():
+      QMessageBox.warning(self.plugin,
+                          self.tr("Wriong network topology"),
+                          self.tr("Network topology is undefined. Please define it and try again")
+                         )
+      return
+
     self.settings.setValue("ui/ANN/neighborhood", self.spnNeigbourhood.value())
     self.settings.setValue("ui/ANN/learningRate", self.spnLearnRate.value())
     self.settings.setValue("ui/ANN/maxIterations", self.spnMaxIterations.value())

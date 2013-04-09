@@ -34,6 +34,8 @@ from algorithms.models.lr.lr import LR
 
 from ui.ui_logisticregressionwidgetbase import Ui_Widget
 
+import molusceutils as utils
+
 class LogisticRegressionWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):
     QWidget.__init__(self, parent)
@@ -41,6 +43,8 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     self.plugin = plugin
     self.inputs = plugin.inputs
+
+    self.model = None
 
     self.settings = QSettings("NextGIS", "MOLUSCE")
 
@@ -52,6 +56,20 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.spnNeighbourhood.setValue(self.settings.value("ui/LR/neighborhood", 1).toInt()[0])
 
   def fitModel(self):
+    if not utils.checkInputRasters(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Initial or final raster is not set. Please specify input data and try again")
+                         )
+      return
+
+    if not utils.checkFactors(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Factors rasters is not set. Please specify them and try again")
+                         )
+      return
+
     self.settings.setValue("ui/LR/neighborhood", self.spnNeighbourhood.value())
 
     self.model = LR(ns=self.spnNeighbourhood.value())
@@ -71,6 +89,13 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.inputs["model"] = self.model
 
   def showCoefficients(self):
+    if self.model is None:
+      QMessageBox.warning(self.plugin,
+                          self.tr("Model is not initialised"),
+                          self.tr("To get coefficients you need to train model first")
+                         )
+      return
+
     fm = self.model.getIntercept()
     coef = self.model.getCoef()
 

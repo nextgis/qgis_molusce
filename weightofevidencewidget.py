@@ -35,6 +35,8 @@ from algorithms.models.woe.manager import WoeManager
 
 from ui.ui_weightofevidencewidgetbase import Ui_Widget
 
+import molusceutils as utils
+
 MAX_CATEGORIES = 15
 
 class WeightOfEvidenceWidget(QWidget, Ui_Widget):
@@ -52,6 +54,13 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     self.manageGui()
 
   def manageGui(self):
+    if not utils.checkFactors(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Factors rasters is not set. Please specify them and try again")
+                         )
+      return
+
     self.tblReclass.clearContents()
 
     row = 0
@@ -69,6 +78,20 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     self.tblReclass.resizeColumnsToContents()
 
   def trainModel(self):
+    if not utils.checkInputRasters(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Initial or final raster is not set. Please specify input data and try again")
+                         )
+      return
+
+    if not utils.checkFactors(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Factors rasters is not set. Please specify them and try again")
+                         )
+      return
+
     analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
 
     myBins = self.__getBins()

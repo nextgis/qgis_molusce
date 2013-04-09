@@ -34,6 +34,8 @@ from algorithms.models.mce.mce import MCE
 
 from ui.ui_multicriteriaevaluationwidgetbase import Ui_Widget
 
+import molusceutils as utils
+
 class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):
     QWidget.__init__(self, parent)
@@ -52,6 +54,13 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.tblMatrix.cellChanged.connect(self.__checkValue)
 
   def manageGui(self):
+    if not utils.checkInputRasters(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Initial or final raster is not set. Please specify input data and try again")
+                         )
+      return
+
     self.spnInitialClass.setValue(self.settings.value("ui/MCE/initialClass", 0).toInt()[0])
     self.spnFinalClass.setValue(self.settings.value("ui/MCE/finalClass", 0).toInt()[0])
 
@@ -63,9 +72,6 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.__prepareTable()
 
   def trainModel(self):
-    self.settings.setValue("ui/MCE/initialClass", self.spnInitialClass.value())
-    self.settings.setValue("ui/MCE/finalClass", self.spnFinalClass.value())
-
     matrix = self.__checkMatrix()
     if len(matrix) == 0:
       QMessageBox.warning(self.plugin,
@@ -73,6 +79,16 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
                           self.tr("Please fill the matrix with values")
                          )
       return
+
+    if not utils.checkFactors(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Factors rasters is not set. Please specify them and try again")
+                         )
+      return
+
+    self.settings.setValue("ui/MCE/initialClass", self.spnInitialClass.value())
+    self.settings.setValue("ui/MCE/finalClass", self.spnFinalClass.value())
 
     self.model = MCE(self.inputs["factors"].values(),
                      matrix,
@@ -84,6 +100,10 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
   def checkConsistency(self):
     if self.model is None:
+      QMessageBox.warning(self.plugin,
+                          self.tr("Model is not initialised"),
+                          self.tr("To check consistency you need to train model first")
+                         )
       return
 
     c = self.model.getConsistency()
