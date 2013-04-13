@@ -51,6 +51,7 @@ import multicriteriaevaluationwidget
 from ui.ui_moluscedialogbase import Ui_Dialog
 
 from algorithms.dataprovider import Raster
+from algorithms.models.correlation.model import correlation, cramer, jiu, kappa
 from algorithms.models.crosstabs.manager import CrossTableManager
 from algorithms.models.area_analysis.manager import AreaAnalyst
 from algorithms.models.simulator.sim import Simulator
@@ -96,6 +97,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.btnRemoveFactor.clicked.connect(self.removeFactor)
     self.btnRemoveAllFactors.clicked.connect(self.removeAllFactors)
 
+    self.btnStartCorrChecking.clicked.connect(self.correlationChecking)
+
     self.btnUpdateStatistics.clicked.connect(self.updateStatisticsTable)
     self.btnCreateChangeMap.clicked.connect(self.createChangeMap)
 
@@ -113,6 +116,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.btnStartSimulation.clicked.connect(self.startSimulation)
 
+    self.tabWidget.currentChanged.connect(self.tabChanged)
+
     self.manageGui()
     self.__logMessage(self.tr("Start logging"))
 
@@ -122,8 +127,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tabWidget.setCurrentIndex(0)
 
     self.__populateLayers()
+    self.__populateCorrCheckingMet()
     self.__populateSamplingModes()
     self.__populateSimulationMethods()
+    self.__populateRasterNames()
 
     if not sklearnMissed:
       self.lblWarning.hide()
@@ -189,8 +196,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.lstFactors.takeItem(self.lstFactors.currentRow())
 
     del self.inputs["factors"][layerId]
-
-    self.inputs["bandCount"] = self.__bandCount()
+    if self.inputs["factors"] == {}:
+      del self.inputs["factors"]
+      del self.inputs["bandCount"]
+    else:
+      self.inputs["bandCount"] = self.__bandCount()
 
     self.__logMessage(self.tr("Removed factor layer %1").arg(layerName))
 
@@ -201,6 +211,66 @@ class MolusceDialog(QDialog, Ui_Dialog):
     del self.inputs["bandCount"]
 
     self.__logMessage(self.tr("Factors list cleared"))
+
+  def correlationChecking(self):
+    index = self.cmbFirstRaster.currentIndex()
+    layerId = unicode(self.cmbFirstRaster.itemData(index, Qt.UserRole).toString())
+    first = {'Raster': self.inputs["factors"][layerId], 'Name': self.cmbFirstRaster.currentText()}
+    index = self.cmbSecondRaster.currentIndex()
+    layerId = unicode(self.cmbSecondRaster.itemData(index, Qt.UserRole).toString())
+    second = {'Raster': self.inputs["factors"][layerId], 'Name': self.cmbSecondRaster.currentText()}
+
+    dimensions = first['Raster'].getBandsCount(), second['Raster'].getBandsCount()
+    self.tblCorrelation.setRowCount(dimensions[0])
+    self.tblCorrelation.setColumnCount(dimensions[1])
+    labels = []
+    for i in range(dimensions[0]):
+      labels.append(u"%s[%s]" % (first['Name'], i+1))
+    self.tblCorrelation.setVerticalHeaderLabels(labels)
+    labels = []
+    for i in range(dimensions[1]):
+      labels.append(u"%s[%s]" % (second['Name'], i+1))
+    self.tblCorrelation.setHorizontalHeaderLabels(labels)
+
+    method = self.cmbCorrCheckMethod.currentText()
+    if method == self.tr("Correlation"):
+      for col in xrange(dimensions[1]):
+        for row in xrange(dimensions[0]):
+          corr = correlation(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          item = QTableWidgetItem(unicode(corr))
+          self.tblCorrelation.setItem(row, col, item)
+    elif method == self.tr("Kappa (classic)"):
+      for col in xrange(dimensions[1]):
+        for row in xrange(dimensions[0]):
+          corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode=None)
+          item = QTableWidgetItem(unicode(corr))
+          self.tblCorrelation.setItem(row, col, item)
+    elif method == self.tr("Kappa (loc)"):
+      for col in xrange(dimensions[1]):
+        for row in xrange(dimensions[0]):
+          corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode='loc')
+          item = QTableWidgetItem(unicode(corr))
+          self.tblCorrelation.setItem(row, col, item)
+    elif method == self.tr("Kappa (histo)"):
+      for col in xrange(dimensions[1]):
+        for row in xrange(dimensions[0]):
+          corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode='histo')
+          item = QTableWidgetItem(unicode(corr))
+          self.tblCorrelation.setItem(row, col, item)
+    elif method == self.tr("Cramer's Coefficient"):
+      for col in xrange(dimensions[1]):
+        for row in xrange(dimensions[0]):
+          corr = cramer(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          item = QTableWidgetItem(unicode(corr))
+          self.tblCorrelation.setItem(row, col, item)
+    elif method == self.tr("Joint Information Uncertainty"):
+      for col in xrange(dimensions[1]):
+        for row in xrange(dimensions[0]):
+          corr = jiu(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          item = QTableWidgetItem(unicode(corr))
+          self.tblCorrelation.setItem(row, col, item)
+    self.tblCorrelation.resizeRowsToContents()
+    self.tblCorrelation.resizeColumnsToContents()
 
   def updateStatisticsTable(self):
     if not utils.checkInputRasters(self.inputs):
@@ -372,6 +442,15 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.simulator = None
     self.__restoreProgressState()
 
+  def tabChanged(self, index):
+    if (index >0) and (not (utils.checkFactors(self.inputs) and utils.checkInputRasters(self.inputs))):
+      QMessageBox.warning(self,
+                          self.tr("Missed input data"),
+                          self.tr("Factor or input/output rasters are not set. Please specify input data and try again")
+                         )
+      return
+    if  index == 1:     # tabCorrelationChecking
+      self.__populateRasterNames()
 # ******************************************************************************
 
   def __populateLayers(self):
@@ -388,6 +467,25 @@ class MolusceDialog(QDialog, Ui_Dialog):
         item.setData(Qt.UserRole, layer[0])
 
       self.lstLayers.addItem(item)
+
+  def __populateRasterNames(self):
+    self.cmbFirstRaster.clear()
+    self.cmbSecondRaster.clear()
+    for index in xrange(self.lstFactors.count()):
+      item = self.lstFactors.item(index)
+      self.cmbFirstRaster.addItem(item.text(), item.data(Qt.UserRole))
+      self.cmbSecondRaster.addItem(item.text(), item.data(Qt.UserRole))
+
+
+  def __populateCorrCheckingMet(self):
+    self.cmbCorrCheckMethod.addItems([
+                                       self.tr("Correlation"),
+                                       self.tr("Kappa (classic)"),
+                                       self.tr("Kappa (loc)"),
+                                       self.tr("Kappa (histo)"),
+                                       self.tr("Cramer's Coefficient"),
+                                       self.tr("Joint Information Uncertainty")
+                                     ])
 
   def __populateSimulationMethods(self):
     self.cmbSimulationMethod.addItems([
