@@ -50,11 +50,12 @@ import multicriteriaevaluationwidget
 
 from ui.ui_moluscedialogbase import Ui_Dialog
 
-from algorithms.dataprovider import Raster
+from algorithms.dataprovider import Raster, ProviderError
 from algorithms.models.correlation.model import correlation, cramer, jiu, kappa
 from algorithms.models.crosstabs.manager import CrossTableManager
 from algorithms.models.area_analysis.manager import AreaAnalyst
 from algorithms.models.simulator.sim import Simulator
+from algorithms.models.errorbudget.ebmodel import EBudget
 
 import molusceutils as utils
 
@@ -115,6 +116,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.btnSelectMonteCarlo.clicked.connect(self.__selectSimulationOutput)
 
     self.btnStartSimulation.clicked.connect(self.startSimulation)
+
+    self.btnSelectSimulatedMap.clicked.connect(self.__selectValidationMap)
+    self.btnSelectReferenceMap.clicked.connect(self.__selectValidationMap)
+
+    self.btnStartValidation.clicked.connect(self.startValidation)
 
     self.tabWidget.currentChanged.connect(self.tabChanged)
 
@@ -412,6 +418,28 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.simulator.processFinished.connect(self.workThread.quit)
     self.workThread.start()
 
+  def startValidation(self):
+
+    try:
+      reference = Raster(unicode(self.leReferenceMapPath.text()))
+    except ProviderError:
+      QMessageBox.warning(self,
+                          self.tr("Can't read file"),
+                          self.tr("Can't read file: '%s'" % unicode(self.leReferenceMapPath.text()))
+                         )
+      return
+    try:
+      simulated = Raster(unicode(self.leSimulatedMapPath.text()))
+    except ProviderError:
+      QMessageBox.warning(self,
+                          self.tr("Can't read file"),
+                          self.tr("Can't read file: '%s'" % unicode(self.leSimulatedMapPath.text()))
+                         )
+      return
+    eb = EBudget(reference, simulated)
+    stat = eb.getStat(nIter=self.spnValIterCount.value())
+
+
   def simulationDone(self):
     if self.chkRiskFunction.isChecked():
       if not self.leRiskFunctionPath.text().isEmpty():
@@ -583,6 +611,22 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.leRiskValidationPath.setText(fileName)
     elif senderName == "btnSelectMonteCarlo":
       self.leMonteCarloPath.setText(fileName)
+
+  def __selectValidationMap(self):
+    senderName = self.sender().objectName()
+
+    fileName = utils.openRasterDialog(self,
+                                      self.settings,
+                                      self.tr("Open file"),
+                                      self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)")
+                                     )
+    if fileName.isEmpty():
+      return
+
+    if senderName == "btnSelectReferenceMap":
+      self.leReferenceMapPath.setText(fileName)
+    elif senderName == "btnSelectSimulatedMap":
+      self.leSimulatedMapPath.setText(fileName)
 
   def __logMessage(self, message):
     self.txtMessages.append(QString("[%1] %2")

@@ -95,9 +95,9 @@ class EBudget(object):
             newSj[cat] = np.zeros((newRows, newCols))
             newRj[cat] = np.zeros((newRows, newCols))
         r = 0
-        while r < rows:
+        while r/scale < newRows:
             c = 0
-            while c < cols:
+            while c/scale < newCols:
                 newW[r/scale, c/scale] = 1.0*np.sum(self.W[r: r+scale, c: c+scale])/(scale*scale)
                 for cat in self.categories:
                     S = self.Sj[cat]

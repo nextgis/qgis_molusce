@@ -38,7 +38,8 @@ class FormatConverter(object):
 
 class Raster(object):
     def __init__(self, filename=None):
-        # TODO: Get mask values from the raster metadata.
+        if filename == "":
+            raise ProviderError("File name can't be empty string!")
         self.filename = filename
         self.maskVals = None     # List of the "transparent" pixel values
         self.bands    = None     # List of the bands (stored as numpy mask array)
