@@ -594,11 +594,7 @@
         </layout>
        </item>
        <item row="1" column="0">
-        <layout class="QHBoxLayout" name="layoutValPlot">
-         <property name="margin">
-          <number>9</number>
-         </property>
-        </layout>
+        <layout class="QVBoxLayout" name="layoutValPlot"/>
        </item>
       </layout>
      </widget>

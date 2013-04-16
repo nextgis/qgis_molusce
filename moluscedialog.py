@@ -34,6 +34,12 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
+import numpy
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
+from matplotlib.figure import Figure
+from matplotlib import rcParams
+
 sklearnMissed = False
 
 try:
@@ -137,6 +143,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__populateSamplingModes()
     self.__populateSimulationMethods()
     self.__populateRasterNames()
+    self.__populateValidationPlot()
 
     if not sklearnMissed:
       self.lblWarning.hide()
@@ -419,7 +426,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.start()
 
   def startValidation(self):
-
     try:
       reference = Raster(unicode(self.leReferenceMapPath.text()))
     except ProviderError:
@@ -439,6 +445,30 @@ class MolusceDialog(QDialog, Ui_Dialog):
     eb = EBudget(reference, simulated)
     stat = eb.getStat(nIter=self.spnValIterCount.value())
 
+    self.scaleData = stat.keys()
+    self.noNoData, self.noMedData, self.medMedData, self.medPerData, self.perPerData = [], [], [], [], []
+    for k in stat.keys():
+      self.noNoData.append(stat[k]['NoNo'])
+      self.noMedData.append(stat[k]['NoMed'])
+      self.medMedData.append(stat[k]['MedMed'])
+      self.medPerData.append(stat[k]['MedPer'])
+      self.perPerData.append(stat[k]['PerPer'])
+
+    self.valAxes.set_xbound(lower=0, upper=len(self.scaleData)-1)
+    self.valAxes.set_ybound(lower=0, upper=1)
+
+    self.noNo.set_xdata(numpy.array(self.scaleData))
+    self.noNo.set_ydata(numpy.array(self.noNoData))
+    self.noMed.set_xdata(numpy.array(self.scaleData))
+    self.noMed.set_ydata(numpy.array(self.noMedData))
+    self.medMed.set_xdata(numpy.array(self.scaleData))
+    self.medMed.set_ydata(numpy.array(self.medMedData))
+    self.medPer.set_xdata(numpy.array(self.scaleData))
+    self.medPer.set_ydata(numpy.array(self.medPerData))
+    self.perPer.set_xdata(numpy.array(self.scaleData))
+    self.perPer.set_ydata(numpy.array(self.medPerData))
+
+    self.valCanvas.draw()
 
   def simulationDone(self):
     if self.chkRiskFunction.isChecked():
@@ -528,6 +558,46 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.cmbSamplingMode.addItem(self.tr("All"), 0)
     self.cmbSamplingMode.addItem(self.tr("Normal"), 1)
     self.cmbSamplingMode.addItem(self.tr("Balanced"), 2)
+
+  def __populateValidationPlot(self):
+    # init plot for validation curve
+    self.valFigure = Figure()
+    self.valAxes = self.valFigure.add_subplot(111)
+    self.valAxes.grid(True)
+    self.valFigure.suptitle(self.tr("Multiple-resolution budget"))
+    self.valCanvas = FigureCanvas(self.valFigure)
+    self.valtoolbar = NavigationToolbar(self.valCanvas, None)
+    lstActions = self.valtoolbar.actions()
+    self.valtoolbar.removeAction(lstActions[7])
+    self.layoutValPlot.addWidget(self.valCanvas)
+    self.layoutValPlot.addWidget(self.valtoolbar)
+
+    self.scaleData = []
+    self.noNoData = []
+    self.noNo = self.valAxes.plot(self.noNoData,
+                            linewidth=1,
+                            color="green", linestyle='dashed', marker='o',
+                            )[0]
+    self.noMedData = []
+    self.noMed = self.valAxes.plot(self.noMedData,
+                            linewidth=1,
+                            color="red", marker='o',
+                            )[0]
+    self.medMedData = []
+    self.medMed = self.valAxes.plot(self.medMedData,
+                            linewidth=1,
+                            color="purple", linestyle='dashed', marker='v',
+                            )[0]
+    self.medPerData = []
+    self.medPer = self.valAxes.plot(self.medPerData,
+                            linewidth=1,
+                            color="yellow", linestyle='dashed', marker='+',
+                            )[0]
+    self.perPerData = []
+    self.perPer = self.valAxes.plot(self.perPerData,
+                            linewidth=1,
+                            color="blue", marker='*',
+                            )[0]
 
   def __modeChanged(self, index):
     mode = self.cmbSamplingMode.itemData(index).toInt()[0]
