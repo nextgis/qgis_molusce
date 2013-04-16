@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>728</width>
+    <width>712</width>
     <height>440</height>
    </rect>
   </property>
@@ -14,13 +14,20 @@
    <string>MOLUSCE</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_10">
+   <item row="1" column="0">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="enabled">
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabInputs">
       <attribute name="title">
@@ -524,20 +531,51 @@
       <attribute name="title">
        <string>Validation</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_9">
-       <item row="2" column="0">
-        <widget class="QPushButton" name="btnStartValidation">
-         <property name="text">
-          <string>Start</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
         <layout class="QGridLayout" name="gridLayout_8">
-         <property name="margin">
-          <number>9</number>
-         </property>
-         <item row="3" column="2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>Reference Map</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="leReferenceMapPath"/>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="btnSelectReferenceMap">
+           <property name="text">
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>Simulated Map</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="leSimulatedMapPath"/>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="btnSelectSimulatedMap">
+           <property name="text">
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>Number of validation iterations</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
           <widget class="QSpinBox" name="spnValIterCount">
            <property name="minimum">
             <number>1</number>
@@ -550,51 +588,17 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
-          <widget class="QPushButton" name="btnSelectReferenceMap">
+         <item row="3" column="0" colspan="3">
+          <layout class="QVBoxLayout" name="layoutValPlot"/>
+         </item>
+         <item row="4" column="0" colspan="3">
+          <widget class="QPushButton" name="btnStartValidation">
            <property name="text">
-            <string>Browse...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="leSimulatedMapPath"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_12">
-           <property name="text">
-            <string>Simulated Map</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="leReferenceMapPath"/>
-         </item>
-         <item row="1" column="2">
-          <widget class="QPushButton" name="btnSelectSimulatedMap">
-           <property name="text">
-            <string>Browse...</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_11">
-           <property name="text">
-            <string>Reference Map</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>Number of validation iterations</string>
+            <string>Start</string>
            </property>
           </widget>
          </item>
         </layout>
-       </item>
-       <item row="1" column="0">
-        <layout class="QVBoxLayout" name="layoutValPlot"/>
        </item>
       </layout>
      </widget>
@@ -615,13 +619,6 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QProgressBar" name="progressBar">
-     <property name="value">
-      <number>0</number>
-     </property>
     </widget>
    </item>
   </layout>
