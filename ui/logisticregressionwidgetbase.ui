@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>569</width>
-    <height>162</height>
+    <height>185</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,38 +21,10 @@
      </property>
      <widget class="QWidget" name="layoutWidget">
       <layout class="QGridLayout" name="gridLayout">
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Map agreement</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QPushButton" name="btnFitModel">
-         <property name="text">
-          <string>Fit model</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
           <string>Neighbourhood</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Kappa</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QSpinBox" name="spnNeighbourhood">
-         <property name="suffix">
-          <string> px</string>
          </property>
         </widget>
        </item>
@@ -63,16 +35,24 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="leKappa"/>
-       </item>
        <item row="1" column="1">
         <widget class="QLineEdit" name="leRSquared"/>
        </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="leAgreement"/>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="spnNeighbourhood">
+         <property name="suffix">
+          <string> px</string>
+         </property>
+        </widget>
        </item>
-       <item row="5" column="0" colspan="2">
+       <item row="2" column="0" colspan="2">
+        <widget class="QPushButton" name="btnFitModel">
+         <property name="text">
+          <string>Fit model</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

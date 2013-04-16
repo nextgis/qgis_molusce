@@ -27,7 +27,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="tabInputs">
       <attribute name="title">
@@ -138,7 +138,7 @@
      </widget>
      <widget class="QWidget" name="tabCorrelationChecking">
       <attribute name="title">
-       <string>Correlation Cheking</string>
+       <string>Correlation Checking</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0">
