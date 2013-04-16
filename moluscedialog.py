@@ -700,7 +700,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __logMessage(self, message):
     self.txtMessages.append(QString("[%1] %2")
-                            .arg(datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S"))
+                            .arg(datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"))
                             .arg(message)
                            )
 
