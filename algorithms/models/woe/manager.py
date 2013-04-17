@@ -56,7 +56,7 @@ class WoeManager(object):
         self.woe = {}
         for code in self.codes:
             sites = binaryzation(cMap, [code])
-            # TODO: reclass factors (continuous factor -> ordinal factor)
+            # Reclass factors (continuous factor -> ordinal factor)
             wMap = np.ma.zeros(cMap.shape)
             for k in xrange(len(factors)):
                 fact = factors[k]
@@ -67,7 +67,7 @@ class WoeManager(object):
                 else: bin = None
                 for i in range(1, fact.getBandsCount()+1):
                     band = fact.getBand(i)
-                    if bin:
+                    if bin and bin[i-1]:
                         band = reclass(band, bin[i-1])
                     band, sites = masks_identity(band, sites)   # Combine masks of the rasters
                     weights = woe(band, sites, unit_cell)       # WoE for the 'code' (initState->finalState) transition and current 'factor'.
