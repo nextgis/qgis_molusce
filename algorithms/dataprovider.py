@@ -238,7 +238,7 @@ class Raster(object):
             r = data.GetRasterBand(i)
             nodataValue =  r.GetNoDataValue()
             r = r.ReadAsArray()
-            if nodataValue:
+            if nodataValue is not None:
                 mask = binaryzation(r, [nodataValue])
                 r = ma.array(data = r, mask=mask)
             self.bands.append(r)
