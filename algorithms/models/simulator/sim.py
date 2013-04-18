@@ -38,7 +38,11 @@ class Simulator(QObject):
         self.model  = model
         self.crosstable = crosstable
 
-        self.updatePrediction(self.state)
+        try:
+            self.model.rangeChanged.connect(self.__modelProgressRangeChanged)
+            self.model.updateProgress.connect(self.__modelProgressChanged)
+        except AttributeError:
+            pass
 
     def getConfidence(self):
         '''
@@ -69,11 +73,19 @@ class Simulator(QObject):
         result.create([diff], state.getGeodata())
         return result
 
-    def sim(self):
+    def __modelProgressRangeChanged(self, message, maxValue):
+        self.rangeChanged.emit(message, maxValue)
+
+    def __modelProgressChanged(self):
+        self.updateProgress.emit()
+
+    def __sim(self):
         '''
         Make 1 iteracion of simulation.
         '''
         transition = self.crosstable.getCrosstable()
+
+        self.updatePrediction(self.state)
 
         prediction = self.getPrediction()
         state = self.getState()
@@ -120,16 +132,15 @@ class Simulator(QObject):
         result = Raster()
         result.create([new_state], state.getGeodata())
         self.state = result
-        self.updatePrediction(result)
-        self.processFinished.emit()
 
 
-    def simN(self, N):
+    def simN(self, N=1):
         '''
         Make N iterations of simulation.
         '''
         for i in range(N):
-            self.sim()
+            self.__sim()
+        self.processFinished.emit()
 
     def updatePrediction(self, state):
         '''

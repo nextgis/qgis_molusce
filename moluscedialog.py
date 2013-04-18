@@ -418,7 +418,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.simulator.moveToThread(self.workThread)
 
-    self.workThread.started.connect(self.simulator.sim)
+    self.workThread.started.connect(self.simulator.simN)
     self.simulator.rangeChanged.connect(self.__setProgressRange)
     self.simulator.updateProgress.connect(self.__showProgress)
     self.simulator.processFinished.connect(self.simulationDone)
@@ -492,7 +492,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       else:
         self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
 
-    self.workThread.started.disconnect(self.simulator.sim)
+    self.workThread.started.disconnect(self.simulator.simN)
     self.simulator.rangeChanged.disconnect(self.__setProgressRange)
     self.simulator.updateProgress.disconnect(self.__showProgress)
     self.simulator.processFinished.disconnect(self.simulationDone)
