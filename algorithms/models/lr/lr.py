@@ -4,7 +4,7 @@
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
-
+from PyQt4.QtCore import *
 
 import numpy as np
 from sklearn import linear_model as lm
@@ -18,13 +18,21 @@ class LRError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
-class LR(object):
+class LR(QObject):
     """
     Implements Logistic Regression model definition and calibration
     (maximum liklihood parameter estimation).
     """
 
+    rangeChanged = pyqtSignal(str, int)
+    updateProgress = pyqtSignal()
+    processFinished = pyqtSignal()
+    logMessage = pyqtSignal(str)
+
     def __init__(self, ns=0, logreg=None):
+
+        QObject.__init__(self)
+
         if logreg:
             self.logreg = logreg
         else:
@@ -67,6 +75,8 @@ class LR(object):
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         '''
+
+        self.rangeChanged.emit(self.tr("Initialize model %p%"), 1)
         geodata = state.getGeodata()
         rows, cols = geodata['ySize'], geodata['xSize']
         for r in factors:
@@ -82,6 +92,8 @@ class LR(object):
 
         sampler = Sampler(state, factors, ns=self.ns)
         mask = state.getBand(1).mask.copy()
+        self.updateProgress.emit()
+        self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
         for i in xrange(rows):
             for j in xrange(cols):
                 if not mask[i,j]:
@@ -93,6 +105,7 @@ class LR(object):
                         confidence_band[i, j] = confidence
                     else: # Input sample is incomplete => mask this pixel
                         mask[i, j] = True
+            self.updateProgress.emit()
         predicted_bands  = [np.ma.array(data = predicted_band, mask = mask)]
         confidence_bands = [np.ma.array(data = confidence_band, mask = mask)]
 
@@ -100,6 +113,7 @@ class LR(object):
         self.prediction.create(predicted_bands, geodata)
         self.confidence = Raster()
         self.confidence.create(confidence_bands, geodata)
+        self.processFinished.emit()
 
     def read(self):
         pass
