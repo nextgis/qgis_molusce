@@ -40,7 +40,6 @@ class Simulator(QObject):
 
         self.updatePrediction(self.state)
 
-
     def getConfidence(self):
         '''
         Return raster of model's prediction confidence.
@@ -74,17 +73,19 @@ class Simulator(QObject):
         '''
         Make 1 iteracion of simulation.
         '''
-        #TODO: eleminate AreaAnalyst.getChangeMap() from the process
-
         transition = self.crosstable.getCrosstable()
 
         prediction = self.getPrediction()
         state = self.getState()
         new_state = state.getBand(1).copy()         # New states (the result of simulation) will be stored there.
+
+        self.rangeChanged.emit(self.tr("Area Change Analysis %p%"), 2)
+        self.updateProgress.emit()
         analyst = AreaAnalyst(state, prediction)
+        self.updateProgress.emit()
+
         categories = analyst.categories
         changes = analyst.getChangeMap().getBand(1)
-
         # Make transition between categories according to
         # number of moved pixel in crosstable
         self.rangeChanged.emit(self.tr("Simulation process %p%"), len(categories)**2 - len(categories))
