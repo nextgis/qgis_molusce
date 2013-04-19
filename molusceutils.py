@@ -59,7 +59,7 @@ def getLayerGroup(relations, layerId):
 
   return group
 
-def saveRasterDialog(parent, settings, title, fileFilter):
+def saveDialog(parent, settings, title, fileFilter, fileExt, fileExtREstring):
   lastDir = settings.value("ui/lastRasterDir", ".").toString()
   fileName = QFileDialog.getSaveFileName(parent,
                                          title,
@@ -70,11 +70,19 @@ def saveRasterDialog(parent, settings, title, fileFilter):
   if fileName.isEmpty():
     return QString()
 
-  if not fileName.toLower().contains(QRegExp("\.tif{1,2}")):
-    fileName += ".tif"
+  if not fileName.toLower().contains(QRegExp(fileExtREstring)):
+    fileName += "."+fileExt
 
   settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
 
+  return fileName
+
+def saveRasterDialog(parent, settings, title, fileFilter):
+  fileName = saveDialog(parent, settings, title, fileFilter, "tif", "\.tif{1,2}")
+  return fileName
+
+def saveVectorDialog(parent, settings, title, fileFilter):
+  fileName = saveDialog(parent, settings, title, fileFilter, "shp", "\.shp")
   return fileName
 
 def openRasterDialog(parent, settings, title, fileFilter):
