@@ -29,14 +29,7 @@
    </item>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="8" column="0">
-      <widget class="QCheckBox" name="chkSaveSamples">
-       <property name="text">
-        <string>Save samples</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0" colspan="4">
+     <item row="8" column="0" colspan="4">
       <widget class="QPushButton" name="btnTrainNetwork">
        <property name="text">
         <string>Train neural network</string>
@@ -47,13 +40,6 @@
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Learning rate</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QCheckBox" name="chkCreateReport">
-       <property name="text">
-        <string>Create report</string>
        </property>
       </widget>
      </item>
@@ -87,7 +73,7 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="1" colspan="2">
+     <item row="7" column="1" colspan="2">
       <widget class="QLineEdit" name="leSamplesPath">
        <property name="enabled">
         <bool>false</bool>
@@ -95,16 +81,6 @@
       </widget>
      </item>
      <item row="7" column="3">
-      <widget class="QPushButton" name="btnSelectReport">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Browse...</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="3">
       <widget class="QPushButton" name="btnSelectSamples">
        <property name="enabled">
         <bool>false</bool>
@@ -133,6 +109,13 @@
        </property>
       </widget>
      </item>
+     <item row="7" column="0">
+      <widget class="QCheckBox" name="chkSaveSamples">
+       <property name="text">
+        <string>Save samples</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -144,13 +127,6 @@
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>Network topology</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1" colspan="2">
-      <widget class="QLineEdit" name="leReportPath">
-       <property name="enabled">
-        <bool>false</bool>
        </property>
       </widget>
      </item>

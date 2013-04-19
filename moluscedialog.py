@@ -111,6 +111,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.cmbSamplingMode.currentIndexChanged.connect(self.__modeChanged)
     self.cmbSimulationMethod.currentIndexChanged.connect(self.__modelChanged)
+    self.btnSelectSamples.clicked.connect(self.__selectSamplesOutput)
 
     self.chkRiskFunction.toggled.connect(self.__toggleLineEdit)
     self.chkRiskValidation.toggled.connect(self.__toggleLineEdit)
@@ -667,6 +668,34 @@ class MolusceDialog(QDialog, Ui_Dialog):
       else:
         self.leMatrixPath.setEnabled(False)
         self.btnSelectMatrix.setEnabled(False)
+
+  def __selectSamplesOutput(self):
+    if not "model" in self.inputs:
+      QMessageBox.warning(self,
+                          self.tr("Missed model"),
+                          self.tr("Model not selected please select and train model")
+                         )
+      return
+    model = self.inputs["model"]
+    try:
+      model.saveSamples(fileName)
+    except AttributeError:
+      QMessageBox.warning(self,
+                          self.tr("Missed samples"),
+                          self.tr("Selected model does't use samples")
+                         )
+      return
+
+    fileName = utils.saveVectorDialog(self,
+                                      self.settings,
+                                      self.tr("Save file"),
+                                      self.tr("Shape files (*.shp *.SHP *.Shp)")
+                                     )
+    if fileName.isEmpty():
+      return
+    self.leValidationError.setText(fileName)
+
+
 
   def __selectSimulationOutput(self):
     senderName = self.sender().objectName()

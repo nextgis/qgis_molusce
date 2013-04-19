@@ -27,7 +27,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabInputs">
       <attribute name="title">
@@ -307,14 +307,14 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QLabel" name="label_4">
          <property name="text">
           <string>Method</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="3" column="1">
         <widget class="QComboBox" name="cmbSimulationMethod">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -324,7 +324,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="2">
+       <item row="3" column="2">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -337,7 +337,7 @@
          </property>
         </spacer>
        </item>
-       <item row="3" column="0" colspan="3">
+       <item row="4" column="0" colspan="3">
         <widget class="QStackedWidget" name="widgetStackMethods">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -356,7 +356,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" colspan="3">
+       <item row="2" column="0" colspan="3">
         <widget class="QLabel" name="lblWarning">
          <property name="text">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;Logistic Regression method disabled because required dependency 'scikit-learn' is not available. Please visit &lt;/span&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;scikit-learn homepage http://scikit-learn.org for installation details.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -365,6 +365,16 @@
           <bool>true</bool>
          </property>
         </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="btnSelectSamples">
+         <property name="text">
+          <string>Save Samples...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="leValidationError"/>
        </item>
       </layout>
      </widget>

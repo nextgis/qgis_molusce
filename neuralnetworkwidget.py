@@ -71,11 +71,11 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     rcParams['font.fantasy'] = "Comic Sans MS, Arial, Liberation Sans"
     rcParams['font.monospace'] = "Courier New, Liberation Mono"
 
-    self.chkCreateReport.toggled.connect(self.__toggleLineEdit)
-    self.chkSaveSamples.toggled.connect(self.__toggleLineEdit)
+    #self.chkCreateReport.toggled.connect(self.__toggleLineEdit)
+    #self.chkSaveSamples.toggled.connect(self.__toggleLineEdit)
 
-    self.btnSelectReport.clicked.connect(self.__selectFile)
-    self.btnSelectSamples.clicked.connect(self.__selectFile)
+    #self.btnSelectReport.clicked.connect(self.__selectFile)
+    #self.btnSelectSamples.clicked.connect(self.__selectFile)
 
     self.btnTrainNetwork.clicked.connect(self.trainNetwork)
 
@@ -88,8 +88,8 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.leTopology.setText(self.settings.value("ui/ANN/topology", "10").toString())
     self.spnMomentum.setValue(self.settings.value("ui/ANN/momentum", 0.05).toFloat()[0])
 
-    self.chkCreateReport.setChecked(self.settings.value("ui/ANN/createReport", False).toBool())
-    self.chkSaveSamples.setChecked(self.settings.value("ui/ANN/saveSamples", False).toBool())
+    #self.chkCreateReport.setChecked(self.settings.value("ui/ANN/createReport", False).toBool())
+    #self.chkSaveSamples.setChecked(self.settings.value("ui/ANN/saveSamples", False).toBool())
 
   def trainNetwork(self):
     if not utils.checkInputRasters(self.inputs):
@@ -202,22 +202,22 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
 
     self.canvas.draw()
 
-  def __selectFile(self):
-    senderName = self.sender().objectName()
-
-    # TODO: implement dialog for necessary data type
-    fileName = utils.saveRasterDialog(self,
-                                      self.settings,
-                                      self.tr("Save file"),
-                                      self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)")
-                                     )
-    if fileName.isEmpty():
-      return
-
-    if senderName == "btnSelectReport":
-      self.leReportPath.setText(fileName)
-    elif senderName == "btnSelectSamples":
-      self.leSamplesPath.setText(fileName)
+  #~ def __selectFile(self):
+    #~ senderName = self.sender().objectName()
+#~
+    #~ # TODO: implement dialog for necessary data type
+    #~ fileName = utils.saveRasterDialog(self,
+                                      #~ self.settings,
+                                      #~ self.tr("Save file"),
+                                      #~ self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)")
+                                     #~ )
+    #~ if fileName.isEmpty():
+      #~ return
+#~
+    #~ if senderName == "btnSelectReport":
+      #~ self.leReportPath.setText(fileName)
+    #~ elif senderName == "btnSelectSamples":
+      #~ self.leSamplesPath.setText(fileName)
 
   def __toggleLineEdit(self, checked):
     senderName = self.sender().objectName()
