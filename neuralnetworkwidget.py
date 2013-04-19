@@ -149,17 +149,19 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.setMomentum(self.spnMomentum.value())
     self.model.setContinueTrain()
 
-    self.dataTrain = [1]
-    self.dataVal = [1]
+    self.dataTrain = []
+    self.dataVal = []
     self.plotTrain = self.axes.plot(self.dataTrain,
                                     linewidth=1,
-                                    color="green",
+                                    color="green",  marker='o'
                                    )[0]
     self.plotVal = self.axes.plot(self.dataVal,
                                   linewidth=1,
                                   color="red",
                                  )[0]
-
+    leg = self.axes.legend(('Train', 'Validation'), 'upper right', shadow=False)
+    for t in leg.get_texts():
+        t.set_fontsize('small')
     self.model.moveToThread(self.plugin.workThread)
 
     self.plugin.workThread.started.connect(self.model.startTrain)

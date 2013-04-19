@@ -591,13 +591,17 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.medPerData = []
     self.medPer = self.valAxes.plot(self.medPerData,
                             linewidth=1,
-                            color="yellow", linestyle='dashed', marker='+',
+                            color="black", linestyle='dashed', marker='+',
                             )[0]
     self.perPerData = []
     self.perPer = self.valAxes.plot(self.perPerData,
                             linewidth=1,
-                            color="blue", marker='*',
+                            color="yellow", marker='*',
                             )[0]
+    leg = self.valAxes.legend(('No location, no quantity inform.', 'No location, medium quantity inform.', 'Medium location, medium quantity inform.', 'Perfect location, medium quantity inform.', 'Perfect location, perfect quantity inform.'), 'lower right', shadow=False)
+    for t in leg.get_texts():
+        t.set_fontsize('small')
+
 
   def __modeChanged(self, index):
     mode = self.cmbSamplingMode.itemData(index).toInt()[0]
