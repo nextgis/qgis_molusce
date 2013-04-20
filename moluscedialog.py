@@ -57,7 +57,7 @@ import multicriteriaevaluationwidget
 from ui.ui_moluscedialogbase import Ui_Dialog
 
 from algorithms.dataprovider import Raster, ProviderError
-from algorithms.models.correlation.model import correlation, cramer, jiu, kappa
+from algorithms.models.correlation.model import correlation, cramer, jiu, kappa, CoeffError
 from algorithms.models.crosstabs.manager import CrossTableManager
 from algorithms.models.area_analysis.manager import AreaAnalyst
 from algorithms.models.simulator.sim import Simulator
@@ -284,23 +284,41 @@ class MolusceDialog(QDialog, Ui_Dialog):
           item = QTableWidgetItem(unicode(corr))
           self.tblCorrelation.setItem(row, col, item)
     elif method == self.tr("Kappa (classic)"):
-      for col in xrange(dimensions[1]):
-        for row in xrange(dimensions[0]):
-          corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode=None)
-          item = QTableWidgetItem(unicode(corr))
-          self.tblCorrelation.setItem(row, col, item)
+      try:
+        for col in xrange(dimensions[1]):
+          for row in xrange(dimensions[0]):
+            corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode=None)
+            item = QTableWidgetItem(unicode(corr))
+            self.tblCorrelation.setItem(row, col, item)
+      except CoeffError as ex:
+        QMessageBox.warning(self,
+                          self.tr("Checking"),
+                          ex.msg
+                         )
     elif method == self.tr("Kappa (loc)"):
-      for col in xrange(dimensions[1]):
-        for row in xrange(dimensions[0]):
-          corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode='loc')
-          item = QTableWidgetItem(unicode(corr))
-          self.tblCorrelation.setItem(row, col, item)
+      try:
+        for col in xrange(dimensions[1]):
+          for row in xrange(dimensions[0]):
+            corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode='loc')
+            item = QTableWidgetItem(unicode(corr))
+            self.tblCorrelation.setItem(row, col, item)
+      except CoeffError as ex:
+        QMessageBox.warning(self,
+                          self.tr("Checking"),
+                          ex.msg
+                         )
     elif method == self.tr("Kappa (histo)"):
-      for col in xrange(dimensions[1]):
-        for row in xrange(dimensions[0]):
-          corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode='histo')
-          item = QTableWidgetItem(unicode(corr))
-          self.tblCorrelation.setItem(row, col, item)
+      try:
+        for col in xrange(dimensions[1]):
+          for row in xrange(dimensions[0]):
+            corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode='histo')
+            item = QTableWidgetItem(unicode(corr))
+            self.tblCorrelation.setItem(row, col, item)
+      except CoeffError as ex:
+        QMessageBox.warning(self,
+                          self.tr("Checking"),
+                          ex.msg
+                         )
     elif method == self.tr("Cramer's Coefficient"):
       for col in xrange(dimensions[1]):
         for row in xrange(dimensions[0]):
