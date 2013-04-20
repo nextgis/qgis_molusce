@@ -161,9 +161,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
     QDialog.closeEvent(self, e)
 
   def setInitialRaster(self):
-    layerName = self.lstLayers.selectedItems()[0].text()
-    self.initRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
-    self.leInitRasterName.setText(layerName)
+    try:
+      layerName = self.lstLayers.selectedItems()[0].text()
+      self.initRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
+      self.leInitRasterName.setText(layerName)
+    except IndexError:
+      QMessageBox.warning(self,
+                          self.tr("Missed selected row"),
+                          self.tr("Initial raster is not selected. Please specify input data and try again")
+                         )
+      return
     rx = QRegExp("(19|2\d)\d\d")
     pos = rx.indexIn(layerName)
     year = rx.cap()
@@ -173,9 +180,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__logMessage(self.tr("Set intial layer to %1").arg(layerName))
 
   def setFinalRaster(self):
-    layerName = self.lstLayers.selectedItems()[0].text()
-    self.finalRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
-    self.leFinalRasterName.setText(layerName)
+    try:
+      layerName = self.lstLayers.selectedItems()[0].text()
+      self.finalRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
+      self.leFinalRasterName.setText(layerName)
+    except IndexError:
+      QMessageBox.warning(self,
+                          self.tr("Missed selected row"),
+                          self.tr("Final raster is not selected. Please specify input data and try again")
+                         )
+      return
     rx = QRegExp("(19|2\d)\d\d")
     pos = rx.indexIn(layerName)
     year = rx.cap()
@@ -185,7 +199,14 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__logMessage(self.tr("Set final layer to %1").arg(layerName))
 
   def addFactor(self):
-    layerName = self.lstLayers.selectedItems()[0].text()
+    try:
+      layerName = self.lstLayers.selectedItems()[0].text()
+    except IndexError:
+      QMessageBox.warning(self,
+                          self.tr("Missed selected row"),
+                          self.tr("Factor raster is not selected. Please specify input data and try again")
+                         )
+      return
     if len(self.lstFactors.findItems(layerName, Qt.MatchExactly)) > 0:
       return
 
@@ -205,7 +226,14 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__logMessage(self.tr("Added factor layer %1").arg(layerName))
 
   def removeFactor(self):
-    layerId = unicode(self.lstFactors.currentItem().data(Qt.UserRole).toString())
+    try:
+      layerId = unicode(self.lstFactors.currentItem().data(Qt.UserRole).toString())
+    except AttributeError:
+      QMessageBox.warning(self,
+                          self.tr("Missed selected row"),
+                          self.tr("Factor raster is not selected. Please specify input data and try again")
+                         )
+      return
     layerName = self.lstFactors.currentItem().text()
     self.lstFactors.takeItem(self.lstFactors.currentRow())
 
@@ -220,9 +248,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def removeAllFactors(self):
     self.lstFactors.clear()
-
-    del self.inputs["factors"]
-    del self.inputs["bandCount"]
+    try:
+      del self.inputs["factors"]
+      del self.inputs["bandCount"]
+    except KeyError:
+      pass
 
     self.__logMessage(self.tr("Factors list cleared"))
 
