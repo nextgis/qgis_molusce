@@ -175,6 +175,17 @@ class Raster(object):
         cornerX, width, rot1, cornerY, rot2, height  = self.geodata['transform']
         return {'area': abs(width * height), 'unit': self.getProjUnits()}
 
+    def getPixelCoords(self, px,py):
+        '''Pixel to Coords transform
+            @param  px        Input x pixel coordinate
+            @param  py        Input y pixel coordinate
+            @return outx,outy Output coordinates (two doubles)
+        '''
+        gt = self.geodata['transform']
+        outx = gt[0] + px*gt[1] + py*gt[2]
+        outy = gt[3] + px*gt[4] + py*gt[5]
+        return (outx,outy)
+
     def getProjUnits(self):
         return self.geodata['units']
 
