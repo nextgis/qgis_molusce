@@ -50,6 +50,7 @@ class MlpManager(QObject):
         self.train_error = None # Error on training set
         self.val_error   = None # Error on validation set
         self.minValError = None # The minimum error that is achieved on the validation set
+        self.sampler     = None # Sampler
 
         # Results of the MLP prediction
         self.prediction = None  # Raster of the MLP prediction results
@@ -195,14 +196,14 @@ class MlpManager(QObject):
         predicted_band  = np.zeros([rows, cols])
         confidence_band = np.zeros([rows, cols])
 
-        sampler = Sampler(state, factors, ns=self.ns)
+        self.sampler = Sampler(state, factors, ns=self.ns)
         mask = state.getBand(1).mask.copy()
         self.updateProgress.emit()
         self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
         for i in xrange(rows):
             for j in xrange(cols):
                 if not mask[i,j]:
-                    input = sampler.get_inputs(state, factors, i,j)
+                    input = self.sampler.get_inputs(state, factors, i,j)
                     if input != None:
                         out = self.getOutput(input)
                         # Get index of the biggest output value as the result
@@ -238,6 +239,9 @@ class MlpManager(QObject):
     def saveMlp(self):
         pass
 
+    def saveSamples(self, fileName):
+        self.sampler.saveSamples(fileName)
+
     def setMlpWeights(self, w):
         '''Set weights of the MLP'''
         self.MLP.weights = w
@@ -261,18 +265,19 @@ class MlpManager(QObject):
         for f in factors:
             f.normalize(mode = 'mean')
 
-        sampler = Sampler(state, factors, output, self.ns)
-        sampler.setTrainingData(state, factors, output, shuffle, mode, samples)
+        self.sampler = Sampler(state, factors, output, self.ns)
+        self.sampler.setTrainingData(state, factors, output, shuffle, mode, samples)
 
         outputVecLen  = self.getOutputVectLen()
-        stateVecLen   = sampler.stateVecLen
-        factorVectLen = sampler.factorVectLen
-        size = len(sampler.data)
+        stateVecLen   = self.sampler.stateVecLen
+        factorVectLen = self.sampler.factorVectLen
+        size = len(self.sampler.data)
 
-        self.data = np.zeros(size, dtype=[('state', float, stateVecLen), ('factors',  float, factorVectLen), ('output', float, outputVecLen)])
-        self.data['state'] = sampler.data['state']
-        self.data['factors'] = sampler.data['factors']
-        self.data['output'] = [self.getOutputVector(sample['output']) for sample in sampler.data]
+        self.data = np.zeros(size, dtype=[('coords', float, 2), ('state', float, stateVecLen), ('factors',  float, factorVectLen), ('output', float, outputVecLen)])
+        self.data['coords']   = self.sampler.data['coords']
+        self.data['state']    = self.sampler.data['state']
+        self.data['factors']  = self.sampler.data['factors']
+        self.data['output']   = [self.getOutputVector(sample['output']) for sample in self.sampler.data]
 
 
     def setTrainError(self, error):

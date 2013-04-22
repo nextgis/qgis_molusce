@@ -90,14 +90,14 @@ class LR(QObject):
         predicted_band  = np.zeros([rows, cols])
         confidence_band = np.zeros([rows, cols])
 
-        sampler = Sampler(state, factors, ns=self.ns)
+        self.sampler = Sampler(state, factors, ns=self.ns)
         mask = state.getBand(1).mask.copy()
         self.updateProgress.emit()
         self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
         for i in xrange(rows):
             for j in xrange(cols):
                 if not mask[i,j]:
-                    input = sampler.get_inputs(state, factors, i,j)
+                    input = self.sampler.get_inputs(state, factors, i,j)
                     if input != None:
                         out = self.logreg.predict(input)
                         predicted_band[i,j] = out
@@ -121,6 +121,10 @@ class LR(QObject):
     def save(self):
         pass
 
+    def saveSamples(self, fileName):
+        self.sampler.saveSamples(fileName)
+
+
     def setTrainingData(self, state, factors, output, mode='All', samples=None):
         '''
         @param state            Raster of the current state (categories) values.
@@ -139,15 +143,15 @@ class LR(QObject):
         for f in factors:
             f.normalize(mode = 'mean')
 
-        sampler = Sampler(state, factors, output, ns=self.ns)
-        sampler.setTrainingData(state, factors, output, shuffle=False, mode=mode, samples=samples)
+        self.sampler = Sampler(state, factors, output, ns=self.ns)
+        self.sampler.setTrainingData(state, factors, output, shuffle=False, mode=mode, samples=samples)
 
-        outputVecLen  = sampler.outputVecLen
-        stateVecLen   = sampler.stateVecLen
-        factorVectLen = sampler.factorVectLen
-        size = len(sampler.data)
+        outputVecLen  = self.sampler.outputVecLen
+        stateVecLen   = self.sampler.stateVecLen
+        factorVectLen = self.sampler.factorVectLen
+        size = len(self.sampler.data)
 
-        self.data = sampler.data
+        self.data = self.sampler.data
 
     def train(self):
         X = np.column_stack( (self.data['state'], self.data['factors']) )

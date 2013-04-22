@@ -116,7 +116,7 @@ class Sampler(QObject):
         '''
         Get one sample from (row,col) pixel. See params in setTrainingData.
         '''
-        data = np.zeros(1, dtype=[('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
+        data = np.zeros(1, dtype=[('coords', float, 2), ('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
         try:
             out_data = output.getNeighbours(row,col,0).flatten() # Get the pixel
             if out_data == None:                            # Eliminate masked samples
@@ -133,9 +133,15 @@ class Sampler(QObject):
                 return None
             else: data['factors'] = factors_data
 
+            x,y = state.getPixelCoords(col,row)
+            data['coords'] = x,y
+
         except ProviderError:
             return None
-        return data # (state_data, factors_data, out_data)
+        return data # (coords, state_data, factors_data, out_data)
+
+    def saveSamples(self, fileName):
+        print self.data
 
     def setTrainingData(self, state, factors, output, shuffle=True, mode='All', samples=None):
         '''
@@ -167,7 +173,7 @@ class Sampler(QObject):
             samples = rows * cols - nulls
 
         # Array for samples
-        self.data = np.zeros(samples, dtype=[('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
+        self.data = np.zeros(samples, dtype=[('coords', float, 2), ('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
 
         if mode == 'All':
             self.rangeChanged.emit(self.tr("Sampling..."), rows - 2*self.ns)
