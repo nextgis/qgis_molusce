@@ -40,7 +40,7 @@ class LR(QObject):
 
         self.ns = ns            # Neighbourhood size of training rasters.
         self.data = None        # Training data
-        #self.catlist = None     # List of unique output values of the output raster
+        self.sampler = None     # Sampler
 
         # Results of the LR prediction
         self.prediction = None  # Raster of the LR prediction results

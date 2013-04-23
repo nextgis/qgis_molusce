@@ -111,6 +111,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.cmbSamplingMode.currentIndexChanged.connect(self.__modeChanged)
     self.cmbSimulationMethod.currentIndexChanged.connect(self.__modelChanged)
+
     self.btnSelectSamples.clicked.connect(self.__selectSamplesOutput)
 
     self.chkRiskFunction.toggled.connect(self.__toggleLineEdit)
@@ -583,7 +584,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.cmbFirstRaster.addItem(item.text(), item.data(Qt.UserRole))
       self.cmbSecondRaster.addItem(item.text(), item.data(Qt.UserRole))
 
-
   def __populateCorrCheckingMet(self):
     self.cmbCorrCheckMethod.addItems([
                                        self.tr("Correlation"),
@@ -650,7 +650,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     leg = self.valAxes.legend(('No location, no quantity inform.', 'No location, medium quantity inform.', 'Medium location, medium quantity inform.', 'Perfect location, medium quantity inform.', 'Perfect location, perfect quantity inform.'), 'lower right', shadow=False)
     for t in leg.get_texts():
         t.set_fontsize('small')
-
 
   def __modeChanged(self, index):
     mode = self.cmbSamplingMode.itemData(index).toInt()[0]
@@ -725,9 +724,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
       return
     model = self.inputs["model"]
-    try:
-      model.saveSamples(fileName)
-    except AttributeError:
+    if not hasattr(model, 'saveSamples'):
       QMessageBox.warning(self,
                           self.tr("Missed samples"),
                           self.tr("Selected model does't use samples")
@@ -742,8 +739,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if fileName.isEmpty():
       return
     self.leValidationError.setText(fileName)
-
-
+    model.saveSamples(unicode(fileName))
 
   def __selectSimulationOutput(self):
     senderName = self.sender().objectName()

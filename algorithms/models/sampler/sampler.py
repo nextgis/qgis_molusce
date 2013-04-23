@@ -3,6 +3,11 @@
 import numpy as np
 from numpy import ma as ma
 
+import osgeo.ogr as ogr
+import osgeo.osr as osr
+
+import os.path
+
 from PyQt4.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
@@ -54,6 +59,7 @@ class Sampler(QObject):
         QObject.__init__(self)
 
         self.data = None        # Training data
+        self.proj = None        # Projection of the data coordinates
         self.ns = ns
 
         self.outputVecLen = 1                                   # Len of output vector
@@ -141,7 +147,65 @@ class Sampler(QObject):
         return data # (coords, state_data, factors_data, out_data)
 
     def saveSamples(self, fileName):
-        print self.data
+        workdir = os.path.dirname(fileName)
+        fileName = os.path.splitext(os.path.basename(fileName))[0]
+
+        driver = ogr.GetDriverByName('ESRI Shapefile')
+        sr = osr.SpatialReference()
+        sr.ImportFromWkt(self.proj)
+
+        ds = driver.CreateDataSource(workdir)
+        lyr = ds.CreateLayer(fileName.encode('utf-8'), sr, ogr.wkbPoint)
+
+        fieldnames = ['state' + str(i) for i in range(self.stateVecLen)]
+        fieldnames = fieldnames + ['factor' + str(i) for i in range(self.factorVectLen)]
+        fieldnames = fieldnames + ['out' + str(i) for i in range(self.outputVecLen)]
+
+        for name in fieldnames:
+            field_defn = ogr.FieldDefn(name, ogr.OFTReal)
+            if lyr.CreateField ( field_defn ) != 0:
+                raise SamplerError("Creating Name field failed!")
+
+        for row in self.data:
+            x,y = row['coords']
+            if x and y:
+                feat = ogr.Feature(lyr.GetLayerDefn())
+                if self.stateVecLen>1:
+                    for i in range(self.stateVecLen):
+                        name = fieldnames[i]
+                        r = row['state'][i]
+                        feat.SetField(name, r)
+                else:
+                    name = fieldnames[0]
+                    r = row['state']
+                    feat.SetField(name, r)
+                if self.factorVectLen > 1:
+                    for i in range(self.factorVectLen):
+                        name = fieldnames[i+self.stateVecLen]
+                        r = row['factors'][i]
+                        feat.SetField(name, r)
+                else:
+                    name = fieldnames[self.stateVecLen]
+                    r = row['factors']
+                    feat.SetField(name, r)
+                if self.outputVecLen > 1:
+                    for i in range(self.outputVecLen):
+                        name = fieldnames[i+self.stateVecLen+self.factorVectLen]
+                        r = row['output'][i]
+                        feat.SetField(name, r)
+                else:
+                    name = fieldnames[self.stateVecLen+self.factorVectLen]
+                    r = row['output']
+                    feat.SetField(name, r)
+                pt = ogr.Geometry(ogr.wkbPoint)
+                pt.SetPoint_2D(0, x, y)
+                feat.SetGeometry(pt)
+                if lyr.CreateFeature(feat) != 0:
+                    raise SamplerError("Failed to create feature in shapefile!")
+                feat.Destroy()
+        ds = None
+
+
 
     def setTrainingData(self, state, factors, output, shuffle=True, mode='All', samples=None):
         '''
@@ -159,6 +223,8 @@ class Sampler(QObject):
         for r in factors+[state]:
             if not output.geoDataMatch(r):
                 raise SamplerError('Geometries of the inputs and output rasters are different!')
+        geodata = state.getGeodata()
+        self.proj = geodata['proj']
 
         # Real count of the samples
         # (if self.ns>0 some samples may be incomplete because a neighbour has NoData value)
