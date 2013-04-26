@@ -2,6 +2,8 @@
 
 import numpy as np
 
+from PyQt4.QtCore import *
+
 from molusce.algorithms.dataprovider import Raster
 from model import woe
 from molusce.algorithms.utils import binaryzation, masks_identity, reclass
@@ -15,10 +17,16 @@ class WoeManagerError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
-class WoeManager(object):
+class WoeManager(QObject):
     '''This class gets the data extracted from the UI and
     pass it to woe function, then gets and stores the result.
     '''
+
+    rangeChanged = pyqtSignal(str, int)
+    updateProgress = pyqtSignal()
+    processFinished = pyqtSignal()
+    logMessage = pyqtSignal(str)
+
     def __init__(self, factors, areaAnalyst, unit_cell=1, bins = None):
         '''
         @param factors      List of the pattern rasters used for prediction of point objects (sites).
@@ -29,6 +37,8 @@ class WoeManager(object):
                                 List of list used because a factor can be a multiband raster, we need get a list of bins for every band. For example:
                                 factors = [f0, 2-band-factor], bins= {0: [[10, 100, 250]], 1:[[0.2, 1, 1.5, 4], [3, 4, 7]] }
         '''
+
+        QObject.__init__(self)
 
         self.factors = factors
         self.analyst = areaAnalyst
@@ -92,6 +102,7 @@ class WoeManager(object):
         '''
         Predict the changes.
         '''
+        self.rangeChanged.emit(self.tr("Initialize model %p%"), 1)
         geodata = self.changeMap.getGeodata()
         rows, cols = geodata['ySize'], geodata['xSize']
         if not self.changeMap.geoDataMatch(state):
@@ -103,6 +114,9 @@ class WoeManager(object):
 
         woe = self.getWoe()
         stateBand = state.getBand(1)
+
+        self.updateProgress.emit()
+        self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
 
         for r in xrange(rows):
             for c in xrange(cols):
@@ -124,6 +138,7 @@ class WoeManager(object):
                     confidence[r,c] = sigmoid(currMax) - sigmoid(oldMax)
                 except ValueError:
                     mask[r,c] = 1
+            self.updateProgress.emit()
 
         predicted_band = np.ma.array(data=prediction, mask=mask)
         self.prediction = Raster()
@@ -131,6 +146,7 @@ class WoeManager(object):
         confidence_band = np.ma.array(data=confidence, mask=mask)
         self.confidence = Raster()
         self.confidence.create([confidence_band], geodata)
+        self.processFinished.emit()
 
 
 
