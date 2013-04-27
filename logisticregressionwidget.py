@@ -99,9 +99,20 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     fm = self.model.getIntercept()
     coef = self.model.getCoef()
 
+    colCount = len(fm)
+    rowCount = len(coef[0]) + 1
     self.tblCoefficients.clear()
-    self.tblCoefficients.setColumnCount(len(fm))
-    self.tblCoefficients.setRowCount(len(coef[0]) + 1)
+    self.tblCoefficients.setColumnCount(colCount)
+    self.tblCoefficients.setRowCount(rowCount)
+
+    labels = []
+    for i in range(rowCount):
+      labels.append(u"b%s" % (i,))
+    self.tblCoefficients.setVerticalHeaderLabels(labels)
+    labels = []
+    for i in range(colCount):
+      labels.append(u"Class %s" % (i+1,))
+    self.tblCoefficients.setHorizontalHeaderLabels(labels)
 
     for i in xrange(len(fm)):
       item = QTableWidgetItem(unicode(fm[i]))
