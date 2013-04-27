@@ -98,6 +98,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     fm = self.model.getIntercept()
     coef = self.model.getCoef()
+    accuracy = self.model.getAccuracy()
 
     colCount = len(fm)
     rowCount = len(coef[0]) + 1
@@ -123,3 +124,5 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     self.tblCoefficients.resizeRowsToContents()
     self.tblCoefficients.resizeColumnsToContents()
+
+    self.leLRAccuracy.setText(QString.number(accuracy))

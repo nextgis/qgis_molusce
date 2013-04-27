@@ -31,12 +31,12 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>R-squared</string>
+          <string>Mean Accuracy</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="leRSquared"/>
+        <widget class="QLineEdit" name="leLRAccuracy"/>
        </item>
        <item row="0" column="1">
         <widget class="QSpinBox" name="spnNeighbourhood">

@@ -45,7 +45,10 @@ class LR(QObject):
         # Results of the LR prediction
         self.prediction = None  # Raster of the LR prediction results
         self.confidence = None  # Raster of the LR results confidence
+        self.accuracy   = None  # Intern accuracy score
 
+    def getAccuracy(self):
+        return self.accuracy
 
     def getCoef(self):
         return self.logreg.coef_
@@ -157,5 +160,6 @@ class LR(QObject):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
         Y = self.data['output']
         self.logreg.fit(X, Y)
+        self.accuracy = self.logreg.score(X,Y)
 
 
