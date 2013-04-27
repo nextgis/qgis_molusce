@@ -475,6 +475,36 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.simulator.processFinished.connect(self.workThread.quit)
     self.workThread.start()
 
+  def simulationDone(self):
+    if self.chkRiskFunction.isChecked():
+      if not self.leRiskFunctionPath.text().isEmpty():
+        res = self.simulator.getConfidence()
+        res.save(unicode(self.leRiskFunctionPath.text()))
+      else:
+        self.__logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
+
+    if self.chkRiskValidation.isChecked():
+      if not self.leRiskValidationPath.text().isEmpty():
+        res = self.simulator.errorMap(self.inputs["final"])
+        res.save(unicode(self.leRiskValidationPath.text()))
+      else:
+        self.__logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
+
+    if self.chkMonteCarlo.isChecked():
+      if not self.leMonteCarloPath.text().isEmpty():
+        res = self.simulator.getState()
+        res.save(unicode(self.leMonteCarloPath.text()))
+      else:
+        self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
+
+    self.workThread.started.disconnect(self.simulator.simN)
+    self.simulator.rangeChanged.disconnect(self.__setProgressRange)
+    self.simulator.updateProgress.disconnect(self.__showProgress)
+    self.simulator.processFinished.disconnect(self.simulationDone)
+    self.simulator.processFinished.disconnect(self.workThread.quit)
+    self.simulator = None
+    self.__restoreProgressState()
+
   def startValidation(self):
     try:
       reference = Raster(unicode(self.leReferenceMapPath.text()))
@@ -520,35 +550,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.valCanvas.draw()
 
-  def simulationDone(self):
-    if self.chkRiskFunction.isChecked():
-      if not self.leRiskFunctionPath.text().isEmpty():
-        res = self.simulator.getConfidence()
-        res.save(unicode(self.leRiskFunctionPath.text()))
-      else:
-        self.__logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
-
-    if self.chkRiskValidation.isChecked():
-      if not self.leRiskValidationPath.text().isEmpty():
-        res = self.simulator.errorMap(self.inputs["final"])
-        res.save(unicode(self.leRiskValidationPath.text()))
-      else:
-        self.__logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
-
-    if self.chkMonteCarlo.isChecked():
-      if not self.leMonteCarloPath.text().isEmpty():
-        res = self.simulator.getState()
-        res.save(unicode(self.leMonteCarloPath.text()))
-      else:
-        self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
-
-    self.workThread.started.disconnect(self.simulator.simN)
-    self.simulator.rangeChanged.disconnect(self.__setProgressRange)
-    self.simulator.updateProgress.disconnect(self.__showProgress)
-    self.simulator.processFinished.disconnect(self.simulationDone)
-    self.simulator.processFinished.disconnect(self.workThread.quit)
-    self.simulator = None
-    self.__restoreProgressState()
 
   def tabChanged(self, index):
     if (index >0) and (not (utils.checkFactors(self.inputs) and utils.checkInputRasters(self.inputs))):

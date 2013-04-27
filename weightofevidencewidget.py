@@ -97,7 +97,19 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     myBins = self.__getBins()
 
     self.model = WoeManager(self.inputs["factors"].values(), analyst, bins=myBins)
+
+    self.model.moveToThread(self.plugin.workThread)
+    self.plugin.workThread.started.connect(self.model.train)
+    self.model.updateProgress.connect(self.plugin.__showProgress)
+    self.model.rangeChanged.connect(self.plugin.__setProgressRange)
+    self.model.processFinished.connect(self.__trainFinished)
+    self.model.processFinished.connect(self.plugin.workThread.quit)
+
+    self.plugin.workThread.start()
     self.inputs["model"] = self.model
+
+  def __trainFinished(self):
+    self.plugin.workThread.started.disconnect(self.model.train)
 
   def __getBins(self):
     bins = dict()

@@ -76,6 +76,7 @@ def main(initRaster, finalRaster, factors):
     #~ print 'Start creating WoE model...', clock()
     #~ bins = {0: [[1000, 2000, 3000]], 1: [[200, 500, 1000, 1500]]}
     #~ model = WoeManager(factors, analyst, bins= bins)
+    #~ model.train()
     #~ print 'Finish creating WoE model...', clock(), '\n'
 
     # Create and Train MCE Model
