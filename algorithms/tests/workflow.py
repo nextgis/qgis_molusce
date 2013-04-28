@@ -91,7 +91,7 @@ def main(initRaster, finalRaster, factors):
     print 'Start Simulation...', clock()
     simulator = Simulator(initRaster, factors, model, crosstab)
     # Make 1 cycle of simulation:
-    simulator.sim()
+    simulator.simN(1)
     monteCarloSim   = simulator.getState()              # Result of MonteCarlo simulation
     errors          = simulator.errorMap(finalRaster)   # Risk class validation
     riskFunct       = simulator.getConfidence()         # Risk function
