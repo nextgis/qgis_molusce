@@ -55,7 +55,7 @@ class Raster(object):
         self.setBand(r, bandNum)
 
     def create(self, bands, geodata):
-        self.bands = bands
+        self.bands = np.ma.array(bands, dtype=float)
         self.geodata = geodata
 
     def denormalize(self):
@@ -120,7 +120,7 @@ class Raster(object):
 
     def getBandsCount(self):
         if self.bands != None:
-            return len(self.bands)
+            return self.bands.shape[0]
         else:
             return 0
 
@@ -237,7 +237,7 @@ class Raster(object):
         sr.ImportFromWkt(self.geodata['proj'])
         self.geodata['units'] = sr.GetLinearUnitsName()
 
-        self.bands = []
+        self.bands = np.ma.zeros((data.RasterCount,self.geodata['ySize'], self.geodata['xSize']), dtype=float)
         for i in range(1, data.RasterCount+1):
             r = data.GetRasterBand(i)
             nodataValue =  r.GetNoDataValue()
@@ -245,9 +245,8 @@ class Raster(object):
             if nodataValue is not None:
                 mask = binaryzation(r, [nodataValue])
                 r = ma.array(data = r, mask=mask)
-            self.bands.append(r)
+            self.bands[i-1, :, :] = r
         self.resetMask()
-        self.bands = np.ma.array(self.bands, dtype = float)
         self.isNormalazed = False
 
     def resetMask(self, maskVals = None):
