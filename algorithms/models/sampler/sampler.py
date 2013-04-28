@@ -23,8 +23,11 @@ class Sampler(QObject):
 
     A sample is a set of input data for a model and output data that has to be predicted via the model.
 
+    A sample contains:
+
+    coordinates of pixel,
     input data consists of 2 parts:
-        state is data readed from 1-band raster, this raster contains initaial states (categories).
+        state is data that is read from 1-band raster, this raster contains initaial states (categories).
         factors is list of rasters (multiband probably) that explain transition between states (categories).
     output data is read from 1-band raster, this raster contains final states.
 
@@ -92,29 +95,29 @@ class Sampler(QObject):
         n = 0 # The number of samples item processed
         for (k,raster) in enumerate(factors):
             neighbours = raster.getNeighbours(row,col, self.ns).flatten()
-            if any(neighbours.mask): # Eliminate incomplete samples
+
+            # Mask neighbours.mask can be boolean array or single boolean => set it as iterable object
+            mask = neighbours.mask
+            if mask.shape == (): mask = [mask]
+
+            if any(mask): # Eliminate incomplete samples
                 return None
             pixel_count = raster.getNeighbourhoodSize(self.ns)
             sample[n: n + pixel_count] = neighbours
             n = n + pixel_count
         return sample
 
-
-    def get_output(self, output, row, col):
-        '''
-        Get output sample at (row, col) pixel and return it as array. Return None if the sample is incomplete.
-        '''
-        sample = output.getNeighbours(i,j,0).flatten() # Get the pixel
-        if any(out.mask): # Eliminate masked samples
-            return None
-        return out
-
     def get_state(self, state, row, col):
         '''
         Get current state at (row, col) pixel and return it as array. Return None if the sample is incomplete.
         '''
         neighbours = state.getNeighbours(row,col, self.ns).flatten()
-        if any(neighbours.mask): # Eliminate incomplete samples
+
+        # Mask neighbours.mask can be boolean array or single boolean => set it as iterable object
+        mask = neighbours.mask
+        if mask.shape == (): mask = [mask]
+
+        if any(mask): # Eliminate incomplete samples
             return None
         return neighbours
 
@@ -124,8 +127,8 @@ class Sampler(QObject):
         '''
         data = np.zeros(1, dtype=[('coords', float, 2), ('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
         try:
-            out_data = output.getNeighbours(row,col,0).flatten() # Get the pixel
-            if out_data == None:                            # Eliminate masked samples
+            out_data = output.getPixelFromBand(row, col, band=1)  # Get the pixel
+            if out_data == None:                                 # Eliminate masked samples
                 return None
             else: data['output'] = out_data
 
@@ -138,12 +141,10 @@ class Sampler(QObject):
             if factors_data == None: # Eliminate incomplete samples
                 return None
             else: data['factors'] = factors_data
-
-            x,y = state.getPixelCoords(col,row)
-            data['coords'] = x,y
-
         except ProviderError:
             return None
+        x,y = state.getPixelCoords(col,row)
+        data['coords'] = x,y
         return data # (coords, state_data, factors_data, out_data)
 
     def saveSamples(self, fileName):
@@ -204,8 +205,6 @@ class Sampler(QObject):
                     raise SamplerError("Failed to create feature in shapefile!")
                 feat.Destroy()
         ds = None
-
-
 
     def setTrainingData(self, state, factors, output, shuffle=True, mode='All', samples=None):
         '''

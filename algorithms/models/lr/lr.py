@@ -95,6 +95,8 @@ class LR(QObject):
 
         self.sampler = Sampler(state, factors, ns=self.ns)
         mask = state.getBand(1).mask.copy()
+        if mask.shape == ():
+            mask = np.zeros([rows, cols])
         self.updateProgress.emit()
         self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
         for i in xrange(rows):

@@ -36,7 +36,6 @@ class AreaAnalyst(QObject):
         '''
         QObject.__init__(self)
 
-
         if not first.geoDataMatch(second):
             raise AreaAnalizerError('Geometries of the rasters are different!')
         if first.getBandsCount() + second.getBandsCount() > 2:
@@ -110,7 +109,7 @@ class AreaAnalyst(QObject):
         self.rangeChanged.emit(self.tr("Creating change map %p%"), rows)
         for i in xrange(rows):
             for j in xrange(cols):
-                if not f.mask[i,j]:
+                if (f.mask.shape == ()) or (not f.mask[i,j]):
                     r = f[i,j]
                     c = s[i,j]
                     band[i, j] = self.encode(r, c)
