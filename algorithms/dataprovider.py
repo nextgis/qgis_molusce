@@ -210,8 +210,6 @@ class Raster(object):
                 maxmin  new = (old-min(old)/(max(old)-min(old))
         '''
 
-
-
         if self.isNormalazed != mode:
             self.denormalize()          # Reset raster values to initail
             bandcount = self.getBandsCount()
@@ -254,18 +252,19 @@ class Raster(object):
                 r = ma.array(data = r, mask=mask)
             self.bands.append(r)
         self.resetMask()
+        self.bands = np.ma.array(self.bands, dtype = float)
         self.isNormalazed = False
-
 
     def resetMask(self, maskVals = None):
         '''
         Set mask of _ALL_ bands.  maskVals is a list of masked values.
         '''
-        if not maskVals: maskVals = []
-
         for i in range(self.getBandsCount()):
             r = self.getBand(i)
-            mask = binaryzation(r, maskVals)
+            if maskVals:
+                mask = binaryzation(r, maskVals)
+            else:
+                mask = False
             r = ma.array(data = r, mask=mask)
             self.setBand(r, i)
 
@@ -308,7 +307,6 @@ class Raster(object):
             outRaster = None
         else:
           raise ProviderError("Driver %s does not support Create() method!" % format)
-
 
     def setBand(self, raster, bandNum=1):
         self.bands[bandNum-1] = raster

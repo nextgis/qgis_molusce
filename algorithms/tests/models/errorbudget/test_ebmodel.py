@@ -118,7 +118,6 @@ class TestModel (unittest.TestCase):
         np.testing.assert_almost_equal(S1, 5.0/8)
         np.testing.assert_almost_equal(S3, 3.0/8)
 
-
         noNo = eb.NoNo()
         np.testing.assert_almost_equal(noNo, 0.5)
 
