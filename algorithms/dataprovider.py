@@ -137,7 +137,6 @@ class Raster(object):
         result['gradation'] = get_gradations(band.compressed())
         return result
 
-
     def get_dtype(self):
         # All bands of the raster have the same dtype now
         band = self.getBand(1)
@@ -153,17 +152,13 @@ class Raster(object):
         '''Return subset of the bands -- neighbourhood of the central pixel (row,col)'''
         bcount = self.getBandsCount()
         row_size = 2*size+1 # Length of the neighbourhood square side
-        pixel_count = row_size**2 # Count of pixels in the neighbourhood
-        neighbours = ma.zeros(pixel_count * bcount)
-        for i in xrange(1,bcount+1):
-            band = self.getBand(i)
-            neighbourhood = band[row-size:(row+size+1), col-size:(col+size+1)]
-            neighbourhood = neighbourhood.flatten()
-            if len(neighbourhood) != pixel_count:
-                raise ProviderError('Incorrect neighbourhood size or the central pixel lies on the raster boundary.')
-            neighbours[(i-1)*pixel_count: (i)*pixel_count] = neighbourhood
-        neighbours.shape = (bcount, row_size, row_size)
-        return neighbours
+        pixel_count = bcount * row_size**2 # Count of pixels in the neighbourhood
+        neighbourhood = self.bands[ :bcount, row-size:(row+size+1), col-size:(col+size+1)]
+        #neighbourhood = neighbourhood.flatten()
+        if len(neighbourhood.flatten()) != pixel_count:
+            raise ProviderError('Incorrect neighbourhood size or the central pixel lies on the raster boundary.')
+        #neighbourhood.shape = (bcount, row_size, row_size)
+        return neighbourhood
 
     def getNeighbourhoodSize(self, ns):
         '''Return pixel count in the neighbourhood of ns size'''
