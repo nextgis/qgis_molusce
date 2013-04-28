@@ -64,7 +64,11 @@ class EBudget(object):
         S = simulatedMap.getBand(1)
         self.shape = R.shape
         R, S = masks_identity(R,S)
-        self.W = 1 - np.ma.getmask(R)     # Array for weight
+
+        # Array for weight
+        self.W = np.ones(self.shape)
+        self.W = self.W - np.ma.getmask(R)
+
         R = np.ma.filled(R, 0)
         S = np.ma.filled(S, 0)
 
