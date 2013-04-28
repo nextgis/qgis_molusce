@@ -43,6 +43,7 @@ class Raster(object):
         self.filename = filename
         self.maskVals = None     # List of the "transparent" pixel values
         self.bands    = None     # List of the bands (stored as numpy mask array)
+        self.bandcount= 0        # Count of the bands. (numpy.array.shape is too slow => we need to save number of bands)
         self.geodata  = None     # Georeferensing information
         self.stat     = None     # Initial (before normalizing) statistic (means and stds) of the bands
         self.isNormalazed = None # Is the bands of the raster normalized? It contains the mode of normalization.
@@ -56,6 +57,7 @@ class Raster(object):
 
     def create(self, bands, geodata):
         self.bands = np.ma.array(bands, dtype=float)
+        self.bandcount = len(bands)
         self.geodata = geodata
 
     def denormalize(self):
@@ -119,10 +121,7 @@ class Raster(object):
         return self.bands[bandNo-1]
 
     def getBandsCount(self):
-        if self.bands != None:
-            return self.bands.shape[0]
-        else:
-            return 0
+        return self.bandcount
 
     def getBandStat(self, bandNo):
         '''
@@ -157,7 +156,6 @@ class Raster(object):
         #neighbourhood = neighbourhood.flatten()
         if len(neighbourhood.flatten()) != pixel_count:
             raise ProviderError('Incorrect neighbourhood size or the central pixel lies on the raster boundary.')
-        #neighbourhood.shape = (bcount, row_size, row_size)
         return neighbourhood
 
     def getNeighbourhoodSize(self, ns):
@@ -165,6 +163,10 @@ class Raster(object):
         # pixel count in the 1-band neighbourhood of ns size
         neighbours = (2*ns+1)**2
         return self.getBandsCount() * neighbours
+
+    def getPixelFromBand(self, row, col, band=1):
+        '''Return pixel value from band'''
+        return self.bands[ band-1, row, col]
 
     def getPixelArea(self):
         cornerX, width, rot1, cornerY, rot2, height  = self.geodata['transform']
@@ -238,6 +240,7 @@ class Raster(object):
         self.geodata['units'] = sr.GetLinearUnitsName()
 
         self.bands = np.ma.zeros((data.RasterCount,self.geodata['ySize'], self.geodata['xSize']), dtype=float)
+        self.bandcount = data.RasterCount
         for i in range(1, data.RasterCount+1):
             r = data.GetRasterBand(i)
             nodataValue =  r.GetNoDataValue()

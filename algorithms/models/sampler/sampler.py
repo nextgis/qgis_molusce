@@ -127,8 +127,8 @@ class Sampler(QObject):
         '''
         data = np.zeros(1, dtype=[('coords', float, 2), ('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
         try:
-            out_data = output.getNeighbours(row,col,0).flatten() # Get the pixel
-            if out_data == None:                            # Eliminate masked samples
+            out_data = output.getPixelFromBand(row, col, band=1)  # Get the pixel
+            if out_data == None:                                 # Eliminate masked samples
                 return None
             else: data['output'] = out_data
 
