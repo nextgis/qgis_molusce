@@ -797,7 +797,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def __bandCount(self):
     bands = 0
     for k, v in self.inputs["factors"].iteritems():
-      bands += len(v.bands)
+      bands +=  v.getBandsCount()
     return bands
 
   def __setProgressRange(self, message, maxValue):
