@@ -70,8 +70,10 @@ class Sampler(QObject):
         self.factorVectLen = 0                                  # Length of factor vector
         for raster in factors:
             self.factorVectLen = self.factorVectLen + raster.getNeighbourhoodSize(self.ns)
+        self.factors = factors
 
-    def get_inputs(self, state, factors, row, col):
+
+    def get_inputs(self, state, row, col):
         '''
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
@@ -80,20 +82,20 @@ class Sampler(QObject):
             state_data = self.get_state(state, row,col)
             if state_data == None: # Eliminate incomplete samples
                 return None
-            factors_data = self.get_factors(factors, row,col)
+            factors_data = self.get_factors(row,col)
             if factors_data == None: # Eliminate incomplete samples
                 return None
         except ProviderError:
             return None
         return np.hstack( (state_data, factors_data) )
 
-    def get_factors(self, factors, row, col):
+    def get_factors(self, row, col):
         '''
         Get input sample at (row, col) pixel and return it as array. Return None if the sample is incomplete.
         '''
         sample = np.zeros(self.factorVectLen)
         n = 0 # The number of samples item processed
-        for (k,raster) in enumerate(factors):
+        for (k,raster) in enumerate(self.factors):
             neighbours = raster.getNeighbours(row,col, self.ns).flatten()
 
             # Mask neighbours.mask can be boolean array or single boolean => set it as iterable object
@@ -121,7 +123,7 @@ class Sampler(QObject):
             return None
         return neighbours
 
-    def _getSample(self, state, factors, output, row, col):
+    def _getSample(self, state, output, row, col):
         '''
         Get one sample from (row,col) pixel. See params in setTrainingData.
         '''
@@ -137,7 +139,7 @@ class Sampler(QObject):
                 return None
             else: data['state'] = state_data
 
-            factors_data = self.get_factors(factors, row,col)
+            factors_data = self.get_factors(row,col)
             if factors_data == None: # Eliminate incomplete samples
                 return None
             else: data['factors'] = factors_data
@@ -206,7 +208,7 @@ class Sampler(QObject):
                 feat.Destroy()
         ds = None
 
-    def setTrainingData(self, state, factors, output, shuffle=True, mode='All', samples=None):
+    def setTrainingData(self, state, output, shuffle=True, mode='All', samples=None):
         '''
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
@@ -219,7 +221,7 @@ class Sampler(QObject):
         @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
 
-        for r in factors+[state]:
+        for r in self.factors+[state]:
             if not output.geoDataMatch(r):
                 raise SamplerError('Geometries of the inputs and output rasters are different!')
         geodata = state.getGeodata()
@@ -245,7 +247,7 @@ class Sampler(QObject):
             # i,j  are pixel indexes
             for i in xrange(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
                 for j in xrange(self.ns, cols - self.ns):     # the samples are incomplete in that region
-                    sample = self._getSample(state, factors, output, i,j)
+                    sample = self._getSample(state, output, i,j)
                     if sample != None:
                         self.data[samples_count] = sample
                         samples_count = samples_count + 1
@@ -257,7 +259,7 @@ class Sampler(QObject):
             while samples_count< samples:
                 row = np.random.randint(rows)
                 col = np.random.randint(cols)
-                sample = self._getSample(state, factors, output, row,col)
+                sample = self._getSample(state, output, row,col)
                 if sample != None:
                     self.data[samples_count] = sample
                     samples_count = samples_count + 1
@@ -284,7 +286,7 @@ class Sampler(QObject):
                 while count< average:
                     index = np.random.randint(len(indices))
                     row, col = indices[index]
-                    sample = self._getSample(state, factors, output, row,col)
+                    sample = self._getSample(state, output, row,col)
                     if sample != None:
                         self.data[samples_count] = sample
                         samples_count = samples_count + 1

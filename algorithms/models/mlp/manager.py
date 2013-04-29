@@ -205,7 +205,7 @@ class MlpManager(QObject):
         for i in xrange(rows):
             for j in xrange(cols):
                 if not mask[i,j]:
-                    input = self.sampler.get_inputs(state, factors, i,j)
+                    input = self.sampler.get_inputs(state, i,j)
                     if input != None:
                         out = self.getOutput(input)
                         # Get index of the biggest output value as the result
@@ -268,7 +268,7 @@ class MlpManager(QObject):
             f.normalize(mode = 'mean')
 
         self.sampler = Sampler(state, factors, output, self.ns)
-        self.sampler.setTrainingData(state, factors, output, shuffle, mode, samples)
+        self.sampler.setTrainingData(state, output, shuffle, mode, samples)
 
         outputVecLen  = self.getOutputVectLen()
         stateVecLen   = self.sampler.stateVecLen
@@ -280,7 +280,6 @@ class MlpManager(QObject):
         self.data['state']    = self.sampler.data['state']
         self.data['factors']  = self.sampler.data['factors']
         self.data['output']   = [self.getOutputVector(sample['output']) for sample in self.sampler.data]
-
 
     def setTrainError(self, error):
         self.train_error = error

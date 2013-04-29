@@ -102,7 +102,7 @@ class LR(QObject):
         for i in xrange(rows):
             for j in xrange(cols):
                 if not mask[i,j]:
-                    input = self.sampler.get_inputs(state, factors, i,j)
+                    input = self.sampler.get_inputs(state, i,j)
                     if input != None:
                         out = self.logreg.predict(input)
                         predicted_band[i,j] = out
@@ -149,7 +149,7 @@ class LR(QObject):
             f.normalize(mode = 'mean')
 
         self.sampler = Sampler(state, factors, output, ns=self.ns)
-        self.sampler.setTrainingData(state, factors, output, shuffle=False, mode=mode, samples=samples)
+        self.sampler.setTrainingData(state, output, shuffle=False, mode=mode, samples=samples)
 
         outputVecLen  = self.sampler.outputVecLen
         stateVecLen   = self.sampler.stateVecLen

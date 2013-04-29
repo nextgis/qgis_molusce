@@ -24,7 +24,7 @@ class TestSample (unittest.TestCase):
 
     def test_setTrainingData(self):
         smp = Sampler(self.state, self.factors,  self.output, ns=0)
-        smp.setTrainingData(self.state, self.factors, self.output, shuffle=False)
+        smp.setTrainingData(self.state, self.output, shuffle=False)
 
         data = np.array(
             [
@@ -48,7 +48,7 @@ class TestSample (unittest.TestCase):
 
         # two factor_rasters
         smp = Sampler(self.state, self.factors2, self.output, ns=1)
-        smp.setTrainingData(self.state, self.factors2, self.output)
+        smp.setTrainingData(self.state, self.output)
 
         # Check all except coords
         data = np.array(
@@ -66,7 +66,7 @@ class TestSample (unittest.TestCase):
 
         # Multiband factors
         smp = Sampler(self.state, self.factors3, self.output, ns=1)
-        smp.setTrainingData(self.state, self.factors3, self.output)
+        smp.setTrainingData(self.state, self.output)
 
         # Check all except coords
         data = np.array(
@@ -85,7 +85,7 @@ class TestSample (unittest.TestCase):
 
         # Several factor bands, several factor rasters
         smp = Sampler(self.state, self.factors4, self.output, ns=1)
-        smp.setTrainingData(self.state, self.factors4, self.output)
+        smp.setTrainingData(self.state, self.output)
         # Check all except coords
         data = np.array(
             [
@@ -113,7 +113,7 @@ class TestSample (unittest.TestCase):
             dtype=[('state', float, (9,)), ('factors', float, (18,)), ('output', float, 1)]
         )
         smp = Sampler(self.state, self.factors3, self.output, ns=1)
-        smp.setTrainingData(self.state, self.factors3, self.output, mode='Normal', samples=10)
+        smp.setTrainingData(self.state, self.output, mode='Normal', samples=10)
         for i in range(10):
             assert_array_equal(data[0]['factors'], smp.data[i]['factors'])
             assert_array_equal(data[0]['output'], smp.data[i]['output'])
@@ -121,7 +121,7 @@ class TestSample (unittest.TestCase):
 
         # Mode = Balanced
         smp = Sampler(self.state, self.factors, self.output, ns=0)
-        smp.setTrainingData(self.state, self.factors, self.output, mode='Balanced', samples=15)
+        smp.setTrainingData(self.state, self.output, mode='Balanced', samples=15)
         out =  smp.data['output']
         out.sort()
         self.assertEqual(out[0],  0)
