@@ -113,6 +113,11 @@ class TestRaster (unittest.TestCase):
         geodata['xSize'] = geodata['xSize'] + 10
         self.assertRaises(ProviderError, self.r1.setGeoData, geodata=geodata)
 
+        self.assertTrue(self.r1.geoDataMatch(self.r1))
+        self.assertTrue(self.r1.geoDataMatch(raster=None, geodata=self.r1.getGeodata()))
+
+        self.assertTrue(self.r1.geoTransformMatch(self.r1))
+        self.assertTrue(self.r1.geoTransformMatch(raster=None, geodata=self.r1.getGeodata()))
 
     def test_save(self):
         try:
