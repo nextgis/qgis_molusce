@@ -79,16 +79,23 @@ class Raster(object):
                 self.setBand(newBand, i)
             self.isNormalazed = False
 
-    def geoDataMatch(self, raster):
+    def geoDataMatch(self, raster, geodata=None):
         '''Return true if RasterSize, Projection and GetGeoTransform of the rasters are matched'''
+
+        if (geodata != None) and (raster != None):
+            raise ProviderError('Use raster or geodata, not both!')
+
+        if geodata == None:
+            geodata = raster.geodata
+
         for key in ['xSize', 'ySize', 'proj']:
-            if self.geodata[key] != raster.geodata[key]:
+            if self.geodata[key] != geodata[key]:
                 return False
-        if not self.geoTransformMatch(raster):
+        if not self.geoTransformMatch(raster=None, geodata = geodata):
             return False
         return True
 
-    def geoTransformMatch(self, raster):
+    def geoTransformMatch(self, raster, geodata=None):
         '''Return True if GetGeoTransform of the rasters are matched:
         1) the difference of the top left x less then pixel size,
         2) the difference of the top left y less then pixel size,
@@ -96,9 +103,14 @@ class Raster(object):
             (difference of the pixel sizes) * (pixel count) < (pixel size),
         4) rotations are equal.
         '''
-        indexes = (156835.0, 90.0, 0.0, 2338905.0, 0.0, -90.0)
+
+        if (geodata != None) and (raster != None):
+            raise ProviderError('Use raster or geodata, not both!')
+
+        if geodata == None:
+            geodata = raster.geodata
         s_cornerX, s_width, s_rot1, s_cornerY, s_rot2, s_height  = self.geodata['transform']
-        r_cornerX, r_width, r_rot1, r_cornerY, r_rot2, r_height  = raster.geodata['transform']
+        r_cornerX, r_width, r_rot1, r_cornerY, r_rot2, r_height  = geodata['transform']
         if (s_rot1!=r_rot1) or (s_rot2!=r_rot2):
             return False
 
