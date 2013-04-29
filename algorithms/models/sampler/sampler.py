@@ -61,17 +61,27 @@ class Sampler(QObject):
         '''
         QObject.__init__(self)
 
-        self.data = None        # Training data
-        self.proj = None        # Projection of the data coordinates
-        self.ns = ns
+        self.ns = ns        # Neighbourhood size
+
+        self.factorsGeoData = state.getGeodata()
+        for r in factors:
+            if not state.geoDataMatch(raster=None, geodata=self.factorsGeoData):
+                raise SamplerError('Geometries of the inputs and output rasters are different!')
 
         self.outputVecLen = 1                                   # Len of output vector
         self.stateVecLen  = state.getNeighbourhoodSize(self.ns) # Len of the vector of input states
+
+        self.factorCount = len(factors)
         self.factorVectLen = 0                                  # Length of factor vector
+        self.factors = []
         for raster in factors:
             self.factorVectLen = self.factorVectLen + raster.getNeighbourhoodSize(self.ns)
-        self.factors = factors
+            for bandNum in range(raster.getBandsCount()):
+                self.factors.append(raster.getBand(bandNum+1))
+        self.factors = np.ma.array(self.factors, dtype=float)
 
+        self.proj = self.factorsGeoData['proj']     # Projection of the data coordinates
+        self.data = None                # Training data
 
     def get_inputs(self, state, row, col):
         '''
@@ -93,21 +103,14 @@ class Sampler(QObject):
         '''
         Get input sample at (row, col) pixel and return it as array. Return None if the sample is incomplete.
         '''
-        sample = np.zeros(self.factorVectLen)
-        n = 0 # The number of samples item processed
-        for (k,raster) in enumerate(self.factors):
-            neighbours = raster.getNeighbours(row,col, self.ns).flatten()
+        neighbours = self.factors[:, row-self.ns:(row+self.ns+1), col-self.ns:(col+self.ns+1)].flatten()
 
-            # Mask neighbours.mask can be boolean array or single boolean => set it as iterable object
-            mask = neighbours.mask
-            if mask.shape == (): mask = [mask]
-
-            if any(mask): # Eliminate incomplete samples
-                return None
-            pixel_count = raster.getNeighbourhoodSize(self.ns)
-            sample[n: n + pixel_count] = neighbours
-            n = n + pixel_count
-        return sample
+        # Mask neighbours.mask can be boolean array or single boolean => set it as iterable object
+        mask = neighbours.mask
+        if mask.shape == (): mask = [mask]
+        if any(mask): # Eliminate incomplete samples
+            return None
+        return neighbours
 
     def get_state(self, state, row, col):
         '''
@@ -221,11 +224,10 @@ class Sampler(QObject):
         @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
 
-        for r in self.factors+[state]:
-            if not output.geoDataMatch(r):
-                raise SamplerError('Geometries of the inputs and output rasters are different!')
-        geodata = state.getGeodata()
-        self.proj = geodata['proj']
+        geodata = self.factorsGeoData
+        for r in [state, output]:
+            if not r.geoDataMatch(raster=None, geodata = geodata):
+                raise SamplerError("Geometries of the inputs or output rasters are distinct from factor's geometry!")
 
         # Real count of the samples
         # (if self.ns>0 some samples may be incomplete because a neighbour has NoData value)
