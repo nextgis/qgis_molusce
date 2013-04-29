@@ -117,7 +117,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.chkRiskFunction.toggled.connect(self.__toggleLineEdit)
     self.chkRiskValidation.toggled.connect(self.__toggleLineEdit)
     self.chkMonteCarlo.toggled.connect(self.__toggleLineEdit)
-    self.chkReuseMatrix.toggled.connect(self.__toggleLineEdit)
 
     self.btnSelectRiskFunction.clicked.connect(self.__selectSimulationOutput)
     self.btnSelectRiskValidation.clicked.connect(self.__selectSimulationOutput)
@@ -708,13 +707,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.btnSelectMonteCarlo.setEnabled(False)
         self.lblIterations.setEnabled(False)
         self.spnIterations.setEnabled(False)
-    elif senderName == "chkReuseMatrix":
-      if checked:
-        self.leMatrixPath.setEnabled(True)
-        self.btnSelectMatrix.setEnabled(True)
-      else:
-        self.leMatrixPath.setEnabled(False)
-        self.btnSelectMatrix.setEnabled(False)
 
   def __selectSamplesOutput(self):
     if not "model" in self.inputs:
@@ -823,8 +815,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.settings.setValue("ui/createMonteCarlo", self.chkMonteCarlo.isChecked())
     self.settings.setValue("ui/monteCarloIterations", self.spnIterations.value())
 
-    self.settings.setValue("ui/reuseMatrix", self.chkReuseMatrix.isChecked())
-
   def __readSettings(self):
     # samples and model tab
     samplingMode = self.settings.value("ui/samplingMode", 0).toInt()[0]
@@ -836,5 +826,3 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.chkRiskValidation.setChecked(self.settings.value("ui/createRiskValidation", False).toBool())
     self.chkMonteCarlo.setChecked(self.settings.value("ui/createMonteCarlo", False).toBool())
     self.spnIterations.setValue(self.settings.value("ui/monteCarloIterations", 1).toInt()[0])
-
-    self.chkReuseMatrix.setChecked(self.settings.value("ui/reuseMatrix", False).toBool())
