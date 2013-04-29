@@ -100,8 +100,8 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
 
     self.model.moveToThread(self.plugin.workThread)
     self.plugin.workThread.started.connect(self.model.train)
-    self.model.updateProgress.connect(self.plugin.__showProgress)
-    self.model.rangeChanged.connect(self.plugin.__setProgressRange)
+    self.model.updateProgress.connect(self.plugin.showProgress)
+    self.model.rangeChanged.connect(self.plugin.setProgressRange)
     self.model.processFinished.connect(self.__trainFinished)
     self.model.processFinished.connect(self.plugin.workThread.quit)
 
