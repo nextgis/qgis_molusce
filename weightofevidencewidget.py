@@ -92,12 +92,15 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
                          )
       return
 
+    self.plugin.logMessage(self.tr("Init AreaAnalyst"))
     analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
 
     myBins = self.__getBins()
 
+    self.plugin.logMessage(self.tr("Init WoE model"))
     self.model = WoeManager(self.inputs["factors"].values(), analyst, bins=myBins)
     self.inputs["model"] = self.model
+    self.plugin.logMessage(self.tr("WoE model trained"))
 
   def __getBins(self):
     bins = dict()

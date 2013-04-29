@@ -71,12 +71,6 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     rcParams['font.fantasy'] = "Comic Sans MS, Arial, Liberation Sans"
     rcParams['font.monospace'] = "Courier New, Liberation Mono"
 
-    #self.chkCreateReport.toggled.connect(self.__toggleLineEdit)
-    #self.chkSaveSamples.toggled.connect(self.__toggleLineEdit)
-
-    #self.btnSelectReport.clicked.connect(self.__selectFile)
-    #self.btnSelectSamples.clicked.connect(self.__selectFile)
-
     self.btnTrainNetwork.clicked.connect(self.trainNetwork)
 
     self.manageGui()
@@ -87,9 +81,6 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.spnMaxIterations.setValue(self.settings.value("ui/ANN/maxIterations", 1000).toInt()[0])
     self.leTopology.setText(self.settings.value("ui/ANN/topology", "10").toString())
     self.spnMomentum.setValue(self.settings.value("ui/ANN/momentum", 0.05).toFloat()[0])
-
-    #self.chkCreateReport.setChecked(self.settings.value("ui/ANN/createReport", False).toBool())
-    #self.chkSaveSamples.setChecked(self.settings.value("ui/ANN/saveSamples", False).toBool())
 
   def trainNetwork(self):
     if not utils.checkInputRasters(self.inputs):
@@ -126,6 +117,8 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.settings.setValue("ui/ANN/topology", self.leTopology.text())
     self.settings.setValue("ui/ANN/momentum", self.spnMomentum.value())
 
+    self.plugin.logMessage(self.tr("Init ANN model"))
+
     self.model = MlpManager(ns=self.spnNeigbourhood.value())
     self.model.createMlp(self.inputs["initial"],
                          self.inputs["factors"].values(),
@@ -133,6 +126,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
                          [int(n) for n in self.leTopology.text().split(" ")]
                         )
 
+    self.plugin.logMessage(self.tr("Set training data"))
     self.model.setTrainingData(self.inputs["initial"],
                                self.inputs["factors"].values(),
                                self.inputs["final"],
@@ -168,12 +162,14 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.processFinished.connect(self.__trainFinished)
     self.model.processFinished.connect(self.plugin.workThread.quit)
 
+    self.plugin.logMessage(self.tr("Start trainig ANN model"))
     self.plugin.workThread.start()
 
     self.inputs["model"] = self.model
 
   def __trainFinished(self):
     self.plugin.workThread.started.disconnect(self.model.startTrain)
+    self.plugin.logMessage(self.tr("ANN model trained"))
 
   def __updateRMS(self, dRMS):
     self.leDeltaRMS.setText(QString.number(dRMS))
@@ -198,37 +194,3 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.plotVal.set_ydata(numpy.array(self.dataVal))
 
     self.canvas.draw()
-
-  #~ def __selectFile(self):
-    #~ senderName = self.sender().objectName()
-#~
-    #~ # TODO: implement dialog for necessary data type
-    #~ fileName = utils.saveRasterDialog(self,
-                                      #~ self.settings,
-                                      #~ self.tr("Save file"),
-                                      #~ self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)")
-                                     #~ )
-    #~ if fileName.isEmpty():
-      #~ return
-#~
-    #~ if senderName == "btnSelectReport":
-      #~ self.leReportPath.setText(fileName)
-    #~ elif senderName == "btnSelectSamples":
-      #~ self.leSamplesPath.setText(fileName)
-
-  def __toggleLineEdit(self, checked):
-    senderName = self.sender().objectName()
-    if senderName == "chkCreateReport":
-      if checked:
-        self.leReportPath.setEnabled(True)
-        self.btnSelectReport.setEnabled(True)
-      else:
-        self.leReportPath.setEnabled(False)
-        self.btnSelectReport.setEnabled(False)
-    elif senderName == "chkSaveSamples":
-      if checked:
-        self.leSamplesPath.setEnabled(True)
-        self.btnSelectSamples.setEnabled(True)
-      else:
-        self.leSamplesPath.setEnabled(False)
-        self.btnSelectSamples.setEnabled(False)
