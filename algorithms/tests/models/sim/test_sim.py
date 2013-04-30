@@ -85,21 +85,19 @@ class TestSimulator(unittest.TestCase):
 
     def test_compute_table(self):
 
-        # print self.crosstab.T
+        # print self.crosstab.getCrosstable().T
         # CrossTab:
         #  [[ 3.  1.  0.]
         #   [ 0.  1.  0.]
         #   [ 1.  0.  2.]]
-        # prediction = self.model.getPrediction()
+        # prediction = self.model.getPrediction(self.raster1)
         # prediction = [[2.0 2.0 1.0]
-                     #  [1.0 3.0 1.0]
+                     #  [1.0 3.0 2.0]
                      #  [-- 1.0 2.0]]
         # confidence = self.model.getConfidence()
         # confidence =     [[1.0 0.5  0.33]
                          #  [0.5 0.33 0.25]
                          #  [--  0.25 0.2]]
-
-
         result = np.array([
             [2.0, 1.0, 3.0],
             [1.0, 2.0, 1.0],
