@@ -42,12 +42,14 @@ class WoeManager(QObject):
 
         self.factors = factors
         self.analyst = areaAnalyst
-        self.changeMap   = areaAnalyst.getChangeMap()
+        self.changeMap  = areaAnalyst.getChangeMap()
+        self.bins       = bins
+        self.unit_cell  = unit_cell
 
         self.prediction = None
         self.confidence = None
 
-        if (bins != None) and (len(factors) != len(bins.keys())):
+        if (bins != None) and (len(self.factors) != len(bins.keys())):
             raise WoeManagerError('Lengths of bins and factors are different!')
 
         for r in self.factors:
@@ -59,31 +61,10 @@ class WoeManager(QObject):
 
         # Get list of codes from the changeMap raster
         categories = self.changeMap.getBandStat(1)['gradation']
-        cMap = self.changeMap.getBand(1)
 
         self.codes = [int(c) for c in categories]    # Codes of transitions initState->finalState (see AreaAnalyst.encode)
 
         self.woe = {}
-        for code in self.codes:
-            sites = binaryzation(cMap, [code])
-            # Reclass factors (continuous factor -> ordinal factor)
-            wMap = np.ma.zeros(cMap.shape)
-            for k in xrange(len(factors)):
-                fact = factors[k]
-                if bins: # Get bins of the factor
-                    bin = bins[k]
-                    if (bin != None) and fact.getBandsCount() != len(bin):
-                        raise WoeManagerError("Count of bins list for multiband factor is't equal to band count!")
-                else: bin = None
-                for i in range(1, fact.getBandsCount()+1):
-                    band = fact.getBand(i)
-                    if bin and bin[i-1]:
-                        band = reclass(band, bin[i-1])
-                    band, sites = masks_identity(band, sites)   # Combine masks of the rasters
-                    weights = woe(band, sites, unit_cell)       # WoE for the 'code' (initState->finalState) transition and current 'factor'.
-                    wMap = wMap + weights
-            self.woe[code]=wMap             # WoE for all factors and the transition.
-
 
     def getConfidence(self):
         return self.confidence
@@ -148,5 +129,33 @@ class WoeManager(QObject):
         self.confidence.create([confidence_band], geodata)
         self.processFinished.emit()
 
+    def train(self):
+        '''
+        Train the model
+        '''
+        iterCount = len(self.codes)*len(self.factors)
+        self.rangeChanged.emit(self.tr("Training... %p%"), iterCount)
+        changeMap = self.changeMap.getBand(1)
+        for code in self.codes:
+            sites = binaryzation(changeMap, [code])
+            # Reclass factors (continuous factor -> ordinal factor)
+            wMap = np.ma.zeros(changeMap.shape)
+            for k in xrange(len(self.factors)):
+                fact = self.factors[k]
+                if self.bins: # Get bins of the factor
+                    bin = self.bins[k]
+                    if (bin != None) and fact.getBandsCount() != len(bin):
+                        raise WoeManagerError("Count of bins list for multiband factor is't equal to band count!")
+                else: bin = None
+                for i in range(1, fact.getBandsCount()+1):
+                    band = fact.getBand(i)
+                    if bin and bin[i-1]:
+                        band = reclass(band, bin[i-1])
+                    band, sites = masks_identity(band, sites)   # Combine masks of the rasters
+                    weights = woe(band, sites, self.unit_cell)       # WoE for the 'code' (initState->finalState) transition and current 'factor'.
+                    wMap = wMap + weights
+                self.updateProgress.emit()
+            self.woe[code]=wMap             # WoE for all factors and the transition.
+        self.processFinished.emit()
 
 

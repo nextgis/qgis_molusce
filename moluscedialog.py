@@ -411,8 +411,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
     self.analyst.moveToThread(self.workThread)
     self.workThread.started.connect(self.analyst.getChangeMap)
-    self.analyst.rangeChanged.connect(self.__setProgressRange)
-    self.analyst.updateProgress.connect(self.__showProgress)
+    self.analyst.rangeChanged.connect(self.setProgressRange)
+    self.analyst.updateProgress.connect(self.showProgress)
     self.analyst.processFinished.connect(self.changeMapDone)
     self.analyst.processFinished.connect(self.workThread.quit)
     self.workThread.start()
@@ -423,12 +423,12 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__addRasterToCanvas(self.inputs["changeMapName"])
     del self.inputs["changeMapName"]
     self.workThread.started.disconnect(self.analyst.getChangeMap)
-    self.analyst.rangeChanged.disconnect(self.__setProgressRange)
-    self.analyst.updateProgress.disconnect(self.__showProgress)
+    self.analyst.rangeChanged.disconnect(self.setProgressRange)
+    self.analyst.updateProgress.disconnect(self.showProgress)
     self.analyst.processFinished.disconnect(self.changeMapDone)
     self.analyst.processFinished.disconnect(self.workThread.quit)
     self.analyst = None
-    self.__restoreProgressState()
+    self.restoreProgressState()
 
   def startSimulation(self):
     if not utils.checkInputRasters(self.inputs):
@@ -468,11 +468,41 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.simulator.moveToThread(self.workThread)
 
     self.workThread.started.connect(self.simulator.simN)
-    self.simulator.rangeChanged.connect(self.__setProgressRange)
-    self.simulator.updateProgress.connect(self.__showProgress)
+    self.simulator.rangeChanged.connect(self.setProgressRange)
+    self.simulator.updateProgress.connect(self.showProgress)
     self.simulator.processFinished.connect(self.simulationDone)
     self.simulator.processFinished.connect(self.workThread.quit)
     self.workThread.start()
+
+  def simulationDone(self):
+    if self.chkRiskFunction.isChecked():
+      if not self.leRiskFunctionPath.text().isEmpty():
+        res = self.simulator.getConfidence()
+        res.save(unicode(self.leRiskFunctionPath.text()))
+      else:
+        self.__logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
+
+    if self.chkRiskValidation.isChecked():
+      if not self.leRiskValidationPath.text().isEmpty():
+        res = self.simulator.errorMap(self.inputs["final"])
+        res.save(unicode(self.leRiskValidationPath.text()))
+      else:
+        self.__logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
+
+    if self.chkMonteCarlo.isChecked():
+      if not self.leMonteCarloPath.text().isEmpty():
+        res = self.simulator.getState()
+        res.save(unicode(self.leMonteCarloPath.text()))
+      else:
+        self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
+
+    self.workThread.started.disconnect(self.simulator.simN)
+    self.simulator.rangeChanged.disconnect(self.setProgressRange)
+    self.simulator.updateProgress.disconnect(self.showProgress)
+    self.simulator.processFinished.disconnect(self.simulationDone)
+    self.simulator.processFinished.disconnect(self.workThread.quit)
+    self.simulator = None
+    self.restoreProgressState()
 
   def startValidation(self):
     try:
@@ -542,12 +572,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
 
     self.workThread.started.disconnect(self.simulator.simN)
-    self.simulator.rangeChanged.disconnect(self.__setProgressRange)
-    self.simulator.updateProgress.disconnect(self.__showProgress)
+    self.simulator.rangeChanged.disconnect(self.setProgressRange)
+    self.simulator.updateProgress.disconnect(self.showProgress)
     self.simulator.processFinished.disconnect(self.simulationDone)
     self.simulator.processFinished.disconnect(self.workThread.quit)
     self.simulator = None
-    self.__restoreProgressState()
+    self.restoreProgressState()
+
 
   def tabChanged(self, index):
     if (index >0) and (not (utils.checkFactors(self.inputs) and utils.checkInputRasters(self.inputs))):
@@ -792,14 +823,14 @@ class MolusceDialog(QDialog, Ui_Dialog):
       bands +=  v.getBandsCount()
     return bands
 
-  def __setProgressRange(self, message, maxValue):
+  def setProgressRange(self, message, maxValue):
     self.progressBar.setFormat(message)
     self.progressBar.setRange(0, maxValue)
 
-  def __showProgress(self):
+  def showProgress(self):
     self.progressBar.setValue(self.progressBar.value() + 1)
 
-  def __restoreProgressState(self):
+  def restoreProgressState(self):
     self.progressBar.setFormat("%p%")
     self.progressBar.setRange(0, 1)
     self.progressBar.setValue(0)

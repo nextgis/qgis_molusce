@@ -21,7 +21,7 @@ class TestWoEManager (unittest.TestCase):
 
         self.sites  = Raster('../../examples/sites.tif')
         self.sites.resetMask(maskVals= [0])
-        
+
         mask = [
             [False, False, False,],
             [False, False, False,],
@@ -39,10 +39,11 @@ class TestWoEManager (unittest.TestCase):
         ]
         self.factraster  = ma.array(data = fact, mask=mask, dtype=np.int)
         self.sitesraster = ma.array(data = site, mask=mask, dtype=np.bool)
-        
+
     def test_WoeManager(self):
         aa = AreaAnalyst(self.sites, self.sites)
         w1 = WoeManager([self.factor], aa)
+        w1.train()
         p = w1.getPrediction(self.sites).getBand(1)
         assert_array_equal(p, self.sites.getBand(1))
 
@@ -50,6 +51,7 @@ class TestWoEManager (unittest.TestCase):
         finalState = Raster('../../examples/data1.tif')
         aa = AreaAnalyst(initState, finalState)
         w = WoeManager([initState], aa)
+        w.train()
         p = w.getPrediction(initState).getBand(1)
 
         # Calculate by hands:
@@ -118,7 +120,7 @@ class TestWoEManager (unittest.TestCase):
         ]
         geodata = initState.getGeodata()
         sites = {'11': r11, '12': r12, '13': r13, '21': r21, '22': r22, '23': r23, '31': r31, '32': r32, '33': r33}
-        woeDict = {}    # WoE of transitions 
+        woeDict = {}    # WoE of transitions
         for k in sites.keys(): #
             if k !='21' : # !!! r21 is zero
                 x = Raster()
@@ -128,7 +130,7 @@ class TestWoEManager (unittest.TestCase):
         #w1max = np.maximum(woeDict['11'], woeDict['12'], woeDict['13'])
         #w2max = np.maximum(woeDict['22'], woeDict['23'])
         #w3max = np.maximum(woeDict['31'], woeDict['32'], woeDict['33'])
-        # Answer is index of finalClass that maximizes weights of transiotion initClass -> finalClass 
+        # Answer is index of finalClass that maximizes weights of transiotion initClass -> finalClass
         answer = [
             [1, 1, 1, 1],
             [1, 1, 3, 3],
@@ -138,7 +140,8 @@ class TestWoEManager (unittest.TestCase):
         assert_array_equal(p, answer)
 
         w = WoeManager([initState], aa, bins = {0: [[2], ],})
+        w.train()
         p = w.getPrediction(initState).getBand(1)
-    
+
 if __name__ == "__main__":
     unittest.main()
