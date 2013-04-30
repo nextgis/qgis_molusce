@@ -114,19 +114,19 @@ class Simulator(QObject):
                 if placesCount < n:
                     self.logMessage.emit(self.tr("There are more transitions in the transition matrix, then the model have found"))
                     n = placesCount
+                if n >0:
+                    # Find n places with highest confidence of traisition initClass -> finalClass
+                    confidence = self.getConfidence().getBand(1)
+                    confidence = confidence * places # The higher is number in cell, the higer is probability of transition in the cell.
 
-                confidence = self.getConfidence().getBand(1)
-                confidence = confidence * places # The higher is number in cell, the higer is probability of transition in the cell
-                indices = []
-                for i in range(n):
-                    index = np.unravel_index(confidence.argmax(), confidence.shape)     # Select the cell with biggest probability
-                    indices.append(index)
-                    confidence[index] = -1       # Mark the cell to prevent second selection
+                    sortedConf = np.argsort(-confidence, axis=None)
+                    ind = np.unravel_index(sortedConf, confidence.shape)
+                    indices = [(ind[0][i], ind[1][i]) for i in xrange(n)]
 
-                # Now "indices" contains indices of the appropriate places,
-                # make transition initClass -> finalClass
-                for index in indices:
-                    new_state[index] = finalClass
+                    # Now "indices" contains indices of the appropriate places,
+                    # make transition initClass -> finalClass
+                    for index in indices:
+                        new_state[index] = finalClass
                 self.updateProgress.emit()
 
         result = Raster()
