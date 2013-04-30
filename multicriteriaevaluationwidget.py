@@ -90,6 +90,8 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.settings.setValue("ui/MCE/initialClass", self.spnInitialClass.value())
     self.settings.setValue("ui/MCE/finalClass", self.spnFinalClass.value())
 
+    self.plugin.logMessage(self.tr("Init MCE model"))
+
     self.model = MCE(self.inputs["factors"].values(),
                      matrix,
                      self.spnInitialClass.value(),
@@ -97,6 +99,8 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
                     )
 
     self.inputs["model"] = self.model
+
+    self.plugin.logMessage(self.tr("MCE model trained"))
 
   def checkConsistency(self):
     if self.model is None:

@@ -132,7 +132,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tabWidget.currentChanged.connect(self.tabChanged)
 
     self.manageGui()
-    self.__logMessage(self.tr("Start logging"))
+    self.logMessage(self.tr("Start logging"))
 
   def manageGui(self):
     self.restoreGeometry(self.settings.value("/ui/geometry").toByteArray())
@@ -177,7 +177,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.leInitYear.setText(year)
 
     self.inputs["initial"] = Raster(unicode(utils.getLayerById(self.initRasterId).source()))
-    self.__logMessage(self.tr("Set intial layer to %1").arg(layerName))
+    self.logMessage(self.tr("Set intial layer to %1").arg(layerName))
 
   def setFinalRaster(self):
     try:
@@ -196,7 +196,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.leFinalYear.setText(year)
 
     self.inputs["final"] = Raster(unicode(utils.getLayerById(self.finalRasterId).source()))
-    self.__logMessage(self.tr("Set final layer to %1").arg(layerName))
+    self.logMessage(self.tr("Set final layer to %1").arg(layerName))
 
   def addFactor(self):
     try:
@@ -223,7 +223,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.inputs["bandCount"] = self.__bandCount()
 
-    self.__logMessage(self.tr("Added factor layer %1").arg(layerName))
+    self.logMessage(self.tr("Added factor layer %1").arg(layerName))
 
   def removeFactor(self):
     try:
@@ -244,7 +244,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     else:
       self.inputs["bandCount"] = self.__bandCount()
 
-    self.__logMessage(self.tr("Removed factor layer %1").arg(layerName))
+    self.logMessage(self.tr("Removed factor layer %1").arg(layerName))
 
   def removeAllFactors(self):
     self.lstFactors.clear()
@@ -254,7 +254,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except KeyError:
       pass
 
-    self.__logMessage(self.tr("Factors list cleared"))
+    self.logMessage(self.tr("Factors list cleared"))
 
   def correlationChecking(self):
     index = self.cmbFirstRaster.currentIndex()
@@ -386,7 +386,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.tblTransMatrix.resizeRowsToContents()
     self.tblTransMatrix.resizeColumnsToContents()
-    self.__logMessage(self.tr("Class statistics and transition matrix are updated"))
+    self.logMessage(self.tr("Class statistics and transition matrix are updated"))
 
   def createChangeMap(self):
     if not utils.checkInputRasters(self.inputs):
@@ -403,7 +403,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                                      )
 
     if fileName.isEmpty():
-      self.__logMessage(self.tr("No file selected"))
+      self.logMessage(self.tr("No file selected"))
       return
 
     self.inputs["changeMapName"] = unicode(fileName)
@@ -525,21 +525,21 @@ class MolusceDialog(QDialog, Ui_Dialog):
         res = self.simulator.getConfidence()
         res.save(unicode(self.leRiskFunctionPath.text()))
       else:
-        self.__logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
+        self.logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
     if self.chkRiskValidation.isChecked():
       if not self.leRiskValidationPath.text().isEmpty():
         res = self.simulator.errorMap(self.inputs["final"])
         res.save(unicode(self.leRiskValidationPath.text()))
       else:
-        self.__logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
+        self.logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
 
     if self.chkMonteCarlo.isChecked():
       if not self.leMonteCarloPath.text().isEmpty():
         res = self.simulator.getState()
         res.save(unicode(self.leMonteCarloPath.text()))
       else:
-        self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
+        self.logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
 
     self.workThread.started.disconnect(self.simulator.simN)
     self.simulator.rangeChanged.disconnect(self.__setProgressRange)
@@ -767,7 +767,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     elif senderName == "btnSelectSimulatedMap":
       self.leSimulatedMapPath.setText(fileName)
 
-  def __logMessage(self, message):
+  def logMessage(self, message):
     self.txtMessages.append(QString("[%1] %2")
                             .arg(datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"))
                             .arg(message)
@@ -784,7 +784,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if layer.isValid():
       QgsMapLayerRegistry.instance().addMapLayers([layer])
     else:
-      self.__logMessage(self.tr("Can't load raster %1").arg(filePath))
+      self.logMessage(self.tr("Can't load raster %1").arg(filePath))
 
   def __bandCount(self):
     bands = 0

@@ -72,8 +72,10 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     self.settings.setValue("ui/LR/neighborhood", self.spnNeighbourhood.value())
 
+    self.plugin.logMessage(self.tr("Init LR model"))
     self.model = LR(ns=self.spnNeighbourhood.value())
 
+    self.plugin.logMessage(self.tr("Set training data"))
     self.model.setTrainingData(self.inputs["initial"],
                                self.inputs["factors"].values(),
                                self.inputs["final"],
@@ -81,10 +83,13 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
                                samples=self.plugin.spnSamplesCount.value()
                               )
 
+    self.plugin.logMessage(self.tr("Start training LR model"))
     self.model.train()
 
     # populate table
     self.showCoefficients()
+
+    self.plugin.logMessage(self.tr("LR model trained"))
 
     self.inputs["model"] = self.model
 
