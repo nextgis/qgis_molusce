@@ -480,21 +480,21 @@ class MolusceDialog(QDialog, Ui_Dialog):
         res = self.simulator.getConfidence()
         res.save(unicode(self.leRiskFunctionPath.text()))
       else:
-        self.__logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
+        self.logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
     if self.chkRiskValidation.isChecked():
       if not self.leRiskValidationPath.text().isEmpty():
         res = self.simulator.errorMap(self.inputs["final"])
         res.save(unicode(self.leRiskValidationPath.text()))
       else:
-        self.__logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
+        self.logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
 
     if self.chkMonteCarlo.isChecked():
       if not self.leMonteCarloPath.text().isEmpty():
         res = self.simulator.getState()
         res.save(unicode(self.leMonteCarloPath.text()))
       else:
-        self.__logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
+        self.logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
 
     self.workThread.started.disconnect(self.simulator.simN)
     self.simulator.rangeChanged.disconnect(self.setProgressRange)
@@ -548,37 +548,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.perPer.set_ydata(numpy.array(self.medPerData))
 
     self.valCanvas.draw()
-
-  def simulationDone(self):
-    if self.chkRiskFunction.isChecked():
-      if not self.leRiskFunctionPath.text().isEmpty():
-        res = self.simulator.getConfidence()
-        res.save(unicode(self.leRiskFunctionPath.text()))
-      else:
-        self.logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
-
-    if self.chkRiskValidation.isChecked():
-      if not self.leRiskValidationPath.text().isEmpty():
-        res = self.simulator.errorMap(self.inputs["final"])
-        res.save(unicode(self.leRiskValidationPath.text()))
-      else:
-        self.logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
-
-    if self.chkMonteCarlo.isChecked():
-      if not self.leMonteCarloPath.text().isEmpty():
-        res = self.simulator.getState()
-        res.save(unicode(self.leMonteCarloPath.text()))
-      else:
-        self.logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
-
-    self.workThread.started.disconnect(self.simulator.simN)
-    self.simulator.rangeChanged.disconnect(self.setProgressRange)
-    self.simulator.updateProgress.disconnect(self.showProgress)
-    self.simulator.processFinished.disconnect(self.simulationDone)
-    self.simulator.processFinished.disconnect(self.workThread.quit)
-    self.simulator = None
-    self.restoreProgressState()
-
 
   def tabChanged(self, index):
     if (index >0) and (not (utils.checkFactors(self.inputs) and utils.checkInputRasters(self.inputs))):
@@ -824,6 +793,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     return bands
 
   def setProgressRange(self, message, maxValue):
+    #print "changed:", message
     self.progressBar.setFormat(message)
     self.progressBar.setRange(0, maxValue)
 
@@ -832,6 +802,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def restoreProgressState(self):
     self.progressBar.setFormat("%p%")
+    #print "restored"
     self.progressBar.setRange(0, 1)
     self.progressBar.setValue(0)
 

@@ -112,6 +112,11 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     self.plugin.logMessage(self.tr("WoE model trained"))
 
   def __trainFinished(self):
+    self.plugin.workThread.started.disconnect(self.model.train)
+    self.model.updateProgress.disconnect(self.plugin.showProgress)
+    self.model.rangeChanged.connect(self.plugin.setProgressRange)
+    self.model.processFinished.disconnect(self.__trainFinished)
+    self.model.processFinished.disconnect(self.plugin.workThread.quit)
     self.plugin.restoreProgressState()
 
   def __getBins(self):

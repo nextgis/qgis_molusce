@@ -134,7 +134,7 @@ class WoeManager(QObject):
         Train the model
         '''
         iterCount = len(self.codes)*len(self.factors)
-        self.rangeChanged.emit(self.tr("Training... %p%"), iterCount)
+        self.rangeChanged.emit(self.tr("Training WoE... %p%"), iterCount)
         changeMap = self.changeMap.getBand(1)
         for code in self.codes:
             sites = binaryzation(changeMap, [code])
