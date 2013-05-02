@@ -467,7 +467,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.simulator.moveToThread(self.workThread)
 
-    self.workThread.started.connect(self.simulator.simN)
+    self.workThread.started.connect(self.propagateSimulation)
     self.simulator.rangeChanged.connect(self.setProgressRange)
     self.simulator.updateProgress.connect(self.showProgress)
     self.simulator.processFinished.connect(self.simulationDone)
@@ -496,7 +496,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       else:
         self.logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
 
-    self.workThread.started.disconnect(self.simulator.simN)
+    self.workThread.started.disconnect(self.propagateSimulation)
     self.simulator.rangeChanged.disconnect(self.setProgressRange)
     self.simulator.updateProgress.disconnect(self.showProgress)
     self.simulator.processFinished.disconnect(self.simulationDone)
@@ -750,6 +750,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.leRiskValidationPath.setText(fileName)
     elif senderName == "btnSelectMonteCarlo":
       self.leMonteCarloPath.setText(fileName)
+
+  def propagateSimulation(self):
+    iterCount = self.spnIterations.value()
+    self.simulator.simN(iterCount)
 
   def __selectValidationMap(self):
     senderName = self.sender().objectName()
