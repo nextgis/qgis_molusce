@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
@@ -11,7 +10,6 @@ from sklearn import linear_model as lm
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
 from molusce.algorithms.models.sampler.sampler import Sampler
-
 
 class LRError(Exception):
     '''Base class for exceptions in this module.'''
@@ -40,6 +38,7 @@ class LR(QObject):
 
         self.ns = ns            # Neighbourhood size of training rasters.
         self.data = None        # Training data
+
         self.sampler = None     # Sampler
 
         # Results of the LR prediction
@@ -123,12 +122,27 @@ class LR(QObject):
     def read(self):
         pass
 
+    def __propagateSamplerSignals(self):
+        self.sampler.rangeChanged.connect(self.__samplerProgressRangeChanged)
+        self.sampler.updateProgress.connect(self.__samplerProgressChanged)
+        self.sampler.processFinished.connect(self.__samplerFinished)
+
+    def __samplerFinished(self):
+        self.sampler.rangeChanged.disconnect(self.__samplerProgressRangeChanged)
+        self.sampler.updateProgress.disconnect(self.__samplerProgressChanged)
+        self.sampler.processFinished.disconnect(self.__samplerFinished)
+
+    def __samplerProgressRangeChanged(self, message, maxValue):
+        self.rangeChanged.emit(message, maxValue)
+
+    def __samplerProgressChanged(self):
+        self.updateProgress.emit()
+
     def save(self):
         pass
 
     def saveSamples(self, fileName):
         self.sampler.saveSamples(fileName)
-
 
     def setTrainingData(self, state, factors, output, mode='All', samples=None):
         '''
@@ -149,6 +163,7 @@ class LR(QObject):
             f.normalize(mode = 'mean')
 
         self.sampler = Sampler(state, factors, output, ns=self.ns)
+        self.__propagateSamplerSignals()
         self.sampler.setTrainingData(state, output, shuffle=False, mode=mode, samples=samples)
 
         outputVecLen  = self.sampler.outputVecLen
