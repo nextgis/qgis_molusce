@@ -86,10 +86,9 @@ def woe(factor, sites, unit_cell=1):
     @param sites      Array layer consisting of the locations at which the point objects are known to occur.
     @param unit_cell  Method parameter, pixelsize of resampled rasters.
 
-    @return [wMap1, wMap2, ...]   Total weights of each factor.
+    @return masked array  Array of total weights of each factor.
     '''
 
-    result =np.zeros(ma.shape(factor))
     # Get list of categories from the factor raster
     categories = get_gradations(factor.compressed())
 
@@ -99,7 +98,9 @@ def woe(factor, sites, unit_cell=1):
         raise WoeError('Site raster must be binary!')
     sites = binaryzation(sites, [sCategories[1]])
 
-    weights = [] # list of the weights of evidence
+    # List of the weights of evidence:
+    # weights[0] is (wPlus, wMinus) for the first category, weights[1] is (wPlus, wMinus) for the second category, ...
+    weights = []
     if len(categories) >= 2:
         for cat in categories:
             fct = binaryzation(factor, [cat])
@@ -108,6 +109,8 @@ def woe(factor, sites, unit_cell=1):
         raise WoeError('Wrong count of categories in the factor raster!')
 
     wTotalMin = sum([w[1] for w in weights])
+    # List of total weights of evidence of the categories:
+    # wMap[0] is the first category  total weight, wMap[1] is the second category total weight, ...
     wMap = [w[0] + wTotalMin - w[1] for w in weights]
 
     # If len(categories) = 2, then [w[0] + wTotalMin - w[1] for w in weights] increases the answer.
@@ -115,12 +118,12 @@ def woe(factor, sites, unit_cell=1):
     if len(categories) == 2:
         wMap = [w/2 for w in wMap]
 
+    result =np.zeros(ma.shape(factor))
     for i,cat in enumerate(categories):
         result[factor==cat] = wMap[i]
 
     result = ma.array(data=result, mask=factor.mask)
     return result
-
 
 def contrast(wPlus, wMinus):
     'Weight contrast'

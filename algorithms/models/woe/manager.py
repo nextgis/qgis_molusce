@@ -93,7 +93,6 @@ class WoeManager(QObject):
         confidence = np.zeros((rows,cols))
         mask = np.zeros((rows,cols))
 
-        woe = self.getWoe()
         stateBand = state.getBand(1)
 
         self.updateProgress.emit()
@@ -108,14 +107,13 @@ class WoeManager(QObject):
                     codes = self.analyst.codes(initCat)   # Possible final states
                     for code in codes:
                         try: # If not all possible transitions are presented in the changeMap
-                            map = woe[code]     # Get WoE map of transition 'code'
+                            map = self.woe[code]     # Get WoE map of transition 'code'
                         except KeyError:
                             continue
                         w = map[r,c]        # The weight in the (r,c)-pixel
                         if w > currMax:
                             indexMax, oldMax, currMax = code, currMax, w
-                    decode = self.analyst.decode(indexMax)    # Get init & final categories (initState, finalState)
-                    prediction[r,c] = decode[1]               # final category
+                    prediction[r,c] = indexMax
                     confidence[r,c] = sigmoid(currMax) - sigmoid(oldMax)
                 except ValueError:
                     mask[r,c] = 1
@@ -139,7 +137,7 @@ class WoeManager(QObject):
         for code in self.codes:
             sites = binaryzation(changeMap, [code])
             # Reclass factors (continuous factor -> ordinal factor)
-            wMap = np.ma.zeros(changeMap.shape)
+            wMap = np.ma.zeros(changeMap.shape) # The map of summary weight of the all factors
             for k in xrange(len(self.factors)):
                 fact = self.factors[k]
                 if self.bins: # Get bins of the factor
@@ -152,10 +150,11 @@ class WoeManager(QObject):
                     if bin and bin[i-1]:
                         band = reclass(band, bin[i-1])
                     band, sites = masks_identity(band, sites)   # Combine masks of the rasters
-                    weights = woe(band, sites, self.unit_cell)       # WoE for the 'code' (initState->finalState) transition and current 'factor'.
+                    weights = woe(band, sites, self.unit_cell)  # WoE for the 'code' (initState->finalState) transition and current 'factor'.
                     wMap = wMap + weights
                 self.updateProgress.emit()
-            self.woe[code]=wMap             # WoE for all factors and the transition.
+            # Reclassification finished => set WoE coefficients
+            self.woe[code]=wMap             # WoE for all factors and the transition code.
         self.processFinished.emit()
 
 

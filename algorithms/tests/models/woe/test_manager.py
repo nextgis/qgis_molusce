@@ -18,11 +18,17 @@ from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 class TestWoEManager (unittest.TestCase):
     def setUp(self):
         self.factor = Raster('../../examples/multifact.tif')
+                #~ [1,1,3]
+                #~ [3,2,1]
+                #~ [0,3,1]
 
         self.sites  = Raster('../../examples/sites.tif')
+                    #~ [1,2,1],
+                    #~ [1,2,1],
+                    #~ [0,1,2]
         self.sites.resetMask(maskVals= [0])
 
-        mask = [
+        self.mask = [
             [False, False, False,],
             [False, False, False,],
             [True,  False, False,]
@@ -37,21 +43,32 @@ class TestWoEManager (unittest.TestCase):
             [False, True,  False,],
             [False, False, True,]
         ]
-        self.factraster  = ma.array(data = fact, mask=mask, dtype=np.int)
-        self.sitesraster = ma.array(data = site, mask=mask, dtype=np.bool)
+        self.factraster  = ma.array(data = fact, mask=self.mask, dtype=np.int)
+        self.sitesraster = ma.array(data = site, mask=self.mask, dtype=np.bool)
 
     def test_WoeManager(self):
         aa = AreaAnalyst(self.sites, self.sites)
         w1 = WoeManager([self.factor], aa)
         w1.train()
         p = w1.getPrediction(self.sites).getBand(1)
-        assert_array_equal(p, self.sites.getBand(1))
+        answer = [[0,3,0], [0,3,0], [9,0,3]]
+        answer = ma.array(data = answer, mask = self.mask)
+        assert_array_equal(p, answer)
 
         initState = Raster('../../examples/data.tif')
+            #~ [1,1,1,1],
+            #~ [1,1,2,2],
+            #~ [2,2,2,2],
+            #~ [3,3,3,3]
         finalState = Raster('../../examples/data1.tif')
+            #~ [1,1,2,3],
+            #~ [3,1,2,3],
+            #~ [3,3,3,3],
+            #~ [1,1,3,2]
         aa = AreaAnalyst(initState, finalState)
         w = WoeManager([initState], aa)
         w.train()
+        #print w.woe
         p = w.getPrediction(initState).getBand(1)
 
         # Calculate by hands:
@@ -130,12 +147,12 @@ class TestWoEManager (unittest.TestCase):
         #w1max = np.maximum(woeDict['11'], woeDict['12'], woeDict['13'])
         #w2max = np.maximum(woeDict['22'], woeDict['23'])
         #w3max = np.maximum(woeDict['31'], woeDict['32'], woeDict['33'])
-        # Answer is index of finalClass that maximizes weights of transiotion initClass -> finalClass
+        # Answer is a transition code with max weight
         answer = [
-            [1, 1, 1, 1],
-            [1, 1, 3, 3],
-            [3, 3, 3, 3],
-            [1, 1, 1, 1]
+            [0, 0, 0, 0],
+            [0, 0, 5, 5],
+            [5, 5, 5, 5],
+            [6, 6, 6, 6]
         ]
         assert_array_equal(p, answer)
 
