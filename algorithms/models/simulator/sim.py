@@ -92,18 +92,18 @@ class Simulator(QObject):
         transition = self.crosstable.getCrosstable()
 
         self.updatePrediction(self.state)
-
-        prediction = self.getPrediction()
+        changes = self.getPrediction().getBand(1)   # Predicted change map
         state = self.getState()
         new_state = state.getBand(1).copy()         # New states (the result of simulation) will be stored there.
 
         self.rangeChanged.emit(self.tr("Area Change Analysis %p%"), 2)
         self.updateProgress.emit()
-        analyst = AreaAnalyst(state, prediction)
+        analyst = AreaAnalyst(state, second = None)
         self.updateProgress.emit()
 
-        categories = analyst.categories
-        changes = analyst.getChangeMap().getBand(1)
+        statistic    = state.getBandStat(1)
+        categories = statistic['gradation']
+
         # Make transition between categories according to
         # number of moved pixel in crosstable
         self.rangeChanged.emit(self.tr("Simulation process %p%"), len(categories)**2 - len(categories))

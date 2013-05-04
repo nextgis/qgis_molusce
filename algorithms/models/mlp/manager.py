@@ -33,7 +33,6 @@ class MlpManager(QObject):
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
 
-
     def __init__(self, ns=0, MLP=None):
 
         QObject.__init__(self)
@@ -105,7 +104,7 @@ class MlpManager(QObject):
             input_neurons = input_neurons+ raster.getNeighbourhoodSize(self.ns)
 
 
-        # Output category (neuron) count
+        # Output category's (neuron) list and count
         band = output.getBand(1)
         self.catlist = np.unique(band.compressed())
         categories = len(self.catlist)
@@ -175,7 +174,6 @@ class MlpManager(QObject):
         out_scl.sort()
         return out_scl[-1] - out_scl[-2]
 
-
     def _predict(self, state, factors):
         '''
         Calculate output and confidence rasters using MLP model and input rasters
@@ -226,7 +224,6 @@ class MlpManager(QObject):
         self.confidence = Raster()
         self.confidence.create(confidence_bands, geodata)
 
-
     def readMlp(self):
         pass
 
@@ -268,7 +265,7 @@ class MlpManager(QObject):
             f.normalize(mode = 'mean')
 
         self.sampler = Sampler(state, factors, output, self.ns)
-        self.sampler.setTrainingData(state, output, shuffle, mode, samples)
+        self.sampler.setTrainingData(state=state, output=output, shuffle=shuffle, mode=mode, samples=samples)
 
         outputVecLen  = self.getOutputVectLen()
         stateVecLen   = self.sampler.stateVecLen

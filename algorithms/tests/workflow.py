@@ -33,7 +33,7 @@ def main(initRaster, finalRaster, factors):
     #~ model = MlpManager(ns=0)
     #~ model.createMlp(initRaster, factors, finalRaster, [10])
     #~ print 'Start Setting MLP Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=1000)
+    #~ model.setTrainingData(initRaster, factors, changeMap, mode='Balanced', samples=1000)
     #~ print 'Finish Setting Trainig Data', clock(), '\n'
     #~ print 'Start MLP Training...', clock()
     #~ model.train(1000, valPercent=20)

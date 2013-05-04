@@ -273,7 +273,7 @@ class Sampler(QObject):
             band = output.getBand(1)
 
             # Select pixels
-            average = 1.0*samples / len(categories)
+            average = samples / len(categories)
 
             samples_count = 0
             self.rangeChanged.emit(self.tr("Sampling..."), samples)

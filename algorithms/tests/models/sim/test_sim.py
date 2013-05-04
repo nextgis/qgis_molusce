@@ -20,7 +20,6 @@ class Model(object):
     Simple predicting model for Simulator tests
     '''
     def __init__(self, state):
-        self.state = state
         self._predict(state)
 
     def getConfidence(self):
@@ -31,15 +30,16 @@ class Model(object):
         return self.prediction
 
     def _predict(self, state, factors = None):
-        geodata = self.state.getGeodata()
+        geodata = state.getGeodata()
         band = state.getBand(1)
         rows, cols = geodata['ySize'], geodata['xSize']
-        # Let the prediction is: 1 -> 2, 2- >3, 3 -> 1
+        # Let the new state is: 1 -> 2, 2- >3, 3 -> 1, then
+        # the prediction is 1->1, 2->5, 3->6
 
         predicted_band  = np.copy(band)
-        predicted_band[band == 1] = 2
-        predicted_band[band == 2] = 3
-        predicted_band[band == 3] = 1
+        predicted_band[band == 1] = 1.0
+        predicted_band[band == 2] = 5.0
+        predicted_band[band == 3] = 6.0
 
         # Let the confidence is 1/(1+row+col), where row is row number of the cell, col is column number of the cell.
         confidence_band = np.zeros([rows, cols])
@@ -81,7 +81,7 @@ class TestSimulator(unittest.TestCase):
         self.crosstab = CrossTableManager(self.raster1, self.raster2)
 
         # Simple model
-        self.model = Model(self.raster1)
+        self.model = Model(state=self.raster1)
 
     def test_compute_table(self):
 
@@ -90,10 +90,11 @@ class TestSimulator(unittest.TestCase):
         #  [[ 3.  1.  0.]
         #   [ 0.  1.  0.]
         #   [ 1.  0.  2.]]
-        # prediction = self.model.getPrediction(self.raster1)
-        # prediction = [[2.0 2.0 1.0]
-                     #  [1.0 3.0 2.0]
-                     #  [-- 1.0 2.0]]
+        prediction = self.model.getPrediction(self.raster1)
+        # print prediction.getBand(1)
+        # prediction = [[1.0 1.0 6.0]
+                     #  [6.0 5.0 1.0]
+                     #  [-- 6.0 1.0]]
         # confidence = self.model.getConfidence()
         # confidence =     [[1.0 0.5  0.33]
                          #  [0.5 0.33 0.25]
@@ -105,7 +106,7 @@ class TestSimulator(unittest.TestCase):
         ])
         result = np.ma.array(result, mask = (result==0))
 
-        simulator = Simulator(self.raster1, None, self.model, self.crosstab)    # The model does't use factors
+        simulator = Simulator(state=self.raster1, factors=None, model=self.model, crosstable=self.crosstab)    # The model does't use factors
         simulator.simN(N=1)
         state = simulator.getState().getBand(1)
         assert_array_equal(result, state)

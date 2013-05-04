@@ -29,32 +29,38 @@ class AreaAnalyst(QObject):
     processFinished = pyqtSignal(object)
     logMessage = pyqtSignal(str)
 
-    def __init__(self, first, second):
+    def __init__(self, first, second=None):
         '''
         @param first        Raster of the first stage (the state before transition).
         @param second       Raster of the second stage (the state after transition).
         '''
         QObject.__init__(self)
 
-        if not first.geoDataMatch(second):
+        if second != None and (not first.geoDataMatch(second)):
             raise AreaAnalizerError('Geometries of the rasters are different!')
-        if first.getBandsCount() + second.getBandsCount() > 2:
-            raise AreaAnalizerError('Rasters mast have 1 band!')
+
+        if first.getBandsCount() != 1:
+            raise AreaAnalizerError('First raster mast have 1 band!')
+
+        if second !=None and second.getBandsCount() != 1:
+            raise AreaAnalizerError('Second raster mast have 1 band!')
 
         self.geodata = first.getGeodata()
         statFirst    = first.getBandStat(1)
-        statSecong   = second.getBandStat(1)
         self.categories = statFirst['gradation']
-        self.categoriesSecond = statSecong['gradation']
 
-        first, second = masks_identity(first.getBand(1), second.getBand(1))
+        if second != None:
+            statSecong   = second.getBandStat(1)
+            self.categoriesSecond = statSecong['gradation']
+            first, second = masks_identity(first.getBand(1), second.getBand(1))
 
         self.first = first
         self.second = second
 
-        for cat in self.categoriesSecond:
-            if cat not in self.categories:
-                raise AreaAnalizerError("List of categories of the first raster doesn't contains a category of the second raster!")
+        if second != None:
+            for cat in self.categoriesSecond:
+                if cat not in self.categories:
+                    raise AreaAnalizerError("List of categories of the first raster doesn't contains a category of the second raster!")
 
         self.changeMap = None
 
