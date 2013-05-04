@@ -57,7 +57,7 @@ class MCE(object):
         38: 1.70,
         39: 1.70
     }
-    def __init__(self, factors, wMatr, initStateNum, finalStateNum):
+    def __init__(self, factors, wMatr, initStateNum, finalStateNum, areaAnalyst):
         '''
         Multicriteria evaluation based on Saaty method. It defines transition probability of two categories (initStateNum, finalStateNum).
         @param factors          List of the factor rasters used for prediction.
@@ -69,6 +69,7 @@ class MCE(object):
         self.factors = factors
         self.initStateNum  = initStateNum
         self.finalStateNum = finalStateNum
+        self.areaAnalyst   = areaAnalyst
 
         # Check matrix dimension and factor count, apply normalization
         self.dim = 0
@@ -140,8 +141,8 @@ class MCE(object):
         #   confidence is summary map of factors, if current state = self.initState
         #   confidence is 0, if current state != self.initState
         # Prediction:
-        #   predicted value is a constant = self.finalStateNum, if current state = self.initState
-        #   predicted value is current state, if current state != self.initState
+        #   predicted value is a constant = areaAnalyst.encode(initStateNum, finalStateNum), if current state = self.initState
+        #   predicted value is the transition code current_state -> current_state, if current state != self.initState
         confidence = np.zeros((rows,cols))
         weights = self.getWeights()
         weightNum = 0               # Number of processed weights
@@ -156,8 +157,11 @@ class MCE(object):
                 weightNum = weightNum + 1
         confidence = confidence*initStateMask
         prediction = np.copy(state.getBand(1))
-        prediction = np.logical_not(initStateMask) * prediction
-        prediction = prediction + initStateMask*self.finalStateNum
+        for code in self.areaAnalyst.categories:
+            if code != self.initStateNum:
+                prediction[prediction==code] = self.areaAnalyst.encode(code, code)
+            else:
+                prediction[prediction==code] = self.areaAnalyst.encode(self.initStateNum, self.finalStateNum)
 
         predicted_band = np.ma.array(data=prediction, mask=mask)
         self.prediction = Raster()

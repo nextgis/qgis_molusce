@@ -30,6 +30,7 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
+from algorithms.models.area_analysis.manager import AreaAnalyst
 from algorithms.models.mce.mce import MCE
 
 from ui.ui_multicriteriaevaluationwidgetbase import Ui_Widget
@@ -90,12 +91,15 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.settings.setValue("ui/MCE/initialClass", self.spnInitialClass.value())
     self.settings.setValue("ui/MCE/finalClass", self.spnFinalClass.value())
 
+    areaAnalyst = AreaAnalyst(self.inputs["initial"], second=None)
+
     self.plugin.logMessage(self.tr("Init MCE model"))
 
     self.model = MCE(self.inputs["factors"].values(),
                      matrix,
                      self.spnInitialClass.value(),
-                     self.spnFinalClass.value()
+                     self.spnFinalClass.value(),
+                     areaAnalyst
                     )
 
     self.inputs["model"] = self.model

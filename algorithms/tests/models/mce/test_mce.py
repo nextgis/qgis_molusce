@@ -25,6 +25,8 @@ class TestMCE(unittest.TestCase):
             #~ [1,2,1],
             #~ [1,2,1],
             #~ [0,1,2]
+        self.areaAnalyst = AreaAnalyst(self.state, second=None)
+
     def test_MCE(self):
 
         data = [
@@ -35,13 +37,14 @@ class TestMCE(unittest.TestCase):
         ]
         # Multiband
         factor = Raster('../../examples/two_band.tif')
-        mce = MCE([self.factor, factor, self.factor], data, 1, 2)
+
+        mce = MCE([self.factor, factor, self.factor], data, 1, 2, self.areaAnalyst)
         w = mce.getWeights()
         answer = [0.61682294, 0.22382863, 0.09723423, 0.06211421]
         assert_almost_equal(w, answer)
 
         # One-band
-        mce = MCE([self.factor, self.factor, self.factor, self.factor], data, 1, 2)
+        mce = MCE([self.factor, self.factor, self.factor, self.factor], data, 1, 2, self.areaAnalyst)
         w = mce.getWeights()
         answer = [0.61682294, 0.22382863, 0.09723423, 0.06211421]
         assert_almost_equal(w, answer)
@@ -53,9 +56,9 @@ class TestMCE(unittest.TestCase):
         ]
         p = mce.getPrediction(self.state).getBand(1)
         answer = [      # The locations where the big numbers are stored must be masked (see mask and self.state)
-            [2, 2, 2],
-            [2, 2, 2],
-            [100, 2, 100]
+            [1, 3, 1],
+            [1, 3, 1],
+            [100, 1, 100]
         ]
         answer = np.ma.array(data = answer, mask = mask)
         assert_almost_equal(p, answer)
