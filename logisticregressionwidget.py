@@ -70,6 +70,13 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
                          )
       return
 
+    if not utils.checkChangeMap(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Change map raster is not set. Please create it try again")
+                         )
+      return
+
     self.settings.setValue("ui/LR/neighborhood", self.spnNeighbourhood.value())
 
     self.plugin.logMessage(self.tr("Init LR model"))
@@ -78,7 +85,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.plugin.logMessage(self.tr("Set training data"))
     self.model.setTrainingData(self.inputs["initial"],
                                self.inputs["factors"].values(),
-                               self.inputs["final"],
+                               self.inputs["changeMap"],
                                mode=self.inputs["samplingMode"],
                                samples=self.plugin.spnSamplesCount.value()
                               )
