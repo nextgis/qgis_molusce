@@ -436,7 +436,7 @@
          <item row="2" column="0">
           <widget class="QCheckBox" name="chkMonteCarlo">
            <property name="text">
-            <string>Monte Carlo simulations</string>
+            <string>Simulation result</string>
            </property>
           </widget>
          </item>
