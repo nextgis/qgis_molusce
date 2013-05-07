@@ -113,6 +113,8 @@ class Simulator(QObject):
 
                 # TODO: Calculate number of pixels to be moved via TransitoionMatrix and state raster
                 n = transition.getTransition(initClass, finalClass)   # Number of pixels to be moved (constant count now).
+                if n==0:
+                    continue
                 # Find n appropriate places for transition initClass -> finalClass
                 cat_code = analyst.encode(initClass, finalClass)
                 places = (changes==cat_code)      # Array of places where transitions initClass -> finalClass are occured
@@ -126,8 +128,9 @@ class Simulator(QObject):
                     confidence = confidence * places # The higher is number in cell, the higer is probability of transition in the cell.
 
                     sortedConf = np.argsort(-confidence, axis=None)
-                    ind = np.unravel_index(sortedConf, confidence.shape)
-                    indices = [(ind[0][i], ind[1][i]) for i in xrange(n)]
+                    sortedConf = sortedConf[:n]
+                    ind = [np.unravel_index(i, confidence.shape) for i in sortedConf]
+                    indices = [(ind[i][0], ind[i][1]) for i in xrange(n)]
 
                     # Now "indices" contains indices of the appropriate places,
                     # make transition initClass -> finalClass
