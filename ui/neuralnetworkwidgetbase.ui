@@ -71,24 +71,27 @@
        <property name="maximum">
         <number>1000000</number>
        </property>
+       <property name="value">
+        <number>500</number>
+       </property>
       </widget>
      </item>
      <item row="1" column="1" colspan="2">
       <widget class="QDoubleSpinBox" name="spnLearnRate">
        <property name="decimals">
-        <number>2</number>
+        <number>3</number>
        </property>
        <property name="minimum">
-        <double>0.010000000000000</double>
+        <double>0.001000000000000</double>
        </property>
        <property name="maximum">
         <double>1.000000000000000</double>
        </property>
        <property name="singleStep">
-        <double>0.010000000000000</double>
+        <double>0.005000000000000</double>
        </property>
        <property name="value">
-        <double>0.100000000000000</double>
+        <double>0.020000000000000</double>
        </property>
       </widget>
      </item>
@@ -108,14 +111,17 @@
      </item>
      <item row="4" column="1" colspan="2">
       <widget class="QDoubleSpinBox" name="spnMomentum">
+       <property name="decimals">
+        <number>3</number>
+       </property>
        <property name="minimum">
-        <double>0.010000000000000</double>
+        <double>0.001000000000000</double>
        </property>
        <property name="maximum">
         <double>1.000000000000000</double>
        </property>
        <property name="singleStep">
-        <double>0.010000000000000</double>
+        <double>0.005000000000000</double>
        </property>
        <property name="value">
         <double>0.050000000000000</double>

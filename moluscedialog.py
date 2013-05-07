@@ -828,7 +828,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     # samples and model tab
     samplingMode = self.settings.value("ui/samplingMode", 0).toInt()[0]
     self.cmbSamplingMode.setCurrentIndex(self.cmbSamplingMode.findData(samplingMode))
-    self.spnSamplesCount.setValue(self.settings.value("ui/samplesCount", 10000).toInt()[0])
+    self.spnSamplesCount.setValue(self.settings.value("ui/samplesCount", 1000).toInt()[0])
 
     # simulation tab
     self.chkRiskFunction.setChecked(self.settings.value("ui/createRiskFunction", False).toBool())
