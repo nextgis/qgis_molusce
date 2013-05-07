@@ -43,7 +43,7 @@ from matplotlib import rcParams
 sklearnMissed = False
 
 try:
-  import sklearn
+  from sklearn import linear_model as lm
 except ImportError:
   sklearnMissed = True
 
