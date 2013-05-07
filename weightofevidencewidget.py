@@ -72,6 +72,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
           item = QTableWidgetItem(k + self.tr(" (band %1)").arg(b))
           item.setFlags(item.flags() ^ Qt.ItemIsEditable)
           self.tblReclass.setItem(row, 0, item)
+          self.tblReclass.setItem(row, 1, QTableWidgetItem(""))
           row += 1
 
     self.tblReclass.resizeRowsToContents()
