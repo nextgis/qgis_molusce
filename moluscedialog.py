@@ -379,6 +379,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblTransMatrix.setRowCount(dimensions)
     self.tblTransMatrix.setColumnCount(dimensions)
 
+    labels = [unicode(i) for i in xrange(1, dimensions + 1)]
+    self.tblTransMatrix.setHorizontalHeaderLabels(labels)
+
     for row in xrange(0, dimensions):
       for col in xrange(0, dimensions):
         item = QTableWidgetItem(unicode(transition[row, col]))
