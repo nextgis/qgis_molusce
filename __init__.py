@@ -35,7 +35,7 @@ def category():
   return "Raster"
 
 def version():
-  return "0.0.1"
+  return "0.5.1"
 
 def qgisMinimumVersion():
   return "1.9.0"
