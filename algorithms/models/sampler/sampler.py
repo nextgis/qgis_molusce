@@ -233,7 +233,7 @@ class Sampler(QObject):
         # (if self.ns>0 some samples may be incomplete because a neighbour has NoData value)
         samples_count = 0
 
-        rows, cols = state.getXSize(), state.getYSize()
+        cols, rows  = state.getXSize(), state.getYSize()
 
         if mode == 'All':
             # Approximate sample count:
