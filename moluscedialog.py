@@ -352,6 +352,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblStatistics.setRowCount(dimensions)
     self.tblStatistics.setColumnCount(6)
 
+    labels = [unicode(i) for i in xrange(1, 7)]
+    self.tblStatistics.setVerticalHeaderLabels(labels)
+
     labels = [self.leInitYear.text(),
               self.leFinalYear.text(),
               u"Δ",
@@ -378,6 +381,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblTransMatrix.clear()
     self.tblTransMatrix.setRowCount(dimensions)
     self.tblTransMatrix.setColumnCount(dimensions)
+
+    labels = [unicode(i) for i in xrange(1, dimensions + 1)]
+    self.tblTransMatrix.setVerticalHeaderLabels(labels)
 
     labels = [unicode(i) for i in xrange(1, dimensions + 1)]
     self.tblTransMatrix.setHorizontalHeaderLabels(labels)
@@ -672,12 +678,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     if modelName == self.tr("Logistic Regression"):
       self.modelWidget = logisticregressionwidget.LogisticRegressionWidget(self)
+      self.grpSampling.show()
     elif modelName == self.tr("Artificial Neural Network"):
       self.modelWidget = neuralnetworkwidget.NeuralNetworkWidget(self)
+      self.grpSampling.show()
     elif modelName == self.tr("Weights of Evidence"):
       self.modelWidget = weightofevidencewidget.WeightOfEvidenceWidget(self)
+      self.grpSampling.hide()
     elif modelName == self.tr("Multi Criteria Evaluation"):
       self.modelWidget = multicriteriaevaluationwidget.MultiCriteriaEvaluationWidget(self)
+      self.grpSampling.hide()
 
     self.widgetStackMethods.addWidget(self.modelWidget)
     self.widgetStackMethods.setCurrentWidget(self.modelWidget)
@@ -825,7 +835,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __readSettings(self):
     # samples and model tab
-    samplingMode = self.settings.value("ui/samplingMode", 0).toInt()[0]
+    samplingMode = self.settings.value("ui/samplingMode", 1).toInt()[0]
     self.cmbSamplingMode.setCurrentIndex(self.cmbSamplingMode.findData(samplingMode))
     self.spnSamplesCount.setValue(self.settings.value("ui/samplesCount", 1000).toInt()[0])
 

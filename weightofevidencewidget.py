@@ -69,7 +69,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       for b in xrange(v.getBandsCount()):
         if len(v.getBandStat(b)['gradation']) > MAX_CATEGORIES:
           self.tblReclass.insertRow(row)
-          item = QTableWidgetItem(k + self.tr(" (band %1)").arg(b))
+          item = QTableWidgetItem(utils.getLayerById(k).name())
           item.setFlags(item.flags() ^ Qt.ItemIsEditable)
           self.tblReclass.setItem(row, 0, item)
           self.tblReclass.setItem(row, 1, QTableWidgetItem(""))
