@@ -679,12 +679,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     if modelName == self.tr("Logistic Regression"):
       self.modelWidget = logisticregressionwidget.LogisticRegressionWidget(self)
+      self.grpSampling.show()
     elif modelName == self.tr("Artificial Neural Network"):
       self.modelWidget = neuralnetworkwidget.NeuralNetworkWidget(self)
+      self.grpSampling.show()
     elif modelName == self.tr("Weights of Evidence"):
       self.modelWidget = weightofevidencewidget.WeightOfEvidenceWidget(self)
+      self.grpSampling.hide()
     elif modelName == self.tr("Multi Criteria Evaluation"):
       self.modelWidget = multicriteriaevaluationwidget.MultiCriteriaEvaluationWidget(self)
+      self.grpSampling.hide()
 
     self.widgetStackMethods.addWidget(self.modelWidget)
     self.widgetStackMethods.setCurrentWidget(self.modelWidget)
@@ -832,7 +836,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __readSettings(self):
     # samples and model tab
-    samplingMode = self.settings.value("ui/samplingMode", 0).toInt()[0]
+    samplingMode = self.settings.value("ui/samplingMode", 1).toInt()[0]
     self.cmbSamplingMode.setCurrentIndex(self.cmbSamplingMode.findData(samplingMode))
     self.spnSamplesCount.setValue(self.settings.value("ui/samplesCount", 1000).toInt()[0])
 
