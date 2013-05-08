@@ -133,6 +133,9 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.tblMatrix.setColumnCount(bandCount)
 
     labels = ["Band " + unicode(i) for i in xrange(1, bandCount + 1)]
+    self.tblMatrix.setVerticalHeaderLabels(labels)
+
+    labels = ["Band " + unicode(i) for i in xrange(1, bandCount + 1)]
     self.tblMatrix.setHorizontalHeaderLabels(labels)
 
     for row in xrange(bandCount):

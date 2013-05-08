@@ -37,12 +37,14 @@ class MolusceTableWidget(QTableWidget):
       data = QString()
 
       # table header
+      data += "\t"
       for i in xrange(0, self.columnCount()):
         data += self.horizontalHeaderItem(i).text() + "\t"
       data += "\n"
 
       # table contents
       for r in xrange(0, self.rowCount()):
+        data += self.verticalHeaderItem(r).text() + "\t"
         for c in xrange(0, self.columnCount()):
           data += self.item(r, c).text() + "\t"
         data += "\n"

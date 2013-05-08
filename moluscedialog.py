@@ -352,6 +352,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblStatistics.setRowCount(dimensions)
     self.tblStatistics.setColumnCount(6)
 
+    labels = [unicode(i) for i in xrange(1, 7)]
+    self.tblStatistics.setVerticalHeaderLabels(labels)
+
     labels = [self.leInitYear.text(),
               self.leFinalYear.text(),
               u"Δ",
@@ -378,6 +381,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblTransMatrix.clear()
     self.tblTransMatrix.setRowCount(dimensions)
     self.tblTransMatrix.setColumnCount(dimensions)
+
+    labels = [unicode(i) for i in xrange(1, dimensions + 1)]
+    self.tblTransMatrix.setVerticalHeaderLabels(labels)
 
     labels = [unicode(i) for i in xrange(1, dimensions + 1)]
     self.tblTransMatrix.setHorizontalHeaderLabels(labels)
