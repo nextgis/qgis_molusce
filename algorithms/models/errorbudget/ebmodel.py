@@ -51,7 +51,8 @@ class EBudget(object):
         if referenceMap.getBandsCount() + simulatedMap.getBandsCount() !=2:
             raise EBError('The reference and simulated rasters must be 1-band rasters!')
         if not referenceMap.geoDataMatch(simulatedMap):
-            raise EBError('Geometries of the reference and simulated rasters are different!')
+            pass
+            #raise EBError('Geometries of the reference and simulated rasters are different!')
 
         statS = simulatedMap.getBandStat(1)
         statR = referenceMap.getBandStat(1)
@@ -92,6 +93,7 @@ class EBudget(object):
             return
 
         newRows, newCols = rows/scale, cols/scale
+        scale2 = scale*scale
 
         newW = np.zeros((newRows, newCols))
         newSj, newRj = {}, {}
@@ -102,12 +104,18 @@ class EBudget(object):
         while r/scale < newRows:
             c = 0
             while c/scale < newCols:
-                newW[r/scale, c/scale] = 1.0*np.sum(self.W[r: r+scale, c: c+scale])/(scale*scale)
+                w = self.W[r: r+scale, c: c+scale]
+                sum_w = 1.0*np.sum(w)
+                newW[r/scale, c/scale] = 1.0*sum_w/scale2
                 for cat in self.categories:
-                    S = self.Sj[cat]
-                    newSj[cat][r/scale, c/scale] = 1.0*np.sum(S[r: r+scale, c: c+scale]*self.W[r: r+scale, c: c+scale])/(np.sum(self.W[r: r+scale, c: c+scale]))
-                    R = self.Rj[cat]
-                    newRj[cat][r/scale, c/scale] = 1.0*np.sum(R[r: r+scale, c: c+scale]*self.W[r: r+scale, c: c+scale])/(np.sum(self.W[r: r+scale, c: c+scale]))
+                    if sum_w == 0:
+                        newSj[cat][r/scale, c/scale] = 0
+                        newRj[cat][r/scale, c/scale] = 0
+                    else:
+                        S = self.Sj[cat]
+                        R = self.Rj[cat]
+                        newSj[cat][r/scale, c/scale] = 1.0*np.sum(S[r: r+scale, c: c+scale]*w)/sum_w
+                        newRj[cat][r/scale, c/scale] = 1.0*np.sum(R[r: r+scale, c: c+scale]*w)/sum_w
                 c = c + scale
             r = r + scale
 
@@ -115,7 +123,6 @@ class EBudget(object):
         self.Rj = newRj
         self.Sj = newSj
         self.shape = (newRows, newCols)
-
 
     def getStat(self, nIter, scale=2):
         '''
