@@ -16,7 +16,7 @@ class Simulator(QObject):
 
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
-    processFinished = pyqtSignal()
+    simFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
 
     def __init__(self, state, factors, model, crosstable):
@@ -149,7 +149,7 @@ class Simulator(QObject):
         '''
         for i in range(N):
             self.__sim()
-        self.processFinished.emit()
+        self.simFinished.emit()
 
     def updatePrediction(self, state):
         '''
