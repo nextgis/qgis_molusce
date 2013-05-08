@@ -558,12 +558,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.valCanvas.draw()
 
   def tabChanged(self, index):
-    if (index >0) and (not (utils.checkFactors(self.inputs) and utils.checkInputRasters(self.inputs))):
-      QMessageBox.warning(self,
-                          self.tr("Missed input data"),
-                          self.tr("Factor or input/output rasters are not set. Please specify input data and try again")
-                         )
-      return
     if  index == 1:     # tabCorrelationChecking
       self.__populateRasterNames()
 # ******************************************************************************
