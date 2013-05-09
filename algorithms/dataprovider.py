@@ -135,6 +135,13 @@ class Raster(object):
     def getBandsCount(self):
         return self.bandcount
 
+    def getBandGradation(self, bandNo):
+        '''
+        Return list of categories of raster's band
+        '''
+        band = self.getBand(bandNo)
+        return get_gradations(band.compressed())
+
     def getBandStat(self, bandNo):
         '''
         Return mean and std of the raster's band
@@ -145,7 +152,6 @@ class Raster(object):
         result['std']  = np.std (band)
         result['min']  = np.min (band)
         result['max']  = np.max (band)
-        result['gradation'] = get_gradations(band.compressed())
         return result
 
     def get_dtype(self):

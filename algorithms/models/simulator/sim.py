@@ -101,8 +101,7 @@ class Simulator(QObject):
         analyst = AreaAnalyst(state, second = None)
         self.updateProgress.emit()
 
-        statistic    = state.getBandStat(1)
-        categories = statistic['gradation']
+        categories = state.getBandGradation(1)
 
         # Make transition between categories according to
         # number of moved pixel in crosstable

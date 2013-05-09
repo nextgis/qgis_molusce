@@ -70,9 +70,9 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.spnInitialClass.setValue(self.settings.value("ui/MCE/initialClass", 0).toInt()[0])
     self.spnFinalClass.setValue(self.settings.value("ui/MCE/finalClass", 0).toInt()[0])
 
-    gradations = self.inputs["initial"].getBandStat(1)['gradation']
+    gradations = self.inputs["initial"].getBandGradation(1)
     self.spnInitialClass.setRange(min(gradations), max(gradations))
-    gradations = self.inputs["final"].getBandStat(1)['gradation']
+    gradations = self.inputs["final"].getBandGradation(1)
     self.spnFinalClass.setRange(min(gradations), max(gradations))
 
     self.__prepareTable()

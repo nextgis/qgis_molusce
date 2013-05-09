@@ -54,10 +54,8 @@ class EBudget(object):
             pass
             #raise EBError('Geometries of the reference and simulated rasters are different!')
 
-        statS = simulatedMap.getBandStat(1)
-        statR = referenceMap.getBandStat(1)
-        self.categories = statR['gradation']
-        for s in statS['gradation']:
+        self.categories = referenceMap.getBandGradation(1)
+        for s in simulatedMap.getBandGradation(1):
             if not s in self.categories:
                 raise EBError('Categories in the reference and simulated rasters are different!')
 

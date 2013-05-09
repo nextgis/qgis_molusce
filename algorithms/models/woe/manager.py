@@ -60,7 +60,7 @@ class WoeManager(QObject):
             raise WoeManagerError('Change map must have one band!')
 
         # Get list of codes from the changeMap raster
-        categories = self.changeMap.getBandStat(1)['gradation']
+        categories = self.changeMap.getBandGradation(1)
 
         self.codes = [int(c) for c in categories]    # Codes of transitions initState->finalState (see AreaAnalyst.encode)
 

@@ -46,12 +46,10 @@ class AreaAnalyst(QObject):
             raise AreaAnalizerError('Second raster mast have 1 band!')
 
         self.geodata = first.getGeodata()
-        statFirst    = first.getBandStat(1)
-        self.categories = statFirst['gradation']
+        self.categories = first.getBandGradation(1)
 
         if second != None:
-            statSecong   = second.getBandStat(1)
-            self.categoriesSecond = statSecong['gradation']
+            self.categoriesSecond = second.getBandGradation(1)
             first, second = masks_identity(first.getBand(1), second.getBand(1))
 
         self.first = first

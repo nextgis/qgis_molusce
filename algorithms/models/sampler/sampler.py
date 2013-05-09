@@ -268,8 +268,7 @@ class Sampler(QObject):
                     self.updateProgress.emit()
         elif mode == 'Balanced':
             # Analyze output categories:
-            stat = output.getBandStat(1)
-            categories = stat['gradation']
+            categories = output.getBandGradation(1)
             band = output.getBand(1)
 
             # Select pixels
