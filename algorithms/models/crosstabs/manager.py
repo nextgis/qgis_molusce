@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from PyQt4.QtCore import *
+
 import numpy as np
 
 from molusce.algorithms.models.crosstabs.model  import CrossTable
@@ -10,12 +12,19 @@ class CrossTabManagerError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
-class CrossTableManager(object):
+class CrossTableManager(QObject):
     '''
     Provides statistic information about transitions InitState->FinalState.
     '''
 
+    rangeChanged = pyqtSignal(str, int)
+    updateProgress = pyqtSignal()
+    crossTableFinished = pyqtSignal()
+    logMessage = pyqtSignal(str)
+
     def __init__(self, initRaster, finalRaster):
+        QObject.__init__(self)
+
         if not initRaster.geoDataMatch(finalRaster):
             raise CrossTabManagerError('Geometries of the raster maps are different!')
 
@@ -25,6 +34,23 @@ class CrossTableManager(object):
         self.pixelArea = initRaster.getPixelArea()
 
         self.crosstable = CrossTable(initRaster.getBand(1), finalRaster.getBand(1))
+
+        self.crosstable.rangeChanged.connect(self.__crosstableProgressRangeChanged)
+        self.crosstable.updateProgress.connect(self.__crosstableProgressChanged)
+        self.crosstable.crossTableFinished.connect(self.__crosstableFinished)
+
+    def __crosstableFinished(self):
+        self.crosstable.rangeChanged.disconnect(self.__crosstableProgressRangeChanged)
+        self.crosstable.updateProgress.disconnect(self.__crosstableProgressChanged)
+        self.crosstable.crossTableFinished.disconnect(self.__crosstableFinished)
+        self.crossTableFinished.emit()
+    def __crosstableProgressChanged(self):
+        self.updateProgress.emit()
+    def __crosstableProgressRangeChanged(self, message, maxValue):
+        self.rangeChanged.emit(message, maxValue)
+
+    def computeCrosstable(self):
+       self.crosstable.computeCrosstable()
 
     def getCrosstable(self):
         return self.crosstable

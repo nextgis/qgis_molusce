@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from PyQt4.QtCore import *
+
 import numpy as np
 
 from molusce.algorithms.utils import masks_identity, sizes_equal, get_gradations
@@ -11,9 +13,17 @@ class CrossTabError(Exception):
         self.msg = msg
 
 
-class CrossTable(object):
+class CrossTable(QObject):
     '''Class for compute gradations, contingency (cross)table T'''
+
+    rangeChanged = pyqtSignal(str, int)
+    updateProgress = pyqtSignal()
+    crossTableFinished = pyqtSignal()
+    logMessage = pyqtSignal(str)
+
     def __init__(self, band1, band2):
+
+        QObject.__init__(self)
 
         if not sizes_equal(band1, band2):
             raise CrossTabError('Sizes of rasters are not equal!')
@@ -31,21 +41,28 @@ class CrossTable(object):
         self.shape = (rows, cols)
 
         self._T = None       # Crosstable
+        self.n  = None       # Count of elements in the crosstable
 
 
-    def __computeCrosstable(self):
+    def computeCrosstable(self):
         # Compute crosstable
+        self.rangeChanged.emit(self.tr("Initializing Crosstable %p%"), 2)
+        self.updateProgress.emit()
         rows, cols = self.shape
         self._T = np.zeros([rows, cols], dtype=int)
         self.n = len(self.X)                 # Count of unmasked elements  (= sum of all elements of the table)
+        self.updateProgress.emit()
+        self.rangeChanged.emit(self.tr("Computing Crosstable %p%"), self.n)
         for i in range(self.n):
             class_num_x = self.graduation_x.index(self.X[i])
             class_num_y = self.graduation_y.index(self.Y[i])
             self._T[class_num_x][class_num_y] +=1
+            self.updateProgress.emit()
+        self.crossTableFinished.emit()
 
     def getCrosstable(self):
         if self._T == None:
-            self.__computeCrosstable()
+            self.computeCrosstable()
         return self._T
 
     def getExpectedProbtable(self):

@@ -106,7 +106,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.btnStartCorrChecking.clicked.connect(self.correlationChecking)
 
-    self.btnUpdateStatistics.clicked.connect(self.updateStatisticsTable)
+    self.btnUpdateStatistics.clicked.connect(self.startUpdateStatisticsTable)
     self.btnCreateChangeMap.clicked.connect(self.createChangeMap)
 
     self.cmbSamplingMode.currentIndexChanged.connect(self.__modeChanged)
@@ -334,7 +334,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblCorrelation.resizeRowsToContents()
     self.tblCorrelation.resizeColumnsToContents()
 
-  def updateStatisticsTable(self):
+  def startUpdateStatisticsTable(self):
     if not utils.checkInputRasters(self.inputs):
       QMessageBox.warning(self,
                           self.tr("Missed input data"),
@@ -342,11 +342,28 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
       return
 
-    self.inputs["crosstab"] = CrossTableManager(self.inputs["initial"], self.inputs["final"])
+    crossTabMan = CrossTableManager(self.inputs["initial"], self.inputs["final"])
+    self.inputs["crosstab"] = crossTabMan
 
     # class statistics
-    stat = self.inputs["crosstab"].getTransitionStat()
+    crossTabMan.moveToThread(self.workThread)
 
+    self.workThread.started.connect(crossTabMan.computeCrosstable)
+    crossTabMan.rangeChanged.connect(self.setProgressRange)
+    crossTabMan.updateProgress.connect(self.showProgress)
+    crossTabMan.crossTableFinished.connect(self.updateStatisticsTableDone)
+    self.workThread.start()
+
+  def updateStatisticsTableDone(self):
+    crossTabMan = self.inputs["crosstab"]
+    self.workThread.started.disconnect(crossTabMan.computeCrosstable)
+    crossTabMan.rangeChanged.disconnect(self.setProgressRange)
+    crossTabMan.updateProgress.disconnect(self.showProgress)
+    crossTabMan.crossTableFinished.disconnect(self.updateStatisticsTableDone)
+    self.workThread.quit()
+    self.restoreProgressState()
+
+    stat = self.inputs["crosstab"].getTransitionStat()
     dimensions = len(stat["init"])
     self.tblStatistics.clear()
     self.tblStatistics.setRowCount(dimensions)
