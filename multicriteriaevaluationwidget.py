@@ -60,6 +60,12 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
                           self.tr("Initial or final raster is not set. Please specify input data and try again")
                          )
       return
+    if not utils.checkFactors(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Factors rasters is not set. Please specify them and try again")
+                         )
+      return
 
     self.spnInitialClass.setValue(self.settings.value("ui/MCE/initialClass", 0).toInt()[0])
     self.spnFinalClass.setValue(self.settings.value("ui/MCE/finalClass", 0).toInt()[0])
@@ -72,18 +78,18 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.__prepareTable()
 
   def trainModel(self):
+    if not utils.checkFactors(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Factors rasters is not set. Please specify them and try again")
+                         )
+      return
+
     matrix = self.__checkMatrix()
     if len(matrix) == 0:
       QMessageBox.warning(self.plugin,
                           self.tr("Incorrect matrix"),
                           self.tr("Please fill the matrix with values")
-                         )
-      return
-
-    if not utils.checkFactors(self.inputs):
-      QMessageBox.warning(self.plugin,
-                          self.tr("Missed input data"),
-                          self.tr("Factors rasters is not set. Please specify them and try again")
                          )
       return
 
