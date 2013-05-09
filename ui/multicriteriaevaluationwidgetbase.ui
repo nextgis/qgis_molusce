@@ -37,13 +37,6 @@
    <item row="2" column="1">
     <widget class="QSpinBox" name="spnFinalClass"/>
    </item>
-   <item row="3" column="0">
-    <widget class="QPushButton" name="btnConsistency">
-     <property name="text">
-      <string>Check matrix consistency</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="1">
     <widget class="QPushButton" name="btnTrainModel">
      <property name="text">

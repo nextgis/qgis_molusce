@@ -51,7 +51,6 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.manageGui()
 
     self.btnTrainModel.clicked.connect(self.trainModel)
-    self.btnConsistency.clicked.connect(self.checkConsistency)
     self.tblMatrix.cellChanged.connect(self.__checkValue)
 
   def manageGui(self):
@@ -106,19 +105,12 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
     self.plugin.logMessage(self.tr("MCE model trained"))
 
-  def checkConsistency(self):
-    if self.model is None:
-      QMessageBox.warning(self.plugin,
-                          self.tr("Model is not initialised"),
-                          self.tr("To check consistency you need to train model first")
-                         )
-      return
-
+    # Check consistency of the matrix
     c = self.model.getConsistency()
     if c < 0.1:
       QMessageBox.warning(self.plugin,
                           self.tr("Consistent matrix"),
-                          self.tr("Matrix filled correctly. Consistency value is: %1").arg(c)
+                          self.tr("Matrix filled correctly. Consistency value is: %1. The model can be used.").arg(c)
                          )
     else:
       QMessageBox.warning(self.plugin,
