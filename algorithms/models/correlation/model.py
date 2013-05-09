@@ -40,13 +40,14 @@ def cramer(X, Y):
     @param Y    Second raster's array
     '''
     table = CrossTable(X, Y)
+    crosstable = table.getCrosstable()
     rows, cols = table.shape
     t_expect =  table.getExpectedTable()
 
     # Mask T* to prevent division by zero
     t_expect = np.ma.array(t_expect, mask=(t_expect == 0))
     # chi-square coeff = sum((T-T*)^2/T*)
-    x2 = np.sum(np.square(table.T - t_expect)/t_expect)
+    x2 = np.sum(np.square(crosstable - t_expect)/t_expect)
     # CRAMER CONTINGENCY COEF. = sqrt(chi-square / (total * min(s-1,r-1)))
     # s, r - raster grauations
     Cramer = math.sqrt(x2/(table.n*min(cols-1, rows-1)))

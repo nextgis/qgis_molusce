@@ -30,8 +30,7 @@ class CrossTableManager(object):
         return self.crosstable
 
     def getTransitionMatrix(self):
-        tab = self.getCrosstable()
-        tab = tab.T
+        tab = self.getCrosstable().getCrosstable()
         s = 1.0/np.sum(tab, axis=1)
         return tab*s[:,None]
 

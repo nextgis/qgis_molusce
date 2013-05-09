@@ -44,8 +44,9 @@ class TestCrossTable (unittest.TestCase):
     def test_init(self):
         mess = 'compute table failed'
         table = CrossTable(self.X, self.Y)
+        crTab = table.getCrosstable()
         for i in range(self.r):
-            self.assertEqual(all(table.T[i]), all(self.T[i]), mess)
+            self.assertEqual(all(crTab[i]), all(self.T[i]), mess)
         self.assertEqual(all(table.getSumRows()), all(self.sum_r), mess)
         self.assertEqual(all(table.getSumCols()), all(self.sum_s), mess)
         self.assertEqual(table.n, self.total, mess)

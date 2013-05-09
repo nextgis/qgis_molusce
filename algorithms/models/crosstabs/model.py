@@ -20,26 +20,33 @@ class CrossTable(object):
 
         band1, band2 = masks_identity(band1, band2)
 
-        X = np.ma.compressed(band1)
-        Y = np.ma.compressed(band2)
+        self.X = np.ma.compressed(band1)
+        self.Y = np.ma.compressed(band2)
 
         # Compute gradations of the bands
-        self.graduation_x = get_gradations(X)
-        self.graduation_y = get_gradations(Y)
+        self.graduation_x = get_gradations(self.X)
+        self.graduation_y = get_gradations(self.Y)
 
         rows, cols = len(self.graduation_x), len(self.graduation_y)
         self.shape = (rows, cols)
 
+        self._T = None       # Crosstable
+
+
+    def __computeCrosstable(self):
         # Compute crosstable
-        self.T = np.zeros([rows, cols], dtype=int)
-        self.n = len(X)                 # Count of unmasked elements  (= sum of all elements of the table)
+        rows, cols = self.shape
+        self._T = np.zeros([rows, cols], dtype=int)
+        self.n = len(self.X)                 # Count of unmasked elements  (= sum of all elements of the table)
         for i in range(self.n):
-            class_num_x = self.graduation_x.index(X[i])
-            class_num_y = self.graduation_y.index(Y[i])
-            self.T[class_num_x][class_num_y] +=1
+            class_num_x = self.graduation_x.index(self.X[i])
+            class_num_y = self.graduation_y.index(self.Y[i])
+            self._T[class_num_x][class_num_y] +=1
 
     def getCrosstable(self):
-        return self.T
+        if self._T == None:
+            self.__computeCrosstable()
+        return self._T
 
     def getExpectedProbtable(self):
         '''
@@ -54,7 +61,8 @@ class CrossTable(object):
         '''
         #compute expected table T*
         #creation array : T*ij = (sum_r[i] * sum_s[j])/ total
-        rows, cols = self.T.shape
+        crostable = self.getCrosstable()
+        rows, cols = crostable.shape
         sum_rows = self.getSumRows()
         sum_cols = self.getSumCols()
         sum_rows = np.tile(np.reshape(sum_rows, (rows,1)),(1,cols))
@@ -75,11 +83,13 @@ class CrossTable(object):
 
     def getSumRows(self):
         '''This function returns sums in the rows (Ti.)'''
-        return self.T.sum(axis=1)
+        crosstable = self.getCrosstable()
+        return crosstable.sum(axis=1)
 
     def getSumCols(self):
         '''This function returns sums in the cols (T.j)'''
-        return self.T.sum(axis=0)
+        crosstable = self.getCrosstable()
+        return crosstable.sum(axis=0)
 
     def getTransition(self, fromClass, toClass):
         '''
@@ -87,6 +97,7 @@ class CrossTable(object):
         '''
         i = self.graduation_x.index(fromClass)
         j = self.graduation_y.index(toClass)
-        return self.T[i,j]
+        crosstable = self.getCrosstable()
+        return crosstable[i,j]
 
 
