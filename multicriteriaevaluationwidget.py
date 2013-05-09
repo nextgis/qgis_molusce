@@ -130,10 +130,13 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.tblMatrix.setRowCount(bandCount)
     self.tblMatrix.setColumnCount(bandCount)
 
-    labels = ["Band " + unicode(i) for i in xrange(1, bandCount + 1)]
-    self.tblMatrix.setVerticalHeaderLabels(labels)
+    labels = []
+    for k, v in self.inputs["factors"].iteritems():
+      for b in xrange(v.getBandsCount()):
+        name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b)))
+        labels.append(name)
 
-    labels = ["Band " + unicode(i) for i in xrange(1, bandCount + 1)]
+    self.tblMatrix.setVerticalHeaderLabels(labels)
     self.tblMatrix.setHorizontalHeaderLabels(labels)
 
     for row in xrange(bandCount):
