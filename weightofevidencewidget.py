@@ -109,9 +109,6 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
                          )
       return
 
-    print "b"
-    print self.model.checkBins()
-
     if not self.model.checkBins():
       QMessageBox.warning(self.plugin,
                           self.tr("Wrong binning"),

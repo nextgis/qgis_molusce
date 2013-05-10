@@ -48,14 +48,14 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     self.settings = QSettings("NextGIS", "MOLUSCE")
 
-    self.btnFitModel.clicked.connect(self.fitModel)
+    self.btnFitModel.clicked.connect(self.startFitModel)
 
     self.manageGui()
 
   def manageGui(self):
     self.spnNeighbourhood.setValue(self.settings.value("ui/LR/neighborhood", 1).toInt()[0])
 
-  def fitModel(self):
+  def startFitModel(self):
     if not utils.checkInputRasters(self.inputs):
       QMessageBox.warning(self.plugin,
                           self.tr("Missed input data"),
@@ -83,12 +83,23 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.model = LR(ns=self.spnNeighbourhood.value())
 
     self.plugin.logMessage(self.tr("Set training data"))
-    self.model.setTrainingData(self.inputs["initial"],
-                               self.inputs["factors"].values(),
-                               self.inputs["changeMap"],
-                               mode=self.inputs["samplingMode"],
-                               samples=self.plugin.spnSamplesCount.value()
-                              )
+    self.model.moveToThread(self.plugin.workThread)
+    self.plugin.workThread.started.connect(self.__setTraningData)
+    self.model.updateProgress.connect(self.plugin.showProgress)
+    self.model.rangeChanged.connect(self.plugin.setProgressRange)
+    self.model.samplingFinished.connect(self.training)
+    #self.model.samplingFinished.connect(self.plugin.workThread.quit)
+    self.plugin.workThread.start()
+
+
+  def training(self):
+    self.plugin.workThread.started.disconnect(self.__setTraningData)
+    self.model.updateProgress.disconnect(self.plugin.showProgress)
+    self.model.rangeChanged.connect(self.plugin.setProgressRange)
+    self.model.samplingFinished.disconnect(self.training)
+    #self.model.samplingFinished.disconnect(self.plugin.workThread.quit)
+    self.plugin.workThread.quit()
+    self.plugin.restoreProgressState()
 
     self.plugin.logMessage(self.tr("Start training LR model"))
     self.model.train()
@@ -138,3 +149,12 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblCoefficients.resizeColumnsToContents()
 
     self.leLRAccuracy.setText(QString.number(accuracy))
+
+  def __setTraningData(self):
+    self.model.setTrainingData(self.inputs["initial"],
+                               self.inputs["factors"].values(),
+                               self.inputs["changeMap"],
+                               mode=self.inputs["samplingMode"],
+                               samples=self.plugin.spnSamplesCount.value()
+                              )
+

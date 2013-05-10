@@ -25,6 +25,7 @@ class LR(QObject):
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
     processFinished = pyqtSignal()
+    samplingFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
 
     def __init__(self, ns=0, logreg=None):
@@ -120,18 +121,16 @@ class LR(QObject):
         finally:
             self.processFinished.emit()
 
-    def read(self):
-        pass
-
     def __propagateSamplerSignals(self):
         self.sampler.rangeChanged.connect(self.__samplerProgressRangeChanged)
         self.sampler.updateProgress.connect(self.__samplerProgressChanged)
-        self.sampler.processFinished.connect(self.__samplerFinished)
+        self.sampler.samplingFinished.connect(self.__samplerFinished)
 
     def __samplerFinished(self):
         self.sampler.rangeChanged.disconnect(self.__samplerProgressRangeChanged)
         self.sampler.updateProgress.disconnect(self.__samplerProgressChanged)
-        self.sampler.processFinished.disconnect(self.__samplerFinished)
+        self.sampler.samplingFinished.disconnect(self.__samplerFinished)
+        self.samplingFinished.emit()
 
     def __samplerProgressRangeChanged(self, message, maxValue):
         self.rangeChanged.emit(message, maxValue)
@@ -173,6 +172,8 @@ class LR(QObject):
         size = len(self.sampler.data)
 
         self.data = self.sampler.data
+
+
 
     def train(self):
         X = np.column_stack( (self.data['state'], self.data['factors']) )

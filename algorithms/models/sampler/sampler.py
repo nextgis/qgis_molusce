@@ -49,7 +49,7 @@ class Sampler(QObject):
 
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
-    processFinished = pyqtSignal()
+    samplingFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
 
     def __init__(self, state, factors, output=None, ns=0):
@@ -299,4 +299,4 @@ class Sampler(QObject):
             if shuffle:
                 np.random.shuffle(self.data)
         finally:
-            self.processFinished.emit()
+            self.samplingFinished.emit()
