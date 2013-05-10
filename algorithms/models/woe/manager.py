@@ -66,6 +66,22 @@ class WoeManager(QObject):
 
         self.woe = {}
 
+    def checkBins(self):
+        """
+        Check if bins are applicable to the factors
+        """
+        if self.bins != None:
+            for i, factor in enumerate(self.factors):
+                bin = self.bins[i]
+                if (bin != None) and (bin != [None]):
+                    for j in range(factor.getBandsCount()):
+                        b0, bMax = bin[j], bin[len(bin)-1]
+                        bandStat = factor.getBandStat(j+1)
+                        if bandStat['min'] >b0 or bandStat['max']<bMax:
+                            return False
+        return True
+
+
     def getConfidence(self):
         return self.confidence
 

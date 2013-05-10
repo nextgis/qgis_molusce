@@ -46,6 +46,20 @@ class TestWoEManager (unittest.TestCase):
         self.factraster  = ma.array(data = fact, mask=self.mask, dtype=np.int)
         self.sitesraster = ma.array(data = site, mask=self.mask, dtype=np.bool)
 
+    def test_CheckBins(self):
+        aa = AreaAnalyst(self.sites, self.sites)
+        w1 = WoeManager([self.factor], aa, bins = None)
+        self.assertTrue(w1.checkBins())
+        w1 = WoeManager([self.factor], aa, bins = {0: [None]})
+        self.assertTrue(w1.checkBins())
+        w1 = WoeManager([self.factor], aa, bins = {0: [1, 2, 3]})
+        self.assertTrue(w1.checkBins())
+        w1 = WoeManager([self.factor], aa, bins = {0: [1, 4]})
+        self.assertFalse(w1.checkBins())
+        w1 = WoeManager([self.factor], aa, bins = {0: [-1, 1]})
+        self.assertFalse(w1.checkBins())
+
+
     def test_WoeManager(self):
         aa = AreaAnalyst(self.sites, self.sites)
         w1 = WoeManager([self.factor], aa)
