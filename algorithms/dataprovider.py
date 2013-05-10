@@ -267,7 +267,6 @@ class Raster(object):
                 mask = binaryzation(r, [nodataValue])
                 r = ma.array(data = r, mask=mask)
             self.bands[i-1, :, :] = r
-        self.resetMask()
         self.isNormalazed = False
 
     def resetMask(self, maskVals = None):

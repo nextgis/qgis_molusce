@@ -8,7 +8,7 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from molusce.algorithms.utils import masks_identity, sizes_equal, reclass
+from molusce.algorithms.utils import masks_identity, sizes_equal, reclass, binaryzation
 
 class TestRaster (unittest.TestCase):
     def setUp(self):
@@ -36,6 +36,33 @@ class TestRaster (unittest.TestCase):
             [False, False, False,],
             [True , False, False,]
         ])
+
+    def test_binarization(self):
+        t = binaryzation(self.X, [0,2])
+        answer1 = np.array([
+            [False, True, False,],
+            [False, True, False,],
+            [True,  False,True ]
+        ])
+        answer2 = np.array([
+            [False, True, False,],
+            [False, True, False,],
+            [True,  False,True ]
+        ])
+        assert_array_equal(t, answer1)
+        assert_array_equal(t, answer2)
+
+        mask = [[False, False, False],
+                 [False, False, False],
+                 [True, False, False]]
+        data = [[False, True, False],
+                 [False, True, False],
+                 [False, False, True]]
+        assert_array_equal(binaryzation(np.array(data), [True]), np.ma.array(data=data, mask = mask))
+        data = np.ma.array(data=data, mask=mask)
+        assert_array_equal(binaryzation(data, [True]), np.ma.array(data=data, mask = mask))
+
+
 
     def test_masks_identity(self):
         self.X, self.Y = masks_identity(self.X, self.Y)

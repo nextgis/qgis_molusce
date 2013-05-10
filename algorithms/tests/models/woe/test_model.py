@@ -129,6 +129,8 @@ class TestModel (unittest.TestCase):
             [None,   wMinus1,  wPlus1, ]
         ]
         ans = ma.array(data=ans, mask=self.mask)
+        #print ans
+        #print  woe(self.factor, self.sites)
         np.testing.assert_equal(woe(self.factor, self.sites), ans)
 
         # Multiclass

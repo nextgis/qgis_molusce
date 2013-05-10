@@ -37,7 +37,7 @@ def _binary_woe(factor, sites, unitcell=1):
     if factor.shape != sites.shape:
         raise WoeError('Factor and sites rasters have different shapes!')
     # Check masked areas of sites and factors are the same
-    if not np.array_equal( factor.mask, sites.mask ):
+    if (factor.mask.shape != () and sites.mask.shape !=() ) and not np.array_equal( factor.mask, sites.mask ): # if mask = False ,then mask.shape==()
         raise WoeError('Masked areas of factor and sites rasters are different!')
 
 

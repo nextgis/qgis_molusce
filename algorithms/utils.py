@@ -15,12 +15,22 @@ class UtilsError(Exception):
 
 def binaryzation( raster, trueList ):
     '''Raster binarization.
-    
+
     @param trueList     List of raster values converted into true
     @return raster      Binary raster
     '''
-    f = np.vectorize(lambda x: True if x in trueList else False )
-    return f(raster)
+    try:
+        data = np.ma.getdata(raster)
+        mask = np.ma.getmask(raster)
+    except AttributeError:
+        data = raster
+        mask = False
+    shape = raster.shape
+    data.shape = (-1,)
+    res = np.in1d(data, trueList)
+    res.shape = shape
+    data.shape = shape
+    return np.ma.array(data=res, mask=mask)
 
 
 def get_gradations(band):
