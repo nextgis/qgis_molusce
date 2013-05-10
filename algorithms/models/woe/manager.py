@@ -83,78 +83,82 @@ class WoeManager(QObject):
         '''
         Predict the changes.
         '''
-        self.rangeChanged.emit(self.tr("Initialize model %p%"), 1)
-        geodata = self.changeMap.getGeodata()
-        rows, cols = geodata['ySize'], geodata['xSize']
-        if not self.changeMap.geoDataMatch(state):
-            raise WoeManagerError('Geometries of the state and changeMap rasters are different!')
+        try:
+            self.rangeChanged.emit(self.tr("Initialize model %p%"), 1)
+            geodata = self.changeMap.getGeodata()
+            rows, cols = geodata['ySize'], geodata['xSize']
+            if not self.changeMap.geoDataMatch(state):
+                raise WoeManagerError('Geometries of the state and changeMap rasters are different!')
 
-        prediction = np.zeros((rows,cols))
-        confidence = np.zeros((rows,cols))
-        mask = np.zeros((rows,cols))
+            prediction = np.zeros((rows,cols))
+            confidence = np.zeros((rows,cols))
+            mask = np.zeros((rows,cols))
 
-        stateBand = state.getBand(1)
+            stateBand = state.getBand(1)
 
-        self.updateProgress.emit()
-        self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
-
-        for r in xrange(rows):
-            for c in xrange(cols):
-                oldMax, currMax = -1000, -1000  # Small numbers
-                indexMax = -1                   # Index of Max weight
-                initCat = stateBand[r,c]        # Init category (state before transition)
-                try:
-                    codes = self.analyst.codes(initCat)   # Possible final states
-                    for code in codes:
-                        try: # If not all possible transitions are presented in the changeMap
-                            map = self.woe[code]     # Get WoE map of transition 'code'
-                        except KeyError:
-                            continue
-                        w = map[r,c]        # The weight in the (r,c)-pixel
-                        if w > currMax:
-                            indexMax, oldMax, currMax = code, currMax, w
-                    prediction[r,c] = indexMax
-                    confidence[r,c] = sigmoid(currMax) - sigmoid(oldMax)
-                except ValueError:
-                    mask[r,c] = 1
             self.updateProgress.emit()
+            self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
 
-        predicted_band = np.ma.array(data=prediction, mask=mask)
-        self.prediction = Raster()
-        self.prediction.create([predicted_band], geodata)
-        confidence_band = np.ma.array(data=confidence, mask=mask)
-        self.confidence = Raster()
-        self.confidence.create([confidence_band], geodata)
-        self.processFinished.emit()
+            for r in xrange(rows):
+                for c in xrange(cols):
+                    oldMax, currMax = -1000, -1000  # Small numbers
+                    indexMax = -1                   # Index of Max weight
+                    initCat = stateBand[r,c]        # Init category (state before transition)
+                    try:
+                        codes = self.analyst.codes(initCat)   # Possible final states
+                        for code in codes:
+                            try: # If not all possible transitions are presented in the changeMap
+                                map = self.woe[code]     # Get WoE map of transition 'code'
+                            except KeyError:
+                                continue
+                            w = map[r,c]        # The weight in the (r,c)-pixel
+                            if w > currMax:
+                                indexMax, oldMax, currMax = code, currMax, w
+                        prediction[r,c] = indexMax
+                        confidence[r,c] = sigmoid(currMax) - sigmoid(oldMax)
+                    except ValueError:
+                        mask[r,c] = 1
+                self.updateProgress.emit()
+
+            predicted_band = np.ma.array(data=prediction, mask=mask)
+            self.prediction = Raster()
+            self.prediction.create([predicted_band], geodata)
+            confidence_band = np.ma.array(data=confidence, mask=mask)
+            self.confidence = Raster()
+            self.confidence.create([confidence_band], geodata)
+        finally:
+            self.processFinished.emit()
 
     def train(self):
         '''
         Train the model
         '''
-        iterCount = len(self.codes)*len(self.factors)
-        self.rangeChanged.emit(self.tr("Training WoE... %p%"), iterCount)
-        changeMap = self.changeMap.getBand(1)
-        for code in self.codes:
-            sites = binaryzation(changeMap, [code])
-            # Reclass factors (continuous factor -> ordinal factor)
-            wMap = np.ma.zeros(changeMap.shape) # The map of summary weight of the all factors
-            for k in xrange(len(self.factors)):
-                fact = self.factors[k]
-                if self.bins: # Get bins of the factor
-                    bin = self.bins[k]
-                    if (bin != None) and fact.getBandsCount() != len(bin):
-                        raise WoeManagerError("Count of bins list for multiband factor is't equal to band count!")
-                else: bin = None
-                for i in range(1, fact.getBandsCount()+1):
-                    band = fact.getBand(i)
-                    if bin and bin[i-1]:
-                        band = reclass(band, bin[i-1])
-                    band, sites = masks_identity(band, sites)   # Combine masks of the rasters
-                    weights = woe(band, sites, self.unit_cell)  # WoE for the 'code' (initState->finalState) transition and current 'factor'.
-                    wMap = wMap + weights
-                self.updateProgress.emit()
-            # Reclassification finished => set WoE coefficients
-            self.woe[code]=wMap             # WoE for all factors and the transition code.
-        self.processFinished.emit()
+        try:
+            iterCount = len(self.codes)*len(self.factors)
+            self.rangeChanged.emit(self.tr("Training WoE... %p%"), iterCount)
+            changeMap = self.changeMap.getBand(1)
+            for code in self.codes:
+                sites = binaryzation(changeMap, [code])
+                # Reclass factors (continuous factor -> ordinal factor)
+                wMap = np.ma.zeros(changeMap.shape) # The map of summary weight of the all factors
+                for k in xrange(len(self.factors)):
+                    fact = self.factors[k]
+                    if self.bins: # Get bins of the factor
+                        bin = self.bins[k]
+                        if (bin != None) and fact.getBandsCount() != len(bin):
+                            raise WoeManagerError("Count of bins list for multiband factor is't equal to band count!")
+                    else: bin = None
+                    for i in range(1, fact.getBandsCount()+1):
+                        band = fact.getBand(i)
+                        if bin and bin[i-1]:
+                            band = reclass(band, bin[i-1])
+                        band, sites = masks_identity(band, sites)   # Combine masks of the rasters
+                        weights = woe(band, sites, self.unit_cell)  # WoE for the 'code' (initState->finalState) transition and current 'factor'.
+                        wMap = wMap + weights
+                    self.updateProgress.emit()
+                # Reclassification finished => set WoE coefficients
+                self.woe[code]=wMap             # WoE for all factors and the transition code.
+        finally:
+            self.processFinished.emit()
 
 

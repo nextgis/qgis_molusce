@@ -146,9 +146,11 @@ class Simulator(QObject):
         '''
         Make N iterations of simulation.
         '''
-        for i in range(N):
-            self.__sim()
-        self.simFinished.emit()
+        try:
+            for i in range(N):
+                self.__sim()
+        finally:
+            self.simFinished.emit()
 
     def updatePrediction(self, state):
         '''

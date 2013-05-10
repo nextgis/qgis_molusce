@@ -223,79 +223,80 @@ class Sampler(QObject):
                                     Balanced        Undersampling of major categories and/or oversampling of minor categories.
         @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
+        try:
+            geodata = self.factorsGeoData
+            for r in [state, output]:
+                if not r.geoDataMatch(raster=None, geodata = geodata):
+                    raise SamplerError("Geometries of the inputs or output rasters are distinct from factor's geometry!")
 
-        geodata = self.factorsGeoData
-        for r in [state, output]:
-            if not r.geoDataMatch(raster=None, geodata = geodata):
-                raise SamplerError("Geometries of the inputs or output rasters are distinct from factor's geometry!")
-
-        # Real count of the samples
-        # (if self.ns>0 some samples may be incomplete because a neighbour has NoData value)
-        samples_count = 0
-
-        cols, rows  = state.getXSize(), state.getYSize()
-
-        if mode == 'All':
-            # Approximate sample count:
-            band = state.getBand(1)
-            nulls  =  band.mask.sum() # Count of NA
-            samples = rows * cols - nulls
-
-        # Array for samples
-        self.data = np.zeros(samples, dtype=[('coords', float, 2), ('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
-
-        if mode == 'All':
-            self.rangeChanged.emit(self.tr("Sampling..."), rows - 2*self.ns)
-            # i,j  are pixel indexes
-            for i in xrange(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
-                for j in xrange(self.ns, cols - self.ns):     # the samples are incomplete in that region
-                    sample = self._getSample(state, output, i,j)
-                    if sample != None:
-                        self.data[samples_count] = sample
-                        samples_count = samples_count + 1
-                self.updateProgress.emit()
-            self.data = self.data[:samples_count]   # Crop unused part of the array
-
-        elif mode == 'Normal':
-            self.rangeChanged.emit(self.tr("Sampling..."), samples)
-            while samples_count< samples:
-                row = np.random.randint(rows)
-                col = np.random.randint(cols)
-                sample = self._getSample(state, output, row,col)
-                if sample != None:
-                    self.data[samples_count] = sample
-                    samples_count = samples_count + 1
-                    self.updateProgress.emit()
-        elif mode == 'Balanced':
-            # Analyze output categories:
-            categories = output.getBandGradation(1)
-            band = output.getBand(1)
-
-            # Select pixels
-            average = samples / len(categories)
-
+            # Real count of the samples
+            # (if self.ns>0 some samples may be incomplete because a neighbour has NoData value)
             samples_count = 0
-            self.rangeChanged.emit(self.tr("Sampling..."), samples)
-            # Get counts[i] samples of "cat" categories
-            for i,cat in enumerate(categories):
-                # Find indices of "cat"-category pixels
-                rows, cols = np.where(band == cat)
-                indices = [ (rows[i], cols[i]) for i in xrange(len(cols))]
 
-                # Get samples
-                count = 0
-                while count< average:
-                    index = np.random.randint(len(indices))
-                    row, col = indices[index]
+            cols, rows  = state.getXSize(), state.getYSize()
+
+            if mode == 'All':
+                # Approximate sample count:
+                band = state.getBand(1)
+                nulls  =  band.mask.sum() # Count of NA
+                samples = rows * cols - nulls
+
+            # Array for samples
+            self.data = np.zeros(samples, dtype=[('coords', float, 2), ('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
+
+            if mode == 'All':
+                self.rangeChanged.emit(self.tr("Sampling..."), rows - 2*self.ns)
+                # i,j  are pixel indexes
+                for i in xrange(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
+                    for j in xrange(self.ns, cols - self.ns):     # the samples are incomplete in that region
+                        sample = self._getSample(state, output, i,j)
+                        if sample != None:
+                            self.data[samples_count] = sample
+                            samples_count = samples_count + 1
+                    self.updateProgress.emit()
+                self.data = self.data[:samples_count]   # Crop unused part of the array
+
+            elif mode == 'Normal':
+                self.rangeChanged.emit(self.tr("Sampling..."), samples)
+                while samples_count< samples:
+                    row = np.random.randint(rows)
+                    col = np.random.randint(cols)
                     sample = self._getSample(state, output, row,col)
                     if sample != None:
                         self.data[samples_count] = sample
                         samples_count = samples_count + 1
-                        count = count + 1
                         self.updateProgress.emit()
-        else:
-            raise SamplerError('The mode of sampling is unknown!')
+            elif mode == 'Balanced':
+                # Analyze output categories:
+                categories = output.getBandGradation(1)
+                band = output.getBand(1)
 
-        if shuffle:
-            np.random.shuffle(self.data)
-        self.processFinished.emit()
+                # Select pixels
+                average = samples / len(categories)
+
+                samples_count = 0
+                self.rangeChanged.emit(self.tr("Sampling..."), samples)
+                # Get counts[i] samples of "cat" categories
+                for i,cat in enumerate(categories):
+                    # Find indices of "cat"-category pixels
+                    rows, cols = np.where(band == cat)
+                    indices = [ (rows[i], cols[i]) for i in xrange(len(cols))]
+
+                    # Get samples
+                    count = 0
+                    while count< average:
+                        index = np.random.randint(len(indices))
+                        row, col = indices[index]
+                        sample = self._getSample(state, output, row,col)
+                        if sample != None:
+                            self.data[samples_count] = sample
+                            samples_count = samples_count + 1
+                            count = count + 1
+                            self.updateProgress.emit()
+            else:
+                raise SamplerError('The mode of sampling is unknown!')
+
+            if shuffle:
+                np.random.shuffle(self.data)
+        finally:
+            self.processFinished.emit()

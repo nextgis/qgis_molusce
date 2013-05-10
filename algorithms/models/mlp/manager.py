@@ -310,36 +310,37 @@ class MlpManager(QObject):
         @param momentum         Learning momentum.
         @param continue_train   If False then it is new training cycle, reset weights training and validation error. If True, then continue training.
         '''
+        try:
+            samples_count = len(self.data)
+            val_sampl_count = samples_count*valPercent/100
+            apply_validation = True if val_sampl_count>0 else False # Use or not use validation set
+            train_sampl_count = samples_count - val_sampl_count
 
-        samples_count = len(self.data)
-        val_sampl_count = samples_count*valPercent/100
-        apply_validation = True if val_sampl_count>0 else False # Use or not use validation set
-        train_sampl_count = samples_count - val_sampl_count
+            # Set first train_sampl_count as training set, the other as validation set
+            train_indexes = (0, train_sampl_count)
+            val_indexes = (train_sampl_count, samples_count) if apply_validation else None
 
-        # Set first train_sampl_count as training set, the other as validation set
-        train_indexes = (0, train_sampl_count)
-        val_indexes = (train_sampl_count, samples_count) if apply_validation else None
-
-        if not continue_train: self.resetMlp()
-        self.minValError = self.getValError()  # The minimum error that is achieved on the validation set
-        last_train_err = self.getTrainError()
-        best_weights = self.copyWeights()   # The MLP weights when minimum error that is achieved on the validation set
-
-        for epoch in range(epochs):
-            self.trainEpoch(train_indexes, lrate, momentum)
-            self.computePerformance(train_indexes, val_indexes)
-            self.updateGraph.emit(self.getTrainError(), self.getValError())
-            self.updateDeltaRMS.emit(self.getMinValError() - self.getValError())
-
+            if not continue_train: self.resetMlp()
+            self.minValError = self.getValError()  # The minimum error that is achieved on the validation set
             last_train_err = self.getTrainError()
-            self.setTrainError(last_train_err)
-            if apply_validation and (self.getValError() < self.getMinValError()):
-                self.minValError = self.getValError()
-                best_weights = self.copyWeights()
-                self.updateMinValErr.emit(self.getMinValError())
+            best_weights = self.copyWeights()   # The MLP weights when minimum error that is achieved on the validation set
 
-        self.setMlpWeights(best_weights)
-        self.processFinished.emit()
+            for epoch in range(epochs):
+                self.trainEpoch(train_indexes, lrate, momentum)
+                self.computePerformance(train_indexes, val_indexes)
+                self.updateGraph.emit(self.getTrainError(), self.getValError())
+                self.updateDeltaRMS.emit(self.getMinValError() - self.getValError())
+
+                last_train_err = self.getTrainError()
+                self.setTrainError(last_train_err)
+                if apply_validation and (self.getValError() < self.getMinValError()):
+                    self.minValError = self.getValError()
+                    best_weights = self.copyWeights()
+                    self.updateMinValErr.emit(self.getMinValError())
+
+            self.setMlpWeights(best_weights)
+        finally:
+            self.processFinished.emit()
 
     def trainEpoch(self, train_indexes, lrate=0.1, momentum=0.01):
         '''Perform a training epoch on the MLP
