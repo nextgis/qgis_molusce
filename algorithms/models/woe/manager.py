@@ -75,7 +75,12 @@ class WoeManager(QObject):
                 bin = self.bins[i]
                 if (bin != None) and (bin != [None]):
                     for j in range(factor.getBandsCount()):
-                        b0, bMax = bin[j], bin[len(bin)-1]
+                        b = bin[j]
+                        tmp = b[:]
+                        tmp.sort()
+                        if b!=tmp: # Mast be sorted
+                            return False
+                        b0, bMax = b[0], b[len(b)-1]
                         bandStat = factor.getBandStat(j+1)
                         if bandStat['min'] >b0 or bandStat['max']<bMax:
                             return False

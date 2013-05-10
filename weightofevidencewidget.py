@@ -31,7 +31,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 
 from algorithms.models.area_analysis.manager import AreaAnalyst
-from algorithms.models.woe.manager import WoeManager
+from algorithms.models.woe.manager import WoeManager, WoeManagerError
 
 from ui.ui_weightofevidencewidgetbase import Ui_Widget
 
@@ -100,7 +100,24 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     myBins = self.__getBins()
 
     self.plugin.logMessage(self.tr("Init WoE model"))
-    self.model = WoeManager(self.inputs["factors"].values(), analyst, bins=myBins)
+    try:
+      self.model = WoeManager(self.inputs["factors"].values(), analyst, bins=myBins)
+    except WoeManagerError as err:
+      QMessageBox.warning(self.plugin,
+                          self.tr("Initialization error"),
+                          err.msg
+                         )
+      return
+
+    print "b"
+    print self.model.checkBins()
+
+    if not self.model.checkBins():
+      QMessageBox.warning(self.plugin,
+                          self.tr("Wrong binning"),
+                          self.tr("Bins are not correctly specifed. Please specify them and try again")
+                         )
+      return
 
     self.model.moveToThread(self.plugin.workThread)
     self.plugin.workThread.started.connect(self.model.train)
@@ -111,7 +128,6 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
 
     self.plugin.workThread.start()
     self.inputs["model"] = self.model
-    self.plugin.logMessage(self.tr("WoE model trained"))
 
   def __trainFinished(self):
     self.plugin.workThread.started.disconnect(self.model.train)
@@ -120,6 +136,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     self.model.processFinished.disconnect(self.__trainFinished)
     self.model.processFinished.disconnect(self.plugin.workThread.quit)
     self.plugin.restoreProgressState()
+    self.plugin.logMessage(self.tr("WoE model trained"))
 
   def __getBins(self):
     bins = dict()
@@ -133,7 +150,14 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
           items = self.tblReclass.findItems(name + self.tr(" (band %1)").arg(b), Qt.MatchExactly)
           idx = self.tblReclass.indexFromItem(items[0])
           reclassList = self.tblReclass.item(idx.row(), 1).text()
-          lst[b] = [int(j) for j in reclassList.split(" ")]
+          try:
+            lst[b] = [int(j) for j in reclassList.split(" ")]
+          except ValueError:
+            QMessageBox.warning(self.plugin,
+                          self.tr("Wrong binning"),
+                          self.tr("Bins are not correctly specifed. Please specify them and try again")
+                         )
+            return {}
       bins[n] = lst
       n += 1
 

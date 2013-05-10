@@ -52,11 +52,13 @@ class TestWoEManager (unittest.TestCase):
         self.assertTrue(w1.checkBins())
         w1 = WoeManager([self.factor], aa, bins = {0: [None]})
         self.assertTrue(w1.checkBins())
-        w1 = WoeManager([self.factor], aa, bins = {0: [1, 2, 3]})
+        w1 = WoeManager([self.factor], aa, bins = {0: [[1, 2, 3]]})
         self.assertTrue(w1.checkBins())
-        w1 = WoeManager([self.factor], aa, bins = {0: [1, 4]})
+        w1 = WoeManager([self.factor], aa, bins = {0: [[1, 4]]})
         self.assertFalse(w1.checkBins())
-        w1 = WoeManager([self.factor], aa, bins = {0: [-1, 1]})
+        w1 = WoeManager([self.factor], aa, bins = {0: [[-1, 1]]})
+        self.assertFalse(w1.checkBins())
+        w1 = WoeManager([self.factor], aa, bins = {0: [[2, 3, 1]]})
         self.assertFalse(w1.checkBins())
 
 
