@@ -474,7 +474,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if not "model" in self.inputs:
       QMessageBox.warning(self,
                           self.tr("Missed model"),
-                          self.tr("Model not selected please select and train model")
+                          self.tr("Nothing to save, samples were not yet generated as the model was not trained. Train the model first.")
                          )
       return
 
