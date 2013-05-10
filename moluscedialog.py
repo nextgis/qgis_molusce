@@ -474,7 +474,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if not "model" in self.inputs:
       QMessageBox.warning(self,
                           self.tr("Missed model"),
-                          self.tr("Nothing to save, samples were not yet generated as the model was not trained. Train the model first.")
+                          self.tr("Model not selected please select and train model.")
                          )
       return
 
@@ -735,7 +735,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if not "model" in self.inputs:
       QMessageBox.warning(self,
                           self.tr("Missed model"),
-                          self.tr("Model not selected please select and train model")
+                          self.tr("Nothing to save, samples were not yet generated as the model was not trained. Train the model first.")
                          )
       return
     model = self.inputs["model"]
@@ -753,7 +753,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
                                      )
     if fileName.isEmpty():
       return
-    self.leValidationError.setText(fileName)
     model.saveSamples(unicode(fileName))
 
   def __selectSimulationOutput(self):

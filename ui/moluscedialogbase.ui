@@ -27,7 +27,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabInputs">
       <attribute name="title">
@@ -310,9 +310,6 @@
              <number>1000</number>
             </property>
            </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="leValidationError"/>
           </item>
           <item>
            <widget class="QPushButton" name="btnSelectSamples">
