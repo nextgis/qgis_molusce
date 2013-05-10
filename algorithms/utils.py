@@ -12,6 +12,13 @@ class UtilsError(Exception):
         self.msg = msg
 
 
+def in1d(ar1, ar2, assume_unique=False):
+    # The code was taken from numpy v.1.7
+    mask = np.zeros(len(ar1), dtype=np.bool)
+    for a in ar2:
+        mask |= (ar1 == a)
+    return mask
+
 
 def binaryzation( raster, trueList ):
     '''Raster binarization.
@@ -27,7 +34,7 @@ def binaryzation( raster, trueList ):
         mask = False
     shape = raster.shape
     data.shape = (-1,)
-    res = np.in1d(data, trueList)
+    res = in1d(data, trueList)
     res.shape = shape
     data.shape = shape
     return np.ma.array(data=res, mask=mask)
