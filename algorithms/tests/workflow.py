@@ -29,6 +29,17 @@ def main(initRaster, finalRaster, factors):
     crosstab = CrossTableManager(initRaster, finalRaster)
     print "Finish Making CrossTable", clock(), '\n'
 
+    # Create and Train Analyst
+    print 'Start creating AreaAnalyst...', clock()
+    analyst = AreaAnalyst(initRaster, finalRaster)
+    print 'Finish creating AreaAnalyst ...', clock(), '\n'
+
+    print 'Start Making Change Map...', clock()
+    analyst = AreaAnalyst(initRaster,finalRaster)
+    changeMap = analyst.getChangeMap()
+    print 'Finish Making Change Map', clock(), '\n'
+
+
     #~ # Create and Train ANN Model
     #~ model = MlpManager(ns=0)
     #~ model.createMlp(initRaster, factors, finalRaster, [10])
@@ -52,7 +63,7 @@ def main(initRaster, finalRaster, factors):
     #~ # Create and Train LR Model
     #~ model = LR(ns=1)
     #~ print 'Start Setting LR Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=1000)
+    #~ model.setTrainingData(initRaster, factors, changeMap, mode='Balanced', samples=1000)
     #~ print 'Finish Setting Trainig Data', clock(), '\n'
     #~ print 'Start LR Training...', clock()
     #~ model.train()

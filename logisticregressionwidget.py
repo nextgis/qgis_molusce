@@ -88,7 +88,6 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.model.updateProgress.connect(self.plugin.showProgress)
     self.model.rangeChanged.connect(self.plugin.setProgressRange)
     self.model.samplingFinished.connect(self.training)
-    #self.model.samplingFinished.connect(self.plugin.workThread.quit)
     self.plugin.workThread.start()
 
 
@@ -97,7 +96,6 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.model.updateProgress.disconnect(self.plugin.showProgress)
     self.model.rangeChanged.connect(self.plugin.setProgressRange)
     self.model.samplingFinished.disconnect(self.training)
-    #self.model.samplingFinished.disconnect(self.plugin.workThread.quit)
     self.plugin.workThread.quit()
     self.plugin.restoreProgressState()
 
