@@ -14,9 +14,6 @@ class CoeffError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
-
-
-
 def correlation(X, Y):
     '''
     Define correlation coefficient of the rasters.
@@ -116,6 +113,8 @@ def kappa(X, Y, mode=None):
         result = (pa - pexpect)/(pmax - pexpect)
     elif mode == "histo":
         result = (pmax - pexpect)/(1 - pexpect)
+    elif mode == "all":
+        result = {"loc": (pa - pexpect)/(pmax - pexpect), "histo": (pmax - pexpect)/(1 - pexpect), "overal": (pa - pexpect)/(1-pexpect)}
     else:
         raise CoeffError('Unknown mode of kappa statistics!')
     return result
