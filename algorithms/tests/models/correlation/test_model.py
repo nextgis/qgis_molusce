@@ -9,7 +9,7 @@ import math
 import numpy as np
 from numpy import ma as ma
 
-from molusce.algorithms.models.correlation.model  import correlation, cramer, jiu, kappa
+from molusce.algorithms.models.correlation.model  import DependenceCoef # correlation, cramer, jiu, kappa
 
 class TestModel (unittest.TestCase):
 
@@ -68,6 +68,7 @@ class TestModel (unittest.TestCase):
 
 
     def test_correlation(self):
+        dc = DependenceCoef(self.X, self.Y)
         n = len(np.ma.compressed(self.X))
         mean_x = np.ma.mean(self.X)
         mean_y = np.ma.mean(self.Y)
@@ -75,24 +76,31 @@ class TestModel (unittest.TestCase):
         self.S_x = np.std(self.X)
         self.S_y = np.std(self.Y)
         self.R = self.cov / (self.S_x * self.S_y)
-        self.assertEqual(correlation(self.X,self.Y), self.R,'correlation failed')
-        self.assertEqual(correlation(self.X,self.X), 1.0,'correlation failed')
+        self.assertEqual(dc.correlation(), self.R,'correlation failed')
+
+        dc = DependenceCoef(self.X, self.X)
+        self.assertEqual(dc.correlation(), 1.0,'correlation failed')
 
 
     def test_cramer(self):
+        dc = DependenceCoef(self.X, self.Y)
         self.T_cramer = np.subtract(self.T, self.T_cramer_expect)
         self.T_cramer = np.square(self.T_cramer)
         self.x2 = np.sum(np.divide(self.T_cramer, self.T_cramer_expect))
         self.cramer = math.sqrt(self.x2 / (self.total * min(self.r-1,self.s-1)))
-        self.assertEqual(cramer(self.X, self.Y), self.cramer, 'cramer coeff failed')
-        self.assertEqual(cramer(self.X, self.X), 1.0, 'cramer coeff failed')
+        self.assertEqual(dc.cramer(), self.cramer, 'cramer coeff failed')
+
+        dc = DependenceCoef(self.X, self.X)
+        self.assertEqual(dc.cramer(), 1.0, 'cramer coeff failed')
 
     def test_jiu(self):
-        self.assertAlmostEqual(jiu(self.X, self.Y), 0.385101639127, 9, 'joint coeff failed')
-        self.assertEqual(jiu(self.X, self.X), 1.0, 'joint coeff failed')
-
+        dc = DependenceCoef(self.X, self.Y)
+        self.assertAlmostEqual(dc.jiu(), 0.385101639127, 9, 'joint coeff failed')
+        dc = DependenceCoef(self.X, self.X)
+        self.assertEqual(dc.jiu(), 1.0, 'joint coeff failed')
 
     def test_kappa(self):
+        dc = DependenceCoef(self.Y, self.Y1)
         #~ table =  np.array([
             #~ [1, 2, 1],
             #~ [0, 1, 0],
@@ -103,13 +111,13 @@ class TestModel (unittest.TestCase):
         Pmax = 6.0/8
 
         answer = (Pa - Pe)/(1 - Pe)
-        self.assertEqual(kappa(self.Y, self.Y1), answer)
+        self.assertEqual(dc.kappa(), answer)
 
         answer = (Pa - Pe)/(Pmax - Pe)
-        self.assertEqual(kappa(self.Y, self.Y1, mode='loc'), answer)
+        self.assertEqual(dc.kappa(mode='loc'), answer)
 
         answer = (Pmax - Pe)/(1 - Pe)
-        self.assertEqual(kappa(self.Y, self.Y1, mode='histo'), answer)
+        self.assertEqual(dc.kappa(mode='histo'), answer)
 
 
 if __name__ == "__main__":
