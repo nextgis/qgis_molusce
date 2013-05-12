@@ -15,6 +15,8 @@
 #       publisher={Elsevier}
 #   }
 
+from PyQt4.QtCore import *
+
 import numpy as np
 from numpy import ma as ma
 
@@ -39,14 +41,21 @@ def weightedSum(arr, weights):
 
 
 
-class EBudget(object):
+class EBudget(QObject):
     """Error Budget model"""
+
+    rangeChanged = pyqtSignal(str, int)
+    updateProgress = pyqtSignal()
+    validationFinished = pyqtSignal(object)
+    logMessage = pyqtSignal(str)
 
     def __init__ (self, referenceMap, simulatedMap):
         """
         @param referenceMap     Reference raster
         @param simulatedMap     Simulated raster
         """
+
+        QObject.__init__(self)
 
         if referenceMap.getBandsCount() + simulatedMap.getBandsCount() !=2:
             raise EBError('The reference and simulated rasters must be 1-band rasters!')
@@ -98,6 +107,7 @@ class EBudget(object):
         for cat in self.categories:
             newSj[cat] = np.zeros((newRows, newCols))
             newRj[cat] = np.zeros((newRows, newCols))
+        self.rangeChanged.emit(self.tr("An interation of validation %p%"), newRows)
         r = 0
         while r/scale < newRows:
             c = 0
@@ -116,6 +126,7 @@ class EBudget(object):
                         newRj[cat][r/scale, c/scale] = 1.0*np.sum(R[r: r+scale, c: c+scale]*w)/sum_w
                 c = c + scale
             r = r + scale
+            self.updateProgress.emit()
 
         self.W = newW
         self.Rj = newRj
@@ -131,6 +142,7 @@ class EBudget(object):
             result[i] = {'NoNo': self.NoNo(), 'NoMed': self.NoMed(), 'MedMed': self.MedMed(), 'MedPer': self.MedPer(), 'PerPer': self.PerPer()}
             self.coarse(scale)
 
+        self.validationFinished.emit(result)
         return result
 
 

@@ -548,19 +548,17 @@ class MolusceDialog(QDialog, Ui_Dialog):
       return
     self.eb = EBudget(reference, simulated)
 
+    nIter=self.spnValIterCount.value()
     self.eb.moveToThread(self.workThread)
-    print "dsfgdg"
-    self.workThread.started.connect(self.eb.getStat)
+
+    self.workThread.started.connect(self.validate)
     self.eb.rangeChanged.connect(self.setProgressRange)
     self.eb.updateProgress.connect(self.showProgress)
     self.eb.validationFinished.connect(self.validationDone)
     self.workThread.start()
 
   def validationDone(self, stat):
-    #stat = (nIter=self.spnValIterCount.value())
-
-    print "dsgfdsgdfs"
-    self.workThread.started.disconnect(self.eb.getStat)
+    self.workThread.started.disconnect(self.validate)
     self.eb.rangeChanged.disconnect(self.setProgressRange)
     self.eb.updateProgress.disconnect(self.showProgress)
     self.eb.validationFinished.disconnect(self.validationDone)
@@ -811,6 +809,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.leReferenceMapPath.setText(fileName)
     elif senderName == "btnSelectSimulatedMap":
       self.leSimulatedMapPath.setText(fileName)
+
+  def validate(self):
+    nIter=self.spnValIterCount.value()
+    self.eb.getStat(nIter)
 
   def logMessage(self, message):
     self.txtMessages.append(QString("[%1] %2")
