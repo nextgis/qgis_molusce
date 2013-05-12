@@ -37,8 +37,6 @@ from ui.ui_weightofevidencewidgetbase import Ui_Widget
 
 import molusceutils as utils
 
-MAX_CATEGORIES = 15
-
 class WeightOfEvidenceWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):
     QWidget.__init__(self, parent)
@@ -67,7 +65,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
 
     for k, v in self.inputs["factors"].iteritems():
       for b in xrange(v.getBandsCount()):
-        if len(v.getBandGradation(b)) > MAX_CATEGORIES:
+        if v.isCountinues(b):
           self.tblReclass.insertRow(row)
           name = utils.getLayerById(k).name()
           item = QTableWidgetItem(name + self.tr(" (band %1)").arg(b))
@@ -142,7 +140,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       lst = []
       for b in xrange(v.getBandsCount()):
         lst.append(None)
-        if len(v.getBandGradation(b)) > MAX_CATEGORIES:
+        if v.isCountinues(b):
           name = utils.getLayerById(k).name()
           items = self.tblReclass.findItems(name + self.tr(" (band %1)").arg(b), Qt.MatchExactly)
           idx = self.tblReclass.indexFromItem(items[0])
