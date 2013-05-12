@@ -57,7 +57,7 @@ import multicriteriaevaluationwidget
 from ui.ui_moluscedialogbase import Ui_Dialog
 
 from algorithms.dataprovider import Raster, ProviderError
-from algorithms.models.correlation.model import correlation, cramer, jiu, kappa, CoeffError
+from algorithms.models.correlation.model import DependenceCoef, CoeffError
 from algorithms.models.crosstabs.manager import CrossTableManager
 from algorithms.models.area_analysis.manager import AreaAnalyst
 from algorithms.models.simulator.sim import Simulator
@@ -285,14 +285,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if method == self.tr("Correlation"):
       for col in xrange(dimensions[1]):
         for row in xrange(dimensions[0]):
-          corr = correlation(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          corr = depCoef.correlation()
           item = QTableWidgetItem(unicode(corr))
           self.tblCorrelation.setItem(row, col, item)
     elif method == self.tr("Kappa (classic)"):
       try:
         for col in xrange(dimensions[1]):
           for row in xrange(dimensions[0]):
-            corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode=None)
+            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+            corr = depCoef.kappa(mode=None)
             item = QTableWidgetItem(unicode(corr))
             self.tblCorrelation.setItem(row, col, item)
       except CoeffError as ex:
@@ -304,7 +306,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
       try:
         for col in xrange(dimensions[1]):
           for row in xrange(dimensions[0]):
-            corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode='loc')
+            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+            corr = depCoef.kappa(mode='loc')
             item = QTableWidgetItem(unicode(corr))
             self.tblCorrelation.setItem(row, col, item)
       except CoeffError as ex:
@@ -316,7 +319,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
       try:
         for col in xrange(dimensions[1]):
           for row in xrange(dimensions[0]):
-            corr = kappa(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1), mode='histo')
+            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+            corr = depCoef.kappa(mode='histo')
             item = QTableWidgetItem(unicode(corr))
             self.tblCorrelation.setItem(row, col, item)
       except CoeffError as ex:
@@ -327,13 +331,15 @@ class MolusceDialog(QDialog, Ui_Dialog):
     elif method == self.tr("Cramer's Coefficient"):
       for col in xrange(dimensions[1]):
         for row in xrange(dimensions[0]):
-          corr = cramer(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          corr = depCoef.cramer()
           item = QTableWidgetItem(unicode(corr))
           self.tblCorrelation.setItem(row, col, item)
     elif method == self.tr("Joint Information Uncertainty"):
       for col in xrange(dimensions[1]):
         for row in xrange(dimensions[0]):
-          corr = jiu(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          corr = depCoef.jiu()
           item = QTableWidgetItem(unicode(corr))
           self.tblCorrelation.setItem(row, col, item)
     self.tblCorrelation.resizeRowsToContents()

@@ -9,7 +9,7 @@ import math
 import numpy as np
 from numpy import ma as ma
 
-from molusce.algorithms.models.correlation.model  import DependenceCoef # correlation, cramer, jiu, kappa
+from molusce.algorithms.models.correlation.model  import DependenceCoef
 
 class TestModel (unittest.TestCase):
 
