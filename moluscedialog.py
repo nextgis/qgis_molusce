@@ -546,8 +546,27 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("Can't read file: '%s'" % unicode(self.leSimulatedMapPath.text()))
                          )
       return
-    eb = EBudget(reference, simulated)
-    stat = eb.getStat(nIter=self.spnValIterCount.value())
+    self.eb = EBudget(reference, simulated)
+
+    self.eb.moveToThread(self.workThread)
+    print "dsfgdg"
+    self.workThread.started.connect(self.eb.getStat)
+    self.eb.rangeChanged.connect(self.setProgressRange)
+    self.eb.updateProgress.connect(self.showProgress)
+    self.eb.validationFinished.connect(self.validationDone)
+    self.workThread.start()
+
+  def validationDone(self, stat):
+    #stat = (nIter=self.spnValIterCount.value())
+
+    print "dsgfdsgdfs"
+    self.workThread.started.disconnect(self.eb.getStat)
+    self.eb.rangeChanged.disconnect(self.setProgressRange)
+    self.eb.updateProgress.disconnect(self.showProgress)
+    self.eb.validationFinished.disconnect(self.validationDone)
+    self.workThread.quit()
+    self.eb = None
+    self.restoreProgressState()
 
     self.scaleData = stat.keys()
     self.noNoData, self.noMedData, self.medMedData, self.medPerData, self.perPerData = [], [], [], [], []
