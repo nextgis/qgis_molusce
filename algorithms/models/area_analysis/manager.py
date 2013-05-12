@@ -110,16 +110,18 @@ class AreaAnalyst(QObject):
         f, s = self.first, self.second
         rows, cols = self.geodata['ySize'], self.geodata['xSize']
         band = np.zeros([rows, cols])
-        self.rangeChanged.emit(self.tr("Creating change map %p%"), rows)
-        for i in xrange(rows):
-            for j in xrange(cols):
-                if (f.mask.shape == ()) or (not f.mask[i,j]):
-                    r = f[i,j]
-                    c = s[i,j]
-                    band[i, j] = self.encode(r, c)
-            self.updateProgress.emit()
-        bands = [np.ma.array(data = band, mask = f.mask)]
-        raster = Raster()
-        raster.create(bands, self.geodata)
-        self.processFinished.emit(raster)
-        self.changeMap = raster
+        try:
+            self.rangeChanged.emit(self.tr("Creating change map %p%"), rows)
+            for i in xrange(rows):
+                for j in xrange(cols):
+                    if (f.mask.shape == ()) or (not f.mask[i,j]):
+                        r = f[i,j]
+                        c = s[i,j]
+                        band[i, j] = self.encode(r, c)
+                self.updateProgress.emit()
+            bands = [np.ma.array(data = band, mask = f.mask)]
+            raster = Raster()
+            raster.create(bands, self.geodata)
+            self.changeMap = raster
+        finally:
+            self.processFinished.emit(raster)
