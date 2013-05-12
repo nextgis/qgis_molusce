@@ -129,6 +129,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.btnStartValidation.clicked.connect(self.startValidation)
 
+    self.btnKappaSelectRefMap.clicked.connect(self.__selectValidationMap)
+    self.btnKappaSelectSimMap.clicked.connect(self.__selectValidationMap)
+
+    self.btnKappaCalc.clicked.connect(self.startKappaValidation)
+
     self.tabWidget.currentChanged.connect(self.tabChanged)
 
     self.manageGui()
@@ -591,6 +596,26 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.valCanvas.draw()
 
+  def startKappaValidation(self):
+    try:
+      reference = Raster(unicode(self.leKappaRefMap.text()))
+    except ProviderError:
+      QMessageBox.warning(self,
+                          self.tr("Can't read file"),
+                          self.tr("Can't read file: '%s'" % unicode(self.leKappaRefMap.text()))
+                         )
+      return
+    try:
+      simulated = Raster(unicode(self.leKappaSimMap.text()))
+    except ProviderError:
+      QMessageBox.warning(self,
+                          self.tr("Can't read file"),
+                          self.tr("Can't read file: '%s'" % unicode(self.leKappaSimMap.text()))
+                         )
+      return
+
+
+
   def tabChanged(self, index):
     if  index == 1:     # tabCorrelationChecking
       self.__populateRasterNames()
@@ -809,6 +834,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.leReferenceMapPath.setText(fileName)
     elif senderName == "btnSelectSimulatedMap":
       self.leSimulatedMapPath.setText(fileName)
+    elif senderName == "btnKappaSelectSimMap":
+      self.leKappaSimMap.setText(fileName)
+    elif senderName =="btnKappaSelectRefMap":
+      self.leKappaRefMap.setText(fileName)
 
   def validate(self):
     nIter=self.spnValIterCount.value()
