@@ -56,6 +56,13 @@ class TestRaster (unittest.TestCase):
         self.assertTrue(self.r1.isMetricProj())
 
 
+    def test_isContinues(self):
+        rast = Raster('examples/multifact.tif')
+        self.assertFalse(rast.isCountinues(bandNo=1))
+        rast = Raster('examples/dist_roads.tif')
+        self.assertTrue(rast.isCountinues(bandNo=1))
+
+
     def test_getBandStat(self):
         stat = self.r1.getBandStat(1)
         self.assertAlmostEqual(stat['mean'], 15.0/9)

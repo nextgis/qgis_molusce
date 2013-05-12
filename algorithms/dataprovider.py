@@ -8,6 +8,9 @@ from numpy import ma as ma
 
 from utils import binaryzation, reclass, get_gradations
 
+# If a raster band has more then MAX_CATEGORIES catigiries, we will think that the band contains continues values
+MAX_CATEGORIES = 15
+
 class ProviderError(Exception):
     '''Base class for exceptions in this module.'''
     def __init__(self, msg):
@@ -209,6 +212,12 @@ class Raster(object):
 
     def getYSize(self):
         return self.geodata['ySize']
+
+    def isCountinues(self, bandNo):
+        """
+        Return true, if the band contains continues value.
+        """
+        return len(self.getBandGradation(bandNo)) > MAX_CATEGORIES
 
     def isMetricProj(self):
         '''
