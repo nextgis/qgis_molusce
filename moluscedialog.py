@@ -619,6 +619,22 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("Can't read file: '%s'" % unicode(self.leKappaSimMap.text()))
                          )
       return
+    for raster in [reference, simulated]:
+      if raster.isCountinues(bandNo=1):
+        QMessageBox.warning(self,
+                            self.tr("Kappa is not applicable"),
+                            self.tr("Kappa is not applicable to the file: '%s' because it's contains continues value" % unicode(raster.getFileName()))
+                           )
+        return
+    # Kappa
+    depCoef = DependenceCoef(reference.getBand(1), simulated.getBand(1))
+    kappas = depCoef.kappa(mode='all')
+    self.leKappaOveral.setText(QString.number(kappas["overal"]))
+    self.leKappaHisto.setText(QString.number(kappas["histo"]))
+    self.leKappaLoc.setText(QString.number(kappas["loc"]))
+    # % of Correctness
+    percent = depCoef.correctness()
+    self.leKappaCorrectness.setText(QString.number(percent))
 
 
 

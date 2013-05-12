@@ -40,6 +40,21 @@ class DependenceCoef(object):
         # R[0][1] = R[1][0] - correlation X--Y and Y--X
         return R[0][1]
 
+    def correctness(self):
+        """
+        % of correctness
+        """
+        table = self.getCrosstable()
+        crosstable = table.getCrosstable()
+        rows, cols = table.shape
+        if rows != cols:
+            raise CoeffError('The method is applicable for NxN crosstable only!')
+        n = table.n
+        s = 0
+        for i in range(rows):
+            s = s+ crosstable[i][i]
+        return 100.0*s/n
+
     def cramer(self):
         '''
         Define Cramer's relationship coefficient of the rasters for discrete values

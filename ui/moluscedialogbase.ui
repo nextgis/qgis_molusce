@@ -616,13 +616,25 @@
           <widget class="QLineEdit" name="leKappaSimMap"/>
          </item>
          <item row="3" column="1">
-          <widget class="QLineEdit" name="leKappaOveral"/>
+          <widget class="QLineEdit" name="leKappaOveral">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLineEdit" name="leKappaCorrectness"/>
+          <widget class="QLineEdit" name="leKappaCorrectness">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="5" column="1">
-          <widget class="QLineEdit" name="leKappaLoc"/>
+          <widget class="QLineEdit" name="leKappaLoc">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="4" column="1">
           <widget class="QLineEdit" name="leKappaHisto"/>
