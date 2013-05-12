@@ -251,7 +251,10 @@ class Raster(object):
             self.isNormalazed = mode
 
     def _read(self):
-        data = gdal.Open( self.filename )
+        try:
+            data = gdal.Open( self.filename )
+        except RuntimeError:
+            raise ProviderError("Can't read the file '%s'" % self.filename)
         if data is None:
             raise ProviderError("Can't read the file '%s'" % self.filename)
 
