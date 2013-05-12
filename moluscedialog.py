@@ -570,7 +570,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.medPer.set_xdata(numpy.array(self.scaleData))
     self.medPer.set_ydata(numpy.array(self.medPerData))
     self.perPer.set_xdata(numpy.array(self.scaleData))
-    self.perPer.set_ydata(numpy.array(self.medPerData))
+    self.perPer.set_ydata(numpy.array(self.perPerData))
 
     self.valCanvas.draw()
 
