@@ -160,9 +160,6 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
   def __checkValue(self, row, col):
     item = self.tblMatrix.item(row, col)
     value = float(item.text())
-    if value > 9 or value < 1:
-      item.setText("")
-      return
 
     self.tblMatrix.blockSignals(True)
     self.tblMatrix.item(col, row).setText(unicode(1.0/value))
