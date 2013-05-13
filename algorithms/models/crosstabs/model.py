@@ -54,14 +54,15 @@ class CrossTable(QObject):
             self.n = len(self.X)                 # Count of unmasked elements  (= sum of all elements of the table)
             self.updateProgress.emit()
 
-            self.rangeChanged.emit(self.tr("Computing Crosstable %p%"), self.n/1000) # 1/1000 to prevent too frequency updating
+            N = 1000
+            self.rangeChanged.emit(self.tr("Computing Crosstable %p%"), self.n/N) # 1/N to prevent too frequency updating
             k = 0
             for i in range(self.n):
                 class_num_x = self.graduation_x.index(self.X[i])
                 class_num_y = self.graduation_y.index(self.Y[i])
                 self._T[class_num_x][class_num_y] +=1
                 k = k+1
-                if k ==1000:
+                if k == N:
                     k = 0
                     self.updateProgress.emit()
         finally:
