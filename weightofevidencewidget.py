@@ -150,7 +150,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
           except ValueError:
             QMessageBox.warning(self.plugin,
                           self.tr("Wrong binning"),
-                          self.tr("Bins are not correctly specifed. Please specify them and try again")
+                          self.tr("Bins are not correctly specifed. Please specify them and try again (use space as separator)")
                          )
             return {}
       bins[n] = lst

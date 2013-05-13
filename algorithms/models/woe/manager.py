@@ -72,6 +72,7 @@ class WoeManager(QObject):
         """
         if self.bins != None:
             for i, factor in enumerate(self.factors):
+                factor.denormalize()
                 bin = self.bins[i]
                 if (bin != None) and (bin != [None]):
                     for j in range(factor.getBandsCount()):
