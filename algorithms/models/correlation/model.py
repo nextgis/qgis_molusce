@@ -47,7 +47,6 @@ class DependenceCoef(QObject):
         self.crosstable.computeCrosstable()
         self.processFinished.emit()
 
-
     def correlation(self):
         '''
         Define correlation coefficient of the rasters.
@@ -178,10 +177,17 @@ class DependenceCoef(QObject):
         self.crosstable.rangeChanged.disconnect(self.__crosstableProgressRangeChanged)
         self.crosstable.updateProgress.disconnect(self.__crosstableProgressChanged)
         self.crosstable.crossTableFinished.disconnect(self.__crosstableFinished)
+
     def __crosstableProgressChanged(self):
         self.updateProgress.emit()
 
     def __crosstableProgressRangeChanged(self, message, maxValue):
         self.rangeChanged.emit(message, maxValue)
+
+
+
+
+
+
 
 

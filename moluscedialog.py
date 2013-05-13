@@ -262,86 +262,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.logMessage(self.tr("Factors list cleared"))
 
   def correlationChecking(self):
-    index = self.cmbFirstRaster.currentIndex()
-    layerId = unicode(self.cmbFirstRaster.itemData(index, Qt.UserRole).toString())
-    first = {'Raster': self.inputs["factors"][layerId], 'Name': self.cmbFirstRaster.currentText()}
-    index = self.cmbSecondRaster.currentIndex()
-    layerId = unicode(self.cmbSecondRaster.itemData(index, Qt.UserRole).toString())
-    second = {'Raster': self.inputs["factors"][layerId], 'Name': self.cmbSecondRaster.currentText()}
+    if self.chkAllCorr.isChecked():
+      self.__checkAllCorr()
+    else:
+      self.__checkTwoCorr()
 
-    dimensions = first['Raster'].getBandsCount(), second['Raster'].getBandsCount()
-    self.tblCorrelation.setRowCount(dimensions[0])
-    self.tblCorrelation.setColumnCount(dimensions[1])
-    labels = []
-    for i in range(dimensions[0]):
-      labels.append(u"%s[%s]" % (first['Name'], i+1))
-    self.tblCorrelation.setVerticalHeaderLabels(labels)
-    labels = []
-    for i in range(dimensions[1]):
-      labels.append(u"%s[%s]" % (second['Name'], i+1))
-    self.tblCorrelation.setHorizontalHeaderLabels(labels)
-
-    method = self.cmbCorrCheckMethod.currentText()
-    if method == self.tr("Correlation"):
-      for col in xrange(dimensions[1]):
-        for row in xrange(dimensions[0]):
-          depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-          corr = depCoef.correlation()
-          item = QTableWidgetItem(unicode(corr))
-          self.tblCorrelation.setItem(row, col, item)
-    elif method == self.tr("Kappa (classic)"):
-      try:
-        for col in xrange(dimensions[1]):
-          for row in xrange(dimensions[0]):
-            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-            corr = depCoef.kappa(mode=None)
-            item = QTableWidgetItem(unicode(corr))
-            self.tblCorrelation.setItem(row, col, item)
-      except CoeffError as ex:
-        QMessageBox.warning(self,
-                          self.tr("Checking"),
-                          ex.msg
-                         )
-    elif method == self.tr("Kappa (loc)"):
-      try:
-        for col in xrange(dimensions[1]):
-          for row in xrange(dimensions[0]):
-            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-            corr = depCoef.kappa(mode='loc')
-            item = QTableWidgetItem(unicode(corr))
-            self.tblCorrelation.setItem(row, col, item)
-      except CoeffError as ex:
-        QMessageBox.warning(self,
-                          self.tr("Checking"),
-                          ex.msg
-                         )
-    elif method == self.tr("Kappa (histo)"):
-      try:
-        for col in xrange(dimensions[1]):
-          for row in xrange(dimensions[0]):
-            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-            corr = depCoef.kappa(mode='histo')
-            item = QTableWidgetItem(unicode(corr))
-            self.tblCorrelation.setItem(row, col, item)
-      except CoeffError as ex:
-        QMessageBox.warning(self,
-                          self.tr("Checking"),
-                          ex.msg
-                         )
-    elif method == self.tr("Cramer's Coefficient"):
-      for col in xrange(dimensions[1]):
-        for row in xrange(dimensions[0]):
-          depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-          corr = depCoef.cramer()
-          item = QTableWidgetItem(unicode(corr))
-          self.tblCorrelation.setItem(row, col, item)
-    elif method == self.tr("Joint Information Uncertainty"):
-      for col in xrange(dimensions[1]):
-        for row in xrange(dimensions[0]):
-          depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-          corr = depCoef.jiu()
-          item = QTableWidgetItem(unicode(corr))
-          self.tblCorrelation.setItem(row, col, item)
     self.tblCorrelation.resizeRowsToContents()
     self.tblCorrelation.resizeColumnsToContents()
 
@@ -654,8 +579,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.leKappaCorrectness.setText(QString.number(percent))
     self.depCoef = None
 
-
-
   def tabChanged(self, index):
     if  index == 1:     # tabCorrelationChecking
       self.__populateRasterNames()
@@ -750,6 +673,145 @@ class MolusceDialog(QDialog, Ui_Dialog):
     leg = self.valAxes.legend(('No location, no quantity inform.', 'No location, medium quantity inform.', 'Medium location, medium quantity inform.', 'Perfect location, medium quantity inform.', 'Perfect location, perfect quantity inform.'), 'lower right', shadow=False)
     for t in leg.get_texts():
         t.set_fontsize('small')
+
+  def __checkAllCorr(self):
+    dim = self.__bandCount()
+    self.tblCorrelation.setRowCount(dim)
+    self.tblCorrelation.setColumnCount(dim)
+
+    labels = []
+    mapping, labNo = {}, 0    # Maping between raster ID and label number
+    for k, v in self.inputs["factors"].iteritems():
+      for b in xrange(v.getBandsCount()):
+        name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1)))
+        mapping[k] = {}
+        mapping[k][b] = labNo
+        labNo = labNo + 1
+        labels.append(name)
+    self.tblCorrelation.setVerticalHeaderLabels(labels)
+    self.tblCorrelation.setHorizontalHeaderLabels(labels)
+
+    method = self.cmbCorrCheckMethod.currentText()
+    discreteMethods = [ # The methods need categorial values
+            self.tr("Kappa (classic)"), self.tr("Kappa (loc)"), self.tr("Kappa (histo)"),
+            self.tr("Cramer's Coefficient"), self.tr("Joint Information Uncertainty")
+    ]
+    # Loop over all rasters and all bands
+    for i, fact1 in self.inputs["factors"].iteritems():
+        for b1 in range(fact1.getBandsCount()):
+          labNo1 = mapping[i][b1]
+          for j, fact2 in self.inputs["factors"].iteritems():
+            if j<i:
+              continue
+            for b2 in range(fact2.getBandsCount()):
+              labNo2 = mapping[j][b2]
+
+              if labNo2==labNo1:
+                item = QTableWidgetItem(unicode("--"))
+              # Check if method is applicable to the bands
+              elif (fact1.isCountinues(b1+1) or fact2.isCountinues(b2+1)) and  method in discreteMethods:
+                item = QTableWidgetItem(unicode(self.tr("Not applicable")))
+              else:
+                depCoef = DependenceCoef(fact1.getBand(b1+1), fact2.getBand(b2+1))
+                if method == self.tr("Correlation"):
+                  coef = depCoef.correlation()
+                elif method ==self.tr("Kappa (classic)"):
+                  coef = depCoef.kappa(mode=None)
+                elif method ==self.tr("Kappa (loc)"):
+                  coef = depCoef.kappa(mode='loc')
+                elif method ==self.tr("Kappa (histo)"):
+                  coef = depCoef.kappa(mode='histo')
+                elif method ==self.tr("Joint Information Uncertainty"):
+                  coef = depCoef.jiu()
+                elif method ==self.tr("Cramer's Coefficient"):
+                  coef = depCoef.cramer()
+                item = QTableWidgetItem(unicode(coef))
+              self.tblCorrelation.setItem(labNo1, labNo2, item)
+
+
+
+
+  def __checkTwoCorr(self):
+    index = self.cmbFirstRaster.currentIndex()
+    layerId = unicode(self.cmbFirstRaster.itemData(index, Qt.UserRole).toString())
+    first = {'Raster': self.inputs["factors"][layerId], 'Name': self.cmbFirstRaster.currentText()}
+    index = self.cmbSecondRaster.currentIndex()
+    layerId = unicode(self.cmbSecondRaster.itemData(index, Qt.UserRole).toString())
+    second = {'Raster': self.inputs["factors"][layerId], 'Name': self.cmbSecondRaster.currentText()}
+
+    dimensions = first['Raster'].getBandsCount(), second['Raster'].getBandsCount()
+    self.tblCorrelation.setRowCount(dimensions[0])
+    self.tblCorrelation.setColumnCount(dimensions[1])
+    labels = []
+    for i in range(dimensions[0]):
+      labels.append(u"%s[%s]" % (first['Name'], i+1))
+    self.tblCorrelation.setVerticalHeaderLabels(labels)
+    labels = []
+    for i in range(dimensions[1]):
+      labels.append(u"%s[%s]" % (second['Name'], i+1))
+    self.tblCorrelation.setHorizontalHeaderLabels(labels)
+
+    method = self.cmbCorrCheckMethod.currentText()
+    if method == self.tr("Correlation"):
+      for col in xrange(dimensions[1]):
+        for row in xrange(dimensions[0]):
+          depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          corr = depCoef.correlation()
+          item = QTableWidgetItem(unicode(corr))
+          self.tblCorrelation.setItem(row, col, item)
+    elif method == self.tr("Kappa (classic)"):
+      try:
+        for col in xrange(dimensions[1]):
+          for row in xrange(dimensions[0]):
+            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+            corr = depCoef.kappa(mode=None)
+            item = QTableWidgetItem(unicode(corr))
+            self.tblCorrelation.setItem(row, col, item)
+      except CoeffError as ex:
+        QMessageBox.warning(self,
+                          self.tr("Checking"),
+                          ex.msg
+                         )
+    elif method == self.tr("Kappa (loc)"):
+      try:
+        for col in xrange(dimensions[1]):
+          for row in xrange(dimensions[0]):
+            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+            corr = depCoef.kappa(mode='loc')
+            item = QTableWidgetItem(unicode(corr))
+            self.tblCorrelation.setItem(row, col, item)
+      except CoeffError as ex:
+        QMessageBox.warning(self,
+                          self.tr("Checking"),
+                          ex.msg
+                         )
+    elif method == self.tr("Kappa (histo)"):
+      try:
+        for col in xrange(dimensions[1]):
+          for row in xrange(dimensions[0]):
+            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+            corr = depCoef.kappa(mode='histo')
+            item = QTableWidgetItem(unicode(corr))
+            self.tblCorrelation.setItem(row, col, item)
+      except CoeffError as ex:
+        QMessageBox.warning(self,
+                          self.tr("Checking"),
+                          ex.msg
+                         )
+    elif method == self.tr("Cramer's Coefficient"):
+      for col in xrange(dimensions[1]):
+        for row in xrange(dimensions[0]):
+          depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          corr = depCoef.cramer()
+          item = QTableWidgetItem(unicode(corr))
+          self.tblCorrelation.setItem(row, col, item)
+    elif method == self.tr("Joint Information Uncertainty"):
+      for col in xrange(dimensions[1]):
+        for row in xrange(dimensions[0]):
+          depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
+          corr = depCoef.jiu()
+          item = QTableWidgetItem(unicode(corr))
+          self.tblCorrelation.setItem(row, col, item)
 
   def __modeChanged(self, index):
     mode = self.cmbSamplingMode.itemData(index).toInt()[0]
