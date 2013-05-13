@@ -29,7 +29,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Reclass list</string>
+       <string>Bin breaks</string>
       </property>
      </column>
     </widget>

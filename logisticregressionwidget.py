@@ -129,7 +129,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     labels = []
     for i in range(rowCount):
-      labels.append(u"b%s" % (i,))
+      labels.append(u"β%s" % (i,))
     self.tblCoefficients.setVerticalHeaderLabels(labels)
     labels = []
     for i in range(colCount):
