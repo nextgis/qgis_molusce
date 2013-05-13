@@ -559,7 +559,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
       return
     self.eb = EBudget(reference, simulated)
 
-    nIter=self.spnValIterCount.value()
     self.eb.moveToThread(self.workThread)
 
     self.workThread.started.connect(self.validate)
@@ -626,15 +625,34 @@ class MolusceDialog(QDialog, Ui_Dialog):
                             self.tr("Kappa is not applicable to the file: '%s' because it's contains continues value" % unicode(raster.getFileName()))
                            )
         return
+
     # Kappa
-    depCoef = DependenceCoef(reference.getBand(1), simulated.getBand(1))
-    kappas = depCoef.kappa(mode='all')
+    self.depCoef = DependenceCoef(reference.getBand(1), simulated.getBand(1))
+
+    self.depCoef.moveToThread(self.workThread)
+
+    self.workThread.started.connect(self.depCoef.calculateCrosstable)
+    self.depCoef.rangeChanged.connect(self.setProgressRange)
+    self.depCoef.updateProgress.connect(self.showProgress)
+    self.depCoef.processFinished.connect(self.kappaValDone)
+    self.workThread.start()
+
+  def kappaValDone(self):
+    self.workThread.started.disconnect(self.depCoef.calculateCrosstable)
+    self.depCoef.rangeChanged.disconnect(self.setProgressRange)
+    self.depCoef.updateProgress.disconnect(self.showProgress)
+    self.depCoef.processFinished.disconnect(self.kappaValDone)
+    self.workThread.quit()
+    self.restoreProgressState()
+
+    kappas = self.depCoef.kappa(mode='all')
     self.leKappaOveral.setText(QString.number(kappas["overal"]))
     self.leKappaHisto.setText(QString.number(kappas["histo"]))
     self.leKappaLoc.setText(QString.number(kappas["loc"]))
     # % of Correctness
-    percent = depCoef.correctness()
+    percent = self.depCoef.correctness()
     self.leKappaCorrectness.setText(QString.number(percent))
+    self.depCoef = None
 
 
 

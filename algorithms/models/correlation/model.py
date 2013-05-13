@@ -1,6 +1,8 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from PyQt4.QtCore import *
+
 import math
 import numpy as np
 from numpy import ma as ma
@@ -8,24 +10,43 @@ from numpy import ma as ma
 from molusce.algorithms.utils import masks_identity, sizes_equal
 from molusce.algorithms.models.crosstabs.model import CrossTable
 
+from time import sleep
 
 class CoeffError(Exception):
     '''Base class for exceptions in this module.'''
     def __init__(self, msg):
         self.msg = msg
 
-class DependenceCoef(object):
+class DependenceCoef(QObject):
+
+    rangeChanged = pyqtSignal(str, int)
+    updateProgress = pyqtSignal()
+    processFinished = pyqtSignal()
+    logMessage = pyqtSignal(str)
 
     def __init__(self, X, Y):
+
+        QObject.__init__(self)
+
         self.X = X
         self.Y = Y
 
-        self.crossTable = None
+        self.crosstable = None
 
     def getCrosstable(self):
-        if self.crossTable == None:
-            self.crosstable = CrossTable(self.X, self.Y)
+        if self.crosstable == None:
+            self.calculateCrosstable()
         return self.crosstable
+
+    def calculateCrosstable(self):
+        self.rangeChanged.emit('Initialization...', 2)
+        self.updateProgress.emit()
+        self.crosstable = CrossTable(self.X, self.Y)
+        self.updateProgress.emit()
+        self.__propagateCrossTableSignals()
+        self.crosstable.computeCrosstable()
+        self.processFinished.emit()
+
 
     def correlation(self):
         '''
@@ -38,6 +59,7 @@ class DependenceCoef(object):
         # function np.corrcoef return array of coefficients
         # R[0][0] = R[1][1] = 1.0 - correlation X--X and Y--Y
         # R[0][1] = R[1][0] - correlation X--Y and Y--X
+
         return R[0][1]
 
     def correctness(self):
@@ -53,6 +75,7 @@ class DependenceCoef(object):
         s = 0
         for i in range(rows):
             s = s+ crosstable[i][i]
+
         return 100.0*s/n
 
     def cramer(self):
@@ -78,7 +101,6 @@ class DependenceCoef(object):
         Cramer = math.sqrt(x2/(table.n*min(cols-1, rows-1)))
 
         return Cramer
-
 
     def jiu(self):
         '''
@@ -110,7 +132,6 @@ class DependenceCoef(object):
         U = 2.0 * ((H_x + H_y - H_xy)/(H_x + H_y))
 
         return U
-
 
     def kappa(self, mode=None):
         '''
@@ -145,6 +166,22 @@ class DependenceCoef(object):
             result = {"loc": (pa - pexpect)/(pmax - pexpect), "histo": (pmax - pexpect)/(1 - pexpect), "overal": (pa - pexpect)/(1-pexpect)}
         else:
             raise CoeffError('Unknown mode of kappa statistics!')
+
         return result
+
+    def __propagateCrossTableSignals(self):
+        self.crosstable.rangeChanged.connect(self.__crosstableProgressRangeChanged)
+        self.crosstable.updateProgress.connect(self.__crosstableProgressChanged)
+        self.crosstable.crossTableFinished.connect(self.__crosstableFinished)
+
+    def __crosstableFinished(self):
+        self.crosstable.rangeChanged.disconnect(self.__crosstableProgressRangeChanged)
+        self.crosstable.updateProgress.disconnect(self.__crosstableProgressChanged)
+        self.crosstable.crossTableFinished.disconnect(self.__crosstableFinished)
+    def __crosstableProgressChanged(self):
+        self.updateProgress.emit()
+
+    def __crosstableProgressRangeChanged(self, message, maxValue):
+        self.rangeChanged.emit(message, maxValue)
 
 
