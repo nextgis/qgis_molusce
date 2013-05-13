@@ -33,6 +33,8 @@ from qgis.core import *
 from algorithms.models.area_analysis.manager import AreaAnalyst
 from algorithms.models.mce.mce import MCE
 
+import spinboxdelegate
+
 from ui.ui_multicriteriaevaluationwidgetbase import Ui_Widget
 
 import molusceutils as utils
@@ -139,6 +141,7 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.tblMatrix.setVerticalHeaderLabels(labels)
     self.tblMatrix.setHorizontalHeaderLabels(labels)
 
+    self.delegate = spinboxdelegate.SpinBoxDelegate(self.tblMatrix.model())
     for row in xrange(bandCount):
       for col in xrange(bandCount):
         item = QTableWidgetItem()
@@ -149,6 +152,7 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
           item.setFlags(item.flags() ^ Qt.ItemIsEditable)
 
         self.tblMatrix.setItem(row, col, item)
+      self.tblMatrix.setItemDelegateForRow(row, self.delegate)
 
     self.tblMatrix.resizeRowsToContents()
     self.tblMatrix.resizeColumnsToContents()
