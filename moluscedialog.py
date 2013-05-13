@@ -819,6 +819,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
       return
     model.saveSamples(unicode(fileName))
 
+    if self.chkLoadSamples.isChecked():
+      newLayer = QgsVectorLayer(fileName, QFileInfo(fileName).baseName(), "ogr")
+
+      if newLayer.isValid():
+        QgsMapLayerRegistry.instance().addMapLayer(newLayer)
+      else:
+        QMessageBox.warning(self,
+                            self.tr("Can't open file"),
+                            self.tr("Error loading output shapefile:\n%1")
+                            .arg(unicode(fileName))
+                           )
+
   def __selectSimulationOutput(self):
     senderName = self.sender().objectName()
 
@@ -908,6 +920,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     # samples and model tab
     self.settings.setValue("ui/samplingMode", self.cmbSamplingMode.itemData(self.cmbSamplingMode.currentIndex()).toInt()[0])
     self.settings.setValue("ui/samplesCount", self.spnSamplesCount.value())
+    self.settings.setValue("ui/loadSamples", self.chkLoadSamples.isChecked())
 
     # simulation tab
     self.settings.setValue("ui/createRiskFunction", self.chkRiskFunction.isChecked())
@@ -920,6 +933,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     samplingMode = self.settings.value("ui/samplingMode", 1).toInt()[0]
     self.cmbSamplingMode.setCurrentIndex(self.cmbSamplingMode.findData(samplingMode))
     self.spnSamplesCount.setValue(self.settings.value("ui/samplesCount", 1000).toInt()[0])
+    self.chkLoadSamples.setChecked(self.settings.value("ui/loadSamples", False).toBool())
 
     # simulation tab
     self.chkRiskFunction.setChecked(self.settings.value("ui/createRiskFunction", False).toBool())
