@@ -53,6 +53,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.manageGui()
 
   def manageGui(self):
+    self.tabLRResults.setCurrentIndex(0)
     self.spnNeighbourhood.setValue(self.settings.value("ui/LR/neighborhood", 1).toInt()[0])
 
   def startFitModel(self):
@@ -104,6 +105,8 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     # populate table
     self.showCoefficients()
+    self.showStdDeviations()
+    self.showPValues()
 
     self.plugin.logMessage(self.tr("LR model trained"))
 
@@ -147,6 +150,80 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblCoefficients.resizeColumnsToContents()
 
     self.leLRAccuracy.setText(QString.number(accuracy))
+
+  def showStdDeviations(self):
+    if self.model is None:
+      QMessageBox.warning(self.plugin,
+                          self.tr("Model is not initialised"),
+                          self.tr("To get standard deviations you need to train model first")
+                         )
+      return
+
+    fm = self.model.getIntercept()
+    coef = self.model.getCoef()
+    accuracy = self.model.getAccuracy()
+
+    colCount = len(fm)
+    rowCount = len(coef[0]) + 1
+    self.tblStdDev.clear()
+    self.tblStdDev.setColumnCount(colCount)
+    self.tblStdDev.setRowCount(rowCount)
+
+    labels = []
+    for i in range(rowCount):
+      labels.append(u"β%s" % (i,))
+    self.tblStdDev.setVerticalHeaderLabels(labels)
+    labels = []
+    for i in range(colCount):
+      labels.append(u"Class %s" % (i+1,))
+    self.tblStdDev.setHorizontalHeaderLabels(labels)
+
+    for i in xrange(len(fm)):
+      item = QTableWidgetItem(unicode(fm[i]))
+      self.tblStdDev.setItem(0, i, item)
+      for j in xrange(len(coef[i])):
+        item = QTableWidgetItem(unicode(coef[i][j]))
+        self.tblStdDev.setItem(j + 1, i, item)
+
+    self.tblStdDev.resizeRowsToContents()
+    self.tblStdDev.resizeColumnsToContents()
+
+  def showPValues(self):
+    if self.model is None:
+      QMessageBox.warning(self.plugin,
+                          self.tr("Model is not initialised"),
+                          self.tr("To get p-values you need to train model first")
+                         )
+      return
+
+    fm = self.model.getIntercept()
+    coef = self.model.getCoef()
+    accuracy = self.model.getAccuracy()
+
+    colCount = len(fm)
+    rowCount = len(coef[0]) + 1
+    self.tblPValues.clear()
+    self.tblPValues.setColumnCount(colCount)
+    self.tblPValues.setRowCount(rowCount)
+
+    labels = []
+    for i in range(rowCount):
+      labels.append(u"β%s" % (i,))
+    self.tblPValues.setVerticalHeaderLabels(labels)
+    labels = []
+    for i in range(colCount):
+      labels.append(u"Class %s" % (i+1,))
+    self.tblPValues.setHorizontalHeaderLabels(labels)
+
+    for i in xrange(len(fm)):
+      item = QTableWidgetItem(unicode(fm[i]))
+      self.tblPValues.setItem(0, i, item)
+      for j in xrange(len(coef[i])):
+        item = QTableWidgetItem(unicode(coef[i][j]))
+        self.tblPValues.setItem(j + 1, i, item)
+
+    self.tblPValues.resizeRowsToContents()
+    self.tblPValues.resizeColumnsToContents()
 
   def __setTraningData(self):
     self.model.setTrainingData(self.inputs["initial"],
