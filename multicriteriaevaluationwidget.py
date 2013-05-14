@@ -113,6 +113,13 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
     self.plugin.logMessage(self.tr("MCE model trained"))
 
+    weights = self.model.getWeights()
+    for i, w in enumerate(weights):
+        item = QTableWidgetItem(unicode(w))
+        self.tblWeights.setItem(0, i, item)
+    self.tblWeights.resizeRowsToContents()
+    self.tblWeights.resizeColumnsToContents()
+
     # Check consistency of the matrix
     c = self.model.getConsistency()
     if c < 0.1:
@@ -132,6 +139,10 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.tblMatrix.setRowCount(bandCount)
     self.tblMatrix.setColumnCount(bandCount)
 
+    self.tblWeights.clear()
+    self.tblWeights.setRowCount(1)
+    self.tblWeights.setColumnCount(bandCount)
+
     labels = []
     for k, v in self.inputs["factors"].iteritems():
       for b in xrange(v.getBandsCount()):
@@ -140,6 +151,8 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
     self.tblMatrix.setVerticalHeaderLabels(labels)
     self.tblMatrix.setHorizontalHeaderLabels(labels)
+    self.tblWeights.setHorizontalHeaderLabels(labels)
+    self.tblWeights.setVerticalHeaderLabels([QString(u"Weights")])
 
     self.delegate = spinboxdelegate.SpinBoxDelegate(self.tblMatrix.model())
     for row in xrange(bandCount):
@@ -157,6 +170,8 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.tblMatrix.resizeRowsToContents()
     self.tblMatrix.resizeColumnsToContents()
 
+    self.tblWeights.resizeRowsToContents()
+
   def __checkValue(self, row, col):
     item = self.tblMatrix.item(row, col)
     value = float(item.text())
@@ -167,6 +182,8 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
     self.tblMatrix.resizeRowsToContents()
     self.tblMatrix.resizeColumnsToContents()
+    self.tblWeights.resizeRowsToContents()
+    self.tblWeights.resizeColumnsToContents()
 
   def __checkMatrix(self):
     bandCount = self.inputs["bandCount"]

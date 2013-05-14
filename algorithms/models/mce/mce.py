@@ -96,7 +96,7 @@ class MCE(object):
         self.weights = None     # Weights of the factors, calculated using wMatr
                                 # It's a list, the length is self.dim
                                 # first element is the weight of first band of the first factor and so on:
-                                # [W_f1, ... weights of 1-st factors ... , W_f2, ... weights of 1-st factors..., W_fn, ...]
+                                # [W_f1, ... weights of 1-st factors ... , W_f2, ... weights of 2-nd factors..., W_fn, ...]
 
         self.consistency =None  # Consistency ratio of the comparison matrix.
 
