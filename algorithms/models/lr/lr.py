@@ -10,6 +10,7 @@ from sklearn import linear_model as lm
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
 from molusce.algorithms.models.sampler.sampler import Sampler
+from molusce.algorithms.models.correlation.model import DependenceCoef
 
 class LRError(Exception):
     '''Base class for exceptions in this module.'''
@@ -46,6 +47,7 @@ class LR(QObject):
         self.prediction = None  # Raster of the LR prediction results
         self.confidence = None  # Raster of the LR results confidence
         self.accuracy   = None  # Intern accuracy score
+        self.Kappa      = 0     #  Kappa value
 
     def getAccuracy(self):
         return self.accuracy
@@ -58,6 +60,9 @@ class LR(QObject):
 
     def getIntercept(self):
         return self.logreg.intercept_
+
+    def getKappa(self):
+        return self.Kappa
 
     def getPrediction(self, state, factors):
         self._predict(state, factors)
@@ -173,12 +178,14 @@ class LR(QObject):
 
         self.data = self.sampler.data
 
-
-
     def train(self):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
         Y = self.data['output']
         self.logreg.fit(X, Y)
         self.accuracy = self.logreg.score(X,Y)
+        out = self.logreg.predict(X)
+        depCoef = DependenceCoef(np.ma.array(out), np.ma.array(Y), expand=True)
+        self.Kappa = depCoef.kappa(mode=None)
+
 
 
