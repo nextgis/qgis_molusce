@@ -129,9 +129,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.btnStartValidation.clicked.connect(self.startValidation)
 
-    self.btnKappaSelectRefMap.clicked.connect(self.__selectValidationMap)
-    self.btnKappaSelectSimMap.clicked.connect(self.__selectValidationMap)
-
     self.btnKappaCalc.clicked.connect(self.startKappaValidation)
 
     self.tabWidget.currentChanged.connect(self.tabChanged)
@@ -528,19 +525,19 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def startKappaValidation(self):
     try:
-      reference = Raster(unicode(self.leKappaRefMap.text()))
+      reference = Raster(unicode(self.leReferenceMapPath.text()))
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % unicode(self.leKappaRefMap.text()))
+                          self.tr("Can't read file: '%s'" % unicode(self.leReferenceMapPath.text()))
                          )
       return
     try:
-      simulated = Raster(unicode(self.leKappaSimMap.text()))
+      simulated = Raster(unicode(self.leSimulatedMapPath.text()))
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % unicode(self.leKappaSimMap.text()))
+                          self.tr("Can't read file: '%s'" % unicode(self.leSimulatedMapPath.text()))
                          )
       return
     for raster in [reference, simulated]:
@@ -948,10 +945,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.leReferenceMapPath.setText(fileName)
     elif senderName == "btnSelectSimulatedMap":
       self.leSimulatedMapPath.setText(fileName)
-    elif senderName == "btnKappaSelectSimMap":
-      self.leKappaSimMap.setText(fileName)
-    elif senderName =="btnKappaSelectRefMap":
-      self.leKappaRefMap.setText(fileName)
 
   def validate(self):
     nIter=self.spnValIterCount.value()
