@@ -301,12 +301,23 @@ class MolusceDialog(QDialog, Ui_Dialog):
     dimensions = len(stat["init"])
     self.tblStatistics.clear()
     self.tblStatistics.setRowCount(dimensions)
-    self.tblStatistics.setColumnCount(6)
+    self.tblStatistics.setColumnCount(7)
 
-    labels = [unicode(i) for i in xrange(1, 7)]
+    labels = []
+    colors = []
+    layer = utils.getLayerById(self.initRasterId)
+    if layer.drawingStyle() == QgsRasterLayer.SingleBandPseudoColor or layer.drawingStyle() == QgsRasterLayer.SingleBandGray:
+      legend = layer.legendSymbologyItems()
+      for i in legend:
+        labels.append(unicode(i[0]))
+        colors.append(i[1])
+    else:
+      labels = [unicode(i) for i in xrange(1, 7)]
+
     self.tblStatistics.setVerticalHeaderLabels(labels)
 
-    labels = [self.leInitYear.text(),
+    labels = [self.tr("Class color"),
+              self.leInitYear.text(),
               self.leFinalYear.text(),
               u"Δ",
               self.leInitYear.text() + " %",
@@ -315,12 +326,20 @@ class MolusceDialog(QDialog, Ui_Dialog):
              ]
     self.tblStatistics.setHorizontalHeaderLabels(labels)
 
-    self.__addTableColumn(0, stat["init"])
-    self.__addTableColumn(1, stat["final"])
-    self.__addTableColumn(2, stat["deltas"])
-    self.__addTableColumn(3, stat["initPerc"])
-    self.__addTableColumn(4, stat["finalPerc"])
-    self.__addTableColumn(5, stat["deltasPerc"])
+    # legend colors
+    d = len(colors)
+    if d > 0:
+      for i in xrange(0, d):
+        item = QTableWidgetItem("")
+        item.setBackground(QBrush(colors[i]))
+        self.tblStatistics.setItem(i, 0, item)
+
+    self.__addTableColumn(1, stat["init"])
+    self.__addTableColumn(2, stat["final"])
+    self.__addTableColumn(3, stat["deltas"])
+    self.__addTableColumn(4, stat["initPerc"])
+    self.__addTableColumn(5, stat["finalPerc"])
+    self.__addTableColumn(6, stat["deltasPerc"])
 
     self.tblStatistics.resizeRowsToContents()
     self.tblStatistics.resizeColumnsToContents()
@@ -333,10 +352,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblTransMatrix.setRowCount(dimensions)
     self.tblTransMatrix.setColumnCount(dimensions)
 
-    labels = [unicode(i) for i in xrange(1, dimensions + 1)]
-    self.tblTransMatrix.setVerticalHeaderLabels(labels)
+    labels = []
+    layer = utils.getLayerById(self.initRasterId)
+    if layer.drawingStyle() == QgsRasterLayer.SingleBandPseudoColor or layer.drawingStyle() == QgsRasterLayer.SingleBandGray:
+      legend = layer.legendSymbologyItems()
+      for i in legend:
+        labels.append(unicode(i[0]))
+    else:
+      labels = [unicode(i) for i in xrange(1, dimensions + 1)]
 
-    labels = [unicode(i) for i in xrange(1, dimensions + 1)]
+    self.tblTransMatrix.setVerticalHeaderLabels(labels)
     self.tblTransMatrix.setHorizontalHeaderLabels(labels)
 
     for row in xrange(0, dimensions):
