@@ -1000,6 +1000,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     layer = QgsRasterLayer(filePath, QFileInfo(filePath).baseName())
     if layer.isValid():
       QgsMapLayerRegistry.instance().addMapLayers([layer])
+      self.applyRasterStyle(layer)
     else:
       self.logMessage(self.tr("Can't load raster %1").arg(filePath))
 
@@ -1010,7 +1011,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     return bands
 
   def setProgressRange(self, message, maxValue):
-    #print "changed:", message
     self.progressBar.setFormat(message)
     self.progressBar.setRange(0, maxValue)
 
@@ -1019,7 +1019,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def restoreProgressState(self):
     self.progressBar.setFormat("%p%")
-    #print "restored"
     self.progressBar.setRange(0, 1)
     self.progressBar.setValue(0)
 
@@ -1053,3 +1052,53 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     # correlation tab
     self.chkAllCorr.setChecked(self.settings.value("ui/checkAllRasters", False).toBool())
+
+  def applyRasterStyle(self, layer):
+    if not utils.checkChangeMap(self.inputs):
+      return
+
+    stat = self.inputs["changeMap"].getBandStat(0)
+    minVal = float(stat["min"])
+    maxVal = float(stat["max"])
+    numberOfEntries = len(self.inputs["changeMap"].getBandGradation(0))
+    #minVal = maxVal - float(numberOfEntries)
+
+    entryValues = []
+    entryColors = []
+
+    colorRamp = QgsStyleV2().defaultStyle().colorRamp("Spectral")
+    currentValue = float(minVal)
+    intervalDiff = float(maxVal - minVal) / float(numberOfEntries - 1)
+
+    for i in xrange(numberOfEntries):
+      entryValues.append(currentValue)
+      currentValue += intervalDiff
+
+      entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
+      print i, entryValues[i], unicode(entryColors[i].name())
+
+    rasterShader = QgsRasterShader()
+    colorRampShader = QgsColorRampShader()
+
+    colorRampItems = []
+    for i in xrange(len(entryValues)):
+      item = QgsColorRampShader.ColorRampItem()
+      item.value = entryValues[i]
+      item.label = unicode(entryValues[i])
+      item.color = entryColors[i]
+      colorRampItems.append(item)
+
+    colorRampShader.setColorRampItemList(colorRampItems)
+    colorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
+    rasterShader.setRasterShaderFunction(colorRampShader)
+
+    renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rasterShader)
+    renderer.setClassificationMin(minVal)
+    renderer.setClassificationMax(maxVal)
+    renderer.setClassificationMinMaxOrigin(QgsRasterRenderer.minMaxOriginFromName("FullExtent"))
+
+    layer.setRenderer(renderer)
+    layer.setCacheImage(None)
+    layer.triggerRepaint()
+    self.iface.legendInterface().refreshLayerSymbology(layer)
+    QgsProject.instance().dirty(True)
