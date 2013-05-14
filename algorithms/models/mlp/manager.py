@@ -14,6 +14,7 @@ from numpy import ma as ma
 from molusce.algorithms.dataprovider import Raster, ProviderError
 from molusce.algorithms.models.mlp.model import MLP, sigmoid
 from molusce.algorithms.models.sampler.sampler import Sampler
+from molusce.algorithms.models.correlation.model import DependenceCoef
 
 class MlpManagerError(Exception):
     '''Base class for exceptions in this module.'''
@@ -28,6 +29,7 @@ class MlpManager(QObject):
     updateGraph = pyqtSignal(float, float)      # Train error, val. error
     updateMinValErr = pyqtSignal(float)         # Min validation error
     updateDeltaRMS  = pyqtSignal(float)         # Delta of RMS: min(valError) - currentValError
+    updateKappa     = pyqtSignal(float)         # Kappa value
     processFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
     rangeChanged = pyqtSignal(str, int)
@@ -49,6 +51,7 @@ class MlpManager(QObject):
         self.train_error = None # Error on training set
         self.val_error   = None # Error on validation set
         self.minValError = None # The minimum error that is achieved on the validation set
+        self.valKappa    = 0     # Kappa on on the validation set
         self.sampler     = None # Sampler
 
         # Results of the MLP prediction
@@ -80,9 +83,19 @@ class MlpManager(QObject):
         if val_ind:
             val_error = 0
             val_sampl = val_ind[1] - val_ind[0]
+            answers   = np.ma.zeros(val_sampl)
+            out       = np.ma.zeros(val_sampl)
             for i in xrange(val_ind[0], val_ind[1]):
+                sample = self.data[i]
                 val_error = val_error + self.computeMlpError(sample = self.data[i])
+
+                input = np.hstack( (sample['state'],sample['factors']) )
+                output = self.getOutput(input)
+                out[i-val_ind[0]]     = self.outCategory(output)
+                answers[i-val_ind[0]] = self.outCategory(sample['output'])
             self.setValError(val_error/val_sampl)
+            depCoef = DependenceCoef(out, answers, expand=True)
+            self.valKappa = depCoef.kappa(mode=None)
 
     def copyWeights(self):
         '''Deep copy of the MLP weights'''
@@ -153,6 +166,16 @@ class MlpManager(QObject):
     def getMlpTopology(self):
         return self.MLP.shape
 
+    def getKappa(self):
+        return self.valKappa
+
+    def outCategory(self, out_vector):
+        # Get index of the biggest output value as the result
+        biggest = max(out_vector)
+        res = list(out_vector).index(biggest)
+        res = self.catlist[res]
+        return res
+
     def getPrediction(self, state, factors):
         self._predict(state, factors)
         return self.prediction
@@ -206,10 +229,8 @@ class MlpManager(QObject):
                     input = self.sampler.get_inputs(state, i,j)
                     if input != None:
                         out = self.getOutput(input)
-                        # Get index of the biggest output value as the result
-                        biggest = max(out)
-                        res = list(out).index(biggest)
-                        predicted_band[i, j] = self.catlist[res]
+                        res = self.outCategory(out)
+                        predicted_band[i, j] = res
 
                         confidence = self.outputConfidence(out)
                         confidence_band[i, j] = confidence
@@ -330,6 +351,7 @@ class MlpManager(QObject):
                 self.computePerformance(train_indexes, val_indexes)
                 self.updateGraph.emit(self.getTrainError(), self.getValError())
                 self.updateDeltaRMS.emit(self.getMinValError() - self.getValError())
+                self.updateKappa.emit(self.getKappa())
 
                 last_train_err = self.getTrainError()
                 self.setTrainError(last_train_err)
@@ -355,6 +377,6 @@ class MlpManager(QObject):
             n = np.random.randint( *train_indexes )
             sample = self.data[n]
             input = np.hstack( (sample['state'],sample['factors']) )
-            self.getOutput( input )
+            self.getOutput( input )     # Forward propagation
             self.MLP.propagate_backward( sample['output'], lrate, momentum )
 

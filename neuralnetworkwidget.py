@@ -159,6 +159,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.updateGraph.connect(self.__updateGraph)
     self.model.updateDeltaRMS.connect(self.__updateRMS)
     self.model.updateMinValErr.connect(self.__updateValidationError)
+    self.model.updateKappa.connect(self.__updateKappa)
     self.model.processFinished.connect(self.__trainFinished)
     self.model.processFinished.connect(self.plugin.workThread.quit)
 
@@ -176,6 +177,9 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
 
   def __updateValidationError(self, error):
     self.leValidationError.setText(QString.number(error))
+
+  def __updateKappa(self, kappa):
+    self.leKappa.setText(QString.number(kappa))
 
   def __updateGraph(self, errTrain, errVal):
     self.dataTrain.append(errTrain)

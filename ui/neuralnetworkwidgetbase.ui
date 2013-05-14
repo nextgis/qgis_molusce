@@ -29,53 +29,6 @@
    </item>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="7" column="0" colspan="3">
-      <widget class="QPushButton" name="btnTrainNetwork">
-       <property name="text">
-        <string>Train neural network</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Learning rate</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Maximum iterations</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QSpinBox" name="spnNeigbourhood">
-       <property name="suffix">
-        <string> px</string>
-       </property>
-       <property name="minimum">
-        <number>0</number>
-       </property>
-       <property name="maximum">
-        <number>7</number>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1" colspan="2">
-      <widget class="QSpinBox" name="spnMaxIterations">
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>1000000</number>
-       </property>
-       <property name="value">
-        <number>500</number>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="1" colspan="2">
       <widget class="QDoubleSpinBox" name="spnLearnRate">
        <property name="decimals">
@@ -92,20 +45,6 @@
        </property>
        <property name="value">
         <double>0.020000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Neighbourhood</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Network topology</string>
        </property>
       </widget>
      </item>
@@ -135,11 +74,28 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1" colspan="2">
-      <widget class="QLineEdit" name="leTopology"/>
+     <item row="8" column="0" colspan="3">
+      <widget class="QPushButton" name="btnTrainNetwork">
+       <property name="text">
+        <string>Train neural network</string>
+       </property>
+      </widget>
      </item>
-     <item row="5" column="1" colspan="2">
-      <widget class="QLineEdit" name="leDeltaRMS">
+     <item row="0" column="1" colspan="2">
+      <widget class="QSpinBox" name="spnNeigbourhood">
+       <property name="suffix">
+        <string> px</string>
+       </property>
+       <property name="minimum">
+        <number>0</number>
+       </property>
+       <property name="maximum">
+        <number>7</number>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1" colspan="2">
+      <widget class="QLineEdit" name="leValidationError">
        <property name="readOnly">
         <bool>true</bool>
        </property>
@@ -152,6 +108,37 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="1" colspan="2">
+      <widget class="QLineEdit" name="leTopology"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Learning rate</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Neighbourhood</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Maximum iterations</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" colspan="2">
+      <widget class="QLineEdit" name="leDeltaRMS">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
      <item row="6" column="0">
       <widget class="QLabel" name="label_10">
        <property name="text">
@@ -159,10 +146,37 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="1" colspan="2">
-      <widget class="QLineEdit" name="leValidationError">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Network topology</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QSpinBox" name="spnMaxIterations">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>1000000</number>
+       </property>
+       <property name="value">
+        <number>500</number>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLineEdit" name="leKappa">
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Validation Kappa</string>
        </property>
       </widget>
      </item>
