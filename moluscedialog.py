@@ -104,6 +104,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.btnRemoveFactor.clicked.connect(self.removeFactor)
     self.btnRemoveAllFactors.clicked.connect(self.removeAllFactors)
 
+    self.chkAllCorr.stateChanged.connect(self.__toggleCorrLayers)
     self.btnStartCorrChecking.clicked.connect(self.correlationChecking)
 
     self.btnUpdateStatistics.clicked.connect(self.startUpdateStatisticsTable)
@@ -930,6 +931,14 @@ class MolusceDialog(QDialog, Ui_Dialog):
     iterCount = self.spnIterations.value()
     self.simulator.simN(iterCount)
 
+  def __toggleCorrLayers(self, state):
+    if state == Qt.Checked:
+      self.cmbFirstRaster.setEnabled(False)
+      self.cmbSecondRaster.setEnabled(False)
+    else:
+      self.cmbFirstRaster.setEnabled(True)
+      self.cmbSecondRaster.setEnabled(True)
+
   def __selectValidationMap(self):
     senderName = self.sender().objectName()
 
@@ -1001,6 +1010,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.settings.setValue("ui/createMonteCarlo", self.chkMonteCarlo.isChecked())
     self.settings.setValue("ui/monteCarloIterations", self.spnIterations.value())
 
+    # correlation tab
+    self.settings.setValue("ui/checkAllRasters", self.chkAllCorr.isChecked())
+
   def __readSettings(self):
     # samples and model tab
     samplingMode = self.settings.value("ui/samplingMode", 1).toInt()[0]
@@ -1013,3 +1025,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.chkRiskValidation.setChecked(self.settings.value("ui/createRiskValidation", False).toBool())
     self.chkMonteCarlo.setChecked(self.settings.value("ui/createMonteCarlo", False).toBool())
     self.spnIterations.setValue(self.settings.value("ui/monteCarloIterations", 1).toInt()[0])
+
+    # correlation tab
+    self.chkAllCorr.setChecked(self.settings.value("ui/checkAllRasters", False).toBool())
