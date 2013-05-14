@@ -21,8 +21,12 @@ class CrossTable(QObject):
     crossTableFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
 
-    def __init__(self, band1, band2):
-
+    def __init__(self, band1, band2, expand = False):
+        """
+        @param band1    First band (numpy masked array)
+        @param band2    Second band (numpy masked array)
+        @param expand   If the param is True, use union of categories of the bands and compute NxN crosstable
+        """
         QObject.__init__(self)
 
         if not sizes_equal(band1, band2):
@@ -36,6 +40,9 @@ class CrossTable(QObject):
         # Compute gradations of the bands
         self.graduation_x = get_gradations(self.X)
         self.graduation_y = get_gradations(self.Y)
+        if expand:
+            self.graduation_x = list(set(self.graduation_x+self.graduation_y))
+            self.graduation_y = self.graduation_x
 
         rows, cols = len(self.graduation_x), len(self.graduation_y)
         self.shape = (rows, cols)

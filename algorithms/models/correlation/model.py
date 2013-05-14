@@ -24,12 +24,18 @@ class DependenceCoef(QObject):
     processFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
 
-    def __init__(self, X, Y):
+    def __init__(self, X, Y, expand=False):
+        """
+        @param band1    First band (numpy masked array)
+        @param band2    Second band (numpy masked array)
+        @param expand   If the param is True, use union of categories of the bands and compute NxN crosstable
+        """
 
         QObject.__init__(self)
 
         self.X = X
         self.Y = Y
+        self.expand = expand
 
         self.crosstable = None
 
@@ -41,7 +47,7 @@ class DependenceCoef(QObject):
     def calculateCrosstable(self):
         self.rangeChanged.emit('Initialization...', 2)
         self.updateProgress.emit()
-        self.crosstable = CrossTable(self.X, self.Y)
+        self.crosstable = CrossTable(self.X, self.Y, expand=self.expand)
         self.updateProgress.emit()
         self.__propagateCrossTableSignals()
         self.crosstable.computeCrosstable()

@@ -54,6 +54,16 @@ class TestCrossTable (unittest.TestCase):
         self.assertEqual(r, self.r, mess)
         self.assertEqual(s, self.s, mess)
 
+        x = np.ma.array([1,2,3,4,5,5])
+        y = np.ma.array([1,2,3,3,5,6])
+        self.assertRaises(CrossTable(x,y))
+
+        table = CrossTable(x,y, expand=True)
+        for i in [1,2,3,4,5,6]:
+            assert i in table.graduation_x
+            assert i in table.graduation_y
+
+
     def test_getTransition(self):
         self.table = CrossTable(self.X, self.Y)
 
