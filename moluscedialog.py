@@ -306,7 +306,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     labels = []
     colors = []
     layer = utils.getLayerById(self.initRasterId)
-    if layer.drawingStyle() == QgsRasterLayer.SingleBandPseudoColor or layer.drawingStyle() == QgsRasterLayer.SingleBandGray:
+    if layer.renderer().type().contains("singlebandpseudocolor"):
       legend = layer.legendSymbologyItems()
       for i in legend:
         labels.append(unicode(i[0]))
@@ -354,7 +354,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     labels = []
     layer = utils.getLayerById(self.initRasterId)
-    if layer.drawingStyle() == QgsRasterLayer.SingleBandPseudoColor or layer.drawingStyle() == QgsRasterLayer.SingleBandGray:
+    if layer.renderer().type().contains("singlebandpseudocolor"):
       legend = layer.legendSymbologyItems()
       for i in legend:
         labels.append(unicode(i[0]))
