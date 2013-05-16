@@ -23,7 +23,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Initial class</string>
+      <string>From class</string>
      </property>
     </widget>
    </item>
@@ -33,7 +33,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Final class</string>
+      <string>To class</string>
      </property>
     </widget>
    </item>
