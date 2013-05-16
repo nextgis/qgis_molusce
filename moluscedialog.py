@@ -575,7 +575,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         return
 
     # Kappa
-    self.depCoef = DependenceCoef(reference.getBand(1), simulated.getBand(1))
+    self.depCoef = DependenceCoef(reference.getBand(1), simulated.getBand(1), expand=True)
 
     self.depCoef.moveToThread(self.workThread)
 
