@@ -67,8 +67,11 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       for b in xrange(v.getBandsCount()):
         if v.isCountinues(b):
           self.tblReclass.insertRow(row)
-          name = utils.getLayerById(k).name()
-          item = QTableWidgetItem(name + self.tr(" (band %1)").arg(b))
+          if v.getBandsCount()>1:
+            name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1)))
+          else:
+            name = QString(u"%s" % (utils.getLayerById(k).name(), ))
+          item = QTableWidgetItem((name).arg(b))
           item.setFlags(item.flags() ^ Qt.ItemIsEditable)
           self.tblReclass.setItem(row, 0, item)
           self.tblReclass.setItem(row, 1, QTableWidgetItem(""))
@@ -141,8 +144,11 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       for b in xrange(v.getBandsCount()):
         lst.append(None)
         if v.isCountinues(b):
-          name = utils.getLayerById(k).name()
-          items = self.tblReclass.findItems(name + self.tr(" (band %1)").arg(b), Qt.MatchExactly)
+          if v.getBandsCount()>1:
+            name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1)))
+          else:
+            name = QString(u"%s" % (utils.getLayerById(k).name(), ))
+          items = self.tblReclass.findItems(name.arg(b), Qt.MatchExactly)
           idx = self.tblReclass.indexFromItem(items[0])
           reclassList = self.tblReclass.item(idx.row(), 1).text()
           try:

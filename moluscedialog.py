@@ -705,9 +705,12 @@ class MolusceDialog(QDialog, Ui_Dialog):
     labels = []
     mapping, labNo = {}, 0    # Maping between raster ID and label number
     for k, v in self.inputs["factors"].iteritems():
+      mapping[k] = {}
       for b in xrange(v.getBandsCount()):
-        name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1)))
-        mapping[k] = {}
+        if v.getBandsCount()>1:
+          name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1)))
+        else:
+          name = QString(u"%s" % (utils.getLayerById(k).name(), ))
         mapping[k][b] = labNo
         labNo = labNo + 1
         labels.append(name)
@@ -724,11 +727,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
         for b1 in range(fact1.getBandsCount()):
           labNo1 = mapping[i][b1]
           for j, fact2 in self.inputs["factors"].iteritems():
-            if j<i:
-              continue
             for b2 in range(fact2.getBandsCount()):
               labNo2 = mapping[j][b2]
-
+              if labNo2 < labNo1:
+                continue
               if labNo2==labNo1:
                 item = QTableWidgetItem(unicode("--"))
               # Check if method is applicable to the bands
@@ -751,9 +753,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
                 item = QTableWidgetItem(unicode(coef))
               self.tblCorrelation.setItem(labNo1, labNo2, item)
 
-
-
-
   def __checkTwoCorr(self):
     index = self.cmbFirstRaster.currentIndex()
     layerId = unicode(self.cmbFirstRaster.itemData(index, Qt.UserRole).toString())
@@ -767,11 +766,21 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblCorrelation.setColumnCount(dimensions[1])
     labels = []
     for i in range(dimensions[0]):
-      labels.append(u"%s[%s]" % (first['Name'], i+1))
+      raster = first["Raster"]
+      if raster.getBandsCount()>1:
+        name = QString(u"%s (band %s)" % (first['Name'], unicode(i+1)))
+      else:
+        name = QString(u"%s" % (first['Name'], ))
+      labels.append(name)
     self.tblCorrelation.setVerticalHeaderLabels(labels)
     labels = []
     for i in range(dimensions[1]):
-      labels.append(u"%s[%s]" % (second['Name'], i+1))
+      raster = second["Raster"]
+      if raster.getBandsCount()>1:
+        name = QString(u"%s (band %s)" % (second['Name'], unicode(i+1)))
+      else:
+        name = QString(u"%s" % (second['Name'], ))
+      labels.append(name)
     self.tblCorrelation.setHorizontalHeaderLabels(labels)
 
     method = self.cmbCorrCheckMethod.currentText()

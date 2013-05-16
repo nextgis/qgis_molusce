@@ -146,7 +146,10 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     labels = []
     for k, v in self.inputs["factors"].iteritems():
       for b in xrange(v.getBandsCount()):
-        name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1)))
+        if v.getBandsCount()>1:
+          name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1)))
+        else:
+          name = QString(u"%s" % (utils.getLayerById(k).name(), ))
         labels.append(name)
 
     self.tblMatrix.setVerticalHeaderLabels(labels)
