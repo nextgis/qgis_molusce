@@ -104,6 +104,11 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.plugin.logMessage(self.tr("Start training LR model"))
     self.model.train()
 
+    # Transition labels for the coef. tables
+    analyst = self.plugin.analyst
+    self.labels = list(self.model.labelCodes)
+    self.labels = [u"%s -> %s" % analyst.decode(int(c)) for c in self.labels]
+
     # populate table
     self.showCoefficients()
     self.showStdDeviations()
@@ -112,6 +117,8 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.plugin.logMessage(self.tr("LR model trained"))
 
     self.inputs["model"] = self.model
+
+
 
   def showCoefficients(self):
     if self.model is None:
@@ -135,10 +142,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     for i in range(rowCount):
       labels.append(u"β%s" % (i,))
     self.tblCoefficients.setVerticalHeaderLabels(labels)
-    labels = []
-    for i in range(colCount):
-      labels.append(u"Class %s" % (i+1,))
-    self.tblCoefficients.setHorizontalHeaderLabels(labels)
+    self.tblCoefficients.setHorizontalHeaderLabels(self.labels)
 
     for i in xrange(len(fm)):
       item = QTableWidgetItem(unicode(fm[i]))
@@ -170,10 +174,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     for i in range(rowCount):
       labels.append(u"β%s" % (i,))
     self.tblStdDev.setVerticalHeaderLabels(labels)
-    labels = []
-    for i in range(colCount):
-      labels.append(u"Class %s" % (i+1,))
-    self.tblStdDev.setHorizontalHeaderLabels(labels)
+    self.tblStdDev.setHorizontalHeaderLabels(self.labels)
 
     for i in xrange(colCount):
       for j in xrange(rowCount):
@@ -212,10 +213,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     for i in range(rowCount):
       labels.append(u"β%s" % (i,))
     self.tblPValues.setVerticalHeaderLabels(labels)
-    labels = []
-    for i in range(colCount):
-      labels.append(u"Class %s" % (i+1,))
-    self.tblPValues.setHorizontalHeaderLabels(labels)
+    self.tblPValues.setHorizontalHeaderLabels(self.labels)
 
     for i in xrange(len(fm)):
       s = "%f %s" % (fm[i], significance(fm[i]))

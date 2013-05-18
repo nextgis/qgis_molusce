@@ -398,7 +398,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.analyst.updateProgress.disconnect(self.showProgress)
     self.analyst.processFinished.disconnect(self.changeMapDone)
     self.analyst.processFinished.disconnect(self.workThread.quit)
-    self.analyst = None
+    #self.analyst = None
     self.restoreProgressState()
 
   def startSimulation(self):

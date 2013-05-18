@@ -195,6 +195,7 @@ class LR(QObject):
     def train(self):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
         Y = self.data['output']
+        self.labelCodes = np.unique(Y)
         self.logreg.fit(X, Y, maxiter=self.maxiter)
         out = self.logreg.predict(X)
         depCoef = DependenceCoef(np.ma.array(out), np.ma.array(Y), expand=True)
