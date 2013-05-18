@@ -160,12 +160,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
                          )
       return
 
-    #fm = self.model.getIntercept()
-    #coef = self.model.getCoef()
     stdErr = self.model.getStdErr()
-
-    #colCount = len(fm)
-    #rowCount = len(coef[0]) + 1
     colCount, rowCount = stdErr.shape
     self.tblStdDev.clear()
     self.tblStdDev.setColumnCount(colCount)
@@ -196,8 +191,8 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
                          )
       return
 
-    fm = self.model.getIntercept()
-    coef = self.model.getCoef()
+    fm = self.model.get_PvalIntercept()
+    coef = self.model.get_PvalWeights()
 
     colCount = len(fm)
     rowCount = len(coef[0]) + 1

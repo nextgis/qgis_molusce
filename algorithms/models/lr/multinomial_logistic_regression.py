@@ -11,7 +11,7 @@ The code based on https://gist.github.com/daien/1989208 written by  Adrien Gaido
 
 import numpy as np
 from scipy.optimize import fmin_bfgs
-
+from scipy.stats import norm
 
 def mlr_nll_and_gradient(X, Y, W, sigma2, weighted):
     """ Compute the MLR negative log-likelihood and its gradient
@@ -148,6 +148,7 @@ class MLR(object):
         self.nll_ = None
         self.grad_ = None
         self.stdErr = None
+        self.pVal = None
 
     def calcSTD(self, X):
         """
@@ -187,8 +188,13 @@ class MLR(object):
             h = np.kron((lp-p2), x2)
             sd = sd+h
 
-        self.stdErr = np.diagonal(sd)
+        self.stdErr = np.sqrt(np.diagonal(sd))
         self.stdErr.shape = (n_classes, n_features+1)
+
+    def calcPvalues(self, X):
+        stderr = self.get_stderr(X).T
+        z = self.W_**2 / stderr**2
+        self.pVal =  2*(1 - norm.cdf(z))
 
     def get_intercept(self):
         """Return array of the intercept estimates (numpy array, shape [1, n_classes])
@@ -196,6 +202,16 @@ class MLR(object):
         if self.W_ == None:
             return
         return self.W_[0, :]
+
+    def get_pval_intercept(self, X):
+        if self.pVal == None:
+            self.calcPvalues(X)
+        return self.pVal[0, :]
+
+    def get_pval_weights(self, X):
+        if self.pVal == None:
+            self.calcPvalues(X)
+        return self.pVal[1:, :]
 
     def get_stderr(self, X):
         if self.stdErr == None:

@@ -66,6 +66,14 @@ class LR(QObject):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
         return self.logreg.get_stderr(X)
 
+    def get_PvalIntercept(self):
+        X = np.column_stack( (self.data['state'], self.data['factors']) )
+        return self.logreg.get_pval_intercept(X)
+
+    def get_PvalWeights(self):
+        X = np.column_stack( (self.data['state'], self.data['factors']) )
+        return self.logreg.get_pval_weights(X)
+
     def getPrediction(self, state, factors):
         self._predict(state, factors)
         return self.prediction
