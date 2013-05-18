@@ -193,6 +193,7 @@ class MLR(object):
 
     def calcPvalues(self, X):
         stderr = self.get_stderr(X).T
+        stderr = stderr + 0.000000001 # to prevent devision by zero
         z = self.W_**2 / stderr**2
         self.pVal =  2*(1 - norm.cdf(z))
 
