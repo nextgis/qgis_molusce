@@ -62,6 +62,10 @@ class LR(QObject):
     def getKappa(self):
         return self.Kappa
 
+    def getStdErr(self):
+        X = np.column_stack( (self.data['state'], self.data['factors']) )
+        return self.logreg.get_stderr(X)
+
     def getPrediction(self, state, factors):
         self._predict(state, factors)
         return self.prediction

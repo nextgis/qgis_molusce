@@ -147,6 +147,7 @@ class MLR(object):
         self.W_ = None
         self.nll_ = None
         self.grad_ = None
+        self.stdErr = None
 
     def calcSTD(self, X):
         """
@@ -183,12 +184,10 @@ class MLR(object):
             p.shape = (n_classes, -1)
             p2 = np.dot(p,p.T)
 
-            h = -np.kron((lp-p2), x2)
-            assert h.shape == (N ,N)
+            h = np.kron((lp-p2), x2)
             sd = sd+h
 
         self.stdErr = np.diagonal(sd)
-        print sd
         self.stdErr.shape = (n_classes, n_features+1)
 
     def get_intercept(self):
@@ -197,6 +196,11 @@ class MLR(object):
         if self.W_ == None:
             return
         return self.W_[0, :]
+
+    def get_stderr(self, X):
+        if self.stdErr == None:
+            self.calcSTD(X)
+        return self.stdErr
 
     def get_weights(self):
         """Return array of the coefficient estimates (numpy array, shape [n_features, n_classes])

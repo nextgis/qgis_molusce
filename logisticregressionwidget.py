@@ -160,11 +160,13 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
                          )
       return
 
-    fm = self.model.getIntercept()
-    coef = self.model.getCoef()
+    #fm = self.model.getIntercept()
+    #coef = self.model.getCoef()
+    stdErr = self.model.getStdErr()
 
-    colCount = len(fm)
-    rowCount = len(coef[0]) + 1
+    #colCount = len(fm)
+    #rowCount = len(coef[0]) + 1
+    colCount, rowCount = stdErr.shape
     self.tblStdDev.clear()
     self.tblStdDev.setColumnCount(colCount)
     self.tblStdDev.setRowCount(rowCount)
@@ -178,12 +180,10 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
       labels.append(u"Class %s" % (i+1,))
     self.tblStdDev.setHorizontalHeaderLabels(labels)
 
-    for i in xrange(len(fm)):
-      item = QTableWidgetItem(unicode(fm[i]))
-      self.tblStdDev.setItem(0, i, item)
-      for j in xrange(len(coef[i])):
-        item = QTableWidgetItem(unicode(coef[i][j]))
-        self.tblStdDev.setItem(j + 1, i, item)
+    for i in xrange(colCount):
+      for j in xrange(rowCount):
+        item = QTableWidgetItem(unicode(stdErr[i, j]))
+        self.tblStdDev.setItem(j, i, item)
 
     self.tblStdDev.resizeRowsToContents()
     self.tblStdDev.resizeColumnsToContents()
