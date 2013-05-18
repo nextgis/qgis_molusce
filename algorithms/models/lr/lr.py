@@ -6,7 +6,9 @@
 from PyQt4.QtCore import *
 
 import numpy as np
-from sklearn import linear_model as lm
+#from sklearn import linear_model as lm
+
+import multinomial_logistic_regression as mlr
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
 from molusce.algorithms.models.sampler.sampler import Sampler
@@ -36,7 +38,7 @@ class LR(QObject):
         if logreg:
             self.logreg = logreg
         else:
-            self.logreg = lm.LogisticRegression()
+            self.logreg = mlr.MLR()
 
         self.ns = ns            # Neighbourhood size of training rasters.
         self.data = None        # Training data
@@ -53,13 +55,13 @@ class LR(QObject):
         return self.accuracy
 
     def getCoef(self):
-        return self.logreg.coef_
+        return self.logreg.get_weights().T
 
     def getConfidence(self):
         return self.confidence
 
     def getIntercept(self):
-        return self.logreg.intercept_
+        return self.logreg.get_intercept()
 
     def getKappa(self):
         return self.Kappa
@@ -109,6 +111,7 @@ class LR(QObject):
                     if not mask[i,j]:
                         input = self.sampler.get_inputs(state, i,j)
                         if input != None:
+                            input = np.array([input])
                             out = self.logreg.predict(input)
                             predicted_band[i,j] = out
                             confidence = self._outputConfidence(input)
@@ -181,8 +184,8 @@ class LR(QObject):
     def train(self):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
         Y = self.data['output']
-        self.logreg.fit(X, Y)
-        self.accuracy = self.logreg.score(X,Y)
+        self.logreg.fit(X, Y, maxiter=100)
+        self.accuracy = 100
         out = self.logreg.predict(X)
         depCoef = DependenceCoef(np.ma.array(out), np.ma.array(Y), expand=True)
         self.Kappa = depCoef.kappa(mode=None)

@@ -32,19 +32,19 @@ class TestLRManager (unittest.TestCase):
         self.factors1 = [Raster('../../examples/fact16.tif')]
 
     def test_LR(self):
-        data = [
-            [3.0, 1.0, 3.0],
-            [3.0, 1.0, 3.0],
-            [0,   3.0, 1.0]
-        ]
-        result = np.ma.array(data = data, mask = (data==0))
+        #~ data = [
+            #~ [3.0, 1.0, 3.0],
+            #~ [3.0, 1.0, 3.0],
+            #~ [0,   3.0, 1.0]
+        #~ ]
+        #~ result = np.ma.array(data = data, mask = (data==0))
 
         lr = LR(ns=0)   # 3-class problem
         lr.setTrainingData(self.state, self.factors, self.output)
         lr.train()
         predict = lr.getPrediction(self.state, self.factors)
         predict = predict.getBand(1)
-        assert_array_equal(predict, result)
+        assert_array_equal(predict, self.output.getBand(1))
 
         lr = LR(ns=1) # Two-class problem (it's because of boundary effect)
         lr.setTrainingData(self.state1, self.factors1, self.output1)
