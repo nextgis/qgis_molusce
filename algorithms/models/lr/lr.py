@@ -6,7 +6,6 @@
 from PyQt4.QtCore import *
 
 import numpy as np
-#from sklearn import linear_model as lm
 
 import multinomial_logistic_regression as mlr
 

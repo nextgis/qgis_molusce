@@ -40,19 +40,10 @@ from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as Naviga
 from matplotlib.figure import Figure
 from matplotlib import rcParams
 
-sklearnMissed = False
-
-try:
-  from sklearn import linear_model as lm
-except ImportError:
-  sklearnMissed = True
-
-if not sklearnMissed:
-  import logisticregressionwidget
-
 import neuralnetworkwidget
 import weightofevidencewidget
 import multicriteriaevaluationwidget
+import logisticregressionwidget
 
 from ui.ui_moluscedialogbase import Ui_Dialog
 
@@ -148,11 +139,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.__populateSimulationMethods()
     self.__populateRasterNames()
     self.__populateValidationPlot()
-
-    if not sklearnMissed:
-      self.lblWarning.hide()
-    else:
-      self.lblWarning.show()
 
     self.__readSettings()
 
@@ -644,10 +630,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.cmbSimulationMethod.addItems([
                                        self.tr("Artificial Neural Network"),
                                        self.tr("Weights of Evidence"),
-                                       self.tr("Multi Criteria Evaluation")
+                                       self.tr("Multi Criteria Evaluation"),
+                                       self.tr("Logistic Regression")
                                      ])
-    if not sklearnMissed:
-      self.cmbSimulationMethod.addItem(self.tr("Logistic Regression"))
 
   def __populateSamplingModes(self):
     self.cmbSamplingMode.addItem(self.tr("All"), 0)
