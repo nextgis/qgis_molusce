@@ -133,7 +133,7 @@ class MLR(object):
 
     Attributes
     ----------
-    W_ : numpy array, shape [n_features, n_classes],
+    W_ : numpy array, shape [n_classes, n_features],
          the coefficient estimates
 
     infos_ : dict,
@@ -147,6 +147,49 @@ class MLR(object):
         self.W_ = None
         self.nll_ = None
         self.grad_ = None
+
+    def calcSTD(self, X):
+        """
+        Calculate std errors for the estimated coefficients.
+
+        Attributes
+        ----------
+        stdErr : numpy array, shape [n_features+1, n_classes],
+             the coefficient estimates
+        """
+        n_samples, n_features = X.shape
+        _d, n_classes = self.W_.shape
+        # check dimensions
+        assert n_features +1 == _d, "Shape mismatch between X and W"
+
+        # predicted probs for 1,2,... k categories
+        pr = self.predict_proba(X)#[:,:-1]
+
+        # add column of ones to X
+        n_samples, n_features = X.shape
+        ones = np.ones( (n_samples,) )
+        X = np.column_stack((ones, X))
+
+        N = (n_classes)*(n_features+1)
+        # matrix of the second derivates of ML
+        sd = np.zeros( (N, N) )
+        for i, x in enumerate(X):
+            x.shape = (n_features+1, -1)
+            x2 = np.dot(x,x.T)
+
+            p = pr[i]
+            lp = np.diag(p)
+
+            p.shape = (n_classes, -1)
+            p2 = np.dot(p,p.T)
+
+            h = -np.kron((lp-p2), x2)
+            assert h.shape == (N ,N)
+            sd = sd+h
+
+        self.stdErr = np.diagonal(sd)
+        print sd
+        self.stdErr.shape = (n_classes, n_features+1)
 
     def get_intercept(self):
         """Return array of the intercept estimates (numpy array, shape [1, n_classes])
