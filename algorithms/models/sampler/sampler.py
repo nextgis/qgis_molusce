@@ -83,6 +83,9 @@ class Sampler(QObject):
         self.proj = self.factorsGeoData['proj']     # Projection of the data coordinates
         self.data = None                # Training data
 
+    def getData(self):
+        return self.data
+
     def get_inputs(self, state, row, col):
         '''
         @param state            Raster of the current state (categories) values.
@@ -172,7 +175,8 @@ class Sampler(QObject):
             if lyr.CreateField ( field_defn ) != 0:
                 raise SamplerError("Creating Name field failed!")
 
-        for row in self.data:
+        data = self.getData()
+        for row in data:
             x,y = row['coords']
             if x and y:
                 feat = ogr.Feature(lyr.GetLayerDefn())
