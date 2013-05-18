@@ -48,11 +48,7 @@ class LR(QObject):
         # Results of the LR prediction
         self.prediction = None  # Raster of the LR prediction results
         self.confidence = None  # Raster of the LR results confidence
-        self.accuracy   = None  # Intern accuracy score
         self.Kappa      = 0     #  Kappa value
-
-    def getAccuracy(self):
-        return self.accuracy
 
     def getCoef(self):
         return self.logreg.get_weights().T
@@ -188,7 +184,6 @@ class LR(QObject):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
         Y = self.data['output']
         self.logreg.fit(X, Y, maxiter=self.maxiter)
-        self.accuracy = 100
         out = self.logreg.predict(X)
         depCoef = DependenceCoef(np.ma.array(out), np.ma.array(Y), expand=True)
         self.Kappa = depCoef.kappa(mode=None)
