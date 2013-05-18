@@ -2,7 +2,7 @@
 name=MOLUSCE
 description=Modules for Land Use Change Simulations
 category=Raster
-version=0.5.3
+version=0.5.4
 qgisMinimumVersion=1.9.0
 
 author=NextGIS
