@@ -100,6 +100,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.plugin.workThread.quit()
     self.plugin.restoreProgressState()
 
+    self.model.setMaxIter(self.spnMaxIterations.value())
     self.plugin.logMessage(self.tr("Start training LR model"))
     self.model.train()
 

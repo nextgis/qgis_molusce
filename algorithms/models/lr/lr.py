@@ -41,6 +41,7 @@ class LR(QObject):
 
         self.ns = ns            # Neighbourhood size of training rasters.
         self.data = None        # Training data
+        self.maxiter = 100      # Maximum of fitting iterations
 
         self.sampler = None     # Sampler
 
@@ -151,6 +152,9 @@ class LR(QObject):
     def saveSamples(self, fileName):
         self.sampler.saveSamples(fileName)
 
+    def setMaxIter(self, maxiter):
+        self.maxiter = maxiter
+
     def setTrainingData(self, state, factors, output, mode='All', samples=None):
         '''
         @param state            Raster of the current state (categories) values.
@@ -183,7 +187,7 @@ class LR(QObject):
     def train(self):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
         Y = self.data['output']
-        self.logreg.fit(X, Y, maxiter=100)
+        self.logreg.fit(X, Y, maxiter=self.maxiter)
         self.accuracy = 100
         out = self.logreg.predict(X)
         depCoef = DependenceCoef(np.ma.array(out), np.ma.array(Y), expand=True)
