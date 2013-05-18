@@ -184,6 +184,14 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblStdDev.resizeColumnsToContents()
 
   def showPValues(self):
+    def significance(p):
+      if p <= 0.01:
+        return "**"
+      elif p<= 0.05:
+        return "*"
+      else:
+        return "-"
+
     if self.model is None:
       QMessageBox.warning(self.plugin,
                           self.tr("Model is not initialised"),
@@ -210,10 +218,12 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblPValues.setHorizontalHeaderLabels(labels)
 
     for i in xrange(len(fm)):
-      item = QTableWidgetItem(unicode(fm[i]))
+      s = "%f %s" % (fm[i], significance(fm[i]))
+      item = QTableWidgetItem(unicode(s))
       self.tblPValues.setItem(0, i, item)
       for j in xrange(len(coef[i])):
-        item = QTableWidgetItem(unicode(coef[i][j]))
+        s = "%f %s" % (coef[i][j], significance(coef[i][j]))
+        item = QTableWidgetItem(unicode(s))
         self.tblPValues.setItem(j + 1, i, item)
 
     self.tblPValues.resizeRowsToContents()
