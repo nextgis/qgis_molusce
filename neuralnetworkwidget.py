@@ -55,7 +55,6 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     # init plot for learning curve
     self.figure = Figure()
     self.axes = self.figure.add_subplot(111)
-    self.axes.grid(True)
     self.figure.suptitle(self.tr("Neural Network learning curve"))
     self.canvas = FigureCanvas(self.figure)
     self.mpltoolbar = NavigationToolbar(self.canvas, None)
@@ -140,6 +139,8 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.setMomentum(self.spnMomentum.value())
     self.model.setContinueTrain()
 
+    self.axes.cla()
+    self.axes.grid(True)
     self.dataTrain = []
     self.dataVal = []
     self.plotTrain = self.axes.plot(self.dataTrain,
