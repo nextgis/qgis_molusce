@@ -133,6 +133,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.tabWidget.setCurrentIndex(0)
 
+    self.btnStop.setEnabled(False)
+
     self.__populateLayers()
     self.__populateCorrCheckingMet()
     self.__populateSamplingModes()

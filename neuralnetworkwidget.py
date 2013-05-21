@@ -116,6 +116,8 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.settings.setValue("ui/ANN/topology", self.leTopology.text())
     self.settings.setValue("ui/ANN/momentum", self.spnMomentum.value())
 
+    self.plugin.btnStop.setEnabled(True)
+
     self.plugin.logMessage(self.tr("Init ANN model"))
 
     self.model = MlpManager(ns=self.spnNeigbourhood.value())
@@ -157,10 +159,12 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.moveToThread(self.plugin.workThread)
 
     self.plugin.workThread.started.connect(self.model.startTrain)
+    self.plugin.btnStop.clicked.connect(self.model.stopTrain)
     self.model.updateGraph.connect(self.__updateGraph)
     self.model.updateDeltaRMS.connect(self.__updateRMS)
     self.model.updateMinValErr.connect(self.__updateValidationError)
     self.model.updateKappa.connect(self.__updateKappa)
+    self.model.processInterrupted.connect(self.__trainInterrupted)
     self.model.processFinished.connect(self.__trainFinished)
     self.model.processFinished.connect(self.plugin.workThread.quit)
 
@@ -171,7 +175,13 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
 
   def __trainFinished(self):
     self.plugin.workThread.started.disconnect(self.model.startTrain)
+    self.plugin.btnStop.setEnabled(False)
     self.plugin.logMessage(self.tr("ANN model trained"))
+
+  def __trainInterrupted(self):
+    self.plugin.workThread.quit()
+    self.plugin.btnStop.setEnabled(False)
+    self.plugin.logMessage(self.tr("ANN model training interrupted"))
 
   def __updateRMS(self, dRMS):
     self.leDeltaRMS.setText(QString.number(dRMS))

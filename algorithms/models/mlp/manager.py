@@ -31,6 +31,7 @@ class MlpManager(QObject):
     updateDeltaRMS  = pyqtSignal(float)         # Delta of RMS: min(valError) - currentValError
     updateKappa     = pyqtSignal(float)         # Kappa value
     processFinished = pyqtSignal()
+    processInterrupted = pyqtSignal()
     logMessage = pyqtSignal(str)
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
@@ -40,6 +41,7 @@ class MlpManager(QObject):
         QObject.__init__(self)
 
         self.MLP = MLP
+        self.interrupted = False
 
         self.layers = None
         if self.MLP:
@@ -323,6 +325,9 @@ class MlpManager(QObject):
     def startTrain(self):
         self.train(self.epochs, self.valPercent, self.lrate, self.momentum, self.continueTrain)
 
+    def stopTrain(self):
+        self.interrupted = True
+
     def train(self, epochs, valPercent=20, lrate=0.1, momentum=0.01, continue_train=False):
         '''Perform the training procedure on the MLP and save the best neural net
         @param epoch            Max iteration count.
@@ -352,6 +357,11 @@ class MlpManager(QObject):
                 self.updateGraph.emit(self.getTrainError(), self.getValError())
                 self.updateDeltaRMS.emit(self.getMinValError() - self.getValError())
                 self.updateKappa.emit(self.getKappa())
+
+                QCoreApplication.processEvents()
+                if self.interrupted:
+                    self.processInterrupted.emit()
+                    break
 
                 last_train_err = self.getTrainError()
                 self.setTrainError(last_train_err)
