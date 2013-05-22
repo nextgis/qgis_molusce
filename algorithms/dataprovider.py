@@ -21,21 +21,21 @@ class FormatConverter(object):
     def __init__(self):
         self.dtypes = np.bool, np.int, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64, np.float, np.float32, np.float64 #np.float16
         self.GDT = gdal.GDT_Byte, gdal.GDT_UInt16, gdal.GDT_Int16, gdal.GDT_UInt32, gdal.GDT_Int32, gdal.GDT_Float32, gdal.GDT_Float64
-        self.dtype2GDT = {
-            np.dtype('bool'): gdal.GDT_Byte,
-            np.dtype('int'): gdal.GDT_Int32,#!!!
-            np.dtype('int8'): gdal.GDT_Int16,
-            np.dtype('int16'): gdal.GDT_Int16,
-            np.dtype('int32'): gdal.GDT_Int32,
-            np.dtype('int64'): gdal.GDT_Int32,#!!!
-            np.dtype('uint8'): gdal.GDT_Byte,
-            np.dtype('uint16'): gdal.GDT_UInt16,
-            np.dtype('uint32'): gdal.GDT_UInt32,
-            np.dtype('uint64'): gdal.GDT_UInt32,#!!!
-            np.dtype('float'): gdal.GDT_Float64,
-            #np.dtype('float16'): gdal.GDT_Float32,
-            np.dtype('float32'): gdal.GDT_Float32,
-            np.dtype('float64'): gdal.GDT_Float64
+        self.dtype2GDT = {  # raster type, max value
+            np.dtype('bool'): (gdal.GDT_Byte, 255),
+            np.dtype('int'): (gdal.GDT_Int32, 2147483647),   #!!!
+            np.dtype('int8'): (gdal.GDT_Int16, 32767),
+            np.dtype('int16'): (gdal.GDT_Int16, 65535),
+            np.dtype('int32'): (gdal.GDT_Int32, 2147483647),
+            np.dtype('int64'): (gdal.GDT_Int32, 2147483647),       #!!!
+            np.dtype('uint8'): (gdal.GDT_Byte, 255),
+            np.dtype('uint16'): (gdal.GDT_UInt16,   65535),
+            np.dtype('uint32'): (gdal.GDT_UInt32,   4294967295),
+            np.dtype('uint64'): (gdal.GDT_UInt32, 4294967295),      #!!!
+            np.dtype('float'): (gdal.GDT_Float64,   None),
+            #np.dtype('float16'): (gdal.GDT_Float32,    None),
+            np.dtype('float32'): (gdal.GDT_Float32, None),
+            np.dtype('float64'): (gdal.GDT_Float64,  None),
         }
 
 
@@ -161,6 +161,12 @@ class Raster(object):
         # All bands of the raster have the same dtype now
         band = self.getBand(1)
         return band.dtype
+
+    def getGDALMaxVal(self):
+        dtype = self.get_dtype()
+        conv = FormatConverter()
+        rastertype, maxVal = conv.dtype2GDT[dtype]
+        return maxVal
 
     def getFileName(self):
         return self.filename
@@ -319,7 +325,7 @@ class Raster(object):
             if not rastertype:
                 dtype = self.get_dtype()
                 conv = FormatConverter()
-                rastertype = conv.dtype2GDT[dtype]
+                rastertype, maxVal = conv.dtype2GDT[dtype]
             xsize, ysize = self.getXSize(), self.getYSize()
             bandcount = self.getBandsCount()
             outRaster = driver.Create(filename, xsize, ysize, bandcount, rastertype)
