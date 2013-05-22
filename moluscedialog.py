@@ -450,21 +450,41 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if self.chkRiskFunction.isChecked():
       if not self.leRiskFunctionPath.text().isEmpty():
         res = self.simulator.getConfidence()
-        res.save(unicode(self.leRiskFunctionPath.text()))
+        grad = res.getBandGradation(1)
+        saved = False
+        # Try to use some Values as No-data Value
+        maxVal = res.getGDALMaxVal()
+        for noData in [0, maxVal]:
+            if not noData in grad:
+                res.save(unicode(self.leRiskFunctionPath.text()), nodata=noData)
+                saved = True
+                break
+        if not saved:
+            res.save(unicode(self.leRiskFunctionPath.text()), nodata=maxVal-1)
       else:
         self.logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
     if self.chkRiskValidation.isChecked():
       if not self.leRiskValidationPath.text().isEmpty():
         res = self.simulator.errorMap(self.inputs["final"])
-        res.save(unicode(self.leRiskValidationPath.text()))
+        res.save(unicode(self.leRiskValidationPath.text()), nodata=0)
       else:
         self.logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
 
     if self.chkMonteCarlo.isChecked():
       if not self.leMonteCarloPath.text().isEmpty():
         res = self.simulator.getState()
-        res.save(unicode(self.leMonteCarloPath.text()))
+        grad = res.getBandGradation(1)
+        saved = False
+        # Try to use some Values as No-data Value
+        maxVal = res.getGDALMaxVal()
+        for noData in [0, maxVal]:
+            if not noData in grad:
+                res.save(unicode(self.leMonteCarloPath.text()), nodata=noData)
+                saved = True
+                break
+        if not saved:
+            res.save(unicode(self.leRiskFunctionPath.text()), nodata=maxVal-1)
       else:
         self.logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
 
@@ -1071,7 +1091,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       currentValue += intervalDiff
 
       entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
-      print i, entryValues[i], unicode(entryColors[i].name())
+      #print i, entryValues[i], unicode(entryColors[i].name())
 
     rasterShader = QgsRasterShader()
     colorRampShader = QgsColorRampShader()

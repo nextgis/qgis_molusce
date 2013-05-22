@@ -32,10 +32,10 @@ class FormatConverter(object):
             np.dtype('uint16'): (gdal.GDT_UInt16,   65535),
             np.dtype('uint32'): (gdal.GDT_UInt32,   4294967295),
             np.dtype('uint64'): (gdal.GDT_UInt32, 4294967295),      #!!!
-            np.dtype('float'): (gdal.GDT_Float64,   None),
-            #np.dtype('float16'): (gdal.GDT_Float32,    None),
-            np.dtype('float32'): (gdal.GDT_Float32, None),
-            np.dtype('float64'): (gdal.GDT_Float64,  None),
+            np.dtype('float'): (gdal.GDT_Float64,   -9999),
+            #np.dtype('float16'): (gdal.GDT_Float32,    -9999),
+            np.dtype('float32'): (gdal.GDT_Float32, -9999),
+            np.dtype('float64'): (gdal.GDT_Float64,  -9999),
         }
 
 
