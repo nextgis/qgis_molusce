@@ -808,8 +808,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
         for col in xrange(dimensions[1]):
           for row in xrange(dimensions[0]):
             depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-            corr = depCoef.kappa(mode=None)
-            item = QTableWidgetItem(unicode(corr))
+            if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
+              item = QTableWidgetItem(unicode(self.tr("Not applicable")))
+            else:
+              corr = depCoef.kappa(mode=None)
+              item = QTableWidgetItem(unicode(corr))
             self.tblCorrelation.setItem(row, col, item)
       except CoeffError as ex:
         QMessageBox.warning(self,
@@ -821,8 +824,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
         for col in xrange(dimensions[1]):
           for row in xrange(dimensions[0]):
             depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-            corr = depCoef.kappa(mode='loc')
-            item = QTableWidgetItem(unicode(corr))
+            if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
+              item = QTableWidgetItem(unicode(self.tr("Not applicable")))
+            else:
+              corr = depCoef.kappa(mode=None)
+              item = QTableWidgetItem(unicode(corr))
             self.tblCorrelation.setItem(row, col, item)
       except CoeffError as ex:
         QMessageBox.warning(self,
@@ -834,8 +840,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
         for col in xrange(dimensions[1]):
           for row in xrange(dimensions[0]):
             depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-            corr = depCoef.kappa(mode='histo')
-            item = QTableWidgetItem(unicode(corr))
+            if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
+              item = QTableWidgetItem(unicode(self.tr("Not applicable")))
+            else:
+              corr = depCoef.kappa(mode=None)
+              item = QTableWidgetItem(unicode(corr))
             self.tblCorrelation.setItem(row, col, item)
       except CoeffError as ex:
         QMessageBox.warning(self,
@@ -846,15 +855,21 @@ class MolusceDialog(QDialog, Ui_Dialog):
       for col in xrange(dimensions[1]):
         for row in xrange(dimensions[0]):
           depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-          corr = depCoef.cramer()
-          item = QTableWidgetItem(unicode(corr))
+          if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
+              item = QTableWidgetItem(unicode(self.tr("Not applicable")))
+          else:
+              corr = depCoef.kappa(mode=None)
+              item = QTableWidgetItem(unicode(corr))
           self.tblCorrelation.setItem(row, col, item)
     elif method == self.tr("Joint Information Uncertainty"):
       for col in xrange(dimensions[1]):
         for row in xrange(dimensions[0]):
           depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-          corr = depCoef.jiu()
-          item = QTableWidgetItem(unicode(corr))
+          if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
+              item = QTableWidgetItem(unicode(self.tr("Not applicable")))
+          else:
+              corr = depCoef.kappa(mode=None)
+              item = QTableWidgetItem(unicode(corr))
           self.tblCorrelation.setItem(row, col, item)
 
   def __modeChanged(self, index):
