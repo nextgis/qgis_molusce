@@ -118,8 +118,6 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     self.inputs["model"] = self.model
 
-
-
   def showCoefficients(self):
     if self.model is None:
       QMessageBox.warning(self.plugin,
@@ -234,4 +232,3 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
                                mode=self.inputs["samplingMode"],
                                samples=self.plugin.spnSamplesCount.value()
                               )
-

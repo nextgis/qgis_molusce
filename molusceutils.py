@@ -117,4 +117,3 @@ def checkChangeMap(userData):
     return True
   else:
     return False
-

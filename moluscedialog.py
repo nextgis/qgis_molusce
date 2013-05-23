@@ -400,7 +400,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.analyst.updateProgress.disconnect(self.showProgress)
     self.analyst.processFinished.disconnect(self.changeMapDone)
     self.analyst.processFinished.disconnect(self.workThread.quit)
-    #self.analyst = None
     self.restoreProgressState()
 
   def startSimulation(self):
@@ -1091,7 +1090,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
       currentValue += intervalDiff
 
       entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
-      #print i, entryValues[i], unicode(entryColors[i].name())
 
     rasterShader = QgsRasterShader()
     colorRampShader = QgsColorRampShader()
