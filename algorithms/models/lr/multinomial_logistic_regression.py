@@ -147,8 +147,8 @@ class MLR(object):
         self.W_ = None
         self.nll_ = None
         self.grad_ = None
-        self.stdErr = None
-        self.pVal = None
+        self.stdErr_ = None
+        self.pVal_ = None
 
     def calcSTD(self, X):
         """
@@ -156,7 +156,7 @@ class MLR(object):
 
         Attributes
         ----------
-        stdErr : numpy array, shape [n_features+1, n_classes],
+        stdErr_ : numpy array, shape [n_features+1, n_classes],
              the coefficient estimates
         """
         n_samples, n_features = X.shape
@@ -188,14 +188,17 @@ class MLR(object):
             h = np.kron((lp-p2), x2)
             sd = sd+h
 
-        self.stdErr = np.sqrt(np.diagonal(sd))
-        self.stdErr.shape = (n_classes, n_features+1)
+        self.stdErr_ = np.sqrt(np.diagonal(sd))
+        self.stdErr_.shape = (n_classes, n_features+1)
+        self.stdErr_ = self.stdErr_.T
 
     def calcPvalues(self, X):
-        stderr = self.get_stderr(X).T
+        if self.stdErr_ == None:
+            self.calcSTD(X)
+        stderr = self.stdErr_
         stderr = stderr + 0.000000001 # to prevent devision by zero
         z = self.W_**2 / stderr**2
-        self.pVal =  2*(1 - norm.cdf(z))
+        self.pVal_ =  2*(1 - norm.cdf(z))
 
     def get_intercept(self):
         """Return array of the intercept estimates (numpy array, shape [1, n_classes])
@@ -205,19 +208,24 @@ class MLR(object):
         return self.W_[0, :]
 
     def get_pval_intercept(self, X):
-        if self.pVal == None:
+        if self.pVal_ == None:
             self.calcPvalues(X)
-        return self.pVal[0, :]
+        return self.pVal_[0, :]
 
     def get_pval_weights(self, X):
-        if self.pVal == None:
+        if self.pVal_ == None:
             self.calcPvalues(X)
-        return self.pVal[1:, :]
+        return self.pVal_[1:, :]
 
-    def get_stderr(self, X):
-        if self.stdErr == None:
+    def get_stderr_intercept(self, X):
+        if self.stdErr_ == None:
             self.calcSTD(X)
-        return self.stdErr
+        return self.stdErr_[0, :]
+
+    def get_stderr_weights(self, X):
+        if self.stdErr_ == None:
+            self.calcSTD(X)
+        return self.stdErr_[1:, :]
 
     def get_weights(self):
         """Return array of the coefficient estimates (numpy array, shape [n_features, n_classes])

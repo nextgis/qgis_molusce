@@ -62,9 +62,13 @@ class LR(QObject):
     def getKappa(self):
         return self.Kappa
 
-    def getStdErr(self):
+    def getStdErrIntercept(self):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
-        return self.logreg.get_stderr(X)
+        return self.logreg.get_stderr_intercept(X)
+
+    def getStdErrWeights(self):
+        X = np.column_stack( (self.data['state'], self.data['factors']) )
+        return self.logreg.get_stderr_weights(X).T
 
     def get_PvalIntercept(self):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
