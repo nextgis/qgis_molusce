@@ -732,6 +732,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
             self.tr("Cramer's Coefficient"), self.tr("Joint Information Uncertainty")
     ]
     # Loop over all rasters and all bands
+    self.setProgressRange(self.tr('Correlation checking'), dim*(dim-1)/2)
     for i, fact1 in self.inputs["factors"].iteritems():
         for b1 in range(fact1.getBandsCount()):
           labNo1 = mapping[i][b1]
@@ -761,6 +762,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
                   coef = depCoef.cramer()
                 item = QTableWidgetItem(unicode(coef))
               self.tblCorrelation.setItem(labNo1, labNo2, item)
+              self.showProgress()
+    self.restoreProgressState()
 
   def __checkTwoCorr(self):
     index = self.cmbFirstRaster.currentIndex()
