@@ -58,7 +58,7 @@ class MlpManager(QObject):
 
         # Results of the MLP prediction
         self.prediction = None  # Raster of the MLP prediction results
-        self.confidence = None  # Raster of the MLP results confidence
+        self.confidence = None  # Raster of the MLP results confidence (1 = the maximum confidence, 0 = the least confidence)
 
         # Outputs of the activation function for small and big numbers
         self.sigmax, self.sigmin = sigmoid(100), sigmoid(-100)  # Max and Min of the sigmoid function

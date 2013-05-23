@@ -47,7 +47,7 @@ class LR(QObject):
 
         # Results of the LR prediction
         self.prediction = None  # Raster of the LR prediction results
-        self.confidence = None  # Raster of the LR results confidence
+        self.confidence = None  # Raster of the LR results confidence (1 = the maximum confidence, 0 = the least confidence)
         self.Kappa      = 0     #  Kappa value
 
     def getCoef(self):
@@ -81,6 +81,7 @@ class LR(QObject):
     def _outputConfidence(self, input):
         '''
         Return confidence (difference between 2 biggest probabilities) of the LR output.
+        1 = the maximum confidence, 0 = the least confidence
         '''
         out_scl = self.logreg.predict_proba(input)[0]
         # Calculate the confidence:

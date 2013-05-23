@@ -46,8 +46,8 @@ class WoeManager(QObject):
         self.bins       = bins
         self.unit_cell  = unit_cell
 
-        self.prediction = None
-        self.confidence = None
+        self.prediction = None      # Raster of the prediction results
+        self.confidence = None      # Raster of the results confidence(1 = the maximum confidence, 0 = the least confidence)
 
         if (bins != None) and (len(self.factors) != len(bins.keys())):
             raise WoeManagerError('Lengths of bins and factors are different!')

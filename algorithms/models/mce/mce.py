@@ -100,8 +100,8 @@ class MCE(object):
 
         self.consistency =None  # Consistency ratio of the comparison matrix.
 
-        self.prediction = None
-        self.confidence = None
+        self.prediction = None      # Raster of the prediction results
+        self.confidence = None      # Raster of the results confidence(1 = the maximum confidence, 0 = the least confidence)
 
 
     def getConsistency(self):
