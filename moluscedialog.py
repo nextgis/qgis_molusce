@@ -700,7 +700,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
                             linewidth=1,
                             color="yellow", marker='*',
                             )[0]
-    leg = self.valAxes.legend(('No location, no quantity inform.', 'No location, medium quantity inform.', 'Medium location, medium quantity inform.', 'Perfect location, medium quantity inform.', 'Perfect location, perfect quantity inform.'), 'lower right', shadow=False)
+    box = self.valAxes.get_position()
+    self.valAxes.set_position([box.x0, box.y0 + box.height * 0.2, box.width, box.height * 0.8])
+    leg = self.valAxes.legend(('No location, no quantity inform.', 'No location, medium quantity inform.', 'Medium location, medium quantity inform.', 'Perfect location, medium quantity inform.', 'Perfect location, perfect quantity inform.'), loc='upper center', bbox_to_anchor=(0.5, -0.05),
+          fancybox=True, ncol=3, shadow=False)
     for t in leg.get_texts():
         t.set_fontsize('small')
 
