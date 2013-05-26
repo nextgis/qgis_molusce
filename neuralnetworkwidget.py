@@ -165,6 +165,8 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.updateMinValErr.connect(self.__updateValidationError)
     self.model.updateKappa.connect(self.__updateKappa)
     self.model.processInterrupted.connect(self.__trainInterrupted)
+    self.model.rangeChanged.connect(self.plugin.setProgressRange)
+    self.model.updateProgress.connect(self.plugin.showProgress)
     self.model.processFinished.connect(self.__trainFinished)
     self.model.processFinished.connect(self.plugin.workThread.quit)
 
@@ -175,6 +177,9 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
 
   def __trainFinished(self):
     self.plugin.workThread.started.disconnect(self.model.startTrain)
+    self.model.rangeChanged.disconnect(self.plugin.setProgressRange)
+    self.model.updateProgress.disconnect(self.plugin.showProgress)
+    self.plugin.restoreProgressState()
     self.plugin.btnStop.setEnabled(False)
     self.plugin.logMessage(self.tr("ANN model trained"))
 

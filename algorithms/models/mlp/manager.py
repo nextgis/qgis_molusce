@@ -351,6 +351,7 @@ class MlpManager(QObject):
             last_train_err = self.getTrainError()
             best_weights = self.copyWeights()   # The MLP weights when minimum error that is achieved on the validation set
 
+            self.rangeChanged.emit(self.tr("Train model %p%"), epochs)
             for epoch in range(epochs):
                 self.trainEpoch(train_indexes, lrate, momentum)
                 self.computePerformance(train_indexes, val_indexes)
@@ -369,6 +370,7 @@ class MlpManager(QObject):
                     self.minValError = self.getValError()
                     best_weights = self.copyWeights()
                     self.updateMinValErr.emit(self.getMinValError())
+                self.updateProgress.emit()
 
             self.setMlpWeights(best_weights)
         finally:
