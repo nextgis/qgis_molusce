@@ -394,6 +394,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.inputs["changeMap"] = raster
     self.inputs["changeMap"].save(self.inputs["changeMapName"])
     self.__addRasterToCanvas(self.inputs["changeMapName"])
+    self.applyRasterStyle(utils.getLayerByName(QFileInfo(self.inputs["changeMapName"]).baseName()))
     del self.inputs["changeMapName"]
     self.workThread.started.disconnect(self.analyst.getChangeMap)
     self.analyst.rangeChanged.disconnect(self.setProgressRange)
@@ -439,6 +440,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.simulator.moveToThread(self.workThread)
 
+    self.btnStartSimulation.setEnabled(False)
+
     self.workThread.started.connect(self.propagateSimulation)
     self.simulator.rangeChanged.connect(self.setProgressRange)
     self.simulator.updateProgress.connect(self.showProgress)
@@ -446,6 +449,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.start()
 
   def simulationDone(self):
+    self.btnStartSimulation.setEnabled(True)
     if self.chkRiskFunction.isChecked():
       if not self.leRiskFunctionPath.text().isEmpty():
         res = self.simulator.getConfidence()
@@ -484,6 +488,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
                 break
         if not saved:
             res.save(unicode(self.leRiskFunctionPath.text()), nodata=maxVal-1)
+        self.__addRasterToCanvas(self.leMonteCarloPath.text())
+        if utils.copySymbology(utils.getLayerByName(self.leInitRasterName.text()), utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName())):
+          self.iface.legendInterface().refreshLayerSymbology(utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName()))
+          self.iface.mapCanvas.refresh()
+          QgsProject.instance().dirty(True)
       else:
         self.logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
 
@@ -612,6 +621,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def tabChanged(self, index):
     if  index == 1:     # tabCorrelationChecking
       self.__populateRasterNames()
+
 # ******************************************************************************
 
   def __populateLayers(self):
@@ -1036,7 +1046,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     layer = QgsRasterLayer(filePath, QFileInfo(filePath).baseName())
     if layer.isValid():
       QgsMapLayerRegistry.instance().addMapLayers([layer])
-      self.applyRasterStyle(layer)
     else:
       self.logMessage(self.tr("Can't load raster %1").arg(filePath))
 

@@ -27,6 +27,7 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4.QtXml import *
 
 from qgis.core import *
 
@@ -43,6 +44,15 @@ def getLayerById(layerId):
   layerMap = QgsMapLayerRegistry.instance().mapLayers()
   for name, layer in layerMap.iteritems():
     if layer.id() == layerId:
+      if layer.isValid():
+        return layer
+      else:
+        return None
+
+def getLayerByName(layerName):
+  layerMap = QgsMapLayerRegistry.instance().mapLayers()
+  for name, layer in layerMap.iteritems():
+    if layer.name() == layerName:
       if layer.isValid():
         return layer
       else:
@@ -117,3 +127,19 @@ def checkChangeMap(userData):
     return True
   else:
     return False
+
+def copySymbology(src, dst):
+  di = QDomImplementation()
+  dt = di.createDocumentType("qgis", "http://mrcc.com/qgis.dtd", "SYSTEM")
+  doc = QDomDocument(dt)
+  root = doc.createElement("qgis")
+  root.setAttribute("version", QString("%1").arg(QGis.QGIS_VERSION))
+  doc.appendChild(root)
+  errMsg = QString()
+  if not src.writeSymbology(root, doc, errMsg):
+    return False
+
+  if not dst.readSymbology(root, errMsg):
+    return False
+
+  return True
