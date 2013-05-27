@@ -32,6 +32,28 @@
        <string>Bin breaks</string>
       </property>
      </column>
+     <column>
+      <property name="text">
+       <string>Range min</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Range max</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Number of intervals</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="btnResetBins">
+     <property name="text">
+      <string>Reset Bins</string>
+     </property>
     </widget>
    </item>
    <item>

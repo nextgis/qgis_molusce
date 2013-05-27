@@ -32,6 +32,9 @@ from qgis.core import *
 
 from algorithms.models.area_analysis.manager import AreaAnalyst
 from algorithms.models.woe.manager import WoeManager, WoeManagerError
+from algorithms import dataprovider
+
+import spinboxdelegate
 
 from ui.ui_weightofevidencewidgetbase import Ui_Widget
 
@@ -49,6 +52,8 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
 
     self.btnTrainModel.clicked.connect(self.trainModel)
 
+    self.btnResetBins.clicked.connect(self.__resetBins)
+
     self.manageGui()
 
   def manageGui(self):
@@ -60,23 +65,25 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       return
 
     self.tblReclass.clearContents()
+    self.delegate = spinboxdelegate.SpinBoxDelegate(self.tblReclass.model(), minRange=2, maxRange=dataprovider.MAX_CATEGORIES)
 
     row = 0
-
     for k, v in self.inputs["factors"].iteritems():
-      for b in xrange(v.getBandsCount()):
+      for b in xrange(1, v.getBandsCount()+1):
         if v.isCountinues(b):
           self.tblReclass.insertRow(row)
           if v.getBandsCount()>1:
-            name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1)))
+            name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b)))
           else:
             name = QString(u"%s" % (utils.getLayerById(k).name(), ))
-          item = QTableWidgetItem((name).arg(b))
-          item.setFlags(item.flags() ^ Qt.ItemIsEditable)
-          self.tblReclass.setItem(row, 0, item)
-          self.tblReclass.setItem(row, 1, QTableWidgetItem(""))
+          stat = v.getBandStat(b)
+          for n, item_data in enumerate([(name).arg(b), u"", unicode(stat["min"]), unicode(stat["max"])]):
+            item = QTableWidgetItem(item_data)
+            if n != 1:
+              item.setFlags(item.flags() ^ Qt.ItemIsEditable)
+            self.tblReclass.setItem(row, n, item)
           row += 1
-
+    self.tblReclass.setItemDelegateForColumn(4, self.delegate)
     self.tblReclass.resizeRowsToContents()
     self.tblReclass.resizeColumnsToContents()
 
@@ -163,3 +170,19 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       n += 1
 
     return bins
+
+  def __resetBins(self):
+    for row in xrange(self.tblReclass.rowCount()):
+      try:
+        rangeMin = float(self.tblReclass.item(row, 2).text())
+        rangeMax = float(self.tblReclass.item(row, 3).text())
+        intervals = int(float(self.tblReclass.item(row, 4).text()))
+      except AttributeError:
+        continue
+      delta = (rangeMax - rangeMin)/intervals
+      item = [unicode( int(rangeMin + delta*(i)) )  for i in range(1,intervals)]
+      item = u" ".join(item)
+      item = QTableWidgetItem(item)
+      self.tblReclass.setItem(row, 1, item)
+
+
