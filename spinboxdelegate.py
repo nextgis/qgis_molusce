@@ -29,12 +29,14 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 class SpinBoxDelegate(QItemDelegate):
-  def __init__(self, parent=None):
+  def __init__(self, parent=None, minRange=1, maxRange=9):
     QItemDelegate.__init__(self, parent)
+    self.minRange = minRange
+    self.maxRange = maxRange
 
   def createEditor(self, parent, options, index):
     editor = QSpinBox(parent)
-    editor.setRange(1, 9)
+    editor.setRange(self.minRange, self.maxRange)
     return editor
 
   def setEditorData(self, editor, index):
