@@ -110,7 +110,7 @@ def woe(factor, sites, unit_cell=1):
 
     wTotalMin = sum([w[1] for w in weights])
     # List of total weights of evidence of the categories:
-    # wMap[0] is the first category  total weight, wMap[1] is the second category total weight, ...
+    # wMap[0] is the total weight of the first category, wMap[1] is the total weight of the second category, ...
     wMap = [w[0] + wTotalMin - w[1] for w in weights]
 
     # If len(categories) = 2, then [w[0] + wTotalMin - w[1] for w in weights] increases the answer.
@@ -118,11 +118,12 @@ def woe(factor, sites, unit_cell=1):
     if len(categories) == 2:
         wMap = [w/2 for w in wMap]
 
-    result =np.zeros(ma.shape(factor))
+    resultMap =np.zeros(ma.shape(factor))
     for i,cat in enumerate(categories):
-        result[factor==cat] = wMap[i]
+        resultMap[factor==cat] = wMap[i]
 
-    result = ma.array(data=result, mask=factor.mask)
+    resultMap = ma.array(data=resultMap, mask=factor.mask)
+    result = {'map': resultMap, 'categories': categories, 'weights': wMap}
     return result
 
 def contrast(wPlus, wMinus):
