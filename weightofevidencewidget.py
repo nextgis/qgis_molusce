@@ -142,6 +142,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     self.model.processFinished.disconnect(self.plugin.workThread.quit)
     self.plugin.restoreProgressState()
     self.plugin.logMessage(self.tr("WoE model trained"))
+    self.pteWeightsInform.appendPlainText( unicode(self.model.weightsToText()) )
 
   def __getBins(self):
     bins = dict()

@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+from os.path import basename
+
 import numpy as np
 
 from PyQt4.QtCore import *
@@ -63,8 +65,17 @@ class WoeManager(QObject):
         categories = self.changeMap.getBandGradation(1)
 
         self.codes = [int(c) for c in categories]    # Codes of transitions initState->finalState (see AreaAnalyst.encode)
+        self.woe = {}       # Maps of WoE results of every transition code
 
-        self.woe = {}
+        self.weights = {}   # Weights of WoE (of raster band code)
+        #{ # The format is: {Transition_code: {factorNumber1: [list of the weights], factorNumber2: [list of the weights]}, ...}
+        #  # for example:
+        #   0: {0: {1: [...]}, 1: {1: [...]}},
+        #   1: {0: {1: [1.8650909686863169, 0.972482542742081, -32.54282539005849, -1.467596167332459]}, 1: {1: [-0.9452861879399644, 0.7434233027025385]}},
+        #   2: {0: {1: [3.133614667553026, -65.97515766175837, -65.93166118574776, -68.41518673489067]}, 1: {1: [-34.216348097184614, 1.0311003999524786]}},
+        #   ...
+        #}
+        #
 
     def checkBins(self):
         """
@@ -163,8 +174,11 @@ class WoeManager(QObject):
                 sites = binaryzation(changeMap, [code])
                 # Reclass factors (continuous factor -> ordinal factor)
                 wMap = np.ma.zeros(changeMap.shape) # The map of summary weight of the all factors
+                self.weights[code] = {}             # Dictionary for storing wheights of every raster's band
                 for k in xrange(len(self.factors)):
                     fact = self.factors[k]
+                    self.weights[code][k] = {}      # Weights of the factor
+                    factorW = self.weights[code][k]
                     if self.bins: # Get bins of the factor
                         bin = self.bins[k]
                         if (bin != None) and fact.getBandsCount() != len(bin):
@@ -172,16 +186,35 @@ class WoeManager(QObject):
                     else: bin = None
                     for i in range(1, fact.getBandsCount()+1):
                         band = fact.getBand(i)
-                        if bin and bin[i-1]:
+                        if bin and bin[i-1]: #
                             band = reclass(band, bin[i-1])
                         band, sites = masks_identity(band, sites)   # Combine masks of the rasters
                         woeRes = woe(band, sites, self.unit_cell)   # WoE for the 'code' (initState->finalState) transition and current 'factor'.
                         weights = woeRes['map']
                         wMap = wMap + weights
+                        factorW[i] = woeRes['weights']
                     self.updateProgress.emit()
                 # Reclassification finished => set WoE coefficients
                 self.woe[code]=wMap             # WoE for all factors and the transition code.
         finally:
             self.processFinished.emit()
 
-
+    def weightsToText(self):
+        '''
+        Format self.weights as text report.
+        '''
+        if self.weights == {}:
+            return u""
+        text = u""
+        for code in self.codes:
+            (initClass, finalClass) = self.analyst.decode(code)
+            text = text + self.tr("Transition %s -> %s\n" % (int(initClass), int(finalClass)))
+            factorW = self.weights[code]
+            for factNum, factDict in factorW.iteritems():
+                name = self.factors[factNum].getFileName()
+                name = basename(name)
+                text = text + self.tr("\t factor: %s \n" % (name,) )
+                for bandNum, bandWeights in factDict.iteritems():
+                    weights = ["%f" % (w,) for w in bandWeights]
+                    text = text + self.tr("\t\t Weights of band %s: %s \n" % (bandNum, ", ".join(weights)) )
+        return text
