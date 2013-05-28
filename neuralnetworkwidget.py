@@ -117,6 +117,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.settings.setValue("ui/ANN/momentum", self.spnMomentum.value())
 
     self.plugin.btnStop.setEnabled(True)
+    self.btnTrainNetwork.setEnabled(False)
 
     self.plugin.logMessage(self.tr("Init ANN model"))
 
@@ -181,11 +182,13 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.updateProgress.disconnect(self.plugin.showProgress)
     self.plugin.restoreProgressState()
     self.plugin.btnStop.setEnabled(False)
+    self.btnTrainNetwork.setEnabled(True)
     self.plugin.logMessage(self.tr("ANN model trained"))
 
   def __trainInterrupted(self):
     self.plugin.workThread.quit()
     self.plugin.btnStop.setEnabled(False)
+    self.btnTrainNetwork.setEnabled(True)
     self.plugin.logMessage(self.tr("ANN model training interrupted"))
 
   def __updateRMS(self, dRMS):
