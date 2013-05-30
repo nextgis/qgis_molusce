@@ -80,6 +80,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.spnMaxIterations.setValue(self.settings.value("ui/ANN/maxIterations", 1000).toInt()[0])
     self.leTopology.setText(self.settings.value("ui/ANN/topology", "10").toString())
     self.spnMomentum.setValue(self.settings.value("ui/ANN/momentum", 0.05).toFloat()[0])
+    self.btnStop.setEnabled(False)
 
   def trainNetwork(self):
     if not utils.checkInputRasters(self.inputs):
@@ -116,7 +117,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.settings.setValue("ui/ANN/topology", self.leTopology.text())
     self.settings.setValue("ui/ANN/momentum", self.spnMomentum.value())
 
-    self.plugin.btnStop.setEnabled(True)
+    self.btnStop.setEnabled(True)
     self.btnTrainNetwork.setEnabled(False)
 
     self.plugin.logMessage(self.tr("Init ANN model"))
@@ -160,7 +161,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.moveToThread(self.plugin.workThread)
 
     self.plugin.workThread.started.connect(self.model.startTrain)
-    self.plugin.btnStop.clicked.connect(self.model.stopTrain)
+    self.btnStop.clicked.connect(self.model.stopTrain)
     self.model.updateGraph.connect(self.__updateGraph)
     self.model.updateDeltaRMS.connect(self.__updateRMS)
     self.model.updateMinValErr.connect(self.__updateValidationError)
@@ -181,13 +182,13 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.rangeChanged.disconnect(self.plugin.setProgressRange)
     self.model.updateProgress.disconnect(self.plugin.showProgress)
     self.plugin.restoreProgressState()
-    self.plugin.btnStop.setEnabled(False)
+    self.btnStop.setEnabled(False)
     self.btnTrainNetwork.setEnabled(True)
     self.plugin.logMessage(self.tr("ANN model trained"))
 
   def __trainInterrupted(self):
     self.plugin.workThread.quit()
-    self.plugin.btnStop.setEnabled(False)
+    self.btnStop.setEnabled(False)
     self.btnTrainNetwork.setEnabled(True)
     self.plugin.logMessage(self.tr("ANN model training interrupted"))
 
