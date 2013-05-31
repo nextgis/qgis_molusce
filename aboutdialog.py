@@ -33,7 +33,7 @@ from PyQt4.QtGui import *
 
 from ui.ui_aboutdialogbase import Ui_Dialog
 
-from __init__ import version
+#from __init__ import version
 
 import resources_rc
 
