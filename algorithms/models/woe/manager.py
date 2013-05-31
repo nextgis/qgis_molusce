@@ -61,6 +61,10 @@ class WoeManager(QObject):
         if self.changeMap.getBandsCount() != 1:
             raise WoeManagerError('Change map must have one band!')
 
+        # Denormalize factors if they are normalized
+        for r in self.factors:
+            r.denormalize()
+
         # Get list of codes from the changeMap raster
         categories = self.changeMap.getBandGradation(1)
 
@@ -71,8 +75,8 @@ class WoeManager(QObject):
         #{ # The format is: {Transition_code: {factorNumber1: [list of the weights], factorNumber2: [list of the weights]}, ...}
         #  # for example:
         #   0: {0: {1: [...]}, 1: {1: [...]}},
-        #   1: {0: {1: [1.8650909686863169, 0.972482542742081, -32.54282539005849, -1.467596167332459]}, 1: {1: [-0.9452861879399644, 0.7434233027025385]}},
-        #   2: {0: {1: [3.133614667553026, -65.97515766175837, -65.93166118574776, -68.41518673489067]}, 1: {1: [-34.216348097184614, 1.0311003999524786]}},
+        #   1: {0: {1: [...]}, 1: {1: [...]}},
+        #   2: {0: {1: [...]}, 1: {1: [...]}},
         #   ...
         #}
         #

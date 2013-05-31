@@ -69,6 +69,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
 
     row = 0
     for k, v in self.inputs["factors"].iteritems():
+      v.denormalize()   # Denormalize the factor's bands if they are normalized
       for b in xrange(1, v.getBandsCount()+1):
         if v.isCountinues(b):
           self.tblReclass.insertRow(row)
@@ -77,7 +78,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
           else:
             name = QString(u"%s" % (utils.getLayerById(k).name(), ))
           stat = v.getBandStat(b)
-          for n, item_data in enumerate([(name).arg(b), u"", unicode(stat["min"]), unicode(stat["max"])]):
+          for n, item_data in enumerate([(name).arg(b), u"", (u"%f" % (stat["min"], )), (u"%f" % (stat["max"], )) ]):
             item = QTableWidgetItem(item_data)
             if n != 1:
               item.setFlags(item.flags() ^ Qt.ItemIsEditable)
