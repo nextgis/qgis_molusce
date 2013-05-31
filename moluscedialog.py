@@ -489,7 +489,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.__addRasterToCanvas(self.leMonteCarloPath.text())
         if utils.copySymbology(utils.getLayerByName(self.leInitRasterName.text()), utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName())):
           self.iface.legendInterface().refreshLayerSymbology(utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName()))
-          self.iface.mapCanvas.refresh()
+          self.iface.mapCanvas().refresh()
           QgsProject.instance().dirty(True)
       else:
         self.logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
