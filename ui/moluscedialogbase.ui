@@ -20,7 +20,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>5</number>
      </property>
      <widget class="QWidget" name="tabInputs">
       <attribute name="title">
@@ -396,7 +396,7 @@
          <item row="0" column="0">
           <widget class="QCheckBox" name="chkRiskFunction">
            <property name="text">
-            <string>Risk function</string>
+            <string>Certancy function</string>
            </property>
           </widget>
          </item>
@@ -630,7 +630,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Kappa Overal</string>
+            <string>Kappa (overal)</string>
            </property>
           </widget>
          </item>
