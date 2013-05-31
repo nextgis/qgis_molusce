@@ -25,6 +25,9 @@
 #
 #******************************************************************************
 
+import os
+import ConfigParser
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -41,8 +44,12 @@ class AboutDialog(QDialog, Ui_Dialog):
 
     self.btnHelp = self.buttonBox.button(QDialogButtonBox.Help)
 
+    cfg = ConfigParser.SafeConfigParser()
+    cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
+    version = cfg.get("general", "version")
+
     self.lblLogo.setPixmap(QPixmap(":/icons/molusce.png"))
-    self.lblVersion.setText(self.tr("Version: %1").arg(version()))
+    self.lblVersion.setText(self.tr("Version: %1").arg(version))
     doc = QTextDocument()
     doc.setHtml(self.getAboutText())
     self.textBrowser.setDocument(doc)

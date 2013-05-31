@@ -25,30 +25,6 @@
 #
 #******************************************************************************
 
-def name():
-  return "MOLUSCE"
-
-def description():
-  return "Modules for Land Use Change Simulations"
-
-def category():
-  return "Raster"
-
-def version():
-  return "0.5.5"
-
-def qgisMinimumVersion():
-  return "1.9.0"
-
-def author():
-  return "NextGIS"
-
-def email():
-  return "info@nextgis.org"
-
-def icon():
-  return "icons/molusce.png"
-
 def classFactory(iface):
   from molusce import MoluscePlugin
   return MoluscePlugin(iface)
