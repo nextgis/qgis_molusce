@@ -60,8 +60,7 @@ class EBudget(QObject):
         if referenceMap.getBandsCount() + simulatedMap.getBandsCount() !=2:
             raise EBError('The reference and simulated rasters must be 1-band rasters!')
         if not referenceMap.geoDataMatch(simulatedMap):
-            pass
-            #raise EBError('Geometries of the reference and simulated rasters are different!')
+            raise EBError('Geometries of the reference and simulated rasters are different!')
 
         self.categories = referenceMap.getBandGradation(1)
         for s in simulatedMap.getBandGradation(1):
@@ -126,6 +125,7 @@ class EBudget(QObject):
                         newRj[cat][r/scale, c/scale] = 1.0*np.sum(R[r: r+scale, c: c+scale]*w)/sum_w
                 c = c + scale
             r = r + scale
+            QCoreApplication.processEvents()
             self.updateProgress.emit()
 
         self.W = newW

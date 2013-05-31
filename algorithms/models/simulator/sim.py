@@ -83,6 +83,7 @@ class Simulator(QObject):
         self.rangeChanged.emit(message, maxValue)
 
     def __modelProgressChanged(self):
+        QCoreApplication.processEvents()
         self.updateProgress.emit()
 
     def __sim(self):
