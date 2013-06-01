@@ -115,13 +115,14 @@ class MlpManager(QObject):
             raise MplManagerError('Output layer must have one band!')
 
         input_neurons = 0
-        for raster in [state] + factors:
+        for raster in factors:
             input_neurons = input_neurons+ raster.getNeighbourhoodSize(self.ns)
 
+        # state raster contains categories. We need use n-1 dummy variables (where n = number of categories)
+        input_neurons = input_neurons + (len(state.getBandGradation(1))-1) * state.getNeighbourhoodSize(self.ns)
 
         # Output category's (neuron) list and count
-        band = output.getBand(1)
-        self.catlist = np.unique(band.compressed())
+        self.catlist = output.getBandGradation(1)
         categories = len(self.catlist)
 
         # set neuron counts in the MLP layers

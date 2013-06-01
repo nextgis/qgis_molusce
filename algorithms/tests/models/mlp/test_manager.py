@@ -17,6 +17,10 @@ class TestMlpManager (unittest.TestCase):
     def setUp(self):
         self.factors = [Raster('../../examples/multifact.tif')]
         self.output = Raster('../../examples/sites.tif')
+        #~ sites.tif is 1-band 3x3 raster:
+            #~ [1,2,1],
+            #~ [1,2,1],
+            #~ [0,1,2]
 
         self.factors2 = [Raster('../../examples/multifact.tif'), Raster('../../examples/multifact.tif')]
         self.factors3 = [Raster('../../examples/two_band.tif')]
@@ -29,11 +33,11 @@ class TestMlpManager (unittest.TestCase):
     def test_MlpManager(self):
         mng = MlpManager(ns=1)
         mng.createMlp(self.output, self.factors2, self.output, [10])
-        assert_array_equal(mng.getMlpTopology(), [27, 10, 3])
+        assert_array_equal(mng.getMlpTopology(), [2*9 + 2*9, 10, 3])
 
         mng = MlpManager()
         mng.createMlp(self.output, self.factors, self.output, [10])
-        assert_array_equal(mng.getMlpTopology(), [2, 10, 3])
+        assert_array_equal(mng.getMlpTopology(), [2*1 + 1*1, 10, 3])
 
     def test_setTrainingData(self):
         mng = MlpManager()
@@ -45,17 +49,17 @@ class TestMlpManager (unittest.TestCase):
         min, max = mng.sigmin, mng.sigmax
         data = np.array(
             [
-                ((0,3), 1.0, (1.0-m)/s, [min,  max, min]),
-                ((1,3), 2.0, (1.0-m)/s, [min,  min, max]),
-                ((2,3), 1.0, (3.0-m)/s, [min,  max, min]),
-                ((0,2), 1.0, (3.0-m)/s, [min,  max, min]),
-                ((1,2), 2.0, (2.0-m)/s, [min,  min, max]),
-                ((2,2), 1.0, (1.0-m)/s, [min,  max, min]),
-                ((0,1), 0.0, (0.0-m)/s, [max,  min, min]),
-                ((1,1), 1.0, (3.0-m)/s, [min,  max, min]),
-                ((2,1), 2.0, (1.0-m)/s, [min,  min, max]),
+                ((0,3), [0, 1], (1.0-m)/s, [min,  max, min]),
+                ((1,3), [0, 0], (1.0-m)/s, [min,  min, max]),
+                ((2,3), [0, 1], (3.0-m)/s, [min,  max, min]),
+                ((0,2), [0, 1], (3.0-m)/s, [min,  max, min]),
+                ((1,2), [0, 0], (2.0-m)/s, [min,  min, max]),
+                ((2,2), [0, 1], (1.0-m)/s, [min,  max, min]),
+                ((0,1), [1, 0], (0.0-m)/s, [max,  min, min]),
+                ((1,1), [0, 1], (3.0-m)/s, [min,  max, min]),
+                ((2,1), [0, 0], (1.0-m)/s, [min,  min, max]),
             ],
-            dtype=[('coords', float, 2),('state', float, (1,)), ('factors', float, (1,)), ('output', float, 3)]
+            dtype=[('coords', float, 2),('state', float, (2,)), ('factors', float, (1,)), ('output', float, 3)]
         )
         self.assertEqual(mng.data.shape, (9,))
         for i in range(len(data)):
@@ -72,7 +76,7 @@ class TestMlpManager (unittest.TestCase):
             'factors': (np.array([ 1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.,
                                 1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.]) - stat['mean'])/stat['std'],
             'output': np.array([min, min,  max]),
-            'state': np.array([1,2,1,   1,2,1,  0,1,2])
+            'state': np.array([0,1,  0,0,  0,1,   0,1,  0,0,  0,1,   1,0,  0,1,  0,0])
             }
         ]
         self.assertEqual(mng.data.shape, (1,))
@@ -94,7 +98,7 @@ class TestMlpManager (unittest.TestCase):
             'factors': np.array([ (1.-m1)/s1,  (2.-m1)/s1,  (1.-m1)/s1,  (1.-m1)/s1,  (2.-m1)/s1,  (1.-m1)/s1,  (0.-m1)/s1,  (1.-m1)/s1,  (2.-m1)/s1,
                                 (1.-m2)/s2,  (1.-m2)/s2,  (3.-m2)/s2,  (3.-m2)/s2,  (2.-m2)/s2,  (1.-m2)/s2,  (0.-m2)/s2,  (3.-m2)/s2,  (1.-m2)/s2]),
             'output': np.array([min, min,  max]),
-            'state': np.array([1,2,1,   1,2,1,  0,1,2])
+            'state': np.array([0,1,  0,0,  0,1,   0,1,  0,0,  0,1,   1,0,  0,1,  0,0])
             }
         ]
         self.assertEqual(mng.data.shape, (1,))
@@ -120,7 +124,7 @@ class TestMlpManager (unittest.TestCase):
                                 (1.-m2)/s2,  (1.-m2)/s2,  (3.-m2)/s2,  (3.-m2)/s2,  (2.-m2)/s2,  (1.-m2)/s2,  (0.-m2)/s2,  (3.-m2)/s2,  (1.-m2)/s2,
                                 (1.-m3)/s3,  (1.-m3)/s3,  (3.-m3)/s3,  (3.-m3)/s3,  (2.-m3)/s3,  (1.-m3)/s3,  (0.-m3)/s3,  (3.-m3)/s3,  (1.-m3)/s3]),
             'output': np.array([min, min,  max]),
-            'state': np.array([1,2,1,   1,2,1,  0,1,2])
+            'state': np.array([0,1,  0,0,  0,1,   0,1,  0,0,  0,1,   1,0,  0,1,  0,0])
             }
         ]
         self.assertEqual(mng.data.shape, (1,))
@@ -147,7 +151,6 @@ class TestMlpManager (unittest.TestCase):
         mask = predict.getBand(1).mask
 
         self.assertTrue(not all(mask.flatten()))
-
 
     def test_predict(self):
         mng = MlpManager()
