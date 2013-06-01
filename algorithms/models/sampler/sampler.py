@@ -27,23 +27,23 @@ class Sampler(QObject):
 
     coordinates of pixel,
     input data consists of 2 parts:
-        state is data that is read from 1-band raster, this raster contains initaial states (categories).
+        state is data that is read from 1-band raster, this raster contains initaial states (categories). Categories are splitted into set of dummy variables.
         factors is list of rasters (multiband probably) that explain transition between states (categories).
     output data is read from 1-band raster, this raster contains final states.
 
     In the simplest case we have pixel-by-pixel model. In such case:
         sample = np.array(
-            (pixel_from_state_raster, [pixel_from_factor1, ..., pixel_from_factorN], pixel_from_output_raster),
+            ([Dummy_variables_for_pixel_from_state_raster], [pixel_from_factor1, ..., pixel_from_factorN], pixel_from_output_raster),
             dtype=[('state', float, 1),('factors',  float, N), ('output', float, 1)]
         )
     But we can use moving windows to collect samples, then input data contains several (eg 3x3) pixels for every raster (band).
     For example if we use 1-pixel neighbourhood (3x3 moving windows):
         sample = np.array(
-            ( [1st-pixel_from_state_raster, ..., 9th-pixel_from_state_raster],
+            ( [Dummy1_1st-pixel_from_state_raster,..., DummyK_1st-pixel_from_state_raster, ..., DummyK_9th-pixel_from_state_raster],
               [1st-pixel_from_factor1, ..., 9th-pixel_from_factor1, ..., 1st-pixel_from_factorN..., 9th-pixel_from_factorN],
               pixel_from_output_raster
             ),
-            dtype=[('state', float, 9),('factors',  float, 9*N), ('output', float, 1)]
+            dtype=[('state', float, 9*DummyVariablesCount),('factors',  float, 9*N), ('output', float, 1)]
         )
     '''
 
@@ -68,11 +68,18 @@ class Sampler(QObject):
             if not state.geoDataMatch(raster=None, geodata=self.factorsGeoData):
                 raise SamplerError('Geometries of the inputs and output rasters are different!')
 
+        self.stateCategories = state.getBandGradation(1)        # Categories of state raster
+        self.categoriesCount = len(self.stateCategories)        # Count of the categories
+
         self.outputVecLen = 1                                   # Len of output vector
-        self.stateVecLen  = state.getNeighbourhoodSize(self.ns) # Len of the vector of input states
+        # Len of the vector of input states:
+        self.stateVecLen  = (self.categoriesCount-1)*state.getNeighbourhoodSize(self.ns)
+        # Set up dummy variables
+        self.catCodes = {}
+        self.__calcCatVector()
 
         self.factorCount = len(factors)
-        self.factorVectLen = 0                                  # Length of factor vector
+        self.factorVectLen = 0                                  # Length of vector of the factor's pixels
         self.factors = []
         for raster in factors:
             self.factorVectLen = self.factorVectLen + raster.getNeighbourhoodSize(self.ns)
@@ -81,7 +88,28 @@ class Sampler(QObject):
         self.factors = np.ma.array(self.factors, dtype=float)
 
         self.proj = self.factorsGeoData['proj']     # Projection of the data coordinates
-        self.data = None                # Training data
+        self.data = None                # Sample data
+
+    def __calcCatVector(self):
+        '''
+        Split state category value into set of dummy variables and save them in a dictionary.
+        self.stateCategories[-1] is base category.
+        For example:
+            self.stateCategories = [1,2,3] => dummy vars are [V1, V2]: cat1 = [1, 0], cat2 = [0, 1], cat3 = [0 ,0]
+        '''
+        for cat in self.stateCategories[:-1]:
+            vect = np.zeros(self.categoriesCount-1)
+            num = self.stateCategories.index(cat)
+            vect[num] = 1.0
+            self.catCodes[cat] = vect
+        self.catCodes[self.stateCategories[-1]] = vect = np.zeros(self.categoriesCount-1)
+
+    def cat2vect(self, category):
+        '''
+        Return dummy variables for the category.
+        @param category     The category number.
+        '''
+        return self.catCodes[category]
 
     def getData(self):
         return self.data
@@ -118,6 +146,8 @@ class Sampler(QObject):
     def get_state(self, state, row, col):
         '''
         Get current state at (row, col) pixel and return it as array. Return None if the sample is incomplete.
+        The result is [Dummy_var1_for_pix1, ... Dummy_varK_for_pix1, ..., Dummy_var1_for_pixS, ... Dummy_varK_for_pixS],
+            where K is count of dummy variables, S is count of pixels in the neighbours of the pixel.
         '''
         neighbours = state.getNeighbours(row,col, self.ns).flatten()
 
@@ -127,7 +157,10 @@ class Sampler(QObject):
 
         if any(mask): # Eliminate incomplete samples
             return None
-        return neighbours
+        result = np.zeros(self.stateVecLen)
+        for i, cat in enumerate(neighbours):
+            result[i*(self.categoriesCount-1): self.categoriesCount-1 + i*(self.categoriesCount-1)] = self.cat2vect(cat)
+        return result
 
     def _getSample(self, state, output, row, col):
         '''
