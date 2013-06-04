@@ -78,13 +78,13 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
           else:
             name = QString(u"%s" % (utils.getLayerById(k).name(), ))
           stat = v.getBandStat(b)
-          for n, item_data in enumerate([(name).arg(b), u"", (u"%f" % (stat["min"], )), (u"%f" % (stat["max"], )) ]):
+          for n, item_data in enumerate([(name).arg(b), (u"%f" % (stat["min"], )), (u"%f" % (stat["max"])), u"" , u"" ]):
             item = QTableWidgetItem(item_data)
-            if n != 1:
+            if n < 3:
               item.setFlags(item.flags() ^ Qt.ItemIsEditable)
             self.tblReclass.setItem(row, n, item)
           row += 1
-    self.tblReclass.setItemDelegateForColumn(4, self.delegate)
+    self.tblReclass.setItemDelegateForColumn(3, self.delegate)
     self.tblReclass.resizeRowsToContents()
     self.tblReclass.resizeColumnsToContents()
 
@@ -176,15 +176,15 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
   def __resetBins(self):
     for row in xrange(self.tblReclass.rowCount()):
       try:
-        rangeMin = float(self.tblReclass.item(row, 2).text())
-        rangeMax = float(self.tblReclass.item(row, 3).text())
-        intervals = int(float(self.tblReclass.item(row, 4).text()))
-      except AttributeError:
+        rangeMin = float(self.tblReclass.item(row, 1).text())
+        rangeMax = float(self.tblReclass.item(row, 2).text())
+        intervals = int(float(self.tblReclass.item(row, 3).text()))
+      except ValueError:
         continue
       delta = (rangeMax - rangeMin)/intervals
       item = [unicode( int(rangeMin + delta*(i)) )  for i in range(1,intervals)]
       item = u" ".join(item)
       item = QTableWidgetItem(item)
-      self.tblReclass.setItem(row, 1, item)
+      self.tblReclass.setItem(row, 4, item)
 
 
