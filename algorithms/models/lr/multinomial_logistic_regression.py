@@ -256,8 +256,7 @@ class MLR(object):
         grad = fgcomp.compute_grad
 
         # minimize with BFGS
-        #results = fmin_bfgs(fun, w0, fprime=grad, maxiter=maxiter, disp=False, full_output=False)
-        xopt, foptm, gopt, Bopt, func_calls, grad_calls, warnflag = fmin_bfgs(fun, w0, fprime=grad, full_output=True)
+        xopt, foptm, gopt, Bopt, func_calls, grad_calls, warnflag = fmin_bfgs(fun, w0, fprime=grad, full_output=True, maxiter=maxiter, disp=False)
         self.W_ = xopt.reshape((n_features+1, n_classes))
         self.invHess = Bopt
 
