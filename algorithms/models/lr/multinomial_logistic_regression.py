@@ -147,8 +147,9 @@ class MLR(object):
         self.W_ = None
         self.nll_ = None
         self.grad_ = None
-        self.stdErr_ = None
-        self.pVal_ = None
+        self.invHess = None     # Inverted Hessian
+        self.stdErr_ = None     # Standard errors
+        self.pVal_ = None       # p-values
 
     def calcSTD(self, X):
         """
@@ -164,33 +165,8 @@ class MLR(object):
         # check dimensions
         assert n_features +1 == _d, "Shape mismatch between X and W"
 
-        # predicted probs for 1,2,... k categories
-        pr = self.predict_proba(X)#[:,:-1]
-
-        # add column of ones to X
-        n_samples, n_features = X.shape
-        ones = np.ones( (n_samples,) )
-        X = np.column_stack((ones, X))
-
-        N = (n_classes)*(n_features+1)
-        # matrix of the second derivates of ML
-        sd = np.zeros( (N, N) )
-        for i, x in enumerate(X):
-            x.shape = (n_features+1, -1)
-            x2 = np.dot(x,x.T)
-
-            p = pr[i]
-            lp = np.diag(p)
-
-            p.shape = (n_classes, -1)
-            p2 = np.dot(p,p.T)
-
-            h = np.kron((lp-p2), x2)
-            sd = sd+h
-
-        self.stdErr_ = np.sqrt(np.diagonal(sd))
-        self.stdErr_.shape = (n_classes, n_features+1)
-        self.stdErr_ = self.stdErr_.T
+        self.stdErr_ = np.sqrt(np.diagonal(self.invHess))
+        self.stdErr_.shape = (n_features+1, n_classes)
 
     def calcPvalues(self, X):
         if self.stdErr_ == None:
@@ -280,8 +256,10 @@ class MLR(object):
         grad = fgcomp.compute_grad
 
         # minimize with BFGS
-        results = fmin_bfgs(fun, w0, fprime=grad, maxiter=maxiter, disp=False, full_output=False)
-        self.W_ = results.reshape((n_features+1, n_classes))
+        #results = fmin_bfgs(fun, w0, fprime=grad, maxiter=maxiter, disp=False, full_output=False)
+        xopt, foptm, gopt, Bopt, func_calls, grad_calls, warnflag = fmin_bfgs(fun, w0, fprime=grad, full_output=True)
+        self.W_ = xopt.reshape((n_features+1, n_classes))
+        self.invHess = Bopt
 
         return self
 
