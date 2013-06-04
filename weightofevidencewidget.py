@@ -159,7 +159,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
             name = QString(u"%s" % (utils.getLayerById(k).name(), ))
           items = self.tblReclass.findItems(name.arg(b), Qt.MatchExactly)
           idx = self.tblReclass.indexFromItem(items[0])
-          reclassList = self.tblReclass.item(idx.row(), 1).text()
+          reclassList = self.tblReclass.item(idx.row(), 4).text()
           try:
             lst[b] = [int(j) for j in reclassList.split(" ")]
           except ValueError:
