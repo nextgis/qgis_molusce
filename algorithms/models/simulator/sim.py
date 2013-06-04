@@ -136,6 +136,7 @@ class Simulator(QObject):
                     # make transition initClass -> finalClass
                     for index in indices:
                         new_state[index] = finalClass
+                QCoreApplication.processEvents()
                 self.updateProgress.emit()
 
         result = Raster()
