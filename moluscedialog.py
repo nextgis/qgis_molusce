@@ -111,7 +111,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.chkMonteCarlo.toggled.connect(self.__toggleLineEdit)
 
     self.btnSelectRiskFunction.clicked.connect(self.__selectSimulationOutput)
-    self.btnSelectRiskValidation.clicked.connect(self.__selectSimulationOutput)
+    self.btnSelectRiskValidation.clicked.connect(self.createValidationMap)
     self.btnSelectMonteCarlo.clicked.connect(self.__selectSimulationOutput)
 
     self.btnStartSimulation.clicked.connect(self.startSimulation)
@@ -465,13 +465,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
       else:
         self.logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
-    if self.chkRiskValidation.isChecked():
-      if not self.leRiskValidationPath.text().isEmpty():
-        res = self.simulator.errorMap(self.inputs["final"])
-        res.save(unicode(self.leRiskValidationPath.text()), nodata=0)
-      else:
-        self.logMessage(self.tr("Output path for estimation errors for risk classes map is not set. Skipping this step"))
-
     if self.chkMonteCarlo.isChecked():
       if not self.leMonteCarloPath.text().isEmpty():
         res = self.simulator.getState()
@@ -519,6 +512,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("Can't read file: '%s'" % unicode(self.leSimulatedMapPath.text()))
                          )
       return
+
     self.eb = EBudget(reference, simulated)
 
     self.eb.moveToThread(self.workThread)
@@ -598,6 +592,59 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.depCoef.updateProgress.connect(self.showProgress)
     self.depCoef.processFinished.connect(self.kappaValDone)
     self.workThread.start()
+
+  def createValidationMap(self):
+    try:
+      reference = Raster(unicode(self.leReferenceMapPath.text()))
+    except ProviderError:
+      QMessageBox.warning(self,
+                          self.tr("Can't read file"),
+                          self.tr("Can't read file: '%s'" % unicode(self.leReferenceMapPath.text()))
+                         )
+      return
+    try:
+      simulated = Raster(unicode(self.leSimulatedMapPath.text()))
+    except ProviderError:
+      QMessageBox.warning(self,
+                          self.tr("Can't read file"),
+                          self.tr("Can't read file: '%s'" % unicode(self.leSimulatedMapPath.text()))
+                         )
+      return
+
+    fileName = utils.saveRasterDialog(self,
+                                      self.settings,
+                                      self.tr("Save validation map"),
+                                      self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)")
+                                     )
+
+    if fileName.isEmpty():
+      self.logMessage(self.tr("No file selected"))
+      return
+
+    self.inputs["valMapName"] = unicode(fileName)
+
+    self.analystVM = AreaAnalyst(reference, simulated)
+    self.analystVM.moveToThread(self.workThread)
+    self.workThread.started.connect(self.analystVM.getChangeMap)
+    self.analystVM.rangeChanged.connect(self.setProgressRange)
+    self.analystVM.updateProgress.connect(self.showProgress)
+    self.analystVM.processFinished.connect(self.validationMapDone)
+    self.analystVM.processFinished.connect(self.workThread.quit)
+    self.workThread.start()
+
+  def validationMapDone(self, raster):
+    validationMap = raster
+    validationMap.save(self.inputs["valMapName"])
+    self.__addRasterToCanvas(self.inputs["valMapName"])
+    self.applyRasterStyle(utils.getLayerByName(QFileInfo(self.inputs["valMapName"]).baseName()))
+    del self.inputs["valMapName"]
+    self.workThread.started.disconnect(self.analystVM.getChangeMap)
+    self.analystVM.rangeChanged.disconnect(self.setProgressRange)
+    self.analystVM.updateProgress.disconnect(self.showProgress)
+    self.analystVM.processFinished.disconnect(self.validationMapDone)
+    self.analystVM.processFinished.disconnect(self.workThread.quit)
+    del self.analystVM
+    self.restoreProgressState()
 
   def kappaValDone(self):
     self.workThread.started.disconnect(self.depCoef.calculateCrosstable)
@@ -925,10 +972,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.btnSelectRiskFunction.setEnabled(False)
     elif senderName == "chkRiskValidation":
       if checked:
-        self.leRiskValidationPath.setEnabled(True)
         self.btnSelectRiskValidation.setEnabled(True)
       else:
-        self.leRiskValidationPath.setEnabled(False)
         self.btnSelectRiskValidation.setEnabled(False)
     elif senderName == "chkMonteCarlo":
       if checked:
@@ -991,8 +1036,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     if senderName == "btnSelectRiskFunction":
       self.leRiskFunctionPath.setText(fileName)
-    elif senderName == "btnSelectRiskValidation":
-      self.leRiskValidationPath.setText(fileName)
     elif senderName == "btnSelectMonteCarlo":
       self.leMonteCarloPath.setText(fileName)
 
@@ -1144,3 +1187,4 @@ class MolusceDialog(QDialog, Ui_Dialog):
     layer.triggerRepaint()
     self.iface.legendInterface().refreshLayerSymbology(layer)
     QgsProject.instance().dirty(True)
+
