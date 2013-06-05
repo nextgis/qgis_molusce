@@ -593,6 +593,23 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.depCoef.processFinished.connect(self.kappaValDone)
     self.workThread.start()
 
+  def kappaValDone(self):
+    self.workThread.started.disconnect(self.depCoef.calculateCrosstable)
+    self.depCoef.rangeChanged.disconnect(self.setProgressRange)
+    self.depCoef.updateProgress.disconnect(self.showProgress)
+    self.depCoef.processFinished.disconnect(self.kappaValDone)
+    self.workThread.quit()
+    self.restoreProgressState()
+
+    kappas = self.depCoef.kappa(mode='all')
+    self.leKappaOveral.setText(QString.number(kappas["overal"]))
+    self.leKappaHisto.setText(QString.number(kappas["histo"]))
+    self.leKappaLoc.setText(QString.number(kappas["loc"]))
+    # % of Correctness
+    percent = self.depCoef.correctness()
+    self.leKappaCorrectness.setText(QString.number(percent))
+    self.depCoef = None
+
   def createValidationMap(self):
     try:
       reference = Raster(unicode(self.leReferenceMapPath.text()))
@@ -645,23 +662,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.analystVM.processFinished.disconnect(self.workThread.quit)
     del self.analystVM
     self.restoreProgressState()
-
-  def kappaValDone(self):
-    self.workThread.started.disconnect(self.depCoef.calculateCrosstable)
-    self.depCoef.rangeChanged.disconnect(self.setProgressRange)
-    self.depCoef.updateProgress.disconnect(self.showProgress)
-    self.depCoef.processFinished.disconnect(self.kappaValDone)
-    self.workThread.quit()
-    self.restoreProgressState()
-
-    kappas = self.depCoef.kappa(mode='all')
-    self.leKappaOveral.setText(QString.number(kappas["overal"]))
-    self.leKappaHisto.setText(QString.number(kappas["histo"]))
-    self.leKappaLoc.setText(QString.number(kappas["loc"]))
-    # % of Correctness
-    percent = self.depCoef.correctness()
-    self.leKappaCorrectness.setText(QString.number(percent))
-    self.depCoef = None
 
   def tabChanged(self, index):
     if  index == 1:     # tabCorrelationChecking
