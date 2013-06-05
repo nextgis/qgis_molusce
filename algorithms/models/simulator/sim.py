@@ -41,7 +41,6 @@ class Simulator(QObject):
         try:
             self.model.rangeChanged.connect(self.__modelProgressRangeChanged)
             self.model.updateProgress.connect(self.__modelProgressChanged)
-            self.model.processFinished.connect(self.__modelFinished)
         except AttributeError:
             pass
 
@@ -73,11 +72,6 @@ class Simulator(QObject):
         result = Raster()
         result.create([diff], state.getGeodata())
         return result
-
-    def __modelFinished(self):
-        self.model.rangeChanged.disconnect(self.__modelProgressRangeChanged)
-        self.model.updateProgress.disconnect(self.__modelProgressChanged)
-        self.model.processFinished.disconnect(self.__modelFinished)
 
     def __modelProgressRangeChanged(self, message, maxValue):
         self.rangeChanged.emit(message, maxValue)
@@ -143,7 +137,6 @@ class Simulator(QObject):
         result.create([new_state], state.getGeodata())
         self.state = result
 
-
     def simN(self, N=1):
         '''
         Make N iterations of simulation.
@@ -152,6 +145,8 @@ class Simulator(QObject):
             for i in range(N):
                 self.__sim()
         finally:
+            self.model.rangeChanged.disconnect(self.__modelProgressRangeChanged)
+            self.model.updateProgress.disconnect(self.__modelProgressChanged)
             self.simFinished.emit()
 
     def updatePrediction(self, state):
