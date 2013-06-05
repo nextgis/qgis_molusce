@@ -1143,10 +1143,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if not utils.checkChangeMap(self.inputs):
       return
 
-    stat = self.inputs["changeMap"].getBandStat(0)
+    stat = self.inputs["changeMap"].getBandStat(1)
     minVal = float(stat["min"])
     maxVal = float(stat["max"])
-    numberOfEntries = len(self.inputs["changeMap"].getBandGradation(0))
+    numberOfEntries = len(self.inputs["changeMap"].getBandGradation(1))
     #print "MIN", minVal
     #print "MAX", maxVal
     #print "NUM", numberOfEntries
@@ -1195,10 +1195,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if not utils.checkChangeMap(self.inputs):
       return
 
-    stat = self.inputs["changeMap"].getBandStat(0)
+    stat = self.inputs["changeMap"].getBandStat(1)
     minVal = float(stat["min"])
     maxVal = float(stat["max"])
-    numberOfEntries = len(self.inputs["changeMap"].getBandGradation(0))
+    numberOfEntries = len(self.inputs["changeMap"].getBandGradation(1))
     #print "MIN", minVal
     #print "MAX", maxVal
     #print "NUM", numberOfEntries
