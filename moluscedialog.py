@@ -1218,7 +1218,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
     colorRampShader = QgsColorRampShader()
 
     l = utils.getLayerByName(self.leInitRasterName.text())
-    cr = l.renderer().shader().rasterShaderFunction().colorRampItemList()
+    try:
+      cr = l.renderer().shader().rasterShaderFunction().colorRampItemList()
+    except AttributeError:
+      return
 
     colorRampItems = []
     for i in xrange(len(entryValues)):
