@@ -1195,20 +1195,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if not utils.checkChangeMap(self.inputs):
       return
 
-    stat = self.inputs["changeMap"].getBandStat(1)
+    r = Raster(unicode(layer.source()))
+    stat = r.getBandStat(1)
     minVal = float(stat["min"])
     maxVal = float(stat["max"])
-    numberOfEntries = len(self.inputs["changeMap"].getBandGradation(1))
-    #print "MIN", minVal
-    #print "MAX", maxVal
-    #print "NUM", numberOfEntries
+    numberOfEntries = int(maxVal - minVal + 1)
 
     entryValues = []
     entryColors = []
 
     colorRamp = QgsStyleV2().defaultStyle().colorRamp("Spectral")
     currentValue = float(minVal)
-    intervalDiff = float(maxVal - minVal) / float(numberOfEntries)
+    intervalDiff = float(maxVal - minVal) / float(numberOfEntries - 1)
 
     for i in xrange(numberOfEntries):
       entryValues.append(currentValue)
@@ -1229,10 +1227,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
       item.value = entryValues[i]
       ic, fc = self.analyst.decode(int(entryValues[i]))
       item.label = unicode(self.fl(cr, ic) + u" → " + self.fl(cr, fc))
-      #item.label = unicode(entryValues[i])
       item.color = entryColors[i]
       if ic == fc and tr:
-        item.color = QColor(255, 255, 255, 255)
+        item.color = QColor(255, 255, 255, 0)
       colorRampItems.append(item)
 
     colorRampShader.setColorRampItemList(colorRampItems)
