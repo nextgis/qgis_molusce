@@ -392,7 +392,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.inputs["changeMap"] = raster
     self.inputs["changeMap"].save(self.inputs["changeMapName"])
     self.__addRasterToCanvas(self.inputs["changeMapName"])
-    self.applyRasterStyle(utils.getLayerByName(QFileInfo(self.inputs["changeMapName"]).baseName()))
+    self.applyRasterStyleLabels(utils.getLayerByName(QFileInfo(self.inputs["changeMapName"]).baseName()), self.analyst, False)
     del self.inputs["changeMapName"]
     self.workThread.started.disconnect(self.analyst.getChangeMap)
     self.analyst.rangeChanged.disconnect(self.setProgressRange)
@@ -653,7 +653,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     validationMap = raster
     validationMap.save(self.inputs["valMapName"])
     self.__addRasterToCanvas(self.inputs["valMapName"])
-    self.applyRasterStyle(utils.getLayerByName(QFileInfo(self.inputs["valMapName"]).baseName()))
+    self.applyRasterStyleLabels(utils.getLayerByName(QFileInfo(self.inputs["valMapName"]).baseName()), self.analystVM, True)
     del self.inputs["valMapName"]
     self.workThread.started.disconnect(self.analystVM.getChangeMap)
     self.analystVM.rangeChanged.disconnect(self.setProgressRange)
@@ -1147,14 +1147,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
     minVal = float(stat["min"])
     maxVal = float(stat["max"])
     numberOfEntries = len(self.inputs["changeMap"].getBandGradation(0))
-    #minVal = maxVal - float(numberOfEntries)
+    #print "MIN", minVal
+    #print "MAX", maxVal
+    #print "NUM", numberOfEntries
 
     entryValues = []
     entryColors = []
 
     colorRamp = QgsStyleV2().defaultStyle().colorRamp("Spectral")
     currentValue = float(minVal)
-    intervalDiff = float(maxVal - minVal) / float(numberOfEntries - 1)
+    intervalDiff = float(maxVal - minVal) / float(numberOfEntries)
 
     for i in xrange(numberOfEntries):
       entryValues.append(currentValue)
@@ -1168,6 +1170,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     colorRampItems = []
     for i in xrange(len(entryValues)):
       item = QgsColorRampShader.ColorRampItem()
+
       item.value = entryValues[i]
       item.label = unicode(entryValues[i])
       item.color = entryColors[i]
@@ -1188,3 +1191,68 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.iface.legendInterface().refreshLayerSymbology(layer)
     QgsProject.instance().dirty(True)
 
+  def applyRasterStyleLabels(self, layer, analyst, tr):
+    if not utils.checkChangeMap(self.inputs):
+      return
+
+    stat = self.inputs["changeMap"].getBandStat(0)
+    minVal = float(stat["min"])
+    maxVal = float(stat["max"])
+    numberOfEntries = len(self.inputs["changeMap"].getBandGradation(0))
+    #print "MIN", minVal
+    #print "MAX", maxVal
+    #print "NUM", numberOfEntries
+
+    entryValues = []
+    entryColors = []
+
+    colorRamp = QgsStyleV2().defaultStyle().colorRamp("Spectral")
+    currentValue = float(minVal)
+    intervalDiff = float(maxVal - minVal) / float(numberOfEntries)
+
+    for i in xrange(numberOfEntries):
+      entryValues.append(currentValue)
+      currentValue += intervalDiff
+
+      entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
+
+    rasterShader = QgsRasterShader()
+    colorRampShader = QgsColorRampShader()
+
+    l = utils.getLayerByName(self.leInitRasterName.text())
+    cr = l.renderer().shader().rasterShaderFunction().colorRampItemList()
+
+    colorRampItems = []
+    for i in xrange(len(entryValues)):
+      item = QgsColorRampShader.ColorRampItem()
+
+      item.value = entryValues[i]
+      ic, fc = self.analyst.decode(int(entryValues[i]))
+      item.label = unicode(self.fl(cr, ic) + u" → " + self.fl(cr, fc))
+      #item.label = unicode(entryValues[i])
+      item.color = entryColors[i]
+      if ic == fc and tr:
+        item.color = QColor(255, 255, 255, 255)
+      colorRampItems.append(item)
+
+    colorRampShader.setColorRampItemList(colorRampItems)
+    colorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
+    rasterShader.setRasterShaderFunction(colorRampShader)
+
+    renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rasterShader)
+    renderer.setClassificationMin(minVal)
+    renderer.setClassificationMax(maxVal)
+    renderer.setClassificationMinMaxOrigin(QgsRasterRenderer.minMaxOriginFromName("FullExtent"))
+
+    layer.setRenderer(renderer)
+    layer.setCacheImage(None)
+    layer.triggerRepaint()
+    self.iface.legendInterface().refreshLayerSymbology(layer)
+    QgsProject.instance().dirty(True)
+
+
+  def fl(self, cr, v):
+    for i in cr:
+      if i.value == v:
+        return i.label
+    return ""
