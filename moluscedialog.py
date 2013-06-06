@@ -1139,60 +1139,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
     # correlation tab
     self.chkAllCorr.setChecked(self.settings.value("ui/checkAllRasters", False).toBool())
 
-  def applyRasterStyle(self, layer):
-    if not utils.checkChangeMap(self.inputs):
-      return
-
-    stat = self.inputs["changeMap"].getBandStat(1)
-    minVal = float(stat["min"])
-    maxVal = float(stat["max"])
-    numberOfEntries = len(self.inputs["changeMap"].getBandGradation(1))
-    #print "MIN", minVal
-    #print "MAX", maxVal
-    #print "NUM", numberOfEntries
-
-    entryValues = []
-    entryColors = []
-
-    colorRamp = QgsStyleV2().defaultStyle().colorRamp("Spectral")
-    currentValue = float(minVal)
-    intervalDiff = float(maxVal - minVal) / float(numberOfEntries)
-
-    for i in xrange(numberOfEntries):
-      entryValues.append(currentValue)
-      currentValue += intervalDiff
-
-      entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
-
-    rasterShader = QgsRasterShader()
-    colorRampShader = QgsColorRampShader()
-
-    colorRampItems = []
-    for i in xrange(len(entryValues)):
-      item = QgsColorRampShader.ColorRampItem()
-
-      item.value = entryValues[i]
-      item.label = unicode(entryValues[i])
-      item.color = entryColors[i]
-      colorRampItems.append(item)
-
-    colorRampShader.setColorRampItemList(colorRampItems)
-    colorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
-    rasterShader.setRasterShaderFunction(colorRampShader)
-
-    renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rasterShader)
-    renderer.setClassificationMin(minVal)
-    renderer.setClassificationMax(maxVal)
-    renderer.setClassificationMinMaxOrigin(QgsRasterRenderer.minMaxOriginFromName("FullExtent"))
-
-    layer.setRenderer(renderer)
-    layer.setCacheImage(None)
-    layer.triggerRepaint()
-    self.iface.legendInterface().refreshLayerSymbology(layer)
-    QgsProject.instance().dirty(True)
-
   def applyRasterStyleLabels(self, layer, analyst, tr):
-    if not utils.checkChangeMap(self.inputs):
+    l = utils.getLayerByName(self.leInitRasterName.text())
+    if not l.renderer().type().contains("singlebandpseudocolor"):
+      self.logMessage("Init raster should be in PseudoColor mode. Style not applied.")
       return
 
     r = Raster(unicode(layer.source()))
@@ -1217,11 +1167,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     rasterShader = QgsRasterShader()
     colorRampShader = QgsColorRampShader()
 
-    l = utils.getLayerByName(self.leInitRasterName.text())
-    try:
-      cr = l.renderer().shader().rasterShaderFunction().colorRampItemList()
-    except AttributeError:
-      return
+    cr = l.renderer().shader().rasterShaderFunction().colorRampItemList()
 
     colorRampItems = []
     for i in xrange(len(entryValues)):
