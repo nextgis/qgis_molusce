@@ -318,7 +318,7 @@ class Raster(object):
         r = reclass(r, bins)
         self.setBand(r, bandNum)
 
-    def save(self, filename, format="GTiff", rastertype=None, nodata=0):
+    def save(self, filename, format="GTiff", rastertype=None, nodata=None):
         driver = gdal.GetDriverByName(format)
         metadata = driver.GetMetadata()
         if metadata.has_key(gdal.DCAP_CREATE) and metadata[gdal.DCAP_CREATE] == "YES":
@@ -326,6 +326,8 @@ class Raster(object):
                 dtype = self.get_dtype()
                 conv = FormatConverter()
                 rastertype, maxVal = conv.dtype2GDT[dtype]
+            if nodata==None:
+                nodata = maxVal
             xsize, ysize = self.getXSize(), self.getYSize()
             bandcount = self.getBandsCount()
             outRaster = driver.Create(filename, xsize, ysize, bandcount, rastertype)
