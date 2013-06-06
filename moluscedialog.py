@@ -1174,7 +1174,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       item = QgsColorRampShader.ColorRampItem()
 
       item.value = entryValues[i]
-      ic, fc = self.analyst.decode(int(entryValues[i]))
+      ic, fc = analyst.decode(int(entryValues[i]))
       item.label = unicode(self.fl(cr, ic) + u" → " + self.fl(cr, fc))
       item.color = entryColors[i]
       if ic == fc and tr:
