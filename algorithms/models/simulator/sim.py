@@ -38,7 +38,7 @@ class Simulator(QObject):
         self.model  = model
         self.crosstable = crosstable
 
-        try:
+        try:    # Not all models have the signals
             self.model.rangeChanged.connect(self.__modelProgressRangeChanged)
             self.model.updateProgress.connect(self.__modelProgressChanged)
         except AttributeError:
@@ -145,8 +145,11 @@ class Simulator(QObject):
             for i in range(N):
                 self.__sim()
         finally:
-            self.model.rangeChanged.disconnect(self.__modelProgressRangeChanged)
-            self.model.updateProgress.disconnect(self.__modelProgressChanged)
+            try:    # Not all models have the signals
+                self.model.rangeChanged.disconnect(self.__modelProgressRangeChanged)
+                self.model.updateProgress.disconnect(self.__modelProgressChanged)
+            except AttributeError:
+                pass
             self.simFinished.emit()
 
     def updatePrediction(self, state):
