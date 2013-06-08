@@ -163,8 +163,6 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
         item = QTableWidgetItem()
         if row == col:
           item.setText("1")
-
-        if col <= row:
           item.setFlags(item.flags() ^ Qt.ItemIsEditable)
 
         self.tblMatrix.setItem(row, col, item)
