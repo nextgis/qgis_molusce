@@ -154,9 +154,9 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
         lst.append(None)
         if v.isCountinues(b):
           if v.getBandsCount()>1:
-            name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1)))
+            name = u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1))
           else:
-            name = QString(u"%s" % (utils.getLayerById(k).name(), ))
+            name = u"%s" % (utils.getLayerById(k).name(), )
           items = self.tblReclass.findItems(name.arg(b), Qt.MatchExactly)
           idx = self.tblReclass.indexFromItem(items[0])
           reclassList = self.tblReclass.item(idx.row(), 4).text()
@@ -186,5 +186,3 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       item = u" ".join(item)
       item = QTableWidgetItem(item)
       self.tblReclass.setItem(row, 4, item)
-
-

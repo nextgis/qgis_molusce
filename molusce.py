@@ -48,11 +48,11 @@ class MoluscePlugin:
     userPluginPath = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/molusce"
     systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/molusce"
 
-    overrideLocale = QSettings().value("locale/overrideFlag", QVariant(False)).toBool()
+    overrideLocale = QSettings().value("locale/overrideFlag", False)
     if not overrideLocale:
       localeFullName = QLocale.system().name()
     else:
-      localeFullName = QSettings().value("locale/userLocale", QVariant("")).toString()
+      localeFullName = QSettings().value("locale/userLocale", "")
 
     if QFileInfo(userPluginPath).exists():
       translationPath = userPluginPath + "/i18n/molusce_" + localeFullName + ".qm"
@@ -70,7 +70,7 @@ class MoluscePlugin:
       qgisVersion = str(self.QgisVersion[ 0 ]) + "." + str(self.QgisVersion[ 2 ]) + "." + str(self.QgisVersion[ 3 ])
       QMessageBox.warning(self.iface.mainWindow(),
                            QCoreApplication.translate("MOLUSCE", "Error"),
-                           QCoreApplication.translate("MOLUSCE", "Quantum GIS %1 detected.\n").arg(qgisVersion) +
+                           QCoreApplication.translate("MOLUSCE", "Quantum GIS %s detected.\n") %s (qgisVersion) +
                            QCoreApplication.translate("MOLUSCE", "This version of MOLUSCE requires at least QGIS version 1.9.0\nPlugin will not be enabled."))
       return None
 

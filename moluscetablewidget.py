@@ -34,7 +34,7 @@ class MolusceTableWidget(QTableWidget):
 
   def keyPressEvent(self, e):
     if (e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier) and e.key() == Qt.Key_C:
-      data = QString()
+      data = ""
 
       # table header
       data += "\t"
@@ -49,7 +49,7 @@ class MolusceTableWidget(QTableWidget):
           data += self.item(r, c).text() + "\t"
         data += "\n"
 
-      if not data.isEmpty():
+      if data != "":
         clipBoard = QApplication.clipboard()
         clipBoard.setText(data)
     else:

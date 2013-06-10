@@ -70,15 +70,15 @@ def getLayerGroup(relations, layerId):
   return group
 
 def saveDialog(parent, settings, title, fileFilter, fileExt, fileExtREstring):
-  lastDir = settings.value("ui/lastRasterDir", ".").toString()
+  lastDir = settings.value("ui/lastRasterDir", ".")
   fileName = QFileDialog.getSaveFileName(parent,
                                          title,
                                          lastDir,
                                          fileFilter
                                         )
 
-  if fileName.isEmpty():
-    return QString()
+  if fileName == "":
+    return ""
 
   if not fileName.toLower().contains(QRegExp(fileExtREstring)):
     fileName += "."+fileExt
@@ -96,15 +96,15 @@ def saveVectorDialog(parent, settings, title, fileFilter):
   return fileName
 
 def openRasterDialog(parent, settings, title, fileFilter):
-  lastDir = settings.value("ui/lastRasterDir", ".").toString()
+  lastDir = settings.value("ui/lastRasterDir", ".")
   fileName = QFileDialog.getOpenFileName(parent,
                                          title,
                                          lastDir,
                                          fileFilter
                                         )
 
-  if fileName.isEmpty():
-    return QString()
+  if fileName == "":
+    return ""
 
   settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
 
@@ -133,7 +133,7 @@ def copySymbology(src, dst):
   dt = di.createDocumentType("qgis", "http://mrcc.com/qgis.dtd", "SYSTEM")
   doc = QDomDocument(dt)
   root = doc.createElement("qgis")
-  root.setAttribute("version", QString("%1").arg(QGis.QGIS_VERSION))
+  root.setAttribute("version", "%s" % unicode(QGis.QGIS_VERSION))
   doc.appendChild(root)
   errMsg = QString()
   if not src.writeSymbology(root, doc, errMsg):

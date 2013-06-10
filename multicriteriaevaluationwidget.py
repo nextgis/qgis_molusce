@@ -69,8 +69,8 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
                          )
       return
 
-    self.spnInitialClass.setValue(self.settings.value("ui/MCE/initialClass", 0).toInt()[0])
-    self.spnFinalClass.setValue(self.settings.value("ui/MCE/finalClass", 0).toInt()[0])
+    self.spnInitialClass.setValue(self.settings.value("ui/MCE/initialClass", 0))
+    self.spnFinalClass.setValue(self.settings.value("ui/MCE/finalClass", 0))
 
     gradations = self.inputs["initial"].getBandGradation(1)
     self.spnInitialClass.setRange(min(gradations), max(gradations))
@@ -125,12 +125,12 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     if c < 0.1:
       QMessageBox.warning(self.plugin,
                           self.tr("Consistent matrix"),
-                          self.tr("Matrix filled correctly. Consistency value is: %1. The model can be used.").arg(c)
+                          self.tr("Matrix filled correctly. Consistency value is: %f. The model can be used.") % (c)
                          )
     else:
       QMessageBox.warning(self.plugin,
                           self.tr("Inconsistent matrix"),
-                          self.tr("Please adjust matrix before starting simulation. Consistency value is: %1").arg(c)
+                          self.tr("Please adjust matrix before starting simulation. Consistency value is: %f") % (c)
                          )
 
   def __prepareTable(self):
@@ -192,7 +192,7 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     for row in xrange(bandCount):
       mrow = []
       for col in xrange(bandCount):
-        if self.tblMatrix.item(row, col).text().isEmpty():
+        if self.tblMatrix.item(row, col).text() == "":
           return []
 
         mrow.append(float(self.tblMatrix.item(row, col).text()))

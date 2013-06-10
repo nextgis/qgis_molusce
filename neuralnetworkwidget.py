@@ -75,11 +75,11 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.manageGui()
 
   def manageGui(self):
-    self.spnNeigbourhood.setValue(self.settings.value("ui/ANN/neighborhood", 1).toInt()[0])
-    self.spnLearnRate.setValue(self.settings.value("ui/ANN/learningRate", 0.1).toFloat()[0])
-    self.spnMaxIterations.setValue(self.settings.value("ui/ANN/maxIterations", 1000).toInt()[0])
-    self.leTopology.setText(self.settings.value("ui/ANN/topology", "10").toString())
-    self.spnMomentum.setValue(self.settings.value("ui/ANN/momentum", 0.05).toFloat()[0])
+    self.spnNeigbourhood.setValue(self.settings.value("ui/ANN/neighborhood", 1))
+    self.spnLearnRate.setValue(self.settings.value("ui/ANN/learningRate", 0.1))
+    self.spnMaxIterations.setValue(self.settings.value("ui/ANN/maxIterations", 1000))
+    self.leTopology.setText(self.settings.value("ui/ANN/topology", "10"))
+    self.spnMomentum.setValue(self.settings.value("ui/ANN/momentum", 0.05))
     self.btnStop.setEnabled(False)
 
   def trainNetwork(self):

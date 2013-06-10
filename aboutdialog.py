@@ -47,7 +47,7 @@ class AboutDialog(QDialog, Ui_Dialog):
     version = cfg.get("general", "version")
 
     self.lblLogo.setPixmap(QPixmap(":/icons/molusce.png"))
-    self.lblVersion.setText(self.tr("Version: %1").arg(version))
+    self.lblVersion.setText(self.tr("Version: %s") % (version))
     doc = QTextDocument()
     doc.setHtml(self.getAboutText())
     self.textBrowser.setDocument(doc)
@@ -58,11 +58,11 @@ class AboutDialog(QDialog, Ui_Dialog):
     QDialog.reject(self)
 
   def openHelp(self):
-    overrideLocale = QSettings().value("locale/overrideFlag", QVariant(False)).toBool()
+    overrideLocale = QSettings().value("locale/overrideFlag", False)
     if not overrideLocale:
       localeFullName = QLocale.system().name()
     else:
-      localeFullName = QSettings().value("locale/userLocale", QVariant("")).toString()
+      localeFullName = QSettings().value("locale/userLocale", "")
 
     localeShortName = localeFullName[ 0:2 ]
     if localeShortName in [ "ru", "uk" ]:
