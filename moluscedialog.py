@@ -694,7 +694,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __populateCorrCheckingMet(self):
     self.cmbCorrCheckMethod.addItems([
-                                       self.tr("Correlation"),
+                                       self.tr("Pearson's Correlation"),
                                        self.tr("Kappa (classic)"),
                                        self.tr("Kappa (loc)"),
                                        self.tr("Kappa (histo)"),
@@ -803,7 +803,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                 item = QTableWidgetItem(unicode(self.tr("Not applicable")))
               else:
                 depCoef = DependenceCoef(fact1.getBand(b1+1), fact2.getBand(b2+1))
-                if method == self.tr("Correlation"):
+                if method == self.tr("Pearson's Correlation"):
                   coef = depCoef.correlation()
                 elif method ==self.tr("Kappa (classic)"):
                   coef = depCoef.kappa(mode=None)
@@ -851,7 +851,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblCorrelation.setHorizontalHeaderLabels(labels)
 
     method = self.cmbCorrCheckMethod.currentText()
-    if method == self.tr("Correlation"):
+    if method == self.tr("Pearson's Correlation"):
       for col in xrange(dimensions[1]):
         for row in xrange(dimensions[0]):
           depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
