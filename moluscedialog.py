@@ -704,7 +704,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __populateSimulationMethods(self):
     self.cmbSimulationMethod.addItems([
-                                       self.tr("Artificial Neural Network"),
+                                       self.tr("Artificial Neural Network (Multi-layer Perceptron)"),
                                        self.tr("Weights of Evidence"),
                                        self.tr("Multi Criteria Evaluation"),
                                        self.tr("Logistic Regression")
@@ -948,7 +948,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if modelName == self.tr("Logistic Regression"):
       self.modelWidget = logisticregressionwidget.LogisticRegressionWidget(self)
       self.grpSampling.show()
-    elif modelName == self.tr("Artificial Neural Network"):
+    elif modelName == self.tr("Artificial Neural Network (Multi-layer Perceptron)"):
       self.modelWidget = neuralnetworkwidget.NeuralNetworkWidget(self)
       self.grpSampling.show()
     elif modelName == self.tr("Weights of Evidence"):
