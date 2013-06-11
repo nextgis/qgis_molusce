@@ -34,7 +34,7 @@
    <item row="5" column="0">
     <widget class="QPushButton" name="btnResetBins">
      <property name="text">
-      <string>Reset Bins</string>
+      <string>Calculate Bins</string>
      </property>
     </widget>
    </item>
