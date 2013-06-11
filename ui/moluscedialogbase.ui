@@ -20,7 +20,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tabInputs">
       <attribute name="title">
@@ -361,7 +361,7 @@
      </widget>
      <widget class="QWidget" name="tabSimulation">
       <attribute name="title">
-       <string>Risk Simulation</string>
+       <string>Cellular Automata Simulation</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0" colspan="3">
