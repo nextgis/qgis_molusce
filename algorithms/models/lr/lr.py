@@ -175,8 +175,8 @@ class LR(QObject):
         @param output           Raster that contains categories to predict.
         @param mode             Type of sampling method:
                                     All             Get all pixels
-                                    Normal          Get samples. Count of samples in the data=samples.
-                                    Balanced        Undersampling of major categories and/or oversampling of minor categories.
+                                    Random          Get samples. Count of samples in the data=samples.
+                                    Stratified      Undersampling of major categories and/or oversampling of minor categories.
         @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
         if not self.logreg:

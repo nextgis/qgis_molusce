@@ -256,8 +256,8 @@ class Sampler(QObject):
         @param shuffle          Perform random shuffle.
         @param mode             Type of sampling method:
                                     All             Get all pixels
-                                    Normal          Get samples. Count of samples in the data=samples.
-                                    Balanced        Undersampling of major categories and/or oversampling of minor categories.
+                                    Random          Get samples. Count of samples in the data=samples.
+                                    Stratified      Undersampling of major categories and/or oversampling of minor categories.
         @samples                Sample count of the training data (doesn't used in 'All' mode).
         '''
         try:
@@ -293,7 +293,7 @@ class Sampler(QObject):
                     self.updateProgress.emit()
                 self.data = self.data[:samples_count]   # Crop unused part of the array
 
-            elif mode == 'Normal':
+            elif mode == 'Random':
                 self.rangeChanged.emit(self.tr("Sampling..."), samples)
                 while samples_count< samples:
                     row = np.random.randint(rows)
@@ -303,7 +303,7 @@ class Sampler(QObject):
                         self.data[samples_count] = sample
                         samples_count = samples_count + 1
                         self.updateProgress.emit()
-            elif mode == 'Balanced':
+            elif mode == 'Stratified':
                 # Analyze output categories:
                 categories = output.getBandGradation(1)
                 band = output.getBand(1)

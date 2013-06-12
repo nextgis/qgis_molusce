@@ -32,7 +32,7 @@ def main(initRaster, finalRaster, factors):
     # Create and Train LR Model
     model = LR(ns=1)
     print 'Start Setting LR Trainig Data...', clock()
-    model.setTrainingData(initRaster, factors, finalRaster, mode='Balanced', samples=1000)
+    model.setTrainingData(initRaster, factors, finalRaster, mode='Stratified', samples=1000)
     print 'Finish Setting Trainig Data', clock(), '\n'
     print 'Start LR Training...', clock()
     model.train()

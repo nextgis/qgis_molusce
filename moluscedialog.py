@@ -712,8 +712,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __populateSamplingModes(self):
     self.cmbSamplingMode.addItem(self.tr("All"), 0)
-    self.cmbSamplingMode.addItem(self.tr("Normal"), 1)
-    self.cmbSamplingMode.addItem(self.tr("Balanced"), 2)
+    self.cmbSamplingMode.addItem(self.tr("Random"), 1)
+    self.cmbSamplingMode.addItem(self.tr("Stratified"), 2)
 
   def __populateValidationPlot(self):
     # init plot for validation curve
@@ -932,9 +932,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if mode == 0:
       self.inputs["samplingMode"] = "All"
     elif mode == 1:
-      self.inputs["samplingMode"] = "Normal"
+      self.inputs["samplingMode"] = "Random"
     elif mode == 2:
-      self.inputs["samplingMode"] = "Balanced"
+      self.inputs["samplingMode"] = "Stratified"
 
   def __modelChanged(self):
     if self.modelWidget is not None:

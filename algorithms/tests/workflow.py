@@ -44,7 +44,7 @@ def main(initRaster, finalRaster, factors):
     #~ model = MlpManager(ns=0)
     #~ model.createMlp(initRaster, factors, finalRaster, [10])
     #~ print 'Start Setting MLP Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, changeMap, mode='Balanced', samples=1000)
+    #~ model.setTrainingData(initRaster, factors, changeMap, mode='Stratified', samples=1000)
     #~ print 'Finish Setting Trainig Data', clock(), '\n'
     #~ print 'Start MLP Training...', clock()
     #~ model.train(1000, valPercent=20)
@@ -63,7 +63,7 @@ def main(initRaster, finalRaster, factors):
     #~ # Create and Train LR Model
     #~ model = LR(ns=1)
     #~ print 'Start Setting LR Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, changeMap, mode='Balanced', samples=1000)
+    #~ model.setTrainingData(initRaster, factors, changeMap, mode='Stratified', samples=1000)
     #~ print 'Finish Setting Trainig Data', clock(), '\n'
     #~ print 'Start LR Training...', clock()
     #~ model.train()

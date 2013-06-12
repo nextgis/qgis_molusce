@@ -138,7 +138,7 @@ class TestSample (unittest.TestCase):
         assert_array_equal(data[0]['output'], smp.data[0]['output'])
         assert_array_equal(data[0]['state'],  smp.data[0]['state'])
 
-        # Mode = Normal
+        # Mode = Random
         # As the Multiband factors example, but 10 samples:
         data = np.array(
             [
@@ -150,15 +150,15 @@ class TestSample (unittest.TestCase):
             dtype=[('state', float, (18,)), ('factors', float, (18,)), ('output', float, 1)]
         )
         smp = Sampler(self.state, self.factors3, self.output, ns=1)
-        smp.setTrainingData(self.state, self.output, mode='Normal', samples=10)
+        smp.setTrainingData(self.state, self.output, mode='Random', samples=10)
         for i in range(10):
             assert_array_equal(data[0]['factors'], smp.data[i]['factors'])
             assert_array_equal(data[0]['output'], smp.data[i]['output'])
             assert_array_equal(data[0]['state'],  smp.data[i]['state'])
 
-        # Mode = Balanced
+        # Mode = Stratified
         smp = Sampler(self.state, self.factors, self.output, ns=0)
-        smp.setTrainingData(self.state, self.output, mode='Balanced', samples=15)
+        smp.setTrainingData(self.state, self.output, mode='Stratified', samples=15)
         out =  smp.data['output']
         out.sort()
         self.assertEqual(out[0],  0)
