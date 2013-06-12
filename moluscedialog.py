@@ -695,9 +695,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def __populateCorrCheckingMet(self):
     self.cmbCorrCheckMethod.addItems([
                                        self.tr("Pearson's Correlation"),
-                                       self.tr("Kappa (classic)"),
-                                       self.tr("Kappa (loc)"),
-                                       self.tr("Kappa (histo)"),
                                        self.tr("Cramer's Coefficient"),
                                        self.tr("Joint Information Uncertainty")
                                      ])
@@ -783,7 +780,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     method = self.cmbCorrCheckMethod.currentText()
     discreteMethods = [ # The methods need categorial values
-            self.tr("Kappa (classic)"), self.tr("Kappa (loc)"), self.tr("Kappa (histo)"),
             self.tr("Cramer's Coefficient"), self.tr("Joint Information Uncertainty")
     ]
     # Loop over all rasters and all bands
@@ -805,12 +801,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
                 depCoef = DependenceCoef(fact1.getBand(b1+1), fact2.getBand(b2+1))
                 if method == self.tr("Pearson's Correlation"):
                   coef = depCoef.correlation()
-                elif method ==self.tr("Kappa (classic)"):
-                  coef = depCoef.kappa(mode=None)
-                elif method ==self.tr("Kappa (loc)"):
-                  coef = depCoef.kappa(mode='loc')
-                elif method ==self.tr("Kappa (histo)"):
-                  coef = depCoef.kappa(mode='histo')
                 elif method ==self.tr("Joint Information Uncertainty"):
                   coef = depCoef.jiu()
                 elif method ==self.tr("Cramer's Coefficient"):
@@ -858,54 +848,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
           corr = depCoef.correlation()
           item = QTableWidgetItem(unicode(corr))
           self.tblCorrelation.setItem(row, col, item)
-    elif method == self.tr("Kappa (classic)"):
-      try:
-        for col in xrange(dimensions[1]):
-          for row in xrange(dimensions[0]):
-            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-            if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
-              item = QTableWidgetItem(unicode(self.tr("Not applicable")))
-            else:
-              corr = depCoef.kappa(mode=None)
-              item = QTableWidgetItem(unicode(corr))
-            self.tblCorrelation.setItem(row, col, item)
-      except CoeffError as ex:
-        QMessageBox.warning(self,
-                          self.tr("Checking"),
-                          ex.msg
-                         )
-    elif method == self.tr("Kappa (loc)"):
-      try:
-        for col in xrange(dimensions[1]):
-          for row in xrange(dimensions[0]):
-            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-            if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
-              item = QTableWidgetItem(unicode(self.tr("Not applicable")))
-            else:
-              corr = depCoef.kappa(mode=None)
-              item = QTableWidgetItem(unicode(corr))
-            self.tblCorrelation.setItem(row, col, item)
-      except CoeffError as ex:
-        QMessageBox.warning(self,
-                          self.tr("Checking"),
-                          ex.msg
-                         )
-    elif method == self.tr("Kappa (histo)"):
-      try:
-        for col in xrange(dimensions[1]):
-          for row in xrange(dimensions[0]):
-            depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
-            if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
-              item = QTableWidgetItem(unicode(self.tr("Not applicable")))
-            else:
-              corr = depCoef.kappa(mode=None)
-              item = QTableWidgetItem(unicode(corr))
-            self.tblCorrelation.setItem(row, col, item)
-      except CoeffError as ex:
-        QMessageBox.warning(self,
-                          self.tr("Checking"),
-                          ex.msg
-                         )
     elif method == self.tr("Cramer's Coefficient"):
       for col in xrange(dimensions[1]):
         for row in xrange(dimensions[0]):
@@ -1195,7 +1137,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     layer.triggerRepaint()
     self.iface.legendInterface().refreshLayerSymbology(layer)
     QgsProject.instance().dirty(True)
-
 
   def fl(self, cr, v):
     for i in cr:
