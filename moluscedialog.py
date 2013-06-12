@@ -129,7 +129,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.logMessage(self.tr("Start logging"))
 
   def manageGui(self):
-    self.restoreGeometry(self.settings.value("/ui/geometry"))
+    try:
+      self.restoreGeometry(self.settings.value("/ui/geometry"))
+    except:
+      pass
 
     self.tabWidget.setCurrentIndex(0)
 
@@ -188,52 +191,61 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.logMessage(self.tr("Set final layer to %s") % (layerName))
 
   def addFactor(self):
-    try:
-      layerName = self.lstLayers.selectedItems()[0].text()
-    except IndexError:
+    layerNames = self.lstLayers.selectedItems()
+
+    if len(layerNames) <= 0:
       QMessageBox.warning(self,
                           self.tr("Missed selected row"),
                           self.tr("Factor raster is not selected. Please specify input data and try again")
                          )
       return
-    if len(self.lstFactors.findItems(layerName, Qt.MatchExactly)) > 0:
-      return
 
-    item = QListWidgetItem(self.lstLayers.selectedItems()[0])
-    layerId = unicode(item.data(Qt.UserRole).toString())
-    self.lstFactors.insertItem(self.lstFactors.count() + 1, item)
+    for i in layerNames:
+      layerName = i.text()
 
-    if "factors" in self.inputs:
-      self.inputs["factors"][layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
-    else:
-      d = dict()
-      d[layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
-      self.inputs["factors"] = d
+      if len(self.lstFactors.findItems(layerName, Qt.MatchExactly)) > 0:
+        return
 
-    self.inputs["bandCount"] = self.__bandCount()
+      item = QListWidgetItem(i)
+      layerId = unicode(item.data(Qt.UserRole))
+      self.lstFactors.insertItem(self.lstFactors.count() + 1, item)
 
-    self.logMessage(self.tr("Added factor layer %s") % (layerName))
+      if "factors" in self.inputs:
+        self.inputs["factors"][layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
+      else:
+        d = dict()
+        d[layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
+        self.inputs["factors"] = d
 
-  def removeFactor(self):
-    try:
-      layerId = unicode(self.lstFactors.currentItem().data(Qt.UserRole).toString())
-    except AttributeError:
-      QMessageBox.warning(self,
-                          self.tr("Missed selected row"),
-                          self.tr("Factor raster is not selected. Please specify input data and try again")
-                         )
-      return
-    layerName = self.lstFactors.currentItem().text()
-    self.lstFactors.takeItem(self.lstFactors.currentRow())
-
-    del self.inputs["factors"][layerId]
-    if self.inputs["factors"] == {}:
-      del self.inputs["factors"]
-      del self.inputs["bandCount"]
-    else:
       self.inputs["bandCount"] = self.__bandCount()
 
-    self.logMessage(self.tr("Removed factor layer %s") % (layerName))
+      self.logMessage(self.tr("Added factor layer %s") % (layerName))
+
+  def removeFactor(self):
+    layerNames = self.lstFactors.selectedItems()
+
+    if len(layerNames) <= 0:
+      QMessageBox.warning(self,
+                          self.tr("Missed selected row"),
+                          self.tr("Factor raster is not selected. Please specify input data and try again")
+                         )
+      return
+
+
+    for i in layerNames:
+      layerId = unicode(i.data(Qt.UserRole))
+      layerName = i.text()
+
+      self.lstFactors.takeItem(self.lstFactors.row(i))
+
+      del self.inputs["factors"][layerId]
+      if self.inputs["factors"] == {}:
+        del self.inputs["factors"]
+        del self.inputs["bandCount"]
+      else:
+        self.inputs["bandCount"] = self.__bandCount()
+
+      self.logMessage(self.tr("Removed factor layer %s") % (layerName))
 
   def removeAllFactors(self):
     self.lstFactors.clear()
@@ -671,9 +683,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __populateLayers(self):
     layers = utils.getRasterLayers()
-    relations = self.iface.legendInterface().groupLayerRelationship()
+    #~ relations = self.iface.legendInterface().groupLayerRelationship()
     for layer in sorted(layers.iteritems(), cmp=locale.strcoll, key=operator.itemgetter(1)):
-      groupName = utils.getLayerGroup(relations, layer[0])
+      #~ groupName = utils.getLayerGroup(relations, layer[0])
+      groupName = ""
       item = QListWidgetItem()
       if groupName == "":
         item.setText(layer[1])
@@ -1013,7 +1026,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.eb.getStat(nIter)
 
   def logMessage(self, message):
-    self.txtMessages.append(QString("[%s] %s") % (datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))
+    self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))
 
   def __addTableColumn(self, col, values):
     dimensions = len(values)
@@ -1063,19 +1076,19 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __readSettings(self):
     # samples and model tab
-    samplingMode = self.settings.value("ui/samplingMode", 1)
+    samplingMode = int(self.settings.value("ui/samplingMode", 1))
     self.cmbSamplingMode.setCurrentIndex(self.cmbSamplingMode.findData(samplingMode))
-    self.spnSamplesCount.setValue(self.settings.value("ui/samplesCount", 1000))
-    self.chkLoadSamples.setChecked(self.settings.value("ui/loadSamples", False))
+    self.spnSamplesCount.setValue(int(self.settings.value("ui/samplesCount", 1000)))
+    self.chkLoadSamples.setChecked(bool(self.settings.value("ui/loadSamples", False)))
 
     # simulation tab
-    self.chkRiskFunction.setChecked(self.settings.value("ui/createRiskFunction", False))
-    self.chkRiskValidation.setChecked(self.settings.value("ui/createRiskValidation", False))
-    self.chkMonteCarlo.setChecked(self.settings.value("ui/createMonteCarlo", False))
-    self.spnIterations.setValue(self.settings.value("ui/monteCarloIterations", 1))
+    self.chkRiskFunction.setChecked(bool(self.settings.value("ui/createRiskFunction", False)))
+    self.chkRiskValidation.setChecked(bool(self.settings.value("ui/createRiskValidation", False)))
+    self.chkMonteCarlo.setChecked(bool(self.settings.value("ui/createMonteCarlo", False)))
+    self.spnIterations.setValue(int(self.settings.value("ui/monteCarloIterations", 1)))
 
     # correlation tab
-    self.chkAllCorr.setChecked(self.settings.value("ui/checkAllRasters", False))
+    self.chkAllCorr.setChecked(bool(self.settings.value("ui/checkAllRasters", False)))
 
   def applyRasterStyleLabels(self, layer, analyst, tr):
     l = utils.getLayerByName(self.leInitRasterName.text())
