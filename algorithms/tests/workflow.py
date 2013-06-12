@@ -27,6 +27,7 @@ def main(initRaster, finalRaster, factors):
 
     print "Start Making CrossTable...", clock()
     crosstab = CrossTableManager(initRaster, finalRaster)
+    #print crosstab.getTransitionStat()
     print "Finish Making CrossTable", clock(), '\n'
 
     # Create and Train Analyst
@@ -96,7 +97,7 @@ def main(initRaster, finalRaster, factors):
         [1,     6],
         [1.0/6,   1]
     ]
-    model = MCE(factors, matrix, 2, 3)
+    model = MCE(factors, matrix, 2, 3, analyst)
     print 'Finish creating MCE model...', clock(), '\n'
 
     # simulation
