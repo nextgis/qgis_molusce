@@ -60,7 +60,7 @@
      <item row="6" column="0">
       <widget class="QLabel" name="label_10">
        <property name="text">
-        <string>Validation RMS error</string>
+        <string>Min Validation Overall Error</string>
        </property>
       </widget>
      </item>
@@ -165,14 +165,14 @@
      <item row="7" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>Validation Kappa</string>
+        <string>Current Validation Kappa</string>
        </property>
       </widget>
      </item>
      <item row="5" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Δ RMS</string>
+        <string>Δ Overall Accuracy</string>
        </property>
       </widget>
      </item>
