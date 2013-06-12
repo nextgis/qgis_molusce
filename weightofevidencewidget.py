@@ -74,9 +74,9 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
         if v.isCountinues(b):
           self.tblReclass.insertRow(row)
           if v.getBandsCount()>1:
-            name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b)))
+            name = u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b))
           else:
-            name = QString(u"%s" % (utils.getLayerById(k).name(), ))
+            name = u"%s" % (utils.getLayerById(k).name(), )
           stat = v.getBandStat(b)
           for n, item_data in enumerate([(name).arg(b), (u"%f" % (stat["min"], )), (u"%f" % (stat["max"])), u"" , u"" ]):
             item = QTableWidgetItem(item_data)

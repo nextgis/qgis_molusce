@@ -69,7 +69,7 @@ def getLayerGroup(relations, layerId):
 
   return group
 
-def saveDialog(parent, settings, title, fileFilter, fileExt, fileExtREstring):
+def saveDialog(parent, settings, title, fileFilter, fileExt):
   lastDir = settings.value("ui/lastRasterDir", ".")
   fileName = QFileDialog.getSaveFileName(parent,
                                          title,
@@ -80,19 +80,19 @@ def saveDialog(parent, settings, title, fileFilter, fileExt, fileExtREstring):
   if fileName == "":
     return ""
 
-  if not fileName.toLower().contains(QRegExp(fileExtREstring)):
-    fileName += "."+fileExt
+  if not fileName.lower().endswith(fileExt):
+    fileName += fileExt
 
   settings.setValue("ui/lastRasterDir", QFileInfo(fileName).absoluteDir().absolutePath())
 
   return fileName
 
 def saveRasterDialog(parent, settings, title, fileFilter):
-  fileName = saveDialog(parent, settings, title, fileFilter, "tif", "\.tif{1,2}")
+  fileName = saveDialog(parent, settings, title, fileFilter, ".tif")
   return fileName
 
 def saveVectorDialog(parent, settings, title, fileFilter):
-  fileName = saveDialog(parent, settings, title, fileFilter, "shp", "\.shp")
+  fileName = saveDialog(parent, settings, title, fileFilter, ".shp")
   return fileName
 
 def openRasterDialog(parent, settings, title, fileFilter):
@@ -135,7 +135,7 @@ def copySymbology(src, dst):
   root = doc.createElement("qgis")
   root.setAttribute("version", "%s" % unicode(QGis.QGIS_VERSION))
   doc.appendChild(root)
-  errMsg = QString()
+  errMsg = ""
   if not src.writeSymbology(root, doc, errMsg):
     return False
 

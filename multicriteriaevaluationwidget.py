@@ -69,8 +69,8 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
                          )
       return
 
-    self.spnInitialClass.setValue(self.settings.value("ui/MCE/initialClass", 0))
-    self.spnFinalClass.setValue(self.settings.value("ui/MCE/finalClass", 0))
+    self.spnInitialClass.setValue(int(self.settings.value("ui/MCE/initialClass", 0)))
+    self.spnFinalClass.setValue(int(self.settings.value("ui/MCE/finalClass", 0)))
 
     gradations = self.inputs["initial"].getBandGradation(1)
     self.spnInitialClass.setRange(min(gradations), max(gradations))
@@ -147,15 +147,15 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     for k, v in self.inputs["factors"].iteritems():
       for b in xrange(v.getBandsCount()):
         if v.getBandsCount()>1:
-          name = QString(u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1)))
+          name = self.tr("%s (band %s)") % (utils.getLayerById(k).name(), unicode(b+1))
         else:
-          name = QString(u"%s" % (utils.getLayerById(k).name(), ))
+          name = u"%s" % (utils.getLayerById(k).name(), )
         labels.append(name)
 
     self.tblMatrix.setVerticalHeaderLabels(labels)
     self.tblMatrix.setHorizontalHeaderLabels(labels)
     self.tblWeights.setHorizontalHeaderLabels(labels)
-    self.tblWeights.setVerticalHeaderLabels([QString(u"Weights")])
+    self.tblWeights.setVerticalHeaderLabels([self.tr("Weights")])
 
     self.delegate = spinboxdelegate.SpinBoxDelegate(self.tblMatrix.model())
     for row in xrange(bandCount):

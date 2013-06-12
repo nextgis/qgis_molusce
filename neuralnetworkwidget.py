@@ -75,11 +75,11 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.manageGui()
 
   def manageGui(self):
-    self.spnNeigbourhood.setValue(self.settings.value("ui/ANN/neighborhood", 1))
-    self.spnLearnRate.setValue(self.settings.value("ui/ANN/learningRate", 0.1))
-    self.spnMaxIterations.setValue(self.settings.value("ui/ANN/maxIterations", 1000))
+    self.spnNeigbourhood.setValue(int(self.settings.value("ui/ANN/neighborhood", 1)))
+    self.spnLearnRate.setValue(float(self.settings.value("ui/ANN/learningRate", 0.1)))
+    self.spnMaxIterations.setValue(int(self.settings.value("ui/ANN/maxIterations", 1000)))
     self.leTopology.setText(self.settings.value("ui/ANN/topology", "10"))
-    self.spnMomentum.setValue(self.settings.value("ui/ANN/momentum", 0.05))
+    self.spnMomentum.setValue(float(self.settings.value("ui/ANN/momentum", 0.05)))
     self.btnStop.setEnabled(False)
 
   def trainNetwork(self):
@@ -104,7 +104,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
                          )
       return
 
-    if self.leTopology.text().isEmpty():
+    if self.leTopology.text() == "":
       QMessageBox.warning(self.plugin,
                           self.tr("Wriong network topology"),
                           self.tr("Network topology is undefined. Please define it and try again")
@@ -193,13 +193,13 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.plugin.logMessage(self.tr("ANN model training interrupted"))
 
   def __updateRMS(self, dRMS):
-    self.leDeltaRMS.setText(QString.number(dRMS))
+    self.leDeltaRMS.setText("%6.5f" % (dRMS))
 
   def __updateValidationError(self, error):
-    self.leValidationError.setText(QString.number(error))
+    self.leValidationError.setText("%6.5f" % (error))
 
   def __updateKappa(self, kappa):
-    self.leKappa.setText(QString.number(kappa))
+    self.leKappa.setText("%6.5f" % (kappa))
 
   def __updateGraph(self, errTrain, errVal):
     self.dataTrain.append(errTrain)

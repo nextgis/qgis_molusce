@@ -614,12 +614,12 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.restoreProgressState()
 
     kappas = self.depCoef.kappa(mode='all')
-    self.leKappaOveral.setText(QString.number(kappas["overal"]))
-    self.leKappaHisto.setText(QString.number(kappas["histo"]))
-    self.leKappaLoc.setText(QString.number(kappas["loc"]))
+    self.leKappaOveral.setText("%6.5f" % (kappas["overal"]))
+    self.leKappaHisto.setText("%6.5f" %(kappas["histo"]))
+    self.leKappaLoc.setText("%6.5f" % (kappas["loc"]))
     # % of Correctness
     percent = self.depCoef.correctness()
-    self.leKappaCorrectness.setText(QString.number(percent))
+    self.leKappaCorrectness.setText("%6.5f" % (percent))
     self.depCoef = None
 
   def createValidationMap(self):
@@ -692,7 +692,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         item.setText(layer[1])
         item.setData(Qt.UserRole, layer[0])
       else:
-        item.setText(QString("%s - %s") % (layer[1], groupName))
+        item.setText("%s - %s" % (layer[1], groupName))
         item.setData(Qt.UserRole, layer[0])
 
       self.lstLayers.addItem(item)
@@ -838,18 +838,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
     for i in range(dimensions[0]):
       raster = first["Raster"]
       if raster.getBandsCount()>1:
-        name = QString(u"%s (band %s)" % (first['Name'], unicode(i+1)))
+        name = u"%s (band %s)" % (first['Name'], unicode(i+1))
       else:
-        name = QString(u"%s" % (first['Name'], ))
+        name = u"%s" % (first['Name'], )
       labels.append(name)
     self.tblCorrelation.setVerticalHeaderLabels(labels)
     labels = []
     for i in range(dimensions[1]):
       raster = second["Raster"]
       if raster.getBandsCount()>1:
-        name = QString(u"%s (band %s)" % (second['Name'], unicode(i+1)))
+        name = u"%s (band %s)" % (second['Name'], unicode(i+1))
       else:
-        name = QString(u"%s" % (second['Name'], ))
+        name = u"%s" % (second['Name'], )
       labels.append(name)
     self.tblCorrelation.setHorizontalHeaderLabels(labels)
 
@@ -962,8 +962,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
                                       self.tr("Save file"),
                                       self.tr("Shape files (*.shp *.SHP *.Shp)")
                                      )
-    if fileName.isEmpty():
+    if fileName == "":
       return
+
     model.saveSamples(unicode(fileName))
 
     if self.chkLoadSamples.isChecked():
