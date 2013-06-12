@@ -9,7 +9,7 @@ from numpy import ma as ma
 from utils import binaryzation, reclass, get_gradations
 
 # If a raster band has more then MAX_CATEGORIES catigiries, we will think that the band contains continues values
-MAX_CATEGORIES = 15
+MAX_CATEGORIES = 99
 
 class ProviderError(Exception):
     '''Base class for exceptions in this module.'''
