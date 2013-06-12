@@ -55,6 +55,25 @@ class TestRaster (unittest.TestCase):
 
         self.assertTrue(self.r1.isMetricProj())
 
+    def test_roundBands(self):
+        rast = Raster('examples/multifact.tif')
+        rast.bands = rast.bands*0.1
+        rast.roundBands()
+        answer = [[[ 0,  0,  0,],
+          [ 0,  0,  0],
+          [ 0, 0,  0]]]
+        assert_array_equal(answer, rast.bands)
+
+        rast = Raster('examples/multifact.tif')
+        rast.bands = rast.bands*1.1
+        rast.roundBands(decimals=1)
+        answer = np.array(
+            [[
+                [1.1,1.1,3.3],
+                [3.3,2.2,1.1],
+                [0.0,3.3,1.1]
+            ]])
+        assert_array_equal(answer, rast.bands)
 
     def test_isContinues(self):
         rast = Raster('examples/multifact.tif')

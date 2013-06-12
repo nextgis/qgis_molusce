@@ -45,7 +45,7 @@ class Raster(object):
             raise ProviderError("File name can't be empty string!")
         self.filename = filename
         self.maskVals = None     # List of the "transparent" pixel values
-        self.bands    = None     # List of the bands (stored as numpy mask array)
+        self.bands    = None     # Array of the bands (stored as numpy mask array)
         self.bandcount= 0        # Count of the bands. (numpy.array.shape is too slow => we need to save number of bands)
         self.geodata  = None     # Georeferensing information
         self.stat     = None     # Initial (before normalizing) statistic (means and stds) of the bands
@@ -317,6 +317,12 @@ class Raster(object):
         r = self.getBand(bandNum)
         r = reclass(r, bins)
         self.setBand(r, bandNum)
+
+    def roundBands(self, decimals=0):
+        '''
+        Round the bands to the given number of decimals.
+        '''
+        self.bands = np.around(self.bands, decimals)
 
     def save(self, filename, format="GTiff", rastertype=None, nodata=None):
         driver = gdal.GetDriverByName(format)
