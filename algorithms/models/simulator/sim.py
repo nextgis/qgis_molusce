@@ -73,10 +73,11 @@ class Simulator(QObject):
 
     def __modelProgressRangeChanged(self, message, maxValue):
         self.rangeChanged.emit(message, maxValue)
+        QCoreApplication.processEvents()
 
     def __modelProgressChanged(self):
-        QCoreApplication.processEvents()
         self.updateProgress.emit()
+        QCoreApplication.processEvents()
 
     def __sim(self):
         '''
@@ -91,14 +92,17 @@ class Simulator(QObject):
 
         self.rangeChanged.emit(self.tr("Area Change Analysis %p%"), 2)
         self.updateProgress.emit()
+        QCoreApplication.processEvents()
         analyst = AreaAnalyst(state, second = None)
         self.updateProgress.emit()
+        QCoreApplication.processEvents()
 
         categories = state.getBandGradation(1)
 
         # Make transition between categories according to
         # number of moved pixel in crosstable
         self.rangeChanged.emit(self.tr("Simulation process %p%"), len(categories)**2 - len(categories))
+        QCoreApplication.processEvents()
         for initClass in categories:
             for finalClass in categories:
                 if initClass == finalClass: continue
@@ -113,6 +117,7 @@ class Simulator(QObject):
                 placesCount = np.sum(places)
                 if placesCount < n:
                     self.logMessage.emit(self.tr("There are more transitions in the transition matrix, then the model have found"))
+                    QCoreApplication.processEvents()
                     n = placesCount
                 if n >0:
                     # Find n places with highest confidence of traisition initClass -> finalClass
@@ -128,8 +133,8 @@ class Simulator(QObject):
                     # make transition initClass -> finalClass
                     for index in indices:
                         new_state[index] = finalClass
-                QCoreApplication.processEvents()
                 self.updateProgress.emit()
+                QCoreApplication.processEvents()
 
         result = Raster()
         result.create([new_state], state.getGeodata())
@@ -149,6 +154,7 @@ class Simulator(QObject):
             except AttributeError:
                 pass
             self.simFinished.emit()
+            QCoreApplication.processEvents()
 
     def updatePrediction(self, state):
         '''

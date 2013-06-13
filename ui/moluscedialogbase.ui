@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>939</width>
-    <height>591</height>
+    <width>753</width>
+    <height>510</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,6 +38,9 @@
           </property>
           <property name="alternatingRowColors">
            <bool>true</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::ExtendedSelection</enum>
           </property>
          </widget>
          <widget class="QWidget" name="widget" native="true">
@@ -77,6 +80,9 @@
                </property>
                <property name="alternatingRowColors">
                 <bool>true</bool>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::ExtendedSelection</enum>
                </property>
               </widget>
              </item>

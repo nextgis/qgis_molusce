@@ -40,7 +40,7 @@ class SpinBoxDelegate(QItemDelegate):
     return editor
 
   def setEditorData(self, editor, index):
-    value = index.model().data(index, Qt.EditRole).toInt()[0]
+    value = index.model().data(index, Qt.EditRole)
     editor.setValue(value)
 
   def setModelData(self, editor, model, index):

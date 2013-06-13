@@ -54,7 +54,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
   def manageGui(self):
     self.tabLRResults.setCurrentIndex(0)
-    self.spnNeighbourhood.setValue(self.settings.value("ui/LR/neighborhood", 1).toInt()[0])
+    self.spnNeighbourhood.setValue(int(self.settings.value("ui/LR/neighborhood", 1)))
 
   def startFitModel(self):
     if not utils.checkInputRasters(self.inputs):
@@ -91,7 +91,6 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.model.samplingFinished.connect(self.training)
     self.plugin.workThread.start()
 
-
   def training(self):
     self.plugin.workThread.started.disconnect(self.__setTraningData)
     self.model.updateProgress.disconnect(self.plugin.showProgress)
@@ -107,7 +106,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     # Transition labels for the coef. tables
     analyst = self.plugin.analyst
     self.labels = list(self.model.labelCodes)
-    self.labels = [u"%s -> %s" % analyst.decode(int(c)) for c in self.labels]
+    self.labels = [u"%s → %s" % analyst.decode(int(c)) for c in self.labels]
 
     # populate table
     self.showCoefficients()
@@ -152,7 +151,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblCoefficients.resizeRowsToContents()
     self.tblCoefficients.resizeColumnsToContents()
 
-    self.leKappa.setText(QString.number(accuracy))
+    self.leKappa.setText("%6.5f" % (accuracy))
 
   def showStdDeviations(self):
     if self.model is None:
@@ -178,10 +177,10 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblStdDev.setHorizontalHeaderLabels(self.labels)
 
     for i in xrange(len(stdErrI)):
-      item = QTableWidgetItem(unicode(stdErrI[i]))
+      item = QTableWidgetItem("%6.5f" % (stdErrI[i]))
       self.tblStdDev.setItem(0, i, item)
       for j in xrange(len(stdErrW[i])):
-        item = QTableWidgetItem(unicode(stdErrW[i][j]))
+        item = QTableWidgetItem("%6.5f" % (stdErrW[i][j]))
         self.tblStdDev.setItem(j + 1, i, item)
 
     self.tblStdDev.resizeRowsToContents()
