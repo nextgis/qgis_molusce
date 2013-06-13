@@ -1054,11 +1054,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def setProgressRange(self, message, maxValue):
     self.progressBar.setFormat(message)
     self.progressBar.setRange(0, maxValue)
-    QCoreApplication.processEvents()
 
   def showProgress(self):
     self.progressBar.setValue(self.progressBar.value() + 1)
-    QCoreApplication.processEvents()
 
   def restoreProgressState(self):
     self.progressBar.setFormat("%p%")
