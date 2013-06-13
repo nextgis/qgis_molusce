@@ -493,7 +493,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
             res.save(unicode(self.leRiskFunctionPath.text()), nodata=maxVal-1)
         self.__addRasterToCanvas(self.leMonteCarloPath.text())
         if utils.copySymbology(utils.getLayerByName(self.leInitRasterName.text()), utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName())):
-          self.iface.legendInterface().refreshLayerSymbology(utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName()))
+          layer = utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName())
+          layer.setCacheImage(None)
+          layer.triggerRepaint()
+          self.iface.legendInterface().refreshLayerSymbology(layer)
           self.iface.mapCanvas().refresh()
           QgsProject.instance().dirty(True)
       else:
