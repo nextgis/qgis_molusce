@@ -297,6 +297,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     stat = self.inputs["crosstab"].getTransitionStat()
     dimensions = len(stat["init"])
+    units = stat["unit"]
     self.tblStatistics.clear()
     self.tblStatistics.setRowCount(dimensions)
     self.tblStatistics.setColumnCount(7)
@@ -332,9 +333,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
         item.setBackground(QBrush(colors[i]))
         self.tblStatistics.setItem(i, 0, item)
 
-    self.__addTableColumn(1, stat["init"])
-    self.__addTableColumn(2, stat["final"])
-    self.__addTableColumn(3, stat["deltas"])
+    self.__addTableColumn(1, stat["init"], units)
+    self.__addTableColumn(2, stat["final"], units)
+    self.__addTableColumn(3, stat["deltas"], units)
     self.__addTableColumn(4, stat["initPerc"])
     self.__addTableColumn(5, stat["finalPerc"])
     self.__addTableColumn(6, stat["deltasPerc"])
@@ -1032,10 +1033,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def logMessage(self, message):
     self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))
 
-  def __addTableColumn(self, col, values):
+  def __addTableColumn(self, col, values, units=""):
     dimensions = len(values)
     for r in xrange(0, dimensions):
-      item = QTableWidgetItem(unicode(values[r]))
+      if units == "":
+        item = QTableWidgetItem(unicode(values[r]))
+      else:
+        item = QTableWidgetItem(unicode(values[r]) + " " + units)
       self.tblStatistics.setItem(r, col, item)
 
   def __addRasterToCanvas(self, filePath):
