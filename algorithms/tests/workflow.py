@@ -41,25 +41,34 @@ def main(initRaster, finalRaster, factors):
     print 'Finish Making Change Map', clock(), '\n'
 
 
-    #~ # Create and Train ANN Model
-    #~ model = MlpManager(ns=0)
-    #~ model.createMlp(initRaster, factors, finalRaster, [10])
-    #~ print 'Start Setting MLP Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, changeMap, mode='Stratified', samples=1000)
-    #~ print 'Finish Setting Trainig Data', clock(), '\n'
-    #~ print 'Start MLP Training...', clock()
-    #~ model.train(1000, valPercent=20)
-    #~ print 'Finish Trainig', clock(), '\n'
-    #~
-    #~ print 'Start ANN Prediction...', clock()
-    #~ predict = model.getPrediction(initRaster, factors)
-    #~ filename = 'ann_predict.tiff'
-    #~ try:
-        #~ predict.save(filename)
-    #~ finally:
-        #~ #os.remove(filename)
-        #~ pass
-    #~ print 'Finish ANN Prediction...', clock(), '\n'
+    # Create and Train ANN Model
+    model = MlpManager(ns=0)
+    model.createMlp(initRaster, factors, changeMap, [10])
+    print 'Start Setting MLP Trainig Data...', clock()
+    model.setTrainingData(initRaster, factors, changeMap, mode='Stratified', samples=1000)
+    print 'Finish Setting Trainig Data', clock(), '\n'
+    print 'Start MLP Training...', clock()
+    model.train(20, valPercent=20)
+    print 'Finish Trainig', clock(), '\n'
+    #~ #~
+    print 'Start ANN Prediction...', clock()
+    predict = model.getPrediction(initRaster, factors, calcTransitions=True)
+    confidence = model.getConfidence()
+    potencials = model.getTransitionPotencials()
+
+    trans_prefix='trans_'
+    filename = 'ann_predict.tif'
+    confname = 'confidence.tif'
+    try:
+        predict.save(filename)
+        confidence.save(confname)
+        if potencials != None:
+            for k,v in potencials.iteritems():
+                map = v.save(trans_prefix+str(k) + '.tif')
+    finally:
+        os.remove(filename)
+        #pass
+    print 'Finish ANN Prediction...', clock(), '\n'
 
     #~ # Create and Train LR Model
     #~ model = LR(ns=1)
@@ -91,14 +100,14 @@ def main(initRaster, finalRaster, factors):
     #~ model.train()
     #~ print 'Finish creating WoE model...', clock(), '\n'
 
-    # Create and Train MCE Model
-    print 'Start creating MCE model...', clock()
-    matrix = [
-        [1,     6],
-        [1.0/6,   1]
-    ]
-    model = MCE(factors, matrix, 2, 3, analyst)
-    print 'Finish creating MCE model...', clock(), '\n'
+    #~ # Create and Train MCE Model
+    #~ print 'Start creating MCE model...', clock()
+    #~ matrix = [
+        #~ [1,     6],
+        #~ [1.0/6,   1]
+    #~ ]
+    #~ model = MCE(factors, matrix, 2, 3, analyst)
+    #~ print 'Finish creating MCE model...', clock(), '\n'
 
     # simulation
     print 'Start Simulation...', clock()
@@ -116,10 +125,10 @@ def main(initRaster, finalRaster, factors):
         errors.save('risk_validation.tiff')
         riskFunct.save('risk_func.tiff')
     finally:
-        pass
-        # os.remove('simulation_result.tiff')
-        # os.remove('risk_validation.tiff')
-        # os.remove('risk_func.tiff')
+        #pass
+        os.remove('simulation_result.tiff')
+        os.remove('risk_validation.tiff')
+        os.remove('risk_func.tiff')
     print 'Finish Simulation', clock(), '\n'
 
     print 'Done', clock()

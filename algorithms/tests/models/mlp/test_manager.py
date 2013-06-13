@@ -166,12 +166,18 @@ class TestMlpManager (unittest.TestCase):
         mng.setMlpWeights(layers)
         mng._predict(self.output, self.factors)
 
-        # Prediction
-        raster = mng.getPrediction(self.output, self.factors)
-        assert_array_equal(raster.getBand(1), sigmoid(0)*np.zeros((3,3)))
-        # Confidence
+        # Prediction ( the output must be sigmoid(0) )
+        raster = mng.getPrediction(self.output, self.factors, calcTransitions=True)
+        assert_array_equal(raster.getBand(1), sigmoid(0)*np.ones((3,3)))
+        # Confidence is zero
         confid = mng.getConfidence()
-        assert_array_equal(confid.getBand(1), sigmoid(0)*np.zeros((3,3)))
+        assert_array_equal(confid.getBand(1), np.zeros((3,3)))
+        # Transition Potencials (is (sigmoid(0) - sigmin)/sigrange )
+        potencials = mng.getTransitionPotencials()
+        cats = self.output.getBandGradation(1)
+        for cat in cats:
+            map = potencials[cat]
+            assert_array_equal(map.getBand(1), (sigmoid(0) - mng.sigmin)*np.ones((3,3))/mng.sigrange )
 
     # Commented while we don't have free rasters to test
     #~ def test_real(self):

@@ -59,6 +59,7 @@ class MlpManager(QObject):
         # Results of the MLP prediction
         self.prediction = None  # Raster of the MLP prediction results
         self.confidence = None  # Raster of the MLP results confidence (1 = the maximum confidence, 0 = the least confidence)
+        self.transitionPotencials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
         # Outputs of the activation function for small and big numbers
         self.sigmax, self.sigmin = sigmoid(100), sigmoid(-100)  # Max and Min of the sigmoid function
@@ -172,6 +173,19 @@ class MlpManager(QObject):
     def getKappa(self):
         return self.valKappa
 
+    def getPrediction(self, state, factors, calcTransitions=False):
+        self._predict(state, factors, calcTransitions)
+        return self.prediction
+
+    def getTrainError(self):
+        return self.train_error
+
+    def getTransitionPotencials(self):
+        return self.transitionPotencials
+
+    def getValError(self):
+        return self.val_error
+
     def outCategory(self, out_vector):
         # Get index of the biggest output value as the result
         biggest = max(out_vector)
@@ -179,28 +193,32 @@ class MlpManager(QObject):
         res = self.catlist[res]
         return res
 
-    def getPrediction(self, state, factors):
-        self._predict(state, factors)
-        return self.prediction
-
-    def getTrainError(self):
-        return self.train_error
-
-    def getValError(self):
-        return self.val_error
-
     def outputConfidence(self, output):
         '''
         Return confidence (difference between 2 biggest values) of the MLP output.
         '''
-        # Scale the output to range [0,1]
-        out_scl = 1.0 * (output - self.sigmin) / self.sigrange
-
-        # Calculate the confidence:
+        out_scl = self.scaleOutput(output)
         out_scl.sort()
         return out_scl[-1] - out_scl[-2]
 
-    def _predict(self, state, factors):
+    def outputTransitions(self, output):
+        '''
+        Return transition potencial of the oututs scaled to [0,1]
+        '''
+        out_scl = self.scaleOutput(output)
+        result = {}
+        for r, v in enumerate(out_scl):
+            cat = self.catlist[r]
+            result[cat] = v
+        return result
+
+    def scaleOutput(self, output):
+        '''
+        Scale the output to range [0,1]
+        '''
+        return 1.0 * (output - self.sigmin) / self.sigrange
+
+    def _predict(self, state, factors, calcTransitions=False):
         '''
         Calculate output and confidence rasters using MLP model and input rasters
         @param state            Raster of the current state (categories) values.
@@ -213,12 +231,18 @@ class MlpManager(QObject):
             if not state.geoDataMatch(r):
                 raise MlpManagerError('Geometries of the input rasters are different!')
 
+        self.transitionPotencials = None    # Reset tr.potencials if they exist
+
         # Normalize factors before prediction:
         for f in factors:
             f.normalize(mode = 'mean')
 
         predicted_band  = np.zeros([rows, cols])
         confidence_band = np.zeros([rows, cols])
+        if calcTransitions:
+            self.transitionPotencials = {}
+            for cat in self.catlist:
+                self.transitionPotencials[cat] = np.zeros([rows, cols])
 
         self.sampler = Sampler(state, factors, ns=self.ns)
         mask = state.getBand(1).mask.copy()
@@ -237,6 +261,12 @@ class MlpManager(QObject):
 
                         confidence = self.outputConfidence(out)
                         confidence_band[i, j] = confidence
+
+                        if calcTransitions:
+                            potencials = self.outputTransitions(out)
+                            for cat in self.catlist:
+                                map = self.transitionPotencials[cat]
+                                map[i, j] = potencials[cat]
                     else: # Input sample is incomplete => mask this pixel
                         mask[i, j] = True
             self.updateProgress.emit()
@@ -247,6 +277,12 @@ class MlpManager(QObject):
         self.prediction.create(predicted_bands, geodata)
         self.confidence = Raster()
         self.confidence.create(confidence_bands, geodata)
+
+        if calcTransitions:
+            for cat in self.catlist:
+                band = [np.ma.array(data=self.transitionPotencials[cat], mask=mask)]
+                self.transitionPotencials[cat] = Raster()
+                self.transitionPotencials[cat].create(band, geodata)
 
     def readMlp(self):
         pass
