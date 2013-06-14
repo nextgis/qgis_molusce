@@ -45,6 +45,7 @@ class LR(QObject):
         self.output = None
         self.mode = "All"
         self.samples = None
+        self.catlist = None
 
         self.ns = ns            # Neighbourhood size of training rasters.
         self.data = None        # Training data
@@ -87,7 +88,7 @@ class LR(QObject):
         return self.logreg.get_pval_weights(X).T
 
     def getPrediction(self, state, factors, calcTransitions=False):
-        self._predict(state, factors)
+        self._predict(state, factors, calcTransitions)
         return self.prediction
 
     def getTransitionPotentials(self):
@@ -103,7 +104,18 @@ class LR(QObject):
         out_scl.sort()
         return out_scl[-1] - out_scl[-2]
 
-    def _predict(self, state, factors):
+    def outputTransitions(self, input):
+        '''
+        Return transition potencial of the oututs
+        '''
+        out_scl = self.logreg.predict_proba(input)[0]
+        result = {}
+        for r, v in enumerate(out_scl):
+            cat = self.catlist[r]
+            result[cat] = v
+        return result
+
+    def _predict(self, state, factors, calcTransitions=False):
         '''
         Calculate output and confidence rasters using LR model and input rasters
         @param state            Raster of the current state (categories) values.
@@ -125,6 +137,10 @@ class LR(QObject):
 
             predicted_band  = np.zeros([rows, cols])
             confidence_band = np.zeros([rows, cols])
+            if calcTransitions:
+                self.transitionPotentials = {}
+                for cat in self.catlist:
+                    self.transitionPotentials[cat] = np.zeros([rows, cols])
 
             self.sampler = Sampler(state, factors, ns=self.ns)
             mask = state.getBand(1).mask.copy()
@@ -142,6 +158,12 @@ class LR(QObject):
                             predicted_band[i,j] = out
                             confidence = self._outputConfidence(input)
                             confidence_band[i, j] = confidence
+
+                            if calcTransitions:
+                                potentials = self.outputTransitions(input)
+                                for cat in self.catlist:
+                                    map = self.transitionPotentials[cat]
+                                    map[i, j] = potentials[cat]
                         else: # Input sample is incomplete => mask this pixel
                             mask[i, j] = True
                 self.updateProgress.emit()
@@ -152,6 +174,12 @@ class LR(QObject):
             self.prediction.create(predicted_bands, geodata)
             self.confidence = Raster()
             self.confidence.create(confidence_bands, geodata)
+
+            if calcTransitions:
+                for cat in self.catlist:
+                    band = [np.ma.array(data=self.transitionPotentials[cat], mask=mask)]
+                    self.transitionPotentials[cat] = Raster()
+                    self.transitionPotentials[cat].create(band, geodata)
         finally:
             self.processFinished.emit()
 
@@ -181,17 +209,8 @@ class LR(QObject):
     def setMaxIter(self, maxiter):
         self.maxiter = maxiter
 
-    def setTrainingData(self, state, factors, output, mode='All', samples=None):
-        '''
-        @param state            Raster of the current state (categories) values.
-        @param factors          List of the factor rasters (predicting variables).
-        @param output           Raster that contains categories to predict.
-        @param mode             Type of sampling method:
-                                    All             Get all pixels
-                                    Random          Get samples. Count of samples in the data=samples.
-                                    Stratified      Undersampling of major categories and/or oversampling of minor categories.
-        @samples                Sample count of the training data (doesn't used in 'All' mode).
-        '''
+    def setTrainingData(self):
+        state, factors, output, mode, samples = self.state, self.factors, self.output, self.mode, self.samples
         if not self.logreg:
             raise LRError('You must create a Logistic Regression model before!')
 
@@ -227,6 +246,7 @@ class LR(QObject):
 
     def setOutput(self, output):
         self.output = output
+        self.catlist = output.getBandGradation(1)
 
     def setMode(self, mode):
         self.mode = mode
@@ -235,6 +255,6 @@ class LR(QObject):
         self.samples = samples
 
     def startTrain(self):
-        self.setTrainingData(self.state, self.factors, self.output, self.mode, self.samples)
+        self.setTrainingData()
         self.train()
         self.finished.emit()

@@ -41,54 +41,38 @@ def main(initRaster, finalRaster, factors):
     print 'Finish Making Change Map', clock(), '\n'
 
 
-    # Create and Train ANN Model
-    model = MlpManager(ns=0)
-    model.createMlp(initRaster, factors, changeMap, [10])
-    print 'Start Setting MLP Trainig Data...', clock()
-    model.setTrainingData(initRaster, factors, changeMap, mode='Stratified', samples=1000)
-    print 'Finish Setting Trainig Data', clock(), '\n'
-    print 'Start MLP Training...', clock()
-    model.train(20, valPercent=20)
-    print 'Finish Trainig', clock(), '\n'
-    #~ #~
-    print 'Start ANN Prediction...', clock()
-    predict = model.getPrediction(initRaster, factors, calcTransitions=True)
-    confidence = model.getConfidence()
-    potentials = model.getTransitionPotentials()
-
-    trans_prefix='trans_'
-    filename = 'ann_predict.tif'
-    confname = 'confidence.tif'
-    try:
-        predict.save(filename)
-        confidence.save(confname)
-        if potentials != None:
-            for k,v in potentials.iteritems():
-                map = v.save(trans_prefix+str(k) + '.tif')
-    finally:
-        os.remove(filename)
-        #pass
-    print 'Finish ANN Prediction...', clock(), '\n'
-
-    #~ # Create and Train LR Model
-    #~ model = LR(ns=1)
-    #~ print 'Start Setting LR Trainig Data...', clock()
+    #~ # Create and Train ANN Model
+    #~ model = MlpManager(ns=0)
+    #~ model.createMlp(initRaster, factors, changeMap, [10])
+    #~ print 'Start Setting MLP Trainig Data...', clock()
     #~ model.setTrainingData(initRaster, factors, changeMap, mode='Stratified', samples=1000)
     #~ print 'Finish Setting Trainig Data', clock(), '\n'
-    #~ print 'Start LR Training...', clock()
-    #~ model.train()
+    #~ print 'Start MLP Training...', clock()
+    #~ model.train(20, valPercent=20)
     #~ print 'Finish Trainig', clock(), '\n'
     #~
-    #~
-    #~ print 'Start LR Prediction...', clock()
-    #~ predict = model.getPrediction(initRaster, factors)
-    #~ filename = 'lr_predict.tiff'
-    #~ try:
-    #~ predict.save(filename)
-    #~ finally:
-    #~ #os.remove(filename)
-    #~ pass
-    #~ print 'Finish LR Prediction...', clock(), '\n'
+    #~ print 'Start ANN Prediction...', clock()
+    #~ predict = model.getPrediction(initRaster, factors, calcTransitions=True)
+    #~ confidence = model.getConfidence()
+    #~ potentials = model.getTransitionPotentials()
+
+    # Create and Train LR Model
+    model = LR(ns=0)
+    print 'Start Setting LR Trainig Data...', clock()
+    model.setState(initRaster)
+    model.setFactors(factors)
+    model.setOutput(changeMap)
+    model.setMode('Stratified')
+    model.setSamples(100)
+    model.setTrainingData()
+    print 'Finish Setting Trainig Data', clock(), '\n'
+    print 'Start LR Training...', clock()
+    model.train()
+    print 'Finish Trainig', clock(), '\n'
+    #~ #~
+    print 'Start LR Prediction...', clock()
+    predict = model.getPrediction(initRaster, factors, calcTransitions=True)
+    print 'Finish LR Prediction...', clock(), '\n'
 
     #~ # Create and Train WoE Model
     #~ print 'Start creating AreaAnalyst...', clock()
@@ -108,6 +92,23 @@ def main(initRaster, finalRaster, factors):
     #~ ]
     #~ model = MCE(factors, matrix, 2, 3, analyst)
     #~ print 'Finish creating MCE model...', clock(), '\n'
+
+    predict = model.getPrediction(initRaster, factors, calcTransitions=True)
+    confidence = model.getConfidence()
+    potentials = model.getTransitionPotentials()
+    filename = 'predict.tif'
+    confname = 'confidence.tif'
+    trans_prefix='trans_'
+    try:
+        predict.save(filename)
+        confidence.save(confname)
+        if potentials != None:
+            for k,v in potentials.iteritems():
+                map = v.save(trans_prefix+str(k) + '.tif')
+    finally:
+        os.remove(filename)
+        #pass
+    print 'Finish Saving...', clock(), '\n'
 
     # simulation
     print 'Start Simulation...', clock()

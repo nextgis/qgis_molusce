@@ -40,14 +40,20 @@ class TestLRManager (unittest.TestCase):
         #~ result = np.ma.array(data = data, mask = (data==0))
 
         lr = LR(ns=0)   # 3-class problem
-        lr.setTrainingData(self.state, self.factors, self.output)
+        lr.setState(self.state)
+        lr.setFactors(self.factors)
+        lr.setOutput(self.output)
+        lr.setTrainingData()
         lr.train()
         predict = lr.getPrediction(self.state, self.factors)
         predict = predict.getBand(1)
         assert_array_equal(predict, self.output.getBand(1))
 
         lr = LR(ns=1) # Two-class problem (it's because of boundary effect)
-        lr.setTrainingData(self.state1, self.factors1, self.output1)
+        lr.setState(self.state1)
+        lr.setFactors(self.factors1)
+        lr.setOutput(self.output1)
+        lr.setTrainingData()
         lr.train()
         predict = lr.getPrediction(self.state1, self.factors1)
         predict = predict.getBand(1)

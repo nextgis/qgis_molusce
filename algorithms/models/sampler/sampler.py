@@ -251,8 +251,7 @@ class Sampler(QObject):
     def setTrainingData(self, state, output, shuffle=True, mode='All', samples=None):
         '''
         @param state            Raster of the current state (categories) values.
-        @param factors          List of the factor rasters (predicting variables).
-        @param ns               Neighbourhood size.
+        @param output           Raster of the output (target) data
         @param shuffle          Perform random shuffle.
         @param mode             Type of sampling method:
                                     All             Get all pixels
