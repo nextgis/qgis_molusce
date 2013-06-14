@@ -80,7 +80,7 @@ class WoeManager(QObject):
         #   ...
         #}
         #
-        self.transitionPotencials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
+        self.transitionPotentials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
 
     def checkBins(self):
@@ -108,15 +108,15 @@ class WoeManager(QObject):
     def getConfidence(self):
         return self.confidence
 
-    def getPrediction(self, state, factors=None):
+    def getPrediction(self, state, factors=None, calcTransitions=False):
         '''
         Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
         '''
-        self._predict(state)
+        self._predict(state, calcTransitions)
         return self.prediction
 
-    def getTransitionPotencials(self):
-        return self.transitionPotencials
+    def getTransitionPotentials(self):
+        return self.transitionPotentials
 
     def getWoe(self):
         return self.woe
@@ -132,7 +132,7 @@ class WoeManager(QObject):
             if not self.changeMap.geoDataMatch(state):
                 raise WoeManagerError('Geometries of the state and changeMap rasters are different!')
 
-            self.transitionPotencials = None    # Reset tr.potencials if they exist
+            self.transitionPotentials = None    # Reset tr.potentials if they exist
 
             prediction = np.zeros((rows,cols))
             confidence = np.zeros((rows,cols))

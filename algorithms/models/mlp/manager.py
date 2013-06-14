@@ -59,7 +59,7 @@ class MlpManager(QObject):
         # Results of the MLP prediction
         self.prediction = None  # Raster of the MLP prediction results
         self.confidence = None  # Raster of the MLP results confidence (1 = the maximum confidence, 0 = the least confidence)
-        self.transitionPotencials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
+        self.transitionPotentials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
         # Outputs of the activation function for small and big numbers
         self.sigmax, self.sigmin = sigmoid(100), sigmoid(-100)  # Max and Min of the sigmoid function
@@ -180,8 +180,8 @@ class MlpManager(QObject):
     def getTrainError(self):
         return self.train_error
 
-    def getTransitionPotencials(self):
-        return self.transitionPotencials
+    def getTransitionPotentials(self):
+        return self.transitionPotentials
 
     def getValError(self):
         return self.val_error
@@ -231,7 +231,7 @@ class MlpManager(QObject):
             if not state.geoDataMatch(r):
                 raise MlpManagerError('Geometries of the input rasters are different!')
 
-        self.transitionPotencials = None    # Reset tr.potencials if they exist
+        self.transitionPotentials = None    # Reset tr.potentials if they exist
 
         # Normalize factors before prediction:
         for f in factors:
@@ -240,9 +240,9 @@ class MlpManager(QObject):
         predicted_band  = np.zeros([rows, cols])
         confidence_band = np.zeros([rows, cols])
         if calcTransitions:
-            self.transitionPotencials = {}
+            self.transitionPotentials = {}
             for cat in self.catlist:
-                self.transitionPotencials[cat] = np.zeros([rows, cols])
+                self.transitionPotentials[cat] = np.zeros([rows, cols])
 
         self.sampler = Sampler(state, factors, ns=self.ns)
         mask = state.getBand(1).mask.copy()
@@ -263,10 +263,10 @@ class MlpManager(QObject):
                         confidence_band[i, j] = confidence
 
                         if calcTransitions:
-                            potencials = self.outputTransitions(out)
+                            potentials = self.outputTransitions(out)
                             for cat in self.catlist:
-                                map = self.transitionPotencials[cat]
-                                map[i, j] = potencials[cat]
+                                map = self.transitionPotentials[cat]
+                                map[i, j] = potentials[cat]
                     else: # Input sample is incomplete => mask this pixel
                         mask[i, j] = True
             self.updateProgress.emit()
@@ -280,9 +280,9 @@ class MlpManager(QObject):
 
         if calcTransitions:
             for cat in self.catlist:
-                band = [np.ma.array(data=self.transitionPotencials[cat], mask=mask)]
-                self.transitionPotencials[cat] = Raster()
-                self.transitionPotencials[cat].create(band, geodata)
+                band = [np.ma.array(data=self.transitionPotentials[cat], mask=mask)]
+                self.transitionPotentials[cat] = Raster()
+                self.transitionPotentials[cat].create(band, geodata)
 
     def readMlp(self):
         pass

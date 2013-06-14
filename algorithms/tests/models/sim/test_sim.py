@@ -25,11 +25,11 @@ class Model(object):
     def getConfidence(self):
         return self.confidence
 
-    def getPrediction(self, state, factors=None):
+    def getPrediction(self, state, factors=None, calcTransitions=False):
         self._predict(state, factors)
         return self.prediction
 
-    def _predict(self, state, factors = None):
+    def _predict(self, state, factors = None, calcTransitions=False):
         geodata = state.getGeodata()
         band = state.getBand(1)
         rows, cols = geodata['ySize'], geodata['xSize']

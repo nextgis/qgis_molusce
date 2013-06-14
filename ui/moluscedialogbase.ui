@@ -453,14 +453,18 @@
           </widget>
          </item>
          <item row="0" column="0">
-          <widget class="QCheckBox" name="checkBox">
+          <widget class="QCheckBox" name="chkTransitionPotentials">
            <property name="text">
-            <string>Prefix of transition potencial maps</string>
+            <string>Prefix of transition potential maps</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="leTransitionPotencialPrefix"/>
+          <widget class="QLineEdit" name="leTransitionPotentialPrefix">
+           <property name="text">
+            <string>potencial_</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

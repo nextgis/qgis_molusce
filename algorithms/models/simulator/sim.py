@@ -21,8 +21,10 @@ class Simulator(QObject):
         '''
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
-        @param model            Model that is used for predict. The model implements metods:
-                                getConfidence(), getPrediction(state, self.factors), getTransitionPotencials(self)
+        @param model            Model that is used for predict. The model mast implement next methods:
+                                    getConfidence(),
+                                    getPrediction(state, factors,calcTransitions=False),
+                                    getTransitionPotentials()
         @param crosstable       Crosstable, contains transition matrix between states T(i,j).
                                 The matrix contains number of pixels that are moved
                                 from init category i to final category j.
@@ -35,6 +37,7 @@ class Simulator(QObject):
 
         self.model  = model
         self.crosstable = crosstable
+        self.calcTransitions = False
 
         try:    # Not all models have the signals
             self.model.rangeChanged.connect(self.__modelProgressRangeChanged)
@@ -47,6 +50,9 @@ class Simulator(QObject):
         Return raster of model's prediction confidence.
         '''
         return self.model.getConfidence()
+
+    def getTransitionPotentials(self):
+        return self.model.getTransitionPotentials()
 
     def getPrediction(self):
         '''
@@ -78,6 +84,9 @@ class Simulator(QObject):
     def __modelProgressChanged(self):
         self.updateProgress.emit()
         QCoreApplication.processEvents()
+
+    def setCalcTransitions(self, calcTransitions):
+        self.calcTransitions = calcTransitions
 
     def __sim(self):
         '''
@@ -160,5 +169,5 @@ class Simulator(QObject):
         '''
         Update prediction using new categories (raster "state")
         '''
-        self.predicted = self.model.getPrediction(state, self.factors)
+        self.predicted = self.model.getPrediction(state, self.factors, calcTransitions=self.calcTransitions)
 

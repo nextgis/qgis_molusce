@@ -421,6 +421,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("Initial raster is not set. Please specify it and try again")
                          )
       return
+    if self.chkTransitionPotentials.isChecked():
+        if self.leTransitionPotentialPrefix.text() == "":
+            QMessageBox.warning(self,
+                          self.tr("Missed input data"),
+                          self.tr("Prefix of transition potential maps is not set. Please specify it and try again")
+                         )
+            return
+        calcTransitions = True
+    else:
+        calcTransitions = True
 
     if not utils.checkFactors(self.inputs):
       QMessageBox.warning(self,
@@ -449,6 +459,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                                self.inputs["crosstab"]
                               )
 
+    self.simulator.setCalcTransitions(calcTransitions)
     self.simulator.moveToThread(self.workThread)
 
     self.btnStartSimulation.setEnabled(False)
@@ -502,6 +513,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
           QgsProject.instance().dirty(True)
       else:
         self.logMessage(self.tr("Output path for simulated risk map is not set. Skipping this step"))
+
+    if self.chkTransitionPotentials.isChecked():
+        potentials = self.simulator.getTransitionPotentials()
+        trans_prefix = self.leTransitionPotentialPrefix.text()
+        if potentials != None:
+            for k,v in potentials.iteritems():
+                map = v.save(trans_prefix+str(k) + '.tif')
+        else:
+            QMessageBox.warning(self,
+                          self.tr("Not implemented yet"),
+                          self.tr("Transition potentials not implemented yet for the model.")
+                         )
 
     self.workThread.started.disconnect(self.propagateSimulation)
     self.simulator.rangeChanged.disconnect(self.setProgressRange)

@@ -172,11 +172,11 @@ class TestMlpManager (unittest.TestCase):
         # Confidence is zero
         confid = mng.getConfidence()
         assert_array_equal(confid.getBand(1), np.zeros((3,3)))
-        # Transition Potencials (is (sigmoid(0) - sigmin)/sigrange )
-        potencials = mng.getTransitionPotencials()
+        # Transition Potentials (is (sigmoid(0) - sigmin)/sigrange )
+        potentials = mng.getTransitionPotentials()
         cats = self.output.getBandGradation(1)
         for cat in cats:
-            map = potencials[cat]
+            map = potentials[cat]
             assert_array_equal(map.getBand(1), (sigmoid(0) - mng.sigmin)*np.ones((3,3))/mng.sigrange )
 
     # Commented while we don't have free rasters to test

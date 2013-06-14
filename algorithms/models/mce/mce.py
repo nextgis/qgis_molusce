@@ -102,7 +102,7 @@ class MCE(object):
 
         self.prediction = None      # Raster of the prediction results
         self.confidence = None      # Raster of the results confidence(1 = the maximum confidence, 0 = the least confidence)
-        self.transitionPotencials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
+        self.transitionPotentials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
 
     def getConsistency(self):
@@ -113,10 +113,10 @@ class MCE(object):
     def getConfidence(self):
         return self.confidence
 
-    def getTransitionPotencials(self):
-        return self.transitionPotencials
+    def getTransitionPotentials(self):
+        return self.transitionPotentials
 
-    def getPrediction(self, state, factors=None):
+    def getPrediction(self, state, factors=None, calcTransitions=False):
         '''
         Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
         '''
@@ -135,7 +135,7 @@ class MCE(object):
         geodata = state.getGeodata()
         rows, cols = geodata['ySize'], geodata['xSize']
 
-        self.transitionPotencials = None    # Reset tr.potencials if they exist
+        self.transitionPotentials = None    # Reset tr.potentials if they exist
 
         # Get locations where self.initStateNum is occurs
         band = state.getBand(1)

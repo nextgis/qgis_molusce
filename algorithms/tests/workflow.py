@@ -54,7 +54,7 @@ def main(initRaster, finalRaster, factors):
     print 'Start ANN Prediction...', clock()
     predict = model.getPrediction(initRaster, factors, calcTransitions=True)
     confidence = model.getConfidence()
-    potencials = model.getTransitionPotencials()
+    potentials = model.getTransitionPotentials()
 
     trans_prefix='trans_'
     filename = 'ann_predict.tif'
@@ -62,8 +62,8 @@ def main(initRaster, finalRaster, factors):
     try:
         predict.save(filename)
         confidence.save(confname)
-        if potencials != None:
-            for k,v in potencials.iteritems():
+        if potentials != None:
+            for k,v in potentials.iteritems():
                 map = v.save(trans_prefix+str(k) + '.tif')
     finally:
         os.remove(filename)
