@@ -78,7 +78,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
           else:
             name = u"%s" % (utils.getLayerById(k).name(), )
           stat = v.getBandStat(b)
-          for n, item_data in enumerate([(name).arg(b), (u"%f" % (stat["min"], )), (u"%f" % (stat["max"])), u"" , u"" ]):
+          for n, item_data in enumerate([name, (u"%f" % (stat["min"], )), (u"%f" % (stat["max"])), u"" , u"" ]):
             item = QTableWidgetItem(item_data)
             if n < 3:
               item.setFlags(item.flags() ^ Qt.ItemIsEditable)
@@ -157,7 +157,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
             name = u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1))
           else:
             name = u"%s" % (utils.getLayerById(k).name(), )
-          items = self.tblReclass.findItems(name.arg(b), Qt.MatchExactly)
+          items = self.tblReclass.findItems(name, Qt.MatchExactly)
           idx = self.tblReclass.indexFromItem(items[0])
           reclassList = self.tblReclass.item(idx.row(), 4).text()
           try:

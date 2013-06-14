@@ -41,9 +41,10 @@ class SpinBoxDelegate(QItemDelegate):
 
   def setEditorData(self, editor, index):
     value = index.model().data(index, Qt.EditRole)
-    if value == None:
+    try:
+        editor.setValue(value)
+    except TypeError:   # Check None-value, ""-value, etc.
         value = self.minRange
-    editor.setValue(value)
 
   def setModelData(self, editor, model, index):
     model.setData(index, editor.value(), Qt.EditRole)

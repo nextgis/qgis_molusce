@@ -121,7 +121,7 @@ class WoeManager(QObject):
     def getWoe(self):
         return self.woe
 
-    def _predict(self, state):
+    def _predict(self, state, calcTransitions=False):
         '''
         Predict the changes.
         '''
