@@ -82,26 +82,25 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     self.plugin.logMessage(self.tr("Init LR model"))
     self.model = LR(ns=self.spnNeighbourhood.value())
+    self.model.setMaxIter(self.spnMaxIterations.value())
+
+    self.model.setState(self.inputs["initial"])
+    self.model.setFactors(self.inputs["factors"].values())
+    self.model.setOutput(self.inputs["changeMap"])
+    self.model.setMode(self.inputs["samplingMode"],)
+    self.model.setSamples(self.plugin.spnSamplesCount.value())
 
     self.plugin.logMessage(self.tr("Set training data"))
     self.model.moveToThread(self.plugin.workThread)
-    self.plugin.workThread.started.connect(self.__setTraningData)
-    self.model.updateProgress.connect(self.plugin.showProgress)
-    self.model.rangeChanged.connect(self.plugin.setProgressRange)
-    self.model.samplingFinished.connect(self.training)
+    self.plugin.workThread.started.connect(self.model.startTrain)
+    self.plugin.setProgressRange("Train LR model", 0)
+    self.model.finished.connect(self.__trainFinished)
+    self.model.finished.connect(self.plugin.workThread.quit)
     self.plugin.workThread.start()
 
-  def training(self):
-    self.plugin.workThread.started.disconnect(self.__setTraningData)
-    self.model.updateProgress.disconnect(self.plugin.showProgress)
-    self.model.rangeChanged.connect(self.plugin.setProgressRange)
-    self.model.samplingFinished.disconnect(self.training)
-    self.plugin.workThread.quit()
+  def __trainFinished(self):
+    self.plugin.workThread.started.disconnect(self.model.startTrain)
     self.plugin.restoreProgressState()
-
-    self.model.setMaxIter(self.spnMaxIterations.value())
-    self.plugin.logMessage(self.tr("Start training LR model"))
-    self.model.train()
 
     # Transition labels for the coef. tables
     analyst = self.plugin.analyst
@@ -228,11 +227,3 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     self.tblPValues.resizeRowsToContents()
     self.tblPValues.resizeColumnsToContents()
-
-  def __setTraningData(self):
-    self.model.setTrainingData(self.inputs["initial"],
-                               self.inputs["factors"].values(),
-                               self.inputs["changeMap"],
-                               mode=self.inputs["samplingMode"],
-                               samples=self.plugin.spnSamplesCount.value()
-                              )

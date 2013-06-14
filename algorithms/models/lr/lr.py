@@ -28,6 +28,7 @@ class LR(QObject):
     updateProgress = pyqtSignal()
     processFinished = pyqtSignal()
     samplingFinished = pyqtSignal()
+    finished = pyqtSignal()
     logMessage = pyqtSignal(str)
 
     def __init__(self, ns=0, logreg=None):
@@ -38,6 +39,12 @@ class LR(QObject):
             self.logreg = logreg
         else:
             self.logreg = mlr.MLR()
+
+        self.state = None
+        self.factors = None
+        self.output = None
+        self.mode = "All"
+        self.samples = None
 
         self.ns = ns            # Neighbourhood size of training rasters.
         self.data = None        # Training data
@@ -212,5 +219,22 @@ class LR(QObject):
         depCoef = DependenceCoef(np.ma.array(out), np.ma.array(Y), expand=True)
         self.Kappa = depCoef.kappa(mode=None)
 
+    def setState(self, state):
+        self.state = state
 
+    def setFactors(self, factors):
+        self.factors = factors
 
+    def setOutput(self, output):
+        self.output = output
+
+    def setMode(self, mode):
+        self.mode = mode
+
+    def setSamples(self, samples):
+        self.samples = samples
+
+    def startTrain(self):
+        self.setTrainingData(self.state, self.factors, self.output, self.mode, self.samples)
+        self.train()
+        self.finished.emit()
