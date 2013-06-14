@@ -49,6 +49,7 @@ class LR(QObject):
         self.prediction = None  # Raster of the LR prediction results
         self.confidence = None  # Raster of the LR results confidence (1 = the maximum confidence, 0 = the least confidence)
         self.Kappa      = 0     #  Kappa value
+        self.transitionPotencials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
     def getCoef(self):
         return self.logreg.get_weights().T
@@ -82,6 +83,9 @@ class LR(QObject):
         self._predict(state, factors)
         return self.prediction
 
+    def getTransitionPotencials(self):
+        return self.transitionPotencials
+
     def _outputConfidence(self, input):
         '''
         Return confidence (difference between 2 biggest probabilities) of the LR output.
@@ -105,6 +109,8 @@ class LR(QObject):
             for r in factors:
                 if not state.geoDataMatch(r):
                     raise LRError('Geometries of the input rasters are different!')
+
+            self.transitionPotencials = None    # Reset tr.potencials if they exist
 
             # Normalize factors before prediction:
             for f in factors:

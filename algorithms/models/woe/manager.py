@@ -80,6 +80,8 @@ class WoeManager(QObject):
         #   ...
         #}
         #
+        self.transitionPotencials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
+
 
     def checkBins(self):
         """
@@ -113,6 +115,9 @@ class WoeManager(QObject):
         self._predict(state)
         return self.prediction
 
+    def getTransitionPotencials(self):
+        return self.transitionPotencials
+
     def getWoe(self):
         return self.woe
 
@@ -126,6 +131,8 @@ class WoeManager(QObject):
             rows, cols = geodata['ySize'], geodata['xSize']
             if not self.changeMap.geoDataMatch(state):
                 raise WoeManagerError('Geometries of the state and changeMap rasters are different!')
+
+            self.transitionPotencials = None    # Reset tr.potencials if they exist
 
             prediction = np.zeros((rows,cols))
             confidence = np.zeros((rows,cols))

@@ -22,7 +22,7 @@ class Simulator(QObject):
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param model            Model that is used for predict. The model implements metods:
-                                getConfidence(), getPrediction(state, self.factors)
+                                getConfidence(), getPrediction(state, self.factors), getTransitionPotencials(self)
         @param crosstable       Crosstable, contains transition matrix between states T(i,j).
                                 The matrix contains number of pixels that are moved
                                 from init category i to final category j.
