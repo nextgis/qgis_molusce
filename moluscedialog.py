@@ -28,6 +28,7 @@
 import datetime
 import locale
 import operator
+import os.path
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -109,6 +110,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.chkRiskFunction.toggled.connect(self.__toggleLineEdit)
     self.chkRiskValidation.toggled.connect(self.__toggleLineEdit)
     self.chkMonteCarlo.toggled.connect(self.__toggleLineEdit)
+    self.chkTransitionPotentials.toggled.connect(self.__toggleLineEdit)
 
     self.btnSelectRiskFunction.clicked.connect(self.__selectSimulationOutput)
     self.btnSelectRiskValidation.clicked.connect(self.createValidationMap)
@@ -176,6 +178,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       layerName = self.lstLayers.selectedItems()[0].text()
       self.finalRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
       self.leFinalRasterName.setText(layerName)
+      self.leReferenceMapPath.setText(unicode(utils.getLayerById(self.finalRasterId).source()))
     except IndexError:
       QMessageBox.warning(self,
                           self.tr("Missed selected row"),
@@ -946,28 +949,17 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def __toggleLineEdit(self, checked):
     senderName = self.sender().objectName()
     if senderName == "chkRiskFunction":
-      if checked:
-        self.leRiskFunctionPath.setEnabled(True)
-        self.btnSelectRiskFunction.setEnabled(True)
-      else:
-        self.leRiskFunctionPath.setEnabled(False)
-        self.btnSelectRiskFunction.setEnabled(False)
+      self.leRiskFunctionPath.setEnabled(checked)
+      self.btnSelectRiskFunction.setEnabled(checked)
     elif senderName == "chkRiskValidation":
-      if checked:
-        self.btnSelectRiskValidation.setEnabled(True)
-      else:
-        self.btnSelectRiskValidation.setEnabled(False)
+      self.btnSelectRiskValidation.setEnabled(checked)
     elif senderName == "chkMonteCarlo":
-      if checked:
-        self.leMonteCarloPath.setEnabled(True)
-        self.btnSelectMonteCarlo.setEnabled(True)
-        self.lblIterations.setEnabled(True)
-        self.spnIterations.setEnabled(True)
-      else:
-        self.leMonteCarloPath.setEnabled(False)
-        self.btnSelectMonteCarlo.setEnabled(False)
-        self.lblIterations.setEnabled(False)
-        self.spnIterations.setEnabled(False)
+      self.leMonteCarloPath.setEnabled(checked)
+      self.btnSelectMonteCarlo.setEnabled(checked)
+      self.lblIterations.setEnabled(checked)
+      self.spnIterations.setEnabled(checked)
+    elif senderName == "chkTransitionPotentials":
+      self.leTransitionPotentialPrefix.setEnabled(checked)
 
   def __selectSamplesOutput(self):
     if not "model" in self.inputs:
@@ -1015,11 +1007,15 @@ class MolusceDialog(QDialog, Ui_Dialog):
                                      )
     if fileName == "":
       return
+    dirname = os.path.dirname(fileName)
 
     if senderName == "btnSelectRiskFunction":
       self.leRiskFunctionPath.setText(fileName)
     elif senderName == "btnSelectMonteCarlo":
       self.leMonteCarloPath.setText(fileName)
+      self.leSimulatedMapPath.setText(fileName)
+      oldprefix = os.path.basename(self.leTransitionPotentialPrefix.text())
+      self.leTransitionPotentialPrefix.setText(dirname+'/'+oldprefix)
 
   def propagateSimulation(self):
     iterCount = self.spnIterations.value()
