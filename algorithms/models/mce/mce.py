@@ -118,9 +118,9 @@ class MCE(object):
 
     def getPrediction(self, state, factors=None, calcTransitions=False):
         '''
-        Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
+        Most of the models use factors for prediction, but MCE takes list of factors only once (during the initialization).
         '''
-        self._predict(state)
+        self._predict(state, calcTransitions)
         return self.prediction
 
     def getWeights(self):
@@ -128,7 +128,7 @@ class MCE(object):
             self.setWeights()
         return self.weights
 
-    def _predict(self, state):
+    def _predict(self, state, calcTransitions=False):
         '''
         Predict the changes.
         '''
@@ -143,6 +143,8 @@ class MCE(object):
         mask = band.mask
 
         # Calculate summary map of factors weights
+        # Transition potentials:
+        #   in the implenentation potential equals confidence (two-class implementation)
         # Confidence:
         #   confidence is summary map of factors, if current state = self.initState
         #   confidence is 0, if current state != self.initState
@@ -175,6 +177,9 @@ class MCE(object):
         confidence_band = np.ma.array(data=confidence, mask=mask)
         self.confidence = Raster()
         self.confidence.create([confidence_band], geodata)
+
+        code = self.areaAnalyst.encode(self.initStateNum, self.finalStateNum)
+        self.transitionPotentials = {code: self.confidence}
 
     def setWeights(self):
         '''

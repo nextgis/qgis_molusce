@@ -426,15 +426,15 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
       return
     if self.chkTransitionPotentials.isChecked():
-        if self.leTransitionPotentialPrefix.text() == "":
-            QMessageBox.warning(self,
-                          self.tr("Missed input data"),
-                          self.tr("Prefix of transition potential maps is not set. Please specify it and try again")
-                         )
-            return
-        calcTransitions = True
+      if self.leTransitionPotentialPrefix.text() == "":
+        QMessageBox.warning(self,
+                      self.tr("Missed input data"),
+                      self.tr("Prefix of transition potential maps is not set. Please specify it and try again")
+                     )
+        return
+      calcTransitions = True
     else:
-        calcTransitions = True
+      calcTransitions = False
 
     if not utils.checkFactors(self.inputs):
       QMessageBox.warning(self,
@@ -522,6 +522,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if self.chkTransitionPotentials.isChecked():
         potentials = self.simulator.getTransitionPotentials()
         trans_prefix = self.leTransitionPotentialPrefix.text()
+        if not hasattr(self, 'analyst'):
+            self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
         if potentials != None:
             for k,v in potentials.iteritems():
                 initcat, finalcat = self.analyst.decode(int(k))
