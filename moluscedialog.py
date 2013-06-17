@@ -80,6 +80,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     #  "bandCount" : 0,
     #  "crosstab" : list,
     #  "model" : object
+    #   ....
     # }
     # Layer ids are necessary to handle factors changes (e.g. adding new or removing
     # existing factor)
@@ -523,7 +524,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
         trans_prefix = self.leTransitionPotentialPrefix.text()
         if potentials != None:
             for k,v in potentials.iteritems():
-                map = v.save(trans_prefix+str(k) + '.tif')
+                initcat, finalcat = self.analyst.decode(int(k))
+                map = v.save(trans_prefix+'_from_'+str(initcat)+ '_to_' +str(finalcat) + '.tif')
         else:
             QMessageBox.warning(self,
                           self.tr("Not implemented yet"),
