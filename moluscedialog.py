@@ -489,6 +489,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                 break
         if not saved:
             res.save(unicode(self.leRiskFunctionPath.text()), nodata=maxVal-1)
+        self.__addRasterToCanvas(self.leRiskFunctionPath.text())
       else:
         self.logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
