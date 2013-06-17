@@ -56,33 +56,33 @@ def main(initRaster, finalRaster, factors):
     #~ confidence = model.getConfidence()
     #~ potentials = model.getTransitionPotentials()
 
-    # Create and Train LR Model
-    model = LR(ns=0)
-    print 'Start Setting LR Trainig Data...', clock()
-    model.setState(initRaster)
-    model.setFactors(factors)
-    model.setOutput(changeMap)
-    model.setMode('Stratified')
-    model.setSamples(100)
-    model.setTrainingData()
-    print 'Finish Setting Trainig Data', clock(), '\n'
-    print 'Start LR Training...', clock()
-    model.train()
-    print 'Finish Trainig', clock(), '\n'
-    #~ #~
-    print 'Start LR Prediction...', clock()
-    predict = model.getPrediction(initRaster, factors, calcTransitions=True)
-    print 'Finish LR Prediction...', clock(), '\n'
-
-    #~ # Create and Train WoE Model
-    #~ print 'Start creating AreaAnalyst...', clock()
-    #~ analyst = AreaAnalyst(initRaster, finalRaster)
-    #~ print 'Finish creating AreaAnalyst ...', clock(), '\n'
-    #~ print 'Start creating WoE model...', clock()
-    #~ bins = {0: [[1000, 2000, 3000]], 1: [[200, 500, 1000, 1500]]}
-    #~ model = WoeManager(factors, analyst, bins= bins)
+    #~ # Create and Train LR Model
+    #~ model = LR(ns=0)
+    #~ print 'Start Setting LR Trainig Data...', clock()
+    #~ model.setState(initRaster)
+    #~ model.setFactors(factors)
+    #~ model.setOutput(changeMap)
+    #~ model.setMode('Stratified')
+    #~ model.setSamples(100)
+    #~ model.setTrainingData()
+    #~ print 'Finish Setting Trainig Data', clock(), '\n'
+    #~ print 'Start LR Training...', clock()
     #~ model.train()
-    #~ print 'Finish creating WoE model...', clock(), '\n'
+    #~ print 'Finish Trainig', clock(), '\n'
+    #~
+    #~ print 'Start LR Prediction...', clock()
+    #~ predict = model.getPrediction(initRaster, factors, calcTransitions=True)
+    #~ print 'Finish LR Prediction...', clock(), '\n'
+
+    # Create and Train WoE Model
+    print 'Start creating AreaAnalyst...', clock()
+    analyst = AreaAnalyst(initRaster, finalRaster)
+    print 'Finish creating AreaAnalyst ...', clock(), '\n'
+    print 'Start creating WoE model...', clock()
+    bins = {0: [[1000, 3000]], 1: [[200, 500, 1500]]}
+    model = WoeManager(factors, analyst, bins= bins)
+    model.train()
+    print 'Finish creating WoE model...', clock(), '\n'
 
     #~ # Create and Train MCE Model
     #~ print 'Start creating MCE model...', clock()

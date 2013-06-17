@@ -61,6 +61,8 @@ class WoeManager(QObject):
         if self.changeMap.getBandsCount() != 1:
             raise WoeManagerError('Change map must have one band!')
 
+        self.geodata = self.changeMap.getGeodata()
+
         # Denormalize factors if they are normalized
         for r in self.factors:
             r.denormalize()
@@ -82,7 +84,6 @@ class WoeManager(QObject):
         #
         self.transitionPotentials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
-
     def checkBins(self):
         """
         Check if bins are applicable to the factors
@@ -103,7 +104,6 @@ class WoeManager(QObject):
                         if bandStat['min'] >b0 or bandStat['max']<bMax:
                             return False
         return True
-
 
     def getConfidence(self):
         return self.confidence
@@ -127,12 +127,10 @@ class WoeManager(QObject):
         '''
         try:
             self.rangeChanged.emit(self.tr("Initialize model %p%"), 1)
-            geodata = self.changeMap.getGeodata()
-            rows, cols = geodata['ySize'], geodata['xSize']
+
+            rows, cols = self.geodata['ySize'], self.geodata['xSize']
             if not self.changeMap.geoDataMatch(state):
                 raise WoeManagerError('Geometries of the state and changeMap rasters are different!')
-
-            self.transitionPotentials = None    # Reset tr.potentials if they exist
 
             prediction = np.zeros((rows,cols))
             confidence = np.zeros((rows,cols))
@@ -166,10 +164,10 @@ class WoeManager(QObject):
 
             predicted_band = np.ma.array(data=prediction, mask=mask)
             self.prediction = Raster()
-            self.prediction.create([predicted_band], geodata)
+            self.prediction.create([predicted_band], self.geodata)
             confidence_band = np.ma.array(data=confidence, mask=mask)
             self.confidence = Raster()
-            self.confidence.create([confidence_band], geodata)
+            self.confidence.create([confidence_band], self.geodata)
         finally:
             self.processFinished.emit()
 
@@ -177,6 +175,7 @@ class WoeManager(QObject):
         '''
         Train the model
         '''
+        self.transitionPotentials = {}
         try:
             iterCount = len(self.codes)*len(self.factors)
             self.rangeChanged.emit(self.tr("Training WoE... %p%"), iterCount)
@@ -207,6 +206,12 @@ class WoeManager(QObject):
                     self.updateProgress.emit()
                 # Reclassification finished => set WoE coefficients
                 self.woe[code]=wMap             # WoE for all factors and the transition code.
+
+                # Potentials are WoE map rescaled to [0,1]
+                p = Raster()
+                p.create([sigmoid(wMap)], self.geodata)
+                self.transitionPotentials[code] = p
+
         finally:
             self.processFinished.emit()
 
