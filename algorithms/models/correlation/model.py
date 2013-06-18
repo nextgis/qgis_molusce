@@ -67,9 +67,9 @@ class DependenceCoef(QObject):
 
         return R[0][1]
 
-    def correctness(self):
+    def correctness(self, percent = True):
         """
-        % of correctness
+        % (or count) of correct results
         """
         table = self.getCrosstable()
         crosstable = table.getCrosstable()
@@ -77,11 +77,14 @@ class DependenceCoef(QObject):
         if rows != cols:
             raise CoeffError('The method is applicable for NxN crosstable only!')
         n = table.n
-        s = 0
+        s = 0.0
         for i in range(rows):
-            s = s+ crosstable[i][i]
+            s = s + crosstable[i][i]
 
-        return 100.0*s/n
+        if percent:
+            return 100.0*s/n
+        else:
+            return s/n
 
     def cramer(self):
         '''

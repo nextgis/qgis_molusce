@@ -56,7 +56,8 @@ class LR(QObject):
         # Results of the LR prediction
         self.prediction = None  # Raster of the LR prediction results
         self.confidence = None  # Raster of the LR results confidence (1 = the maximum confidence, 0 = the least confidence)
-        self.Kappa      = 0     #  Kappa value
+        self.Kappa      = 0     # Kappa value
+        self.pseudoR    = 0     # Pseudo R-squared (Count) (http://www.ats.ucla.edu/stat/mult_pkg/faq/general/Psuedo_RSquareds.htm)
         self.transitionPotentials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
     def getCoef(self):
@@ -90,6 +91,9 @@ class LR(QObject):
     def getPrediction(self, state, factors, calcTransitions=False):
         self._predict(state, factors, calcTransitions)
         return self.prediction
+
+    def getPseudoR(self):
+        return self.pseudoR
 
     def getTransitionPotentials(self):
         return self.transitionPotentials
@@ -237,6 +241,7 @@ class LR(QObject):
         out = self.logreg.predict(X)
         depCoef = DependenceCoef(np.ma.array(out), np.ma.array(Y), expand=True)
         self.Kappa = depCoef.kappa(mode=None)
+        self.pseudoR = depCoef.correctness(percent = False)
 
     def setState(self, state):
         self.state = state

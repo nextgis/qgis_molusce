@@ -126,7 +126,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     fm = self.model.getIntercept()
     coef = self.model.getCoef()
-    accuracy = self.model.getKappa()
+    accuracy = self.model.getPseudoR()
 
     colCount = len(fm)
     rowCount = len(coef[0]) + 1
@@ -150,7 +150,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblCoefficients.resizeRowsToContents()
     self.tblCoefficients.resizeColumnsToContents()
 
-    self.leKappa.setText("%6.5f" % (accuracy))
+    self.lePseudoR.setText("%6.5f" % (accuracy))
 
   def showStdDeviations(self):
     if self.model is None:
