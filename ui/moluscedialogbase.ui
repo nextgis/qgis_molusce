@@ -509,7 +509,7 @@
          <item row="3" column="0">
           <widget class="QCheckBox" name="chkRiskValidation">
            <property name="text">
-            <string>Risk class validation</string>
+            <string>Risk Class Validation Map</string>
            </property>
           </widget>
          </item>
@@ -577,10 +577,13 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
+         <item row="3" column="1">
           <widget class="QCheckBox" name="chkCheckPersistentClasses">
            <property name="text">
-            <string>Check Persistent Classes</string>
+            <string>check persistent classes</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
            </property>
           </widget>
          </item>

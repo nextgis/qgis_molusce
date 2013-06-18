@@ -688,6 +688,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.inputs["valMapName"] = unicode(fileName)
 
     self.analystVM = AreaAnalyst(reference, simulated)
+
+    if self.chkCheckPersistentClasses.isChecked():
+      if not utils.checkInputRasters(self.inputs):
+        QMessageBox.warning(self,
+                            self.tr("Missed input data"),
+                            self.tr("Initial raster is not set. Please specify it and try again")
+                           )
+        return
+      self.analystVM.setInitialRaster(self.inputs["initial"])
+
     self.analystVM.moveToThread(self.workThread)
     self.workThread.started.connect(self.analystVM.getChangeMap)
     self.analystVM.rangeChanged.connect(self.setProgressRange)
@@ -958,6 +968,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.btnSelectRiskFunction.setEnabled(checked)
     elif senderName == "chkRiskValidation":
       self.btnSelectRiskValidation.setEnabled(checked)
+      self.chkCheckPersistentClasses.setEnabled(checked)
     elif senderName == "chkMonteCarlo":
       self.leMonteCarloPath.setEnabled(checked)
       self.btnSelectMonteCarlo.setEnabled(checked)

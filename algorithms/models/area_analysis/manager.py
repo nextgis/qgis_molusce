@@ -61,6 +61,8 @@ class AreaAnalyst(QObject):
                     raise AreaAnalizerError("List of categories of the first raster doesn't contains a category of the second raster!")
 
         self.changeMap = None
+        self.initRaster = None
+        self.persistentCategoryCode = -1
 
     def codes(self, initialClass):
         '''
@@ -84,7 +86,6 @@ class AreaAnalyst(QObject):
             raise AreaAnalizerError('The code is not in list!')
         return (initClass, finalClass)
 
-
     def encode(self, initialClass, finalClass):
         '''
         Encode transition (initialClass -> finalClass):
@@ -107,9 +108,16 @@ class AreaAnalyst(QObject):
         return self.changeMap
 
     def makeChangeMap(self):
-        f, s = self.first, self.second
         rows, cols = self.geodata['ySize'], self.geodata['xSize']
         band = np.zeros([rows, cols])
+
+        f, s = self.first, self.second
+        if self.initRaster == None:
+            checkPersistent = False
+        else:
+            checkPersistent = True
+            t = self.initRaster.getBand(1)
+        raster = None
         try:
             self.rangeChanged.emit(self.tr("Creating change map %p%"), rows)
             for i in xrange(rows):
@@ -117,7 +125,11 @@ class AreaAnalyst(QObject):
                     if (f.mask.shape == ()) or (not f.mask[i,j]):
                         r = f[i,j]
                         c = s[i,j]
-                        band[i, j] = self.encode(r, c)
+                        # Percistent category is the category that is constant for all three rasters
+                        if checkPersistent and (r==c) and (r==t[i,j]):
+                            band[i, j] = self.persistentCategoryCode
+                        else:
+                            band[i, j] = self.encode(r, c)
                 self.updateProgress.emit()
             bands = [np.ma.array(data = band, mask = f.mask)]
             raster = Raster()
@@ -125,3 +137,14 @@ class AreaAnalyst(QObject):
             self.changeMap = raster
         finally:
             self.processFinished.emit(raster)
+
+    def removeInitialRaster(self):
+        self.initRaster = None
+
+    def setInitialRaster(self, initR):
+        if not initR.geoDataMatch(raster=None, geodata=self.geodata):
+            raise AreaAnalizerError('Geometries of the rasters are different!')
+        if initR.getBandsCount() != 1:
+            raise AreaAnalizerError('The raster mast have 1 band!')
+
+        self.initRaster = initR
