@@ -409,7 +409,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.inputs["changeMap"] = raster
     self.inputs["changeMap"].save(self.inputs["changeMapName"])
     self.__addRasterToCanvas(self.inputs["changeMapName"])
-    self.applyRasterStyleLabels(utils.getLayerByName(QFileInfo(self.inputs["changeMapName"]).baseName()), self.analyst, False)
+    layer = utils.getLayerByName(QFileInfo(self.inputs["changeMapName"]).baseName())
+    colorRamp = self.calcChangeMapColorRamp(layer, self.analyst, False)
+    self.applyStyle(layer, colorRamp)
     del self.inputs["changeMapName"]
     self.workThread.started.disconnect(self.analyst.getChangeMap)
     self.analyst.rangeChanged.disconnect(self.setProgressRange)
@@ -710,7 +712,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     validationMap = raster
     validationMap.save(self.inputs["valMapName"])
     self.__addRasterToCanvas(self.inputs["valMapName"])
-    self.applyRasterStyleLabels(utils.getLayerByName(QFileInfo(self.inputs["valMapName"]).baseName()), self.analystVM, True)
+    layer = utils.getLayerByName(QFileInfo(self.inputs["valMapName"]).baseName())
+    colorRamp = self.calcChangeMapColorRamp(layer, self.analystVM, True)
+    self.applyStyle(layer, colorRamp)
     del self.inputs["valMapName"]
     self.workThread.started.disconnect(self.analystVM.getChangeMap)
     self.analystVM.rangeChanged.disconnect(self.setProgressRange)
@@ -1133,11 +1137,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     # correlation tab
     self.chkAllCorr.setChecked(bool(self.settings.value("ui/checkAllRasters", False)))
 
-  def applyRasterStyleLabels(self, layer, analyst, tr):
+  def calcChangeMapColorRamp(self, layer, analyst, validationMode):
     l = utils.getLayerByName(self.leInitRasterName.text())
     if "singlebandpseudocolor" not in l.renderer().type().lower():
       self.logMessage("Init raster should be in PseudoColor mode. Style not applied.")
-      return
+      return None
 
     r = Raster(unicode(layer.source()))
     stat = r.getBandStat(1)
@@ -1155,11 +1159,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     for i in xrange(numberOfEntries):
       entryValues.append(currentValue)
       currentValue += intervalDiff
-
       entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
-
-    rasterShader = QgsRasterShader()
-    colorRampShader = QgsColorRampShader()
 
     cr = l.renderer().shader().rasterShaderFunction().colorRampItemList()
 
@@ -1168,18 +1168,28 @@ class MolusceDialog(QDialog, Ui_Dialog):
       item = QgsColorRampShader.ColorRampItem()
 
       item.value = entryValues[i]
+      item.color = entryColors[i]
       ic, fc = analyst.decode(int(entryValues[i]))
       item.label = unicode(self.fl(cr, ic) + u" → " + self.fl(cr, fc))
-      item.color = entryColors[i]
-      if ic == fc and tr:
+      if ic == fc and validationMode:
         item.color = QColor(255, 255, 255, 0)
       colorRampItems.append(item)
+
+    return colorRampItems
+
+  def applyStyle(self, layer, colorRampItems):
+    if colorRampItems==None:
+      return
+    rasterShader = QgsRasterShader()
+    colorRampShader = QgsColorRampShader()
 
     colorRampShader.setColorRampItemList(colorRampItems)
     colorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
     rasterShader.setRasterShaderFunction(colorRampShader)
 
     renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rasterShader)
+    minVal = colorRampItems[0].value
+    maxVal = colorRampItems[-1].value
     renderer.setClassificationMin(minVal)
     renderer.setClassificationMax(maxVal)
     renderer.setClassificationMinMaxOrigin(QgsRasterRenderer.minMaxOriginFromName("FullExtent"))
