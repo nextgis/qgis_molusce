@@ -493,6 +493,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
         if not saved:
             res.save(unicode(self.leRiskFunctionPath.text()), nodata=maxVal-1)
         self.__addRasterToCanvas(self.leRiskFunctionPath.text())
+        layer = utils.getLayerByName(QFileInfo(self.leRiskFunctionPath.text()).baseName())
+        colorRamp = self.calcCertancyColorRamp(layer)
+        self.applyStyle(layer, colorRamp)
       else:
         self.logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
@@ -1136,6 +1139,36 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     # correlation tab
     self.chkAllCorr.setChecked(bool(self.settings.value("ui/checkAllRasters", False)))
+
+  def calcCertancyColorRamp(self, layer):
+    r = Raster(unicode(layer.source()))
+    stat = r.getBandStat(1)
+    minVal = 0.0
+    maxVal = 1.0
+    numberOfEntries = 11
+
+    entryValues = []
+    entryColors = []
+
+    colorRamp = QgsStyleV2().defaultStyle().colorRamp("Spectral")
+    currentValue = float(minVal)
+    intervalDiff = float(maxVal - minVal) / float(numberOfEntries - 1)
+
+    for i in xrange(numberOfEntries):
+      entryValues.append(currentValue)
+      currentValue += intervalDiff
+      entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
+
+    colorRampItems = []
+    for i in xrange(len(entryValues)):
+      item = QgsColorRampShader.ColorRampItem()
+
+      item.value = entryValues[i]
+      item.color = entryColors[i]
+      item.label = unicode(entryValues[i])
+      colorRampItems.append(item)
+
+    return colorRampItems
 
   def calcChangeMapColorRamp(self, layer, analyst, validationMode):
     l = utils.getLayerByName(self.leInitRasterName.text())
