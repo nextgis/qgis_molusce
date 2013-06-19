@@ -410,7 +410,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.inputs["changeMap"].save(self.inputs["changeMapName"])
     self.__addRasterToCanvas(self.inputs["changeMapName"])
     layer = utils.getLayerByName(QFileInfo(self.inputs["changeMapName"]).baseName())
-    colorRamp = self.calcChangeMapColorRamp(layer, self.analyst, False)
+    colorRamp = self.calcChangeMapColorRamp(layer, self.analyst, False, False)
     self.applyStyle(layer, colorRamp)
     del self.inputs["changeMapName"]
     self.workThread.started.disconnect(self.analyst.getChangeMap)
@@ -716,7 +716,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     validationMap.save(self.inputs["valMapName"])
     self.__addRasterToCanvas(self.inputs["valMapName"])
     layer = utils.getLayerByName(QFileInfo(self.inputs["valMapName"]).baseName())
-    colorRamp = self.calcChangeMapColorRamp(layer, self.analystVM, True)
+    colorRamp = self.calcChangeMapColorRamp(layer, self.analystVM, True, self.chkCheckPersistentClasses.isChecked())
     self.applyStyle(layer, colorRamp)
     del self.inputs["valMapName"]
     self.workThread.started.disconnect(self.analystVM.getChangeMap)
@@ -1170,10 +1170,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     return colorRampItems
 
-  def calcChangeMapColorRamp(self, layer, analyst, validationMode):
+  def calcChangeMapColorRamp(self, layer, analyst, validationMode, usePercistentClass):
     l = utils.getLayerByName(self.leInitRasterName.text())
     if "singlebandpseudocolor" not in l.renderer().type().lower():
-      self.logMessage("Init raster should be in PseudoColor mode. Style not applied.")
+      self.logMessage(self.tr("Init raster should be in PseudoColor mode. Style not applied."))
       return None
 
     r = Raster(unicode(layer.source()))
@@ -1181,6 +1181,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     minVal = float(stat["min"])
     maxVal = float(stat["max"])
     numberOfEntries = int(maxVal - minVal + 1)
+
+    if usePercistentClass:
+        persistentCategoryCode = analyst.persistentCategoryCode
 
     entryValues = []
     entryColors = []
@@ -1202,10 +1205,15 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
       item.value = entryValues[i]
       item.color = entryColors[i]
-      ic, fc = analyst.decode(int(entryValues[i]))
-      item.label = unicode(self.fl(cr, ic) + u" → " + self.fl(cr, fc))
-      if ic == fc and validationMode:
-        item.color = QColor(255, 255, 255, 0)
+
+      if usePercistentClass and item.value == persistentCategoryCode:
+        item.label = self.tr("Persistent")
+      else:
+        ic, fc = analyst.decode(int(entryValues[i]))
+        item.label = unicode(self.fl(cr, ic) + u" → " + self.fl(cr, fc))
+        if ic == fc and validationMode:
+          item.color = QColor(255, 255, 255, 0)
+
       colorRampItems.append(item)
 
     return colorRampItems
