@@ -101,6 +101,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.btnStartCorrChecking.clicked.connect(self.correlationChecking)
 
     self.btnUpdateStatistics.clicked.connect(self.startUpdateStatisticsTable)
+    self.cmbUnits.currentIndexChanged.connect(self.__drawTransitionStat)
     self.btnCreateChangeMap.clicked.connect(self.createChangeMap)
 
     self.cmbSamplingMode.currentIndexChanged.connect(self.__modeChanged)
@@ -141,6 +142,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.__populateLayers()
     self.__populateCorrCheckingMet()
+    self.__populateUnits()
     self.__populateSamplingModes()
     self.__populateSimulationMethods()
     self.__populateRasterNames()
@@ -298,82 +300,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     crossTabMan.crossTableFinished.disconnect(self.updateStatisticsTableDone)
     self.workThread.quit()
     self.restoreProgressState()
-
-    stat = self.inputs["crosstab"].getTransitionStat()
-    dimensions = len(stat["init"])
-    units = stat["unit"]
-    self.tblStatistics.clear()
-    self.tblStatistics.setRowCount(dimensions)
-    self.tblStatistics.setColumnCount(7)
-
-    labels = []
-    colors = []
-    layer = utils.getLayerById(self.initRasterId)
-    if "singlebandpseudocolor" in layer.renderer().type().lower():
-      legend = layer.legendSymbologyItems()
-      for i in legend:
-        labels.append(unicode(i[0]))
-        colors.append(i[1])
-    else:
-      labels = [unicode(i) for i in xrange(1, 7)]
-
-    self.tblStatistics.setVerticalHeaderLabels(labels)
-
-    labels = [self.tr("Class color"),
-              self.leInitYear.text(),
-              self.leFinalYear.text(),
-              u"Δ",
-              self.leInitYear.text() + " %",
-              self.leFinalYear.text() + " %",
-              u"Δ %"
-             ]
-    self.tblStatistics.setHorizontalHeaderLabels(labels)
-
-    # legend colors
-    d = len(colors)
-    if d > 0:
-      for i in xrange(0, d):
-        item = QTableWidgetItem("")
-        item.setBackground(QBrush(colors[i]))
-        self.tblStatistics.setItem(i, 0, item)
-
-    self.__addTableColumn(1, stat["init"], units)
-    self.__addTableColumn(2, stat["final"], units)
-    self.__addTableColumn(3, stat["deltas"], units)
-    self.__addTableColumn(4, stat["initPerc"])
-    self.__addTableColumn(5, stat["finalPerc"])
-    self.__addTableColumn(6, stat["deltasPerc"])
-
-    self.tblStatistics.resizeRowsToContents()
-    self.tblStatistics.resizeColumnsToContents()
-
-    # transitional matrix
-    transition = self.inputs["crosstab"].getTransitionMatrix()
-    dimensions = len(transition)
-
-    self.tblTransMatrix.clear()
-    self.tblTransMatrix.setRowCount(dimensions)
-    self.tblTransMatrix.setColumnCount(dimensions)
-
-    labels = []
-    layer = utils.getLayerById(self.initRasterId)
-    if "singlebandpseudocolor" in layer.renderer().type().lower():
-      legend = layer.legendSymbologyItems()
-      for i in legend:
-        labels.append(unicode(i[0]))
-    else:
-      labels = [unicode(i) for i in xrange(1, dimensions + 1)]
-
-    self.tblTransMatrix.setVerticalHeaderLabels(labels)
-    self.tblTransMatrix.setHorizontalHeaderLabels(labels)
-
-    for row in xrange(0, dimensions):
-      for col in xrange(0, dimensions):
-        item = QTableWidgetItem(unicode(transition[row, col]))
-        self.tblTransMatrix.setItem(row, col, item)
-
-    self.tblTransMatrix.resizeRowsToContents()
-    self.tblTransMatrix.resizeColumnsToContents()
+    self.__drawTransitionStat()
     self.logMessage(self.tr("Class statistics and transition matrix are updated"))
 
   def createChangeMap(self):
@@ -764,6 +691,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
                                        self.tr("Joint Information Uncertainty")
                                      ])
 
+  def __populateUnits(self):
+    self.cmbUnits.addItems([
+                                       self.tr(""),
+                                       self.tr("Sq. km."),
+                                       self.tr("Sq. ha")
+                                     ])
+
   def __populateSimulationMethods(self):
     self.cmbSimulationMethod.addItems([
                                        self.tr("Artificial Neural Network (Multi-layer Perceptron)"),
@@ -933,6 +867,99 @@ class MolusceDialog(QDialog, Ui_Dialog):
               corr = depCoef.kappa(mode=None)
               item = QTableWidgetItem(unicode(corr))
           self.tblCorrelation.setItem(row, col, item)
+
+  def __drawTransitionStat(self):
+    if not self.inputs.has_key("crosstab"):
+      return
+
+    stat = self.inputs["crosstab"].getTransitionStat()
+    dimensions = len(stat["init"])
+
+    units = stat["unit"]
+    wantedUnits = self.cmbUnits.currentText()
+    if wantedUnits == self.tr("Sq. km."):
+      denominator = 1000000
+    elif wantedUnits == self.tr("Sq. ha"):
+      denominator = 10000
+    else:
+      denominator = 1.0
+
+    if units not in ["metre", "meter"]:
+      denominator = 1.0
+      wantedUnits = ""
+
+    self.tblStatistics.clear()
+    self.tblStatistics.setRowCount(dimensions)
+    self.tblStatistics.setColumnCount(7)
+
+    labels = []
+    colors = []
+    layer = utils.getLayerById(self.initRasterId)
+    if "singlebandpseudocolor" in layer.renderer().type().lower():
+      legend = layer.legendSymbologyItems()
+      for i in legend:
+        labels.append(unicode(i[0]))
+        colors.append(i[1])
+    else:
+      labels = [unicode(i) for i in xrange(1, 7)]
+
+    self.tblStatistics.setVerticalHeaderLabels(labels)
+
+    labels = [self.tr("Class color"),
+              self.leInitYear.text(),
+              self.leFinalYear.text(),
+              u"Δ",
+              self.leInitYear.text() + " %",
+              self.leFinalYear.text() + " %",
+              u"Δ %"
+             ]
+    self.tblStatistics.setHorizontalHeaderLabels(labels)
+
+    # legend colors
+    d = len(colors)
+    if d > 0:
+      for i in xrange(0, d):
+        item = QTableWidgetItem("")
+        item.setBackground(QBrush(colors[i]))
+        self.tblStatistics.setItem(i, 0, item)
+
+    self.__addTableColumn(1, ["%0.2f" % (a, ) for a in stat["init"]/denominator], wantedUnits)
+    self.__addTableColumn(2, ["%0.2f" % (a, ) for a in stat["final"]/denominator], wantedUnits)
+    self.__addTableColumn(3, ["%0.2f" % (a, ) for a in stat["deltas"]/denominator], wantedUnits)
+    self.__addTableColumn(4, stat["initPerc"])
+    self.__addTableColumn(5, stat["finalPerc"])
+    self.__addTableColumn(6, stat["deltasPerc"])
+
+    self.tblStatistics.resizeRowsToContents()
+    self.tblStatistics.resizeColumnsToContents()
+
+    # transitional matrix
+    transition = self.inputs["crosstab"].getTransitionMatrix()
+    dimensions = len(transition)
+
+    self.tblTransMatrix.clear()
+    self.tblTransMatrix.setRowCount(dimensions)
+    self.tblTransMatrix.setColumnCount(dimensions)
+
+    labels = []
+    layer = utils.getLayerById(self.initRasterId)
+    if "singlebandpseudocolor" in layer.renderer().type().lower():
+      legend = layer.legendSymbologyItems()
+      for i in legend:
+        labels.append(unicode(i[0]))
+    else:
+      labels = [unicode(i) for i in xrange(1, dimensions + 1)]
+
+    self.tblTransMatrix.setVerticalHeaderLabels(labels)
+    self.tblTransMatrix.setHorizontalHeaderLabels(labels)
+
+    for row in xrange(0, dimensions):
+      for col in xrange(0, dimensions):
+        item = QTableWidgetItem(u"%f" % (transition[row, col],))
+        self.tblTransMatrix.setItem(row, col, item)
+
+    self.tblTransMatrix.resizeRowsToContents()
+    self.tblTransMatrix.resizeColumnsToContents()
 
   def __modeChanged(self, index):
     mode = self.cmbSamplingMode.itemData(index)
