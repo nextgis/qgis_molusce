@@ -392,12 +392,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
                                self.inputs["crosstab"]
                               )
 
+    self.simulator.setIterationCount( self.spnIterations.value() )
     self.simulator.setCalcTransitions(calcTransitions)
     self.simulator.moveToThread(self.workThread)
 
     self.btnStartSimulation.setEnabled(False)
 
-    self.workThread.started.connect(self.propagateSimulation)
+    self.workThread.started.connect(self.simulator.simN)
     self.simulator.rangeChanged.connect(self.setProgressRange)
     self.simulator.updateProgress.connect(self.showProgress)
     self.simulator.simFinished.connect(self.simulationDone)
@@ -466,7 +467,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("Transition potentials not implemented yet for the model.")
                          )
 
-    self.workThread.started.disconnect(self.propagateSimulation)
+    self.workThread.started.disconnect(self.simulator.simN)
     self.simulator.rangeChanged.disconnect(self.setProgressRange)
     self.simulator.updateProgress.disconnect(self.showProgress)
     self.simulator.simFinished.disconnect(self.simulationDone)
@@ -1066,10 +1067,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.leSimulatedMapPath.setText(fileName)
       oldprefix = os.path.basename(self.leTransitionPotentialPrefix.text())
       self.leTransitionPotentialPrefix.setText(dirname+'/'+oldprefix)
-
-  def propagateSimulation(self):
-    iterCount = self.spnIterations.value()
-    self.simulator.simN(iterCount)
 
   def __toggleCorrLayers(self, state):
     if state == Qt.Checked:

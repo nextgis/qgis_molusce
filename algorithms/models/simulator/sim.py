@@ -33,6 +33,7 @@ class Simulator(QObject):
 
         self.state = state
         self.factors = factors
+        self.iterationCount = 1     # Count of simulation iterations
         self.predicted = None      # Raster of predicted categories
 
         self.model  = model
@@ -87,6 +88,9 @@ class Simulator(QObject):
 
     def setCalcTransitions(self, calcTransitions):
         self.calcTransitions = calcTransitions
+
+    def setIterationCount(self, Count):
+        self.iterationCount = Count
 
     def __sim(self):
         '''
@@ -149,12 +153,12 @@ class Simulator(QObject):
         result.create([new_state], state.getGeodata())
         self.state = result
 
-    def simN(self, N=1):
+    def simN(self):
         '''
         Make N iterations of simulation.
         '''
         try:
-            for i in range(N):
+            for i in range(self.iterationCount):
                 self.__sim()
         finally:
             try:    # Not all models have the signals

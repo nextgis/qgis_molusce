@@ -107,7 +107,8 @@ class TestSimulator(unittest.TestCase):
         result = np.ma.array(result, mask = (result==0))
 
         simulator = Simulator(state=self.raster1, factors=None, model=self.model, crosstable=self.crosstab)    # The model does't use factors
-        simulator.simN(N=1)
+        simulator.setIterationCount(1)
+        simulator.simN()
         state = simulator.getState().getBand(1)
         assert_array_equal(result, state)
 
@@ -119,7 +120,8 @@ class TestSimulator(unittest.TestCase):
         result = np.ma.array(result, mask = (result==0))
 
         simulator = Simulator(self.raster1, None, self.model, self.crosstab)
-        simulator.simN(N=2)
+        simulator.setIterationCount(2)
+        simulator.simN()
         state = simulator.getState().getBand(1)
         assert_array_equal(result, state)
 
