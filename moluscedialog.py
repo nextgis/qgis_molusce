@@ -694,9 +694,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __populateUnits(self):
     self.cmbUnits.addItems([
-                                       self.tr(""),
-                                       self.tr("Sq. km."),
-                                       self.tr("Sq. ha")
+                                       self.tr("raster units"),
+                                       self.tr("sq. km."),
+                                       self.tr("sq. ha")
                                      ])
 
   def __populateSimulationMethods(self):
@@ -877,17 +877,17 @@ class MolusceDialog(QDialog, Ui_Dialog):
     dimensions = len(stat["init"])
 
     units = stat["unit"]
-    wantedUnits = self.cmbUnits.currentText()
-    if wantedUnits == self.tr("Sq. km."):
+    displayUnits = self.cmbUnits.currentText()
+    if displayUnits == self.tr("sq. km."):
       denominator = 1000000
-    elif wantedUnits == self.tr("Sq. ha"):
+    elif displayUnits == self.tr("sq. ha"):
       denominator = 10000
     else:
       denominator = 1.0
+      displayUnits = self.tr("sq. ") + units
 
     if units not in ["metre", "meter"]:
       denominator = 1.0
-      wantedUnits = ""
 
     self.tblStatistics.clear()
     self.tblStatistics.setRowCount(dimensions)
@@ -924,14 +924,14 @@ class MolusceDialog(QDialog, Ui_Dialog):
         item.setBackground(QBrush(colors[i]))
         self.tblStatistics.setItem(i, 0, item)
 
-    self.__addTableColumn(1, ["%0.2f" % (a, ) for a in stat["init"]/denominator], wantedUnits)
-    self.__addTableColumn(2, ["%0.2f" % (a, ) for a in stat["final"]/denominator], wantedUnits)
-    self.__addTableColumn(3, ["%0.2f" % (a, ) for a in stat["deltas"]/denominator], wantedUnits)
+    self.__addTableColumn(1, ["%0.2f" % (a, ) for a in stat["init"]/denominator], displayUnits)
+    self.__addTableColumn(2, ["%0.2f" % (a, ) for a in stat["final"]/denominator], displayUnits)
+    self.__addTableColumn(3, ["%0.2f" % (a, ) for a in stat["deltas"]/denominator], displayUnits)
     self.__addTableColumn(4, stat["initPerc"])
     self.__addTableColumn(5, stat["finalPerc"])
     self.__addTableColumn(6, stat["deltasPerc"])
 
-    self.tblStatistics.resizeRowsToContents()
+    #self.tblStatistics.resizeRowsToContents()
     self.tblStatistics.resizeColumnsToContents()
 
     # transitional matrix
