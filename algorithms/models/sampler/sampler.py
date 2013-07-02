@@ -198,6 +198,8 @@ class Sampler(QObject):
 
         ds = driver.CreateDataSource(workdir)
         lyr = ds.CreateLayer(fileName.encode('utf-8'), sr, ogr.wkbPoint)
+        if lyr is None:
+            raise SamplerError("Creating output file failed!")
 
         fieldnames = ['state' + str(i) for i in range(self.stateVecLen)]
         fieldnames = fieldnames + ['factor' + str(i) for i in range(self.factorVectLen)]

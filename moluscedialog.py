@@ -52,6 +52,7 @@ from algorithms.dataprovider import Raster, ProviderError
 from algorithms.models.correlation.model import DependenceCoef, CoeffError
 from algorithms.models.crosstabs.manager import CrossTableManager
 from algorithms.models.area_analysis.manager import AreaAnalyst
+from algorithms.models.sampler.sampler import SamplerError
 from algorithms.models.simulator.sim import Simulator
 from algorithms.models.errorbudget.ebmodel import EBudget
 
@@ -1035,7 +1036,14 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if fileName == "":
       return
 
-    model.saveSamples(unicode(fileName))
+    try:
+      model.saveSamples(unicode(fileName))
+    except SamplerError:
+      QMessageBox.warning(self,
+                          self.tr("Can't save file"),
+                          self.tr("Can't save file: '%s'" % unicode(fileName))
+                         )
+      return
 
     if self.chkLoadSamples.isChecked():
       newLayer = QgsVectorLayer(fileName, QFileInfo(fileName).baseName(), "ogr")
