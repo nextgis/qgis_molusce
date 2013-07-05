@@ -40,6 +40,23 @@ def getRasterLayers():
         layers[layer.id()] = unicode(layer.name())
   return layers
 
+def getLayerMaskById(layerId):
+  layer = getLayerById(layerId)
+  if layer == None:
+    return None
+  else:
+      provider = layer.dataProvider()
+      maskVals = dict()
+      bCount = layer.bandCount()
+      for i in range(bCount):
+        mask = []
+        for rasterRange in provider.userNoDataValues(i+1):
+          mask.append(rasterRange.min())
+        if provider.useSrcNoDataValue(i+1):
+          mask.append(provider.srcNoDataValue(i+1))
+        maskVals[i+1] = mask
+      return maskVals
+
 def getLayerById(layerId):
   layerMap = QgsMapLayerRegistry.instance().mapLayers()
   for name, layer in layerMap.iteritems():
