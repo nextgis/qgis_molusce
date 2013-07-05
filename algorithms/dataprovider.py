@@ -91,7 +91,8 @@ class Raster(object):
         if geodata == None:
             geodata = raster.geodata
 
-        for key in ['xSize', 'ySize', 'proj']:
+        # TODO check proj also.
+        for key in ['xSize', 'ySize']:
             if self.geodata[key] != geodata[key]:
                 return False
         if not self.geoTransformMatch(raster=None, geodata = geodata):
