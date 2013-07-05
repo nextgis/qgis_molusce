@@ -174,7 +174,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     year = rx.cap()
     self.leInitYear.setText(year)
 
-    self.inputs["initial"] = Raster(unicode(utils.getLayerById(self.initRasterId).source()))
+    layer = utils.getLayerById(self.initRasterId)
+    self.inputs["initial"] = Raster(unicode(layer.source()), maskVals=utils.getLayerMaskById(self.initRasterId))
     self.logMessage(self.tr("Set intial layer to %s") % (layerName))
 
   def setFinalRaster(self):
@@ -194,7 +195,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     year = rx.cap()
     self.leFinalYear.setText(year)
 
-    self.inputs["final"] = Raster(unicode(utils.getLayerById(self.finalRasterId).source()))
+    self.inputs["final"] = Raster(unicode(utils.getLayerById(self.finalRasterId).source()), utils.getLayerMaskById(self.finalRasterId))
     self.logMessage(self.tr("Set final layer to %s") % (layerName))
 
   def addFactor(self):
@@ -218,7 +219,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.lstFactors.insertItem(self.lstFactors.count() + 1, item)
 
       if "factors" in self.inputs:
-        self.inputs["factors"][layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
+        self.inputs["factors"][layerId] = Raster(unicode(utils.getLayerById(layerId).source()), utils.getLayerMaskById(layerId))
       else:
         d = dict()
         d[layerId] = Raster(unicode(utils.getLayerById(layerId).source()))

@@ -15,8 +15,8 @@ from molusce.algorithms.dataprovider import Raster
 
 class TestCrossTableManager(unittest.TestCase):
     def setUp(self):
-        self.init = Raster('../../examples/init.tif')
-        self.final  = Raster('../../examples/final.tif')
+        self.init = Raster('../../examples/init.tif', maskVals = {1: [255]})
+        self.final  = Raster('../../examples/final.tif', maskVals ={1: [255]})
 
 
     def test_getTransitionMatrix(self):

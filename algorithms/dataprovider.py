@@ -40,11 +40,11 @@ class FormatConverter(object):
 
 
 class Raster(object):
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, maskVals=None):
         if filename == "":
             raise ProviderError("File name can't be empty string!")
         self.filename = filename
-        self.maskVals = None     # List of the "transparent" pixel values
+        self.maskVals = maskVals # List of the "transparent" pixel values
         self.bands    = None     # Array of the bands (stored as numpy mask array)
         self.bandcount= 0        # Count of the bands. (numpy.array.shape is too slow => we need to save number of bands)
         self.geodata  = None     # Georeferensing information
@@ -277,12 +277,18 @@ class Raster(object):
 
         self.bands = np.ma.zeros((data.RasterCount,self.geodata['ySize'], self.geodata['xSize']), dtype=float)
         self.bandcount = data.RasterCount
+        if self.maskVals != None and len(self.maskVals) != self.bandcount:
+            raise ProviderError("Band count of the file '%s' does't match nodata values count" % self.filename)
+
         for i in range(1, data.RasterCount+1):
             r = data.GetRasterBand(i)
-            nodataValue =  r.GetNoDataValue()
             r = r.ReadAsArray()
-            if nodataValue is not None:
-                mask = binaryzation(r, [nodataValue])
+            try:
+                nodataValue =  self.maskVals[i]
+            except TypeError:
+                nodataValue = None
+            if (nodataValue != None) and (nodataValue != []):
+                mask = binaryzation(r, nodataValue)
                 r = ma.array(data = r, mask=mask)
             self.bands[i-1, :, :] = r
         self.isNormalazed = False
@@ -293,7 +299,7 @@ class Raster(object):
         '''
         for i in range(self.getBandsCount()):
             r = self.getBand(i)
-            if maskVals:
+            if maskVals != None:
                 mask = binaryzation(r, maskVals)
             else:
                 mask = False
