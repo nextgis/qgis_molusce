@@ -34,8 +34,8 @@ class CrossTable(QObject):
 
         band1, band2 = masks_identity(band1, band2)
 
-        self.X = np.ma.compressed(band1)
-        self.Y = np.ma.compressed(band2)
+        self.X = np.ma.compressed(band1).flatten()
+        self.Y = np.ma.compressed(band2).flatten()
 
         # Compute gradations of the bands
         self.graduation_x = get_gradations(self.X)
