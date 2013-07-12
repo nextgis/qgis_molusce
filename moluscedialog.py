@@ -889,7 +889,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       denominator = 1.0
       displayUnits = self.tr("sq. ") + units
 
-    if units not in ["metre", "meter"]:
+    if units not in ["metre", "meter", "meters", "metres"]:
       denominator = 1.0
 
     self.tblStatistics.clear()
