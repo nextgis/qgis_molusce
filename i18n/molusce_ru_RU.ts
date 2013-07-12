@@ -29,22 +29,22 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
     <message>
         <location filename="ui/moluscedialogbase.ui" line="27"/>
         <source>Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Входные данные</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="50"/>
         <source>Initial &gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Растр начальных состояний &gt;&gt;</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="60"/>
         <source>Final &gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Растр конечных состояний &gt;&gt;</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="99"/>
         <source>&lt;&lt; Remove all</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;&lt; Удалить все</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="106"/>
