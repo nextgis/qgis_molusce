@@ -762,6 +762,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __checkAllCorr(self):
     dim = self.__bandCount()
+    self.tblCorrelation.clear()
     self.tblCorrelation.setRowCount(dim)
     self.tblCorrelation.setColumnCount(dim)
 
