@@ -49,7 +49,7 @@ import logisticregressionwidget
 from ui.ui_moluscedialogbase import Ui_Dialog
 
 from algorithms.dataprovider import Raster, ProviderError
-from algorithms.models.correlation.model import DependenceCoef, CoeffError
+from algorithms.models.correlation.model import DependenceCoef
 from algorithms.models.crosstabs.manager import CrossTableManager
 from algorithms.models.area_analysis.manager import AreaAnalyst
 from algorithms.models.sampler.sampler import SamplerError
