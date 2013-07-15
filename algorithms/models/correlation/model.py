@@ -10,8 +10,6 @@ from numpy import ma as ma
 from molusce.algorithms.utils import masks_identity, sizes_equal
 from molusce.algorithms.models.crosstabs.model import CrossTable
 
-from time import sleep
-
 class CoeffError(Exception):
     '''Base class for exceptions in this module.'''
     def __init__(self, msg):
