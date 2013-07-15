@@ -46,11 +46,11 @@ def get_gradations(band):
 
 def masks_identity(X, Y):
     '''
-    Each raster has a mask. This function verify the identity of masks.
-    If the mask is not equal, we have to do both raster mask identical
+    A raster has a mask. This function verifies the identity of the raster's masks.
+    If the masks are not equal, we have to do both raster mask identical
     by combining masks. Function return updated arrays
-    @param X    First raster's array
-    @param Y    Second raster's array
+    @param X    First raster array
+    @param Y    Second raster array
     '''
     maskX = X.mask
     maskY = Y.mask
