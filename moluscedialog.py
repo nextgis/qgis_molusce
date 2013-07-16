@@ -1219,7 +1219,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.logMessage(self.tr("Init raster should be in PseudoColor mode. Style not applied."))
       return None
 
-    r = Raster(unicode(layer.source()))
+    r = Raster(unicode(layer.source()), maskVals = utils.getLayerMask(layer))
     stat = r.getBandStat(1)
     minVal = float(stat["min"])
     maxVal = float(stat["max"])

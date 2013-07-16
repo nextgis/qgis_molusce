@@ -40,8 +40,7 @@ def getRasterLayers():
         layers[layer.id()] = unicode(layer.name())
   return layers
 
-def getLayerMaskById(layerId):
-  layer = getLayerById(layerId)
+def getLayerMask(layer):
   if layer == None:
     return None
   else:
@@ -56,6 +55,17 @@ def getLayerMaskById(layerId):
           mask.append(provider.srcNoDataValue(i+1))
         maskVals[i+1] = mask
       return maskVals
+
+def getLayerMaskById(layerId):
+  layer = getLayerById(layerId)
+  maskVals = getLayerMask(layer)
+  return maskVals
+
+def getLayerMaskByName(layerName):
+  layer = getLayerByName(layerName)
+  maskVals = getLayerMask(layer)
+  return maskVals
+
 
 def getLayerById(layerId):
   layerMap = QgsMapLayerRegistry.instance().mapLayers()
