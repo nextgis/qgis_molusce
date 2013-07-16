@@ -348,6 +348,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.analyst.processFinished.disconnect(self.changeMapDone)
     self.analyst.processFinished.disconnect(self.workThread.quit)
     self.restoreProgressState()
+    self.logMessage(self.tr("Change Map is created"))
 
   def startSimulation(self):
     if not utils.checkInputRasters(self.inputs):
@@ -405,6 +406,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.simulator.updateProgress.connect(self.showProgress)
     self.simulator.simFinished.connect(self.simulationDone)
     self.workThread.start()
+    self.logMessage(self.tr("Simulation process is started"))
 
   def simulationDone(self):
     self.btnStartSimulation.setEnabled(True)
@@ -476,6 +478,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.quit()
     self.simulator = None
     self.restoreProgressState()
+    self.logMessage(self.tr("Simulation process is finished"))
 
   def startValidation(self):
     try:
@@ -504,6 +507,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.eb.updateProgress.connect(self.showProgress)
     self.eb.validationFinished.connect(self.validationDone)
     self.workThread.start()
+    self.logMessage(self.tr("Validation process is started"))
 
   def validationDone(self, stat):
     self.workThread.started.disconnect(self.validate)
@@ -538,6 +542,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.perPer.set_ydata(numpy.array(self.perPerData))
 
     self.valCanvas.draw()
+    self.logMessage(self.tr("Simulation process is finished"))
 
   def startKappaValidation(self):
     try:
@@ -574,6 +579,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.depCoef.updateProgress.connect(self.showProgress)
     self.depCoef.processFinished.connect(self.kappaValDone)
     self.workThread.start()
+    self.logMessage(self.tr("Kappa validation process is started"))
 
   def kappaValDone(self):
     self.workThread.started.disconnect(self.depCoef.calculateCrosstable)
@@ -591,6 +597,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     percent = self.depCoef.correctness()
     self.leKappaCorrectness.setText("%6.5f" % (percent))
     self.depCoef = None
+    self.logMessage(self.tr("Kappa validation process is finished"))
 
   def createValidationMap(self):
     try:
@@ -640,6 +647,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.analystVM.processFinished.connect(self.validationMapDone)
     self.analystVM.processFinished.connect(self.workThread.quit)
     self.workThread.start()
+    self.logMessage(self.tr("Process of Validation Map creating is started"))
 
   def validationMapDone(self, raster):
     validationMap = raster
@@ -656,6 +664,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.analystVM.processFinished.disconnect(self.workThread.quit)
     del self.analystVM
     self.restoreProgressState()
+    self.logMessage(self.tr("Process of Validation Map creating is finised"))
 
   def tabChanged(self, index):
     if  index == 1:     # tabCorrelationChecking
