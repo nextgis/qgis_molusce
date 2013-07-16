@@ -51,8 +51,11 @@ def getLayerMask(layer):
         mask = []
         for rasterRange in provider.userNoDataValues(i+1):
           mask.append(rasterRange.min())
-        if provider.useSrcNoDataValue(i+1):
-          mask.append(provider.srcNoDataValue(i+1))
+
+        # Provider nodata value ALWAYS used during raster reading
+        # (see algorithms.dataprovider._read)
+        #if provider.useSrcNoDataValue(i+1):
+        #  mask.append(provider.srcNoDataValue(i+1))
         maskVals[i+1] = mask
       return maskVals
 

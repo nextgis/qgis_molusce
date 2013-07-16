@@ -288,15 +288,23 @@ class Raster(object):
 
         for i in range(1, data.RasterCount+1):
             r = data.GetRasterBand(i)
+            nodataValue =  r.GetNoDataValue()
+            if nodataValue != None:
+                nodataValues = [nodataValue]
+            else:
+                nodataValues = []
             r = r.ReadAsArray()
             self.bandgradation[i] = None
             try:
-                nodataValue =  self.maskVals[i]
+                userNodataValues =  self.maskVals[i]
             except TypeError:
-                nodataValue = None
-            if (nodataValue != None) and (nodataValue != []):
-                mask = binaryzation(r, nodataValue)
+                userNodataValues = []
+            nodataValues += userNodataValues
+            if nodataValues != []:
+                mask = binaryzation(r, nodataValues)
                 r = ma.array(data = r, mask=mask)
+            else:
+                r = ma.array(data = r, mask=False)
             self.bands[i-1, :, :] = r
         self.isNormalazed = False
 
