@@ -62,6 +62,8 @@ class Raster(object):
     def create(self, bands, geodata):
         self.bands = np.ma.array(bands, dtype=float)
         self.bandcount = len(bands)
+        for i in range(1, self.bandcount+1):
+            self.bandgradation[i] = None
         self.geodata = geodata
 
     def denormalize(self):

@@ -55,6 +55,14 @@ class TestRaster (unittest.TestCase):
 
         self.assertTrue(self.r1.isMetricProj())
 
+    def test_create(self):
+        raster = Raster()
+        raster.create([self.data1], geodata=self.r1.getGeodata())
+        self.assertTrue(raster.geoDataMatch(self.r1))
+        self.assertEqual(raster.getBandsCount(), 1)
+        self.assertEqual(set(raster.getBandGradation(1)), set([0, 1, 2, 3]))
+
+
     def test_roundBands(self):
         rast = Raster('examples/multifact.tif')
         rast.bands = rast.bands*0.1
