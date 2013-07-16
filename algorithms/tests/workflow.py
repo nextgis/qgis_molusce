@@ -136,6 +136,7 @@ def main(initRaster, finalRaster, factors):
 
 
 if __name__=="__main__":
-    main('examples/init.tif', 'examples/final.tif', ['examples/dist_river.tif', 'examples/dist_roads.tif'])
+    #main('examples/init.tif', 'examples/final.tif', ['examples/dist_river.tif', 'examples/dist_roads.tif'])
+    main('examples/LPB_luc_1993.tif', 'examples/LPB_luc_1993.tif', ['examples/distance_to_rivers.tif', 'examples/dist_to_main_roads.tif'])
 
 
