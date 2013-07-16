@@ -157,6 +157,9 @@ class TestRaster (unittest.TestCase):
         finally:
             os.remove(filename)
 
+    def test_getBandGradation(self):
+        self.assertEqual(set(self.r1.getBandGradation(1)), set([0, 1, 2, 3]))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -50,6 +50,7 @@ class Raster(object):
         self.geodata  = None     # Georeferensing information
         self.stat     = None     # Initial (before normalizing) statistic (means and stds) of the bands
         self.isNormalazed = None # Is the bands of the raster normalized? It contains the mode of normalization.
+        self.bandgradation = dict() # Dict for store lists of bands categories
         if self.filename: self._read()
 
     def binaryzation(self, trueVals, bandNum):
@@ -143,8 +144,10 @@ class Raster(object):
         '''
         Return list of categories of raster's band
         '''
-        band = self.getBand(bandNo)
-        return get_gradations(band.compressed())
+        if self.bandgradation[bandNo] == None:
+            band = self.getBand(bandNo)
+            self.bandgradation[bandNo] = get_gradations(band.compressed())
+        return self.bandgradation[bandNo]
 
     def getBandStat(self, bandNo):
         '''
@@ -284,6 +287,7 @@ class Raster(object):
         for i in range(1, data.RasterCount+1):
             r = data.GetRasterBand(i)
             r = r.ReadAsArray()
+            self.bandgradation[i] = None
             try:
                 nodataValue =  self.maskVals[i]
             except TypeError:
