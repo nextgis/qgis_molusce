@@ -175,8 +175,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.leInitYear.setText(year)
 
     layer = utils.getLayerById(self.initRasterId)
-    self.inputs["initial"] = Raster(unicode(layer.source()), maskVals=utils.getLayerMaskById(self.initRasterId))
-    self.logMessage(self.tr("Set intial layer to %s") % (layerName))
+    try:
+      self.inputs["initial"] = Raster(unicode(layer.source()), maskVals=utils.getLayerMaskById(self.initRasterId))
+      self.logMessage(self.tr("Set intial layer to %s") % (layerName))
+    except MemoryError:
+      self.logMessage(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
 
   def setFinalRaster(self):
     try:
@@ -195,8 +198,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     year = rx.cap()
     self.leFinalYear.setText(year)
 
-    self.inputs["final"] = Raster(unicode(utils.getLayerById(self.finalRasterId).source()), utils.getLayerMaskById(self.finalRasterId))
-    self.logMessage(self.tr("Set final layer to %s") % (layerName))
+    try:
+      self.inputs["final"] = Raster(unicode(utils.getLayerById(self.finalRasterId).source()), utils.getLayerMaskById(self.finalRasterId))
+      self.logMessage(self.tr("Set final layer to %s") % (layerName))
+    except MemoryError:
+      self.logMessage(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
 
   def addFactor(self):
     layerNames = self.lstLayers.selectedItems()
@@ -218,16 +224,24 @@ class MolusceDialog(QDialog, Ui_Dialog):
       layerId = unicode(item.data(Qt.UserRole))
       self.lstFactors.insertItem(self.lstFactors.count() + 1, item)
 
-      if "factors" in self.inputs:
-        self.inputs["factors"][layerId] = Raster(unicode(utils.getLayerById(layerId).source()), utils.getLayerMaskById(layerId))
-      else:
-        d = dict()
-        d[layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
-        self.inputs["factors"] = d
+      try:
+        if "factors" in self.inputs:
+          self.inputs["factors"][layerId] = Raster(unicode(utils.getLayerById(layerId).source()), utils.getLayerMaskById(layerId))
+        else:
+          d = dict()
+          d[layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
+          self.inputs["factors"] = d
 
-      self.inputs["bandCount"] = self.__bandCount()
+        self.inputs["bandCount"] = self.__bandCount()
 
-      self.logMessage(self.tr("Added factor layer %s") % (layerName))
+        self.logMessage(self.tr("Added factor layer %s") % (layerName))
+      except MemoryError:
+        self.logMessage(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
+        QMessageBox.warning(self,
+                          self.tr("Memory error"),
+                          self.tr("Memory error occurred. Perhaps the system is low on memory.")
+                         )
+        return
 
   def removeFactor(self):
     layerNames = self.lstFactors.selectedItems()
@@ -266,10 +280,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.logMessage(self.tr("Factors list cleared"))
 
   def correlationChecking(self):
-    if self.chkAllCorr.isChecked():
-      self.__checkAllCorr()
-    else:
-      self.__checkTwoCorr()
+    try:
+      if self.chkAllCorr.isChecked():
+        self.__checkAllCorr()
+      else:
+        self.__checkTwoCorr()
+    except MemoryError:
+        self.logMessage(self.tr("Memory Error occurred (correlation checking). Perhaps the system is low on memory."))
 
     self.tblCorrelation.resizeRowsToContents()
     self.tblCorrelation.resizeColumnsToContents()
