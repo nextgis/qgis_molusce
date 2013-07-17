@@ -280,6 +280,12 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.logMessage(self.tr("Factors list cleared"))
 
   def correlationChecking(self):
+    if not utils.checkFactors(self.inputs):
+      QMessageBox.warning(self,
+                          self.tr("Missed input data"),
+                          self.tr("Factors rasters is not set. Please specify them and try again")
+                         )
+      return
     try:
       if self.chkAllCorr.isChecked():
         self.__checkAllCorr()
