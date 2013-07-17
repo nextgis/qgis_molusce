@@ -229,7 +229,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
           self.inputs["factors"][layerId] = Raster(unicode(utils.getLayerById(layerId).source()), utils.getLayerMaskById(layerId))
         else:
           d = dict()
-          d[layerId] = Raster(unicode(utils.getLayerById(layerId).source()))
+          d[layerId] = Raster(unicode(utils.getLayerById(layerId).source()), utils.getLayerMaskById(layerId))
           self.inputs["factors"] = d
 
         self.inputs["bandCount"] = self.__bandCount()
