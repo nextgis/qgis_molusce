@@ -152,7 +152,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       lst = []
       for b in xrange(v.getBandsCount()):
         lst.append(None)
-        if v.isCountinues(b):
+        if v.isCountinues(b+1):
           if v.getBandsCount()>1:
             name = u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1))
           else:
