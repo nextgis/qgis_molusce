@@ -307,6 +307,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.workThread.started.connect(crossTabMan.computeCrosstable)
     crossTabMan.rangeChanged.connect(self.setProgressRange)
+    crossTabMan.errorReport.connect(self.logErrorReport)
     crossTabMan.updateProgress.connect(self.showProgress)
     crossTabMan.crossTableFinished.connect(self.updateStatisticsTableDone)
     self.workThread.start()
@@ -314,6 +315,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def updateStatisticsTableDone(self):
     crossTabMan = self.inputs["crosstab"]
     self.workThread.started.disconnect(crossTabMan.computeCrosstable)
+    crossTabMan.errorReport.disconnect(self.logErrorReport)
     crossTabMan.rangeChanged.disconnect(self.setProgressRange)
     crossTabMan.updateProgress.disconnect(self.showProgress)
     crossTabMan.crossTableFinished.disconnect(self.updateStatisticsTableDone)
@@ -1140,8 +1142,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def logMessage(self, message):
     self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))
 
-  def logErrorReport(self, u'ERROR:'+message):
-    self.logMessage(message)
+  def logErrorReport(self, message):
+    self.logMessage(u'ERROR:'+message)
 
   def __addTableColumn(self, col, values, units=""):
     dimensions = len(values)

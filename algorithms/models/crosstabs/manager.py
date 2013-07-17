@@ -51,7 +51,12 @@ class CrossTableManager(QObject):
         self.rangeChanged.emit(message, maxValue)
 
     def computeCrosstable(self):
-       self.crosstable.computeCrosstable()
+        try:
+            self.crosstable.computeCrosstable()
+        except MemoryError:
+            self.errorReport.emit(self.tr("The system out of memory during calculation of cross table"))
+        except:
+            self.errorReport.emit(self.tr("An unknown error occurs during calculation of cross table"))
 
     def getCrosstable(self):
         return self.crosstable
