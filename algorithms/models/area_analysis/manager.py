@@ -136,6 +136,10 @@ class AreaAnalyst(QObject):
             raster = Raster()
             raster.create(bands, self.geodata)
             self.changeMap = raster
+        except MemoryError:
+            self.errorReport.emit(self.tr("The system out of memory during change map creating"))
+        except:
+            self.errorReport.emit(self.tr("An unknown error occurs during change map creating"))
         finally:
             self.processFinished.emit(raster)
 
