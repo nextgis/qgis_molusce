@@ -1143,13 +1143,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def validate(self):
     nIter=self.spnValIterCount.value()
-    self.eb.getStat(nIter)
+    try:
+      self.eb.getStat(nIter)
+    except MemoryError:
+      self.logErrorReport(self.tr("The system out of memory during validation procedure"))
+    except:
+      self.logErrorReport(self.tr("An unknown error occurs during validation procedure"))
 
   def logMessage(self, message):
     self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))
 
   def logErrorReport(self, message):
-    self.logMessage(u'ERROR:'+message)
+    self.logMessage(u'ERROR: '+message)
 
   def __addTableColumn(self, col, values, units=""):
     dimensions = len(values)

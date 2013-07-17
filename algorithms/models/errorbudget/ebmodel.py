@@ -138,12 +138,13 @@ class EBudget(QObject):
         '''
         Perform nIter iterations of error budget calculation and rescaling to coarse scale.
         '''
-        result = {}
-        for i in xrange(nIter):
-            result[i] = {'NoNo': self.NoNo(), 'NoMed': self.NoMed(), 'MedMed': self.MedMed(), 'MedPer': self.MedPer(), 'PerPer': self.PerPer()}
-            self.coarse(scale)
-
-        self.validationFinished.emit(result)
+        try:
+            result = {}
+            for i in xrange(nIter):
+                result[i] = {'NoNo': self.NoNo(), 'NoMed': self.NoMed(), 'MedMed': self.MedMed(), 'MedPer': self.MedPer(), 'PerPer': self.PerPer()}
+                self.coarse(scale)
+        finally:
+            self.validationFinished.emit(result)
         return result
 
 
