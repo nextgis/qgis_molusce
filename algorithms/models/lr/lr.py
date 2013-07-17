@@ -185,6 +185,8 @@ class LR(QObject):
                     band = [np.ma.array(data=self.transitionPotentials[cat], mask=mask)]
                     self.transitionPotentials[cat] = Raster()
                     self.transitionPotentials[cat].create(band, geodata)
+        except MemoryError:
+            self.errorReport.emit(self.tr("The system out of memory during LR prediction"))
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during LR prediction"))
         finally:

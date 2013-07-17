@@ -187,6 +187,8 @@ class MCE(QObject):
 
             code = self.areaAnalyst.encode(self.initStateNum, self.finalStateNum)
             self.transitionPotentials = {code: self.confidence}
+        except MemoryError:
+            self.errorReport.emit(self.tr("The system out of memory during MCE prediction"))
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during MCE prediction"))
 
