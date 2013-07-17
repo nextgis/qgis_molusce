@@ -92,6 +92,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.grpSampling.setSettings(self.settings)
 
     # connect signals and slots
+    self.tabWidget.currentChanged.connect(self.__tabWidgetChanged)
+
     self.btnSetInitialRaster.clicked.connect(self.setInitialRaster)
     self.btnSetFinalRaster.clicked.connect(self.setFinalRaster)
     self.btnAddFactor.clicked.connect(self.addFactor)
@@ -738,6 +740,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.__populateRasterNames()
 
 # ******************************************************************************
+
+  def __tabWidgetChanged(self):
+    if self.tabWidget.currentWidget() == self.tabModel:
+      self.__modelChanged()
 
   def __populateLayers(self):
     layers = utils.getRasterLayers()
