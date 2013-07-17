@@ -179,7 +179,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.inputs["initial"] = Raster(unicode(layer.source()), maskVals=utils.getLayerMaskById(self.initRasterId))
       self.logMessage(self.tr("Set intial layer to %s") % (layerName))
     except MemoryError:
-      self.logMessage(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
+      self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
 
   def setFinalRaster(self):
     try:
@@ -202,7 +202,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.inputs["final"] = Raster(unicode(utils.getLayerById(self.finalRasterId).source()), utils.getLayerMaskById(self.finalRasterId))
       self.logMessage(self.tr("Set final layer to %s") % (layerName))
     except MemoryError:
-      self.logMessage(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
+      self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
 
   def addFactor(self):
     layerNames = self.lstLayers.selectedItems()
@@ -236,7 +236,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
         self.logMessage(self.tr("Added factor layer %s") % (layerName))
       except MemoryError:
-        self.logMessage(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
+        self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
         QMessageBox.warning(self,
                           self.tr("Memory error"),
                           self.tr("Memory error occurred. Perhaps the system is low on memory.")
@@ -286,7 +286,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       else:
         self.__checkTwoCorr()
     except MemoryError:
-        self.logMessage(self.tr("Memory Error occurred (correlation checking). Perhaps the system is low on memory."))
+        self.logErrorReport(self.tr("Memory Error occurred (correlation checking). Perhaps the system is low on memory."))
 
     self.tblCorrelation.resizeRowsToContents()
     self.tblCorrelation.resizeColumnsToContents()
@@ -1140,7 +1140,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def logMessage(self, message):
     self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))
 
-  def logErrorReport(self, message):
+  def logErrorReport(self, u'ERROR:'+message):
     self.logMessage(message)
 
   def __addTableColumn(self, col, values, units=""):
