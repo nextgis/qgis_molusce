@@ -216,7 +216,8 @@ class WoeManager(QObject):
                 p = Raster()
                 p.create([sigmoid(wMap)], self.geodata)
                 self.transitionPotentials[code] = p
-
+        except Exception as e:
+            raise
         finally:
             self.processFinished.emit()
 
@@ -230,12 +231,15 @@ class WoeManager(QObject):
         for code in self.codes:
             (initClass, finalClass) = self.analyst.decode(code)
             text = text + self.tr("Transition %s -> %s\n" % (int(initClass), int(finalClass)))
-            factorW = self.weights[code]
-            for factNum, factDict in factorW.iteritems():
-                name = self.factors[factNum].getFileName()
-                name = basename(name)
-                text = text + self.tr("\t factor: %s \n" % (name,) )
-                for bandNum, bandWeights in factDict.iteritems():
-                    weights = ["%f" % (w,) for w in bandWeights]
-                    text = text + self.tr("\t\t Weights of band %s: %s \n" % (bandNum, ", ".join(weights)) )
+            try:
+                factorW = self.weights[code]
+                for factNum, factDict in factorW.iteritems():
+                    name = self.factors[factNum].getFileName()
+                    name = basename(name)
+                    text = text + self.tr("\t factor: %s \n" % (name,) )
+                    for bandNum, bandWeights in factDict.iteritems():
+                        weights = ["%f" % (w,) for w in bandWeights]
+                        text = text + self.tr("\t\t Weights of band %s: %s \n" % (bandNum, ", ".join(weights)) )
+            except:
+                text = text + self.tr('W for code % s (%s -> %s) causes error' % (code, initClass, finalClass))
         return text
