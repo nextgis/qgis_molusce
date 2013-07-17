@@ -4,6 +4,8 @@
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
+from PyQt4.QtCore import *
+
 import numpy as np
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
