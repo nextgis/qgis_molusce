@@ -739,6 +739,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.cmbSamplingMode.addItem(self.tr("All"), 0)
     self.cmbSamplingMode.addItem(self.tr("Random"), 1)
     self.cmbSamplingMode.addItem(self.tr("Stratified"), 2)
+    self.cmbSamplingMode.setCurrentIndex(1)
 
   def __populateValidationPlot(self):
     # init plot for validation curve
