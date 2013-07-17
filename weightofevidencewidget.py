@@ -64,6 +64,13 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
                          )
       return
 
+    if not utils.checkChangeMap(self.inputs):
+      QMessageBox.warning(self.plugin,
+                          self.tr("Missed input data"),
+                          self.tr("Change map raster is not set. Please create it try again")
+                         )
+      return
+
     self.tblReclass.clearContents()
     self.delegate = spinboxdelegate.SpinBoxDelegate(self.tblReclass.model(), minRange=2, maxRange=dataprovider.MAX_CATEGORIES)
 
@@ -109,14 +116,11 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
                          )
       return
 
-    self.plugin.logMessage(self.tr("Init AreaAnalyst"))
-    analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
-
     myBins = self.__getBins()
 
     self.plugin.logMessage(self.tr("Init WoE model"))
     try:
-      self.model = WoeManager(self.inputs["factors"].values(), analyst, bins=myBins)
+      self.model = WoeManager(self.inputs["factors"].values(), self.plugin.analyst, bins=myBins)
     except WoeManagerError as err:
       QMessageBox.warning(self.plugin,
                           self.tr("Initialization error"),
