@@ -606,6 +606,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.started.connect(self.depCoef.calculateCrosstable)
     self.depCoef.rangeChanged.connect(self.setProgressRange)
     self.depCoef.updateProgress.connect(self.showProgress)
+    self.depCoef.errorReport.connect(self.logErrorReport)
     self.depCoef.processFinished.connect(self.kappaValDone)
     self.workThread.start()
     self.logMessage(self.tr("Kappa validation process is started"))
@@ -613,6 +614,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def kappaValDone(self):
     self.workThread.started.disconnect(self.depCoef.calculateCrosstable)
     self.depCoef.rangeChanged.disconnect(self.setProgressRange)
+    self.depCoef.errorReport.disconnect(self.logErrorReport)
     self.depCoef.updateProgress.disconnect(self.showProgress)
     self.depCoef.processFinished.disconnect(self.kappaValDone)
     self.workThread.quit()

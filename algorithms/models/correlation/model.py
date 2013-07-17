@@ -44,13 +44,17 @@ class DependenceCoef(QObject):
         return self.crosstable
 
     def calculateCrosstable(self):
-        self.rangeChanged.emit('Initialization...', 2)
-        self.updateProgress.emit()
-        self.crosstable = CrossTable(self.X, self.Y, expand=self.expand)
-        self.updateProgress.emit()
-        self.__propagateCrossTableSignals()
-        self.crosstable.computeCrosstable()
-        self.processFinished.emit()
+        try:
+            self.rangeChanged.emit('Initialization...', 2)
+            self.updateProgress.emit()
+            self.crosstable = CrossTable(self.X, self.Y, expand=self.expand)
+            self.updateProgress.emit()
+            self.__propagateCrossTableSignals()
+            self.crosstable.computeCrosstable()
+        except:
+            self.errorReport.emit(self.tr("An unknown error occurs during cross table calculation"))
+        finally:
+            self.processFinished.emit()
 
     def correlation(self):
         '''
@@ -177,6 +181,7 @@ class DependenceCoef(QObject):
         self.crosstable.rangeChanged.connect(self.__crosstableProgressRangeChanged)
         self.crosstable.updateProgress.connect(self.__crosstableProgressChanged)
         self.crosstable.crossTableFinished.connect(self.__crosstableFinished)
+        self.crosstable.errorReport.connect(self.__crosstableError)
 
     def __crosstableFinished(self):
         self.crosstable.rangeChanged.disconnect(self.__crosstableProgressRangeChanged)
@@ -189,6 +194,9 @@ class DependenceCoef(QObject):
 
     def __crosstableProgressRangeChanged(self, message, maxValue):
         self.rangeChanged.emit(message, maxValue)
+
+    def __crosstableError(self, message):
+        self.errorReport.emit(message)
 
 
 
