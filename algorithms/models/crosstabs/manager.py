@@ -21,6 +21,7 @@ class CrossTableManager(QObject):
     updateProgress = pyqtSignal()
     crossTableFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
+    errorReport = pyqtSignal(str)
 
     def __init__(self, initRaster, finalRaster):
         QObject.__init__(self)
