@@ -20,7 +20,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabInputs">
       <attribute name="title">
@@ -128,6 +128,13 @@
               </widget>
              </item>
             </layout>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btnCheckGeometry">
+             <property name="text">
+              <string>Check geometry</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>

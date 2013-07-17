@@ -97,6 +97,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.btnAddFactor.clicked.connect(self.addFactor)
     self.btnRemoveFactor.clicked.connect(self.removeFactor)
     self.btnRemoveAllFactors.clicked.connect(self.removeAllFactors)
+    self.btnCheckGeometry.clicked.connect(self.checkGeometry)
 
     self.chkAllCorr.stateChanged.connect(self.__toggleCorrLayers)
     self.btnStartCorrChecking.clicked.connect(self.correlationChecking)
@@ -278,6 +279,39 @@ class MolusceDialog(QDialog, Ui_Dialog):
       pass
 
     self.logMessage(self.tr("Factors list cleared"))
+
+  def checkGeometry(self):
+    if not utils.checkFactors(self.inputs):
+      QMessageBox.warning(self,
+                          self.tr("Missed input data"),
+                          self.tr("Factors rasters is not set. Please specify them and try again")
+                         )
+      return
+    if not utils.checkInputRasters(self.inputs):
+      QMessageBox.warning(self,
+                          self.tr("Missed input data"),
+                          self.tr("Initial or final raster is not set. Please specify input data and try again")
+                         )
+      return
+
+    initRaster = self.inputs["initial"]
+    for k, v in self.inputs["factors"].iteritems():
+      if not initRaster.geoDataMatch(v):
+        QMessageBox.warning(self,
+                          self.tr("Different geometry"),
+                          self.tr("Geometries of the initial raster and raster '%s' are different!" % (v.getFileName(),))
+                         )
+        return
+    if not initRaster.geoDataMatch(self.inputs["final"]):
+      QMessageBox.warning(self,
+                          self.tr("Different geometry"),
+                          self.tr("Geometries of the initial raster and final raster are different!" )
+                         )
+      return
+    QMessageBox.warning(self,
+                          self.tr("Geometry is matched"),
+                          self.tr("Geometries of the rasters is matched!" )
+                         )
 
   def correlationChecking(self):
     if not utils.checkFactors(self.inputs):
