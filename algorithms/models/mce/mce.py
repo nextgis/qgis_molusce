@@ -15,7 +15,9 @@ class MCEError(Exception):
         self.msg = msg
 
 
-class MCE(object):
+class MCE(QObject):
+    logMessage = pyqtSignal(str)
+    errorReport = pyqtSignal(str)
 
     randomConsistencyIndex = {
         2:  0,
@@ -65,6 +67,8 @@ class MCE(object):
         @param initStateNum     Number of initial state (the state before transition).
         @param finalStateNum    Number of final state (the state after transition).
         '''
+
+        QObject.__init__(self)
 
         self.factors = factors
         self.initStateNum  = initStateNum

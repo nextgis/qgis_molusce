@@ -33,6 +33,7 @@ class MlpManager(QObject):
     processFinished = pyqtSignal()
     processInterrupted = pyqtSignal()
     logMessage = pyqtSignal(str)
+    errorReport = pyqtSignal(str)
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
 
@@ -285,7 +286,7 @@ class MlpManager(QObject):
                     self.transitionPotentials[cat] = Raster()
                     self.transitionPotentials[cat].create(band, geodata)
         except:
-            self.logMessage.emit(self.tr("An error occurs during ANN prediction"))
+            self.errorReport.emit(self.tr("An error occurs during ANN prediction"))
 
     def readMlp(self):
         pass

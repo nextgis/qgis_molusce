@@ -28,6 +28,7 @@ class WoeManager(QObject):
     updateProgress = pyqtSignal()
     processFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
+    errorReport = pyqtSignal(str)
 
     def __init__(self, factors, areaAnalyst, unit_cell=1, bins = None):
         '''

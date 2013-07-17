@@ -16,6 +16,7 @@ class Simulator(QObject):
     updateProgress = pyqtSignal()
     simFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
+    errorReport = pyqtSignal(str)
 
     def __init__(self, state, factors, model, crosstable):
         '''

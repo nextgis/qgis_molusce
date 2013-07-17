@@ -21,6 +21,7 @@ class DependenceCoef(QObject):
     updateProgress = pyqtSignal()
     processFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
+    errorReport = pyqtSignal(str)
 
     def __init__(self, X, Y, expand=False):
         """

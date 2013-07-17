@@ -20,6 +20,7 @@ class CrossTable(QObject):
     updateProgress = pyqtSignal()
     crossTableFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
+    errorReport = pyqtSignal(str)
 
     def __init__(self, band1, band2, expand = False):
         """

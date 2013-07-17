@@ -30,6 +30,7 @@ class LR(QObject):
     samplingFinished = pyqtSignal()
     finished = pyqtSignal()
     logMessage = pyqtSignal(str)
+    errorReport = pyqtSignal(str)
 
     def __init__(self, ns=0, logreg=None):
 

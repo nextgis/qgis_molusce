@@ -51,6 +51,7 @@ class Sampler(QObject):
     updateProgress = pyqtSignal()
     samplingFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
+    errorReport = pyqtSignal(str)
 
     def __init__(self, state, factors, output=None, ns=0):
         '''

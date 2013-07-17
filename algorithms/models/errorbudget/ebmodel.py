@@ -48,6 +48,7 @@ class EBudget(QObject):
     updateProgress = pyqtSignal()
     validationFinished = pyqtSignal(object)
     logMessage = pyqtSignal(str)
+    errorReport = pyqtSignal(str)
 
     def __init__ (self, referenceMap, simulatedMap):
         """
