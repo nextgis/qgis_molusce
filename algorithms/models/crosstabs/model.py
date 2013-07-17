@@ -73,6 +73,8 @@ class CrossTable(QObject):
                 if k == N:
                     k = 0
                     self.updateProgress.emit()
+        except MemoryError:
+            self.errorReport.emit('The system out of memory during calculation of cross table')
         finally:
             self.crossTableFinished.emit()
 
