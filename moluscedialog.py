@@ -423,6 +423,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.started.connect(self.simulator.simN)
     self.simulator.rangeChanged.connect(self.setProgressRange)
     self.simulator.updateProgress.connect(self.showProgress)
+    self.simulator.errorReport.connect(self.logErrorReport)
     self.simulator.simFinished.connect(self.simulationDone)
     self.workThread.start()
     self.logMessage(self.tr("Simulation process is started"))
@@ -493,6 +494,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.started.disconnect(self.simulator.simN)
     self.simulator.rangeChanged.disconnect(self.setProgressRange)
     self.simulator.updateProgress.disconnect(self.showProgress)
+    self.simulator.errorReport.disconnect(self.logErrorReport)
     self.simulator.simFinished.disconnect(self.simulationDone)
     self.workThread.quit()
     self.simulator = None

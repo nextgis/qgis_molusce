@@ -138,54 +138,57 @@ class MCE(QObject):
         '''
         Predict the changes.
         '''
-        geodata = state.getGeodata()
-        rows, cols = geodata['ySize'], geodata['xSize']
+        try:
+            geodata = state.getGeodata()
+            rows, cols = geodata['ySize'], geodata['xSize']
 
-        self.transitionPotentials = None    # Reset tr.potentials if they exist
+            self.transitionPotentials = None    # Reset tr.potentials if they exist
 
-        # Get locations where self.initStateNum is occurs
-        band = state.getBand(1)
-        initStateMask = binaryzation(band, [self.initStateNum])
-        mask = band.mask
+            # Get locations where self.initStateNum is occurs
+            band = state.getBand(1)
+            initStateMask = binaryzation(band, [self.initStateNum])
+            mask = band.mask
 
-        # Calculate summary map of factors weights
-        # Transition potentials:
-        #   in the implenentation potential equals confidence (two-class implementation)
-        # Confidence:
-        #   confidence is summary map of factors, if current state = self.initState
-        #   confidence is 0, if current state != self.initState
-        # Prediction:
-        #   predicted value is a constant = areaAnalyst.encode(initStateNum, finalStateNum), if current state = self.initState
-        #   predicted value is the transition code current_state -> current_state, if current state != self.initState
-        confidence = np.zeros((rows,cols))
-        weights = self.getWeights()
-        weightNum = 0               # Number of processed weights
-        for f in self.factors:
-            if not f.geoDataMatch(state):
-                raise MCEError('Geometries of the state and factor rasters are different!')
-            f.normalize(mode = 'maxmin')
-            for i in xrange(f.getBandsCount()):
-                band = f.getBand(i+1)
-                confidence = confidence + band*weights[weightNum]
-                mask = np.ma.mask_or(mask, band.mask)
-                weightNum = weightNum + 1
-        confidence = confidence*initStateMask
-        prediction = np.copy(state.getBand(1))
-        for code in self.areaAnalyst.categories:
-            if code != self.initStateNum:
-                prediction[prediction==code] = self.areaAnalyst.encode(code, code)
-            else:
-                prediction[prediction==code] = self.areaAnalyst.encode(self.initStateNum, self.finalStateNum)
+            # Calculate summary map of factors weights
+            # Transition potentials:
+            #   in the implenentation potential equals confidence (two-class implementation)
+            # Confidence:
+            #   confidence is summary map of factors, if current state = self.initState
+            #   confidence is 0, if current state != self.initState
+            # Prediction:
+            #   predicted value is a constant = areaAnalyst.encode(initStateNum, finalStateNum), if current state = self.initState
+            #   predicted value is the transition code current_state -> current_state, if current state != self.initState
+            confidence = np.zeros((rows,cols))
+            weights = self.getWeights()
+            weightNum = 0               # Number of processed weights
+            for f in self.factors:
+                if not f.geoDataMatch(state):
+                    raise MCEError('Geometries of the state and factor rasters are different!')
+                f.normalize(mode = 'maxmin')
+                for i in xrange(f.getBandsCount()):
+                    band = f.getBand(i+1)
+                    confidence = confidence + band*weights[weightNum]
+                    mask = np.ma.mask_or(mask, band.mask)
+                    weightNum = weightNum + 1
+            confidence = confidence*initStateMask
+            prediction = np.copy(state.getBand(1))
+            for code in self.areaAnalyst.categories:
+                if code != self.initStateNum:
+                    prediction[prediction==code] = self.areaAnalyst.encode(code, code)
+                else:
+                    prediction[prediction==code] = self.areaAnalyst.encode(self.initStateNum, self.finalStateNum)
 
-        predicted_band = np.ma.array(data=prediction, mask=mask)
-        self.prediction = Raster()
-        self.prediction.create([predicted_band], geodata)
-        confidence_band = np.ma.array(data=confidence, mask=mask)
-        self.confidence = Raster()
-        self.confidence.create([confidence_band], geodata)
+            predicted_band = np.ma.array(data=prediction, mask=mask)
+            self.prediction = Raster()
+            self.prediction.create([predicted_band], geodata)
+            confidence_band = np.ma.array(data=confidence, mask=mask)
+            self.confidence = Raster()
+            self.confidence.create([confidence_band], geodata)
 
-        code = self.areaAnalyst.encode(self.initStateNum, self.finalStateNum)
-        self.transitionPotentials = {code: self.confidence}
+            code = self.areaAnalyst.encode(self.initStateNum, self.finalStateNum)
+            self.transitionPotentials = {code: self.confidence}
+        except:
+            self.errorReport.emit(self.tr("An unknown error occurs during MCE prediction"))
 
     def setWeights(self):
         '''

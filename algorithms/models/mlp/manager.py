@@ -286,7 +286,7 @@ class MlpManager(QObject):
                     self.transitionPotentials[cat] = Raster()
                     self.transitionPotentials[cat].create(band, geodata)
         except:
-            self.errorReport.emit(self.tr("An error occurs during ANN prediction"))
+            self.errorReport.emit(self.tr("An unknown error occurs during ANN prediction"))
 
     def readMlp(self):
         pass

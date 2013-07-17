@@ -169,6 +169,8 @@ class WoeManager(QObject):
             confidence_band = np.ma.array(data=confidence, mask=mask)
             self.confidence = Raster()
             self.confidence.create([confidence_band], self.geodata)
+        except:
+            self.errorReport.emit(self.tr("An unknown error occurs during WoE prediction"))
         finally:
             self.processFinished.emit()
 

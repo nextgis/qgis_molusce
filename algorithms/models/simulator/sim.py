@@ -44,6 +44,8 @@ class Simulator(QObject):
         try:    # Not all models have the signals
             self.model.rangeChanged.connect(self.__modelProgressRangeChanged)
             self.model.updateProgress.connect(self.__modelProgressChanged)
+
+            self.model.errorReport.connect(self.__modelErrorReport)
         except AttributeError:
             pass
 
@@ -85,6 +87,10 @@ class Simulator(QObject):
 
     def __modelProgressChanged(self):
         self.updateProgress.emit()
+        QCoreApplication.processEvents()
+
+    def __modelErrorReport(self, message):
+        self.errorReport.emit(message)
         QCoreApplication.processEvents()
 
     def setCalcTransitions(self, calcTransitions):
