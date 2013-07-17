@@ -347,6 +347,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.started.connect(self.analyst.getChangeMap)
     self.analyst.rangeChanged.connect(self.setProgressRange)
     self.analyst.updateProgress.connect(self.showProgress)
+    self.analyst.errorReport.connect(self.logErrorReport)
     self.analyst.processFinished.connect(self.changeMapDone)
     self.analyst.processFinished.connect(self.workThread.quit)
     self.workThread.start()
@@ -362,6 +363,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.started.disconnect(self.analyst.getChangeMap)
     self.analyst.rangeChanged.disconnect(self.setProgressRange)
     self.analyst.updateProgress.disconnect(self.showProgress)
+    self.analyst.errorReport.disconnect(self.logErrorReport)
     self.analyst.processFinished.disconnect(self.changeMapDone)
     self.analyst.processFinished.disconnect(self.workThread.quit)
     self.restoreProgressState()
@@ -1135,6 +1137,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def logMessage(self, message):
     self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))
+
+  def logErrorReport(self, message):
+    self.logMessage(message)
 
   def __addTableColumn(self, col, values, units=""):
     dimensions = len(values)

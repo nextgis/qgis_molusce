@@ -27,6 +27,7 @@ class AreaAnalyst(QObject):
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
     processFinished = pyqtSignal(object)
+    errorReport = pyqtSignal(str)
     logMessage = pyqtSignal(str)
 
     def __init__(self, first, second=None):
