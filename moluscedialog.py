@@ -675,6 +675,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.started.connect(self.analystVM.getChangeMap)
     self.analystVM.rangeChanged.connect(self.setProgressRange)
     self.analystVM.updateProgress.connect(self.showProgress)
+    self.analystVM.errorReport.connect(self.logErrorReport)
     self.analystVM.processFinished.connect(self.validationMapDone)
     self.analystVM.processFinished.connect(self.workThread.quit)
     self.workThread.start()
@@ -691,6 +692,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.started.disconnect(self.analystVM.getChangeMap)
     self.analystVM.rangeChanged.disconnect(self.setProgressRange)
     self.analystVM.updateProgress.disconnect(self.showProgress)
+    self.analystVM.errorReport.disconnect(self.logErrorReport)
     self.analystVM.processFinished.disconnect(self.validationMapDone)
     self.analystVM.processFinished.disconnect(self.workThread.quit)
     del self.analystVM
