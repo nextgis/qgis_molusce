@@ -265,6 +265,12 @@ class LR(QObject):
         self.samples = samples
 
     def startTrain(self):
-        self.setTrainingData()
-        self.train()
-        self.finished.emit()
+        try:
+            self.setTrainingData()
+            self.train()
+        except MemoryError:
+            self.errorReport.emit(self.tr("The system out of memory during LR training"))
+        except:
+            self.errorReport.emit(self.tr("An unknown error occurs during LR trainig"))
+        finally:
+            self.finished.emit()

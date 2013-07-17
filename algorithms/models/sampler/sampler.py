@@ -337,5 +337,9 @@ class Sampler(QObject):
 
             if shuffle:
                 np.random.shuffle(self.data)
+        except MemoryError:
+            raise MemoryError
+        except:
+            raise Exception
         finally:
             self.samplingFinished.emit()

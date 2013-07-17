@@ -95,6 +95,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.plugin.workThread.started.connect(self.model.startTrain)
     self.plugin.setProgressRange("Train LR model", 0)
     self.model.finished.connect(self.__trainFinished)
+    self.model.errorReport.connect(self.plugin.logErrorReport)
     self.model.finished.connect(self.plugin.workThread.quit)
     self.plugin.workThread.start()
 
