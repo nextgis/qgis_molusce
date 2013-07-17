@@ -50,7 +50,7 @@ class Raster(object):
         self.geodata  = None     # Georeferensing information
         self.stat     = None     # Initial (before normalizing) statistic (means and stds) of the bands
         self.isNormalazed = None # Is the bands of the raster normalized? It contains the mode of normalization.
-        self.bandgradation = dict() # Dict for store lists of bands categories
+        #self.bandgradation = dict() # Dict for store lists of bands categories
         if self.filename: self._read()
 
     def binaryzation(self, trueVals, bandNum):
@@ -62,8 +62,8 @@ class Raster(object):
     def create(self, bands, geodata):
         self.bands = np.ma.array(bands, dtype=float)
         self.bandcount = len(bands)
-        for i in range(1, self.bandcount+1):
-            self.bandgradation[i] = None
+        #for i in range(1, self.bandcount+1):
+        #    self.bandgradation[i] = None
         self.geodata = geodata
 
     def denormalize(self):
@@ -146,10 +146,8 @@ class Raster(object):
         '''
         Return list of categories of raster's band
         '''
-        if self.bandgradation[bandNo] == None:
-            band = self.getBand(bandNo)
-            self.bandgradation[bandNo] = get_gradations(band.compressed())
-        return self.bandgradation[bandNo]
+        band = self.getBand(bandNo)
+        return get_gradations(band.compressed())
 
     def getBandStat(self, bandNo):
         '''
@@ -157,10 +155,10 @@ class Raster(object):
         '''
         band = self.getBand(bandNo)
         result = {}
-        result['mean'] = np.mean(band)
-        result['std']  = np.std (band)
-        result['min']  = np.min (band)
-        result['max']  = np.max (band)
+        result['mean'] = np.ma.mean(band)
+        result['std']  = np.ma.std (band)
+        result['min']  = np.ma.min (band)
+        result['max']  = np.ma.max (band)
         return result
 
     def get_dtype(self):
@@ -294,7 +292,7 @@ class Raster(object):
             else:
                 nodataValues = []
             r = r.ReadAsArray()
-            self.bandgradation[i] = None
+            #self.bandgradation[i] = None
             try:
                 userNodataValues =  self.maskVals[i]
             except TypeError:
