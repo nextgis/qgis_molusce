@@ -138,8 +138,10 @@ class AreaAnalyst(QObject):
             self.changeMap = raster
         except MemoryError:
             self.errorReport.emit(self.tr("The system out of memory during change map creating"))
+            raise
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during change map creating"))
+            raise
         finally:
             self.processFinished.emit(raster)
 

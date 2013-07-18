@@ -187,8 +187,10 @@ class LR(QObject):
                     self.transitionPotentials[cat].create(band, geodata)
         except MemoryError:
             self.errorReport.emit(self.tr("The system out of memory during LR prediction"))
+            raise
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during LR prediction"))
+            raise
         finally:
             self.processFinished.emit()
 
@@ -270,7 +272,9 @@ class LR(QObject):
             self.train()
         except MemoryError:
             self.errorReport.emit(self.tr("The system out of memory during LR training"))
+            raise
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during LR trainig"))
+            raise
         finally:
             self.finished.emit()

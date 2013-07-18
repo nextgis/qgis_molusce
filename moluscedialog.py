@@ -183,6 +183,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.logMessage(self.tr("Set intial layer to %s") % (layerName))
     except MemoryError:
       self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
+      raise
 
   def setFinalRaster(self):
     try:
@@ -206,6 +207,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.logMessage(self.tr("Set final layer to %s") % (layerName))
     except MemoryError:
       self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
+      raise
 
   def addFactor(self):
     layerNames = self.lstLayers.selectedItems()
@@ -244,6 +246,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("Memory error"),
                           self.tr("Memory error occurred. Perhaps the system is low on memory.")
                          )
+        raise
         return
 
   def removeFactor(self):
@@ -329,6 +332,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.__checkTwoCorr()
     except MemoryError:
         self.logErrorReport(self.tr("Memory Error occurred (correlation checking). Perhaps the system is low on memory."))
+        raise
 
     self.tblCorrelation.resizeRowsToContents()
     self.tblCorrelation.resizeColumnsToContents()
@@ -1191,8 +1195,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.eb.getStat(nIter)
     except MemoryError:
       self.logErrorReport(self.tr("The system out of memory during validation procedure"))
+      raise
     except:
       self.logErrorReport(self.tr("An unknown error occurs during validation procedure"))
+      raise
 
   def logMessage(self, message):
     self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))

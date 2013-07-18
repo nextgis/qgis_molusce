@@ -338,8 +338,10 @@ class Sampler(QObject):
             if shuffle:
                 np.random.shuffle(self.data)
         except MemoryError:
-            raise MemoryError
+            self.errorReport.emit(self.tr("The system out of memory during sampling"))
+            raise
         except:
-            raise Exception
+            self.errorReport.emit(self.tr("An unknown error occurs during sampling"))
+            raise
         finally:
             self.samplingFinished.emit()

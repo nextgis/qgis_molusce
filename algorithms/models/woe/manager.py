@@ -171,8 +171,10 @@ class WoeManager(QObject):
             self.confidence.create([confidence_band], self.geodata)
         except MemoryError:
             self.errorReport.emit(self.tr("The system out of memory during WOE prediction"))
+            raise
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during WoE prediction"))
+            raise
         finally:
             self.processFinished.emit()
 
@@ -242,4 +244,5 @@ class WoeManager(QObject):
                         text = text + self.tr("\t\t Weights of band %s: %s \n" % (bandNum, ", ".join(weights)) )
             except:
                 text = text + self.tr('W for code % s (%s -> %s) causes error' % (code, initClass, finalClass))
+                raise
         return text

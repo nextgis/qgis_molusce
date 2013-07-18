@@ -143,6 +143,8 @@ class EBudget(QObject):
             for i in xrange(nIter):
                 result[i] = {'NoNo': self.NoNo(), 'NoMed': self.NoMed(), 'MedMed': self.MedMed(), 'MedPer': self.MedPer(), 'PerPer': self.PerPer()}
                 self.coarse(scale)
+        except:
+            raise
         finally:
             self.validationFinished.emit(result)
         return result

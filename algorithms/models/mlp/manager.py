@@ -287,8 +287,10 @@ class MlpManager(QObject):
                     self.transitionPotentials[cat].create(band, geodata)
         except MemoryError:
             self.errorReport.emit(self.tr("The system out of memory during ANN prediction"))
+            raise
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during ANN prediction"))
+            raise
 
     def readMlp(self):
         pass
@@ -416,6 +418,8 @@ class MlpManager(QObject):
                 self.updateProgress.emit()
 
             self.setMlpWeights(best_weights)
+        except:
+            raise
         finally:
             self.processFinished.emit()
 

@@ -57,10 +57,11 @@ class CrossTableManager(QObject):
         try:
             self.crosstable.computeCrosstable()
         except MemoryError:
-            print(78)
             self.errorReport.emit(self.tr("The system out of memory during calculation of cross table"))
+            raise
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during calculation of cross table"))
+            raise
 
     def getCrosstable(self):
         return self.crosstable

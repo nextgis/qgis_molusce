@@ -51,8 +51,12 @@ class DependenceCoef(QObject):
             self.updateProgress.emit()
             self.__propagateCrossTableSignals()
             self.crosstable.computeCrosstable()
+        except MemoryError:
+            self.errorReport.emit(self.tr("The system out of memory during cross table calculation"))
+            raise
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during cross table calculation"))
+            raise
         finally:
             self.processFinished.emit()
 

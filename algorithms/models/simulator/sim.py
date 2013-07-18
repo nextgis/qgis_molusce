@@ -167,6 +167,8 @@ class Simulator(QObject):
         try:
             for i in range(self.iterationCount):
                 self.__sim()
+        except:
+            raise
         finally:
             try:    # Not all models have the signals
                 self.model.rangeChanged.disconnect(self.__modelProgressRangeChanged)
