@@ -139,6 +139,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     self.plugin.workThread.started.connect(self.model.train)
     self.model.updateProgress.connect(self.plugin.showProgress)
     self.model.rangeChanged.connect(self.plugin.setProgressRange)
+    self.model.errorReport.connect(self.plugin.logErrorReport)
     self.model.processFinished.connect(self.__trainFinished)
     self.model.processFinished.connect(self.plugin.workThread.quit)
 
@@ -151,6 +152,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     self.model.rangeChanged.connect(self.plugin.setProgressRange)
     self.model.processFinished.disconnect(self.__trainFinished)
     self.model.processFinished.disconnect(self.plugin.workThread.quit)
+    self.model.errorReport.disconnect(self.plugin.logErrorReport)
     self.plugin.restoreProgressState()
     self.plugin.logMessage(self.tr("WoE model trained"))
     self.pteWeightsInform.appendPlainText( unicode(self.model.weightsToText()) )

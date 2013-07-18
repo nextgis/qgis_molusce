@@ -169,6 +169,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.model.processInterrupted.connect(self.__trainInterrupted)
     self.model.rangeChanged.connect(self.plugin.setProgressRange)
     self.model.updateProgress.connect(self.plugin.showProgress)
+    self.model.errorReport.connect(self.plugin.logErrorReport)
     self.model.processFinished.connect(self.__trainFinished)
     self.model.processFinished.connect(self.plugin.workThread.quit)
 
@@ -181,6 +182,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.plugin.workThread.started.disconnect(self.model.startTrain)
     self.model.rangeChanged.disconnect(self.plugin.setProgressRange)
     self.model.updateProgress.disconnect(self.plugin.showProgress)
+    self.model.errorReport.disconnect(self.plugin.logErrorReport)
     self.plugin.restoreProgressState()
     self.btnStop.setEnabled(False)
     self.btnTrainNetwork.setEnabled(True)

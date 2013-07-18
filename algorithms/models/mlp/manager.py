@@ -418,7 +418,11 @@ class MlpManager(QObject):
                 self.updateProgress.emit()
 
             self.setMlpWeights(best_weights)
+        except MemoryError:
+            self.errorReport.emit(self.tr("The system out of memory during ANN training"))
+            raise
         except:
+            self.errorReport.emit(self.tr("An unknown error occurs during ANN trainig"))
             raise
         finally:
             self.processFinished.emit()

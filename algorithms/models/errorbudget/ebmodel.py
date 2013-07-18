@@ -143,7 +143,12 @@ class EBudget(QObject):
             for i in xrange(nIter):
                 result[i] = {'NoNo': self.NoNo(), 'NoMed': self.NoMed(), 'MedMed': self.MedMed(), 'MedPer': self.MedPer(), 'PerPer': self.PerPer()}
                 self.coarse(scale)
+
+        except MemoryError:
+            self.errorReport.emit(self.tr("The system out of memory during validation"))
+            raise
         except:
+            self.errorReport.emit(self.tr("An unknown error occurs during validation"))
             raise
         finally:
             self.validationFinished.emit(result)

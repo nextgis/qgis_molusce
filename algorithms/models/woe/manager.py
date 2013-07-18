@@ -218,7 +218,11 @@ class WoeManager(QObject):
                 p = Raster()
                 p.create([sigmoid(wMap)], self.geodata)
                 self.transitionPotentials[code] = p
-        except Exception as e:
+        except MemoryError:
+            self.errorReport.emit('The system out of memory during WoE trainig')
+            raise
+        except:
+            self.errorReport.emit(self.tr("An unknown error occurs during WoE trainig"))
             raise
         finally:
             self.processFinished.emit()

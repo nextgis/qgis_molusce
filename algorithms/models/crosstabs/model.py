@@ -76,6 +76,9 @@ class CrossTable(QObject):
         except MemoryError:
             self.errorReport.emit('The system out of memory during calculation of cross table')
             raise
+        except:
+            self.errorReport.emit(self.tr("An unknown error occurs during calculation of cross table"))
+            raise
         finally:
             self.crossTableFinished.emit()
 

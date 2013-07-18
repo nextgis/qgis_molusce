@@ -101,7 +101,7 @@ class Simulator(QObject):
 
     def __sim(self):
         '''
-        Make 1 iteracion of simulation.
+        1 iteracion of simulation.
         '''
         transition = self.crosstable.getCrosstable()
 
@@ -167,7 +167,11 @@ class Simulator(QObject):
         try:
             for i in range(self.iterationCount):
                 self.__sim()
+        except MemoryError:
+            self.errorReport.emit(self.tr("The system out of memory during simulation"))
+            raise
         except:
+            self.errorReport.emit(self.tr("An unknown error occurs during simulation"))
             raise
         finally:
             try:    # Not all models have the signals
