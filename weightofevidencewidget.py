@@ -120,7 +120,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
 
     self.plugin.logMessage(self.tr("Init WoE model"))
     try:
-      self.model = WoeManager(self.inputs["factors"].values(), self.plugin.analyst, bins=myBins)
+      model = WoeManager(self.inputs["factors"].values(), self.plugin.analyst, bins=myBins)
     except WoeManagerError as err:
       QMessageBox.warning(self.plugin,
                           self.tr("Initialization error"),
@@ -128,34 +128,36 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
                          )
       return
 
-    if not self.model.checkBins():
+    self.inputs["model"] = model
+
+    if not model.checkBins():
       QMessageBox.warning(self.plugin,
                           self.tr("Wrong binning"),
                           self.tr("Bins are not correctly specifed. Please specify them and try again")
                          )
       return
 
-    self.model.moveToThread(self.plugin.workThread)
-    self.plugin.workThread.started.connect(self.model.train)
-    self.model.updateProgress.connect(self.plugin.showProgress)
-    self.model.rangeChanged.connect(self.plugin.setProgressRange)
-    self.model.errorReport.connect(self.plugin.logErrorReport)
-    self.model.processFinished.connect(self.__trainFinished)
-    self.model.processFinished.connect(self.plugin.workThread.quit)
+    model.moveToThread(self.plugin.workThread)
+    self.plugin.workThread.started.connect(model.train)
+    model.updateProgress.connect(self.plugin.showProgress)
+    model.rangeChanged.connect(self.plugin.setProgressRange)
+    model.errorReport.connect(self.plugin.logErrorReport)
+    model.processFinished.connect(self.__trainFinished)
+    model.processFinished.connect(self.plugin.workThread.quit)
 
     self.plugin.workThread.start()
-    self.inputs["model"] = self.model
 
   def __trainFinished(self):
-    self.plugin.workThread.started.disconnect(self.model.train)
-    self.model.updateProgress.disconnect(self.plugin.showProgress)
-    self.model.rangeChanged.connect(self.plugin.setProgressRange)
-    self.model.processFinished.disconnect(self.__trainFinished)
-    self.model.processFinished.disconnect(self.plugin.workThread.quit)
-    self.model.errorReport.disconnect(self.plugin.logErrorReport)
+    model = self.inputs["model"]
+    self.plugin.workThread.started.disconnect(model.train)
+    model.updateProgress.disconnect(self.plugin.showProgress)
+    model.rangeChanged.connect(self.plugin.setProgressRange)
+    model.processFinished.disconnect(self.__trainFinished)
+    model.processFinished.disconnect(self.plugin.workThread.quit)
+    model.errorReport.disconnect(self.plugin.logErrorReport)
     self.plugin.restoreProgressState()
     self.plugin.logMessage(self.tr("WoE model trained"))
-    self.pteWeightsInform.appendPlainText( unicode(self.model.weightsToText()) )
+    self.pteWeightsInform.appendPlainText( unicode(model.weightsToText()) )
 
   def __getBins(self):
     bins = dict()

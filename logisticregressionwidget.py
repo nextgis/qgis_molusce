@@ -25,6 +25,8 @@
 #
 #******************************************************************************
 
+import gc
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -43,8 +45,6 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     self.plugin = plugin
     self.inputs = plugin.inputs
-
-    self.model = None
 
     self.settings = QSettings("NextGIS", "MOLUSCE")
 
@@ -81,31 +81,34 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.settings.setValue("ui/LR/neighborhood", self.spnNeighbourhood.value())
 
     self.plugin.logMessage(self.tr("Init LR model"))
-    self.model = LR(ns=self.spnNeighbourhood.value())
-    self.model.setMaxIter(self.spnMaxIterations.value())
 
-    self.model.setState(self.inputs["initial"])
-    self.model.setFactors(self.inputs["factors"].values())
-    self.model.setOutput(self.inputs["changeMap"])
-    self.model.setMode(self.inputs["samplingMode"],)
-    self.model.setSamples(self.plugin.spnSamplesCount.value())
+    model = LR(ns=self.spnNeighbourhood.value())
+    self.inputs["model"] = model
+    model.setMaxIter(self.spnMaxIterations.value())
+
+    model.setState(self.inputs["initial"])
+    model.setFactors(self.inputs["factors"].values())
+    model.setOutput(self.inputs["changeMap"])
+    model.setMode(self.inputs["samplingMode"],)
+    model.setSamples(self.plugin.spnSamplesCount.value())
 
     self.plugin.logMessage(self.tr("Set training data"))
-    self.model.moveToThread(self.plugin.workThread)
-    self.plugin.workThread.started.connect(self.model.startTrain)
+    model.moveToThread(self.plugin.workThread)
+    self.plugin.workThread.started.connect(model.startTrain)
     self.plugin.setProgressRange("Train LR model", 0)
-    self.model.finished.connect(self.__trainFinished)
-    self.model.errorReport.connect(self.plugin.logErrorReport)
-    self.model.finished.connect(self.plugin.workThread.quit)
+    model.finished.connect(self.__trainFinished)
+    model.errorReport.connect(self.plugin.logErrorReport)
+    model.finished.connect(self.plugin.workThread.quit)
     self.plugin.workThread.start()
 
   def __trainFinished(self):
-    self.plugin.workThread.started.disconnect(self.model.startTrain)
+    model = self.inputs["model"]
+    self.plugin.workThread.started.disconnect(model.startTrain)
     self.plugin.restoreProgressState()
 
     # Transition labels for the coef. tables
     analyst = self.plugin.analyst
-    self.labels = list(self.model.labelCodes)
+    self.labels = list(model.labelCodes)
     self.labels = [u"%s → %s" % analyst.decode(int(c)) for c in self.labels]
 
     # populate table
@@ -115,19 +118,18 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     self.plugin.logMessage(self.tr("LR model trained"))
 
-    self.inputs["model"] = self.model
-
   def showCoefficients(self):
-    if self.model is None:
+    model = self.inputs["model"]
+    if model is None:
       QMessageBox.warning(self.plugin,
                           self.tr("Model is not initialised"),
                           self.tr("To get coefficients you need to train model first")
                          )
       return
 
-    fm = self.model.getIntercept()
-    coef = self.model.getCoef()
-    accuracy = self.model.getPseudoR()
+    fm = model.getIntercept()
+    coef = model.getCoef()
+    accuracy = model.getPseudoR()
 
     colCount = len(fm)
     rowCount = len(coef[0]) + 1
@@ -154,15 +156,16 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.lePseudoR.setText("%6.5f" % (accuracy))
 
   def showStdDeviations(self):
-    if self.model is None:
+    model = self.inputs["model"]
+    if model is None:
       QMessageBox.warning(self.plugin,
                           self.tr("Model is not initialised"),
                           self.tr("To get standard deviations you need to train model first")
                          )
       return
 
-    stdErrW = self.model.getStdErrWeights()
-    stdErrI = self.model.getStdErrIntercept()
+    stdErrW = model.getStdErrWeights()
+    stdErrI = model.getStdErrIntercept()
     colCount = len(stdErrI)
     rowCount = len(stdErrW[0]) + 1
 
@@ -187,6 +190,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblStdDev.resizeColumnsToContents()
 
   def showPValues(self):
+    model = self.inputs["model"]
     def significance(p):
       if p <= 0.01:
         return "**"
@@ -195,15 +199,15 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
       else:
         return "-"
 
-    if self.model is None:
+    if model is None:
       QMessageBox.warning(self.plugin,
                           self.tr("Model is not initialised"),
                           self.tr("To get p-values you need to train model first")
                          )
       return
 
-    fm = self.model.get_PvalIntercept()
-    coef = self.model.get_PvalWeights()
+    fm = model.get_PvalIntercept()
+    coef = model.get_PvalWeights()
 
     colCount = len(fm)
     rowCount = len(coef[0]) + 1

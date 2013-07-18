@@ -122,26 +122,27 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
 
     self.plugin.logMessage(self.tr("Init ANN model"))
 
-    self.model = MlpManager(ns=self.spnNeigbourhood.value())
-    self.model.createMlp(self.inputs["initial"],
+    model = MlpManager(ns=self.spnNeigbourhood.value())
+    self.inputs["model"] = model
+    model.createMlp(self.inputs["initial"],
                          self.inputs["factors"].values(),
                          self.inputs["changeMap"],
                          [int(n) for n in self.leTopology.text().split(" ")]
                         )
 
     self.plugin.logMessage(self.tr("Set training data"))
-    self.model.setTrainingData(self.inputs["initial"],
+    model.setTrainingData(self.inputs["initial"],
                                self.inputs["factors"].values(),
                                self.inputs["changeMap"],
                                mode=self.inputs["samplingMode"],
                                samples=self.plugin.spnSamplesCount.value()
                               )
 
-    self.model.setEpochs(self.spnMaxIterations.value())
-    self.model.setValPercent(20)
-    self.model.setLRate(self.spnLearnRate.value())
-    self.model.setMomentum(self.spnMomentum.value())
-    self.model.setContinueTrain()
+    model.setEpochs(self.spnMaxIterations.value())
+    model.setValPercent(20)
+    model.setLRate(self.spnLearnRate.value())
+    model.setMomentum(self.spnMomentum.value())
+    model.setContinueTrain()
 
     self.axes.cla()
     self.axes.grid(True)
@@ -158,31 +159,30 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     leg = self.axes.legend(('Train', 'Validation'), 'upper right', shadow=False)
     for t in leg.get_texts():
         t.set_fontsize('small')
-    self.model.moveToThread(self.plugin.workThread)
+    model.moveToThread(self.plugin.workThread)
 
-    self.plugin.workThread.started.connect(self.model.startTrain)
-    self.btnStop.clicked.connect(self.model.stopTrain)
-    self.model.updateGraph.connect(self.__updateGraph)
-    self.model.updateDeltaRMS.connect(self.__updateRMS)
-    self.model.updateMinValErr.connect(self.__updateValidationError)
-    self.model.updateKappa.connect(self.__updateKappa)
-    self.model.processInterrupted.connect(self.__trainInterrupted)
-    self.model.rangeChanged.connect(self.plugin.setProgressRange)
-    self.model.updateProgress.connect(self.plugin.showProgress)
-    self.model.errorReport.connect(self.plugin.logErrorReport)
-    self.model.processFinished.connect(self.__trainFinished)
-    self.model.processFinished.connect(self.plugin.workThread.quit)
+    self.plugin.workThread.started.connect(model.startTrain)
+    self.btnStop.clicked.connect(model.stopTrain)
+    model.updateGraph.connect(self.__updateGraph)
+    model.updateDeltaRMS.connect(self.__updateRMS)
+    model.updateMinValErr.connect(self.__updateValidationError)
+    model.updateKappa.connect(self.__updateKappa)
+    model.processInterrupted.connect(self.__trainInterrupted)
+    model.rangeChanged.connect(self.plugin.setProgressRange)
+    model.updateProgress.connect(self.plugin.showProgress)
+    model.errorReport.connect(self.plugin.logErrorReport)
+    model.processFinished.connect(self.__trainFinished)
+    model.processFinished.connect(self.plugin.workThread.quit)
 
     self.plugin.logMessage(self.tr("Start trainig ANN model"))
     self.plugin.workThread.start()
 
-    self.inputs["model"] = self.model
-
   def __trainFinished(self):
-    self.plugin.workThread.started.disconnect(self.model.startTrain)
-    self.model.rangeChanged.disconnect(self.plugin.setProgressRange)
-    self.model.updateProgress.disconnect(self.plugin.showProgress)
-    self.model.errorReport.disconnect(self.plugin.logErrorReport)
+    model = self.inputs["model"]
+    self.plugin.workThread.started.disconnect(model.startTrain)
+    model.rangeChanged.disconnect(self.plugin.setProgressRange)
+    model.updateProgress.disconnect(self.plugin.showProgress)
+    model.errorReport.disconnect(self.plugin.logErrorReport)
     self.plugin.restoreProgressState()
     self.btnStop.setEnabled(False)
     self.btnTrainNetwork.setEnabled(True)

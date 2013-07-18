@@ -46,7 +46,6 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
     self.plugin = plugin
     self.inputs = plugin.inputs
-    self.model = None
 
     self.settings = QSettings("NextGIS", "MOLUSCE")
 
@@ -102,18 +101,18 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
     self.plugin.logMessage(self.tr("Init MCE model"))
 
-    self.model = MCE(self.inputs["factors"].values(),
+    model = MCE(self.inputs["factors"].values(),
                      matrix,
                      self.spnInitialClass.value(),
                      self.spnFinalClass.value(),
                      areaAnalyst
                     )
 
-    self.inputs["model"] = self.model
+    self.inputs["model"] = model
 
     self.plugin.logMessage(self.tr("MCE model trained"))
 
-    weights = self.model.getWeights()
+    weights = model.getWeights()
     for i, w in enumerate(weights):
         item = QTableWidgetItem(unicode(w))
         self.tblWeights.setItem(0, i, item)
@@ -121,7 +120,7 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.tblWeights.resizeColumnsToContents()
 
     # Check consistency of the matrix
-    c = self.model.getConsistency()
+    c = model.getConsistency()
     if c < 0.1:
       QMessageBox.warning(self.plugin,
                           self.tr("Consistent matrix"),

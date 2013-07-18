@@ -30,6 +30,8 @@ import locale
 import operator
 import os.path
 
+import gc
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -746,8 +748,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
 # ******************************************************************************
 
   def __tabWidgetChanged(self):
-    if self.tabWidget.currentWidget() == self.tabModel:
-      self.__modelChanged()
+    gc.collect()
+    #if self.tabWidget.currentWidget() == self.tabModel:
+    #  self.__modelChanged()
 
   def __populateLayers(self):
     layers = utils.getRasterLayers()
