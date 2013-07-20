@@ -38,7 +38,6 @@ class FormatConverter(object):
             np.dtype('float64'): (gdal.GDT_Float64,  -9999),
         }
 
-
 class Raster(object):
     def __init__(self, filename=None, maskVals=None):
         if filename == "":

@@ -37,7 +37,7 @@ def binaryzation( raster, trueList ):
     res = in1d(data, trueList)
     res.shape = shape
     data.shape = shape
-    return np.ma.array(data=res, mask=mask)
+    return np.ma.array(data=res, mask=mask, dtype=np.bool)
 
 
 def get_gradations(band):

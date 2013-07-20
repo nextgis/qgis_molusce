@@ -94,8 +94,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.grpSampling.setSettings(self.settings)
 
     # connect signals and slots
-    self.tabWidget.currentChanged.connect(self.__tabWidgetChanged)
-
     self.btnSetInitialRaster.clicked.connect(self.setInitialRaster)
     self.btnSetFinalRaster.clicked.connect(self.setFinalRaster)
     self.btnAddFactor.clicked.connect(self.addFactor)
@@ -160,6 +158,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.settings.setValue("/ui/geometry", self.saveGeometry())
 
     self.__writeSettings()
+    self.inputs = None
+    gc.collect()
 
     QDialog.closeEvent(self, e)
 
@@ -269,6 +269,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.lstFactors.takeItem(self.lstFactors.row(i))
 
       del self.inputs["factors"][layerId]
+      gc.collect()
+
       if self.inputs["factors"] == {}:
         del self.inputs["factors"]
         del self.inputs["bandCount"]
@@ -282,6 +284,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     try:
       del self.inputs["factors"]
       del self.inputs["bandCount"]
+      gc.collect()
     except KeyError:
       pass
 
@@ -494,6 +497,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                 break
         if not saved:
             res.save(unicode(self.leRiskFunctionPath.text()), nodata=maxVal-1)
+        del res
         self.__addRasterToCanvas(self.leRiskFunctionPath.text())
         layer = utils.getLayerByName(QFileInfo(self.leRiskFunctionPath.text()).baseName())
         colorRamp = self.calcCertancyColorRamp(layer)
@@ -515,6 +519,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                 break
         if not saved:
             res.save(unicode(self.leRiskFunctionPath.text()), nodata=maxVal-1)
+        del res
         self.__addRasterToCanvas(self.leMonteCarloPath.text())
         if utils.copySymbology(utils.getLayerByName(self.leInitRasterName.text()), utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName())):
           layer = utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName())
@@ -548,6 +553,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.simulator.simFinished.disconnect(self.simulationDone)
     self.workThread.quit()
     self.simulator = None
+    gc.collect()
     self.restoreProgressState()
     self.logMessage(self.tr("Simulation process is finished"))
 
@@ -587,6 +593,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.eb.validationFinished.disconnect(self.validationDone)
     self.workThread.quit()
     self.eb = None
+    gc.collect()
     self.restoreProgressState()
 
     self.scaleData = stat.keys()
@@ -738,19 +745,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.analystVM.processFinished.disconnect(self.validationMapDone)
     self.analystVM.processFinished.disconnect(self.workThread.quit)
     del self.analystVM
+    gc.collect()
     self.restoreProgressState()
     self.logMessage(self.tr("Process of Validation Map creating is finised"))
 
   def tabChanged(self, index):
+    gc.collect()
+    #if self.tabWidget.currentWidget() == self.tabModel:
+    #  self.__modelChanged()
     if  index == 1:     # tabCorrelationChecking
       self.__populateRasterNames()
 
 # ******************************************************************************
-
-  def __tabWidgetChanged(self):
-    gc.collect()
-    #if self.tabWidget.currentWidget() == self.tabModel:
-    #  self.__modelChanged()
 
   def __populateLayers(self):
     layers = utils.getRasterLayers()
