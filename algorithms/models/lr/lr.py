@@ -107,13 +107,14 @@ class LR(QObject):
         out_scl = self.logreg.predict_proba(input)[0]
         # Calculate the confidence:
         out_scl.sort()
-        return out_scl[-1] - out_scl[-2]
+        return int(100 * (out_scl[-1] - out_scl[-2]) )
 
     def outputTransitions(self, input):
         '''
-        Return transition potencial of the oututs
+        Return transition potential of the outputs
         '''
         out_scl = self.logreg.predict_proba(input)[0]
+        out_scl = [int(100 * x) for x in out_scl]
         result = {}
         for r, v in enumerate(out_scl):
             cat = self.catlist[r]
@@ -140,17 +141,17 @@ class LR(QObject):
             for f in factors:
                 f.normalize(mode = 'mean')
 
-            predicted_band  = np.zeros([rows, cols])
-            confidence_band = np.zeros([rows, cols])
+            predicted_band  = np.zeros([rows, cols], dtype=np.uint8)
+            confidence_band = np.zeros([rows, cols], dtype=np.uint8)
             if calcTransitions:
                 self.transitionPotentials = {}
                 for cat in self.catlist:
-                    self.transitionPotentials[cat] = np.zeros([rows, cols])
+                    self.transitionPotentials[cat] = np.zeros([rows, cols], dtype=np.uint8)
 
             self.sampler = Sampler(state, factors, ns=self.ns)
             mask = state.getBand(1).mask.copy()
             if mask.shape == ():
-                mask = np.zeros([rows, cols])
+                mask = np.zeros([rows, cols], dtype=np.bool)
             self.updateProgress.emit()
             self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
             for i in xrange(rows):
@@ -172,8 +173,8 @@ class LR(QObject):
                         else: # Input sample is incomplete => mask this pixel
                             mask[i, j] = True
                 self.updateProgress.emit()
-            predicted_bands  = [np.ma.array(data = predicted_band, mask = mask)]
-            confidence_bands = [np.ma.array(data = confidence_band, mask = mask)]
+            predicted_bands  = [np.ma.array(data = predicted_band,  mask = mask, dtype=np.uint8)]
+            confidence_bands = [np.ma.array(data = confidence_band, mask = mask, dtype=np.uint8)]
 
             self.prediction = Raster()
             self.prediction.create(predicted_bands, geodata)
@@ -182,7 +183,7 @@ class LR(QObject):
 
             if calcTransitions:
                 for cat in self.catlist:
-                    band = [np.ma.array(data=self.transitionPotentials[cat], mask=mask)]
+                    band = [np.ma.array(data=self.transitionPotentials[cat], mask=mask, dtype=np.uint8)]
                     self.transitionPotentials[cat] = Raster()
                     self.transitionPotentials[cat].create(band, geodata)
         except MemoryError:
@@ -239,6 +240,7 @@ class LR(QObject):
         size = len(self.sampler.data)
 
         self.data = self.sampler.data
+        self.catlist = np.unique(self.data['output'])
 
     def train(self):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
@@ -258,7 +260,6 @@ class LR(QObject):
 
     def setOutput(self, output):
         self.output = output
-        self.catlist = output.getBandGradation(1)
 
     def setMode(self, mode):
         self.mode = mode
