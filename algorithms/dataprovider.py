@@ -60,7 +60,7 @@ class Raster(object):
         self.setBand(r, bandNum)
 
     def create(self, bands, geodata):
-        self.bands = np.ma.array(bands, dtype=float)
+        self.bands = np.ma.array(bands)
         self.bandcount = len(bands)
         #for i in range(1, self.bandcount+1):
         #    self.bandgradation[i] = None
