@@ -86,6 +86,7 @@ class TestWoEManager (unittest.TestCase):
         w.train()
         #print w.woe
         p = w.getPrediction(initState).getBand(1)
+        self.assertEquals(p.dtype, np.uint8)
 
         # Calculate by hands:
         #1->1 transition raster:
@@ -175,6 +176,9 @@ class TestWoEManager (unittest.TestCase):
         w = WoeManager([initState], aa, bins = {0: [[2], ],})
         w.train()
         p = w.getPrediction(initState).getBand(1)
+        self.assertEquals(p.dtype, np.uint8)
+        c = w.getConfidence().getBand(1)
+        self.assertEquals(c.dtype, np.uint8)
 
 if __name__ == "__main__":
     unittest.main()

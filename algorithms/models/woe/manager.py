@@ -3,6 +3,7 @@
 from os.path import basename
 
 import numpy as np
+import gc
 
 from PyQt4.QtCore import *
 
@@ -133,9 +134,9 @@ class WoeManager(QObject):
             if not self.changeMap.geoDataMatch(state):
                 raise WoeManagerError('Geometries of the state and changeMap rasters are different!')
 
-            prediction = np.zeros((rows,cols))
-            confidence = np.zeros((rows,cols))
-            mask = np.zeros((rows,cols))
+            prediction = np.zeros((rows,cols), dtype=np.uint8)
+            confidence = np.zeros((rows,cols), dtype=np.uint8)
+            mask = np.zeros((rows,cols), dtype=np.byte)
 
             stateBand = state.getBand(1)
 
@@ -158,15 +159,15 @@ class WoeManager(QObject):
                             if w > currMax:
                                 indexMax, oldMax, currMax = code, currMax, w
                         prediction[r,c] = indexMax
-                        confidence[r,c] = sigmoid(currMax) - sigmoid(oldMax)
+                        confidence[r,c] = int(100*(sigmoid(currMax) - sigmoid(oldMax)))
                     except ValueError:
                         mask[r,c] = 1
                 self.updateProgress.emit()
 
-            predicted_band = np.ma.array(data=prediction, mask=mask)
+            predicted_band = np.ma.array(data=prediction, mask=mask, dtype=np.uint8)
             self.prediction = Raster()
             self.prediction.create([predicted_band], self.geodata)
-            confidence_band = np.ma.array(data=confidence, mask=mask)
+            confidence_band = np.ma.array(data=confidence, mask=mask, dtype=np.uint8)
             self.confidence = Raster()
             self.confidence.create([confidence_band], self.geodata)
         except MemoryError:
@@ -211,13 +212,16 @@ class WoeManager(QObject):
                         wMap = wMap + weights
                         factorW[i] = woeRes['weights']
                     self.updateProgress.emit()
+
                 # Reclassification finished => set WoE coefficients
                 self.woe[code]=wMap             # WoE for all factors and the transition code.
 
-                # Potentials are WoE map rescaled to [0,1]
+                # Potentials are WoE map rescaled to 0--100 percents
+                band = (sigmoid(wMap)*100).astype(np.uint8)
                 p = Raster()
-                p.create([sigmoid(wMap)], self.geodata)
+                p.create([band], self.geodata)
                 self.transitionPotentials[code] = p
+                gc.collect()
         except MemoryError:
             self.errorReport.emit('The system out of memory during WoE trainig')
             raise
