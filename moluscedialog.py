@@ -1284,7 +1284,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     r = Raster(unicode(layer.source()))
     stat = r.getBandStat(1)
     minVal = 0.0
-    maxVal = 1.0
+    maxVal = 100.0
     numberOfEntries = 11
 
     entryValues = []
