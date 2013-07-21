@@ -25,7 +25,7 @@ class FormatConverter(object):
             np.dtype('bool'): (gdal.GDT_Byte, 255),
             np.dtype('int'): (gdal.GDT_Int32, 2147483647),   #!!!
             np.dtype('int8'): (gdal.GDT_Int16, 32767),
-            np.dtype('int16'): (gdal.GDT_Int16, 65535),
+            np.dtype('int16'): (gdal.GDT_Int16, 32767),
             np.dtype('int32'): (gdal.GDT_Int32, 2147483647),
             np.dtype('int64'): (gdal.GDT_Int32, 2147483647),       #!!!
             np.dtype('uint8'): (gdal.GDT_Byte, 255),
