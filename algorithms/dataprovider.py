@@ -39,6 +39,7 @@ class FormatConverter(object):
         }
 
 class Raster(object):
+    # TODO use dtypes for raster inutialization
     def __init__(self, filename=None, maskVals=None):
         if filename == "":
             raise ProviderError("File name can't be empty string!")
@@ -49,7 +50,7 @@ class Raster(object):
         self.geodata  = None     # Georeferensing information
         self.stat     = None     # Initial (before normalizing) statistic (means and stds) of the bands
         self.isNormalazed = None # Is the bands of the raster normalized? It contains the mode of normalization.
-        #self.bandgradation = dict() # Dict for store lists of bands categories
+        self.bandgradation = dict() # Dict for store lists of bands categories
         if self.filename: self._read()
 
     def binaryzation(self, trueVals, bandNum):
@@ -145,8 +146,13 @@ class Raster(object):
         '''
         Return list of categories of raster's band
         '''
-        band = self.getBand(bandNo)
-        return get_gradations(band.compressed())
+        try:
+            res = self.bandgradation[bandNo]
+        except KeyError:
+            band = self.getBand(bandNo)
+            res = get_gradations(band.compressed())
+            self.bandgradation[bandNo] = res
+        return res
 
     def getBandStat(self, bandNo):
         '''

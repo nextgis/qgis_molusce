@@ -186,6 +186,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except MemoryError:
       self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
       raise
+    gc.collect()
 
   def setFinalRaster(self):
     try:
@@ -210,6 +211,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except MemoryError:
       self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
       raise
+    gc.collect()
 
   def addFactor(self):
     layerNames = self.lstLayers.selectedItems()
@@ -250,6 +252,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
         raise
         return
+    gc.collect()
 
   def removeFactor(self):
     layerNames = self.lstFactors.selectedItems()
@@ -278,6 +281,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.inputs["bandCount"] = self.__bandCount()
 
       self.logMessage(self.tr("Removed factor layer %s") % (layerName))
+      gc.collect()
 
   def removeAllFactors(self):
     self.lstFactors.clear()
@@ -320,7 +324,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       return
     QMessageBox.warning(self,
                           self.tr("Geometry is matched"),
-                          self.tr("Geometries of the rasters is matched!" )
+                          self.tr("Geometries of the rasters are matched!" )
                          )
 
   def correlationChecking(self):
@@ -341,6 +345,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.tblCorrelation.resizeRowsToContents()
     self.tblCorrelation.resizeColumnsToContents()
+    gc.collect()
 
   def startUpdateStatisticsTable(self):
     if not utils.checkInputRasters(self.inputs):
