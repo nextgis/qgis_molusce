@@ -51,7 +51,7 @@ class AreaAnalyst(QObject):
 
         if second != None:
             self.categoriesSecond = second.getBandGradation(1)
-            first, second = masks_identity(first.getBand(1), second.getBand(1))
+            first, second = masks_identity(first.getBand(1), second.getBand(1), dtype=np.uint8)
 
         self.first = first
         self.second = second

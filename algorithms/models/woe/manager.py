@@ -206,7 +206,7 @@ class WoeManager(QObject):
                         band = fact.getBand(i)
                         if bin and bin[i-1]: #
                             band = reclass(band, bin[i-1])
-                        band, sites = masks_identity(band, sites)   # Combine masks of the rasters
+                        band, sites = masks_identity(band, sites, dtype=np.uint8)   # Combine masks of the rasters
                         woeRes = woe(band, sites, self.unit_cell)   # WoE for the 'code' (initState->finalState) transition and current 'factor'.
                         weights = woeRes['map']
                         wMap = wMap + weights

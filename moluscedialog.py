@@ -426,6 +426,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.analyst.processFinished.disconnect(self.workThread.quit)
     self.restoreProgressState()
     self.logMessage(self.tr("Change Map is created"))
+    gc.collect()
 
   def startSimulation(self):
     if not utils.checkInputRasters(self.inputs):
@@ -626,6 +627,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.valCanvas.draw()
     self.logMessage(self.tr("Validation process is finished"))
+    gs.collect()
 
   def startKappaValidation(self):
     try:
@@ -681,8 +683,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     # % of Correctness
     percent = self.depCoef.correctness()
     self.leKappaCorrectness.setText("%6.5f" % (percent))
-    self.depCoef = None
+    del self.depCoef
     self.logMessage(self.tr("Kappa validation process is finished"))
+    gc.collect()
 
   def createValidationMap(self):
     try:
