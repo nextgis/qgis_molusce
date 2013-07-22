@@ -915,6 +915,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
                 item = QTableWidgetItem(unicode(coef))
               self.tblCorrelation.setItem(labNo1, labNo2, item)
               self.showProgress()
+    try:
+      del depCoef
+    except NameError:
+      pass
     self.restoreProgressState()
 
   def __checkTwoCorr(self):
@@ -975,6 +979,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
               corr = depCoef.jiu()
               item = QTableWidgetItem(unicode(corr))
           self.tblCorrelation.setItem(row, col, item)
+    try:
+      del depCoef
+    except NameError:
+      pass
 
   def __drawTransitionStat(self):
     if not self.inputs.has_key("crosstab"):

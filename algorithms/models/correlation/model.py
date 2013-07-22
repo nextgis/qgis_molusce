@@ -64,8 +64,12 @@ class DependenceCoef(QObject):
         '''
         Define correlation coefficient of the rasters.
         '''
-        R = np.ma.corrcoef(self.X.flatten(),self.Y.flatten())
-        # function np.corrcoef return array of coefficients
+        x, y = masks_identity(self.X.flatten(), self.Y.flatten())
+        x, y = np.ma.compressed(x), np.ma.compressed(y)
+        R = np.corrcoef(x, y)
+        del x
+        del y
+        # function np.corrcoef returns array of coefficients
         # R[0][0] = R[1][1] = 1.0 - correlation X--X and Y--Y
         # R[0][1] = R[1][0] - correlation X--Y and Y--X
 
