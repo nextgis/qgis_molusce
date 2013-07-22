@@ -958,7 +958,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
           if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
               item = QTableWidgetItem(unicode(self.tr("Not applicable")))
           else:
-              corr = depCoef.kappa(mode=None)
+              corr = depCoef.jiu()
               item = QTableWidgetItem(unicode(corr))
           self.tblCorrelation.setItem(row, col, item)
 
