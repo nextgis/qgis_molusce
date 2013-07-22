@@ -51,7 +51,7 @@ class AreaAnalyst(QObject):
 
         if second != None:
             self.categoriesSecond = second.getBandGradation(1)
-            first, second = masks_identity(first.getBand(1), second.getBand(1))
+            first, second = masks_identity(first.getBand(1), second.getBand(1), dtype=np.uint8)
 
         self.first = first
         self.second = second
@@ -110,7 +110,7 @@ class AreaAnalyst(QObject):
 
     def makeChangeMap(self):
         rows, cols = self.geodata['ySize'], self.geodata['xSize']
-        band = np.zeros([rows, cols])
+        band = np.zeros([rows, cols], dtype=np.int16)
 
         f, s = self.first, self.second
         if self.initRaster == None:
@@ -132,7 +132,7 @@ class AreaAnalyst(QObject):
                         else:
                             band[i, j] = self.encode(r, c)
                 self.updateProgress.emit()
-            bands = [np.ma.array(data = band, mask = f.mask)]
+            bands = [np.ma.array(data = band, mask = f.mask, dtype=np.int16)]
             raster = Raster()
             raster.create(bands, self.geodata)
             self.changeMap = raster

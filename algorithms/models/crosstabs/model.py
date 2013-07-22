@@ -33,7 +33,7 @@ class CrossTable(QObject):
         if not sizes_equal(band1, band2):
             raise CrossTabError('Sizes of rasters are not equal!')
 
-        band1, band2 = masks_identity(band1, band2)
+        band1, band2 = masks_identity(band1, band2, dtype=np.uint8)
 
         self.X = np.ma.compressed(band1).flatten()
         self.Y = np.ma.compressed(band2).flatten()
@@ -42,7 +42,7 @@ class CrossTable(QObject):
         self.graduation_x = get_gradations(self.X)
         self.graduation_y = get_gradations(self.Y)
         if expand:
-            self.graduation_x = list(set(self.graduation_x+self.graduation_y))
+            self.graduation_x = list(set(self.graduation_x + self.graduation_y))
             self.graduation_y = self.graduation_x
 
         rows, cols = len(self.graduation_x), len(self.graduation_y)

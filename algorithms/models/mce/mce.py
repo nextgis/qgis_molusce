@@ -151,14 +151,14 @@ class MCE(QObject):
 
             # Calculate summary map of factors weights
             # Transition potentials:
-            #   in the implenentation potential equals confidence (two-class implementation)
+            #   current implementation: potential and confidence are equal (two-class implementation)
             # Confidence:
-            #   confidence is summary map of factors, if current state = self.initState
+            #   confidence is summary map of factors scaled to 0-100, if current state = self.initState
             #   confidence is 0, if current state != self.initState
             # Prediction:
             #   predicted value is a constant = areaAnalyst.encode(initStateNum, finalStateNum), if current state = self.initState
             #   predicted value is the transition code current_state -> current_state, if current state != self.initState
-            confidence = np.zeros((rows,cols))
+            confidence = np.zeros((rows,cols), dtype=np.uint8)
             weights = self.getWeights()
             weightNum = 0               # Number of processed weights
             for f in self.factors:
@@ -167,7 +167,7 @@ class MCE(QObject):
                 f.normalize(mode = 'maxmin')
                 for i in xrange(f.getBandsCount()):
                     band = f.getBand(i+1)
-                    confidence = confidence + band*weights[weightNum]
+                    confidence = confidence + (band*weights[weightNum]*100).astype(np.uint8)
                     mask = np.ma.mask_or(mask, band.mask)
                     weightNum = weightNum + 1
             confidence = confidence*initStateMask
@@ -178,10 +178,10 @@ class MCE(QObject):
                 else:
                     prediction[prediction==code] = self.areaAnalyst.encode(self.initStateNum, self.finalStateNum)
 
-            predicted_band = np.ma.array(data=prediction, mask=mask)
+            predicted_band = np.ma.array(data=prediction, mask=mask, dtype=np.uint8)
             self.prediction = Raster()
             self.prediction.create([predicted_band], geodata)
-            confidence_band = np.ma.array(data=confidence, mask=mask)
+            confidence_band = np.ma.array(data=confidence, mask=mask, dtype=np.uint8)
             self.confidence = Raster()
             self.confidence.create([confidence_band], geodata)
 

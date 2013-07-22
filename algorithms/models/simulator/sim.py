@@ -76,7 +76,7 @@ class Simulator(QObject):
         state = self.getState()
         b = state.getBand(1)
         a = answer.getBand(1)
-        diff = (a-b).astype(int)
+        diff = (a-b).astype(np.int16)
         result = Raster()
         result.create([diff], state.getGeodata())
         return result
@@ -108,7 +108,7 @@ class Simulator(QObject):
         self.updatePrediction(self.state)
         changes = self.getPrediction().getBand(1)   # Predicted change map
         state = self.getState()
-        new_state = state.getBand(1).copy()         # New states (the result of simulation) will be stored there.
+        new_state = state.getBand(1).copy().astype(np.uint8)    # New states (the result of simulation) will be stored there.
 
         self.rangeChanged.emit(self.tr("Area Change Analysis %p%"), 2)
         self.updateProgress.emit()

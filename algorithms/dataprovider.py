@@ -25,7 +25,7 @@ class FormatConverter(object):
             np.dtype('bool'): (gdal.GDT_Byte, 255),
             np.dtype('int'): (gdal.GDT_Int32, 2147483647),   #!!!
             np.dtype('int8'): (gdal.GDT_Int16, 32767),
-            np.dtype('int16'): (gdal.GDT_Int16, 65535),
+            np.dtype('int16'): (gdal.GDT_Int16, 32767),
             np.dtype('int32'): (gdal.GDT_Int32, 2147483647),
             np.dtype('int64'): (gdal.GDT_Int32, 2147483647),       #!!!
             np.dtype('uint8'): (gdal.GDT_Byte, 255),
@@ -38,8 +38,8 @@ class FormatConverter(object):
             np.dtype('float64'): (gdal.GDT_Float64,  -9999),
         }
 
-
 class Raster(object):
+    # TODO use dtypes for raster inutialization
     def __init__(self, filename=None, maskVals=None):
         if filename == "":
             raise ProviderError("File name can't be empty string!")
@@ -50,7 +50,7 @@ class Raster(object):
         self.geodata  = None     # Georeferensing information
         self.stat     = None     # Initial (before normalizing) statistic (means and stds) of the bands
         self.isNormalazed = None # Is the bands of the raster normalized? It contains the mode of normalization.
-        #self.bandgradation = dict() # Dict for store lists of bands categories
+        self.bandgradation = dict() # Dict for store lists of bands categories
         if self.filename: self._read()
 
     def binaryzation(self, trueVals, bandNum):
@@ -60,7 +60,7 @@ class Raster(object):
         self.setBand(r, bandNum)
 
     def create(self, bands, geodata):
-        self.bands = np.ma.array(bands, dtype=float)
+        self.bands = np.ma.array(bands)
         self.bandcount = len(bands)
         #for i in range(1, self.bandcount+1):
         #    self.bandgradation[i] = None
@@ -146,8 +146,13 @@ class Raster(object):
         '''
         Return list of categories of raster's band
         '''
-        band = self.getBand(bandNo)
-        return get_gradations(band.compressed())
+        try:
+            res = self.bandgradation[bandNo]
+        except KeyError:
+            band = self.getBand(bandNo)
+            res = get_gradations(band.compressed())
+            self.bandgradation[bandNo] = res
+        return res
 
     def getBandStat(self, bandNo):
         '''

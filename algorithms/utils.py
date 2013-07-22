@@ -37,14 +37,14 @@ def binaryzation( raster, trueList ):
     res = in1d(data, trueList)
     res.shape = shape
     data.shape = shape
-    return np.ma.array(data=res, mask=mask)
+    return np.ma.array(data=res, mask=mask, dtype=np.bool)
 
 
 def get_gradations(band):
     return list(np.unique(np.array(band)))
 
 
-def masks_identity(X, Y):
+def masks_identity(X, Y, dtype=None):
     '''
     A raster has a mask. This function verifies the identity of the raster's masks.
     If the masks are not equal, we have to do both raster mask identical
@@ -56,8 +56,12 @@ def masks_identity(X, Y):
     maskY = Y.mask
     mask = np.ma.mask_or(maskX, maskY)
 
-    X = np.ma.array(X, mask = mask)
-    Y = np.ma.array(Y, mask = mask)
+    if dtype==None:
+        X = np.ma.array(X, mask = mask)
+        Y = np.ma.array(Y, mask = mask)
+    else:
+        X = np.ma.array(X, mask = mask, dtype=dtype)
+        Y = np.ma.array(Y, mask = mask, dtype=dtype)
     return X, Y
 
 def reclass(X, bins):

@@ -71,7 +71,7 @@ class EBudget(QObject):
         R = referenceMap.getBand(1)
         S = simulatedMap.getBand(1)
         self.shape = R.shape
-        R, S = masks_identity(R,S)
+        R, S = masks_identity(R,S, dtype=np.uint8)
 
         # Array for weight
         self.W = np.ones(self.shape)

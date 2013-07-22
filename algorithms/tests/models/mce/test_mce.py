@@ -55,18 +55,21 @@ class TestMCE(unittest.TestCase):
             [False, False, True]
         ]
         p = mce.getPrediction(self.state).getBand(1)
+        self.assertEquals(p.dtype, np.uint8)
         answer = [      # The locations where the big numbers are stored must be masked (see mask and self.state)
-            [1, 3, 1],
-            [1, 3, 1],
+            [1,   3, 1],
+            [1,   3, 1],
             [100, 1, 100]
         ]
         answer = np.ma.array(data = answer, mask = mask)
         assert_almost_equal(p, answer)
+
         c = mce.getConfidence().getBand(1)
+        self.assertEquals(c.dtype, np.uint8)
         answer = [      # The locations where the big numbers are stored must be masked (see mask and self.state)
-            [1.0/3,  0,  1  ],
-            [1,     0,  1.0/3],
-            [1000,  1,  1000]
+            [sum((w*100).astype(int))/3,   0,  sum((w*100).astype(int))],
+            [sum((w*100).astype(int)),     0,  sum((w*100).astype(int))/3],
+            [10000,  sum((w*100).astype(int)),  10000]
         ]
         answer = np.ma.array(data = answer, mask = mask)
         assert_almost_equal(c, answer)
