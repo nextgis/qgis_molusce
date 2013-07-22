@@ -627,7 +627,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.valCanvas.draw()
     self.logMessage(self.tr("Validation process is finished"))
-    gs.collect()
+    gc.collect()
 
   def startKappaValidation(self):
     try:
