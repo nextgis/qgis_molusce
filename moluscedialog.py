@@ -119,8 +119,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.chkTransitionPotentials.toggled.connect(self.__toggleLineEdit)
 
     self.btnSelectRiskFunction.clicked.connect(self.__selectSimulationOutput)
-    self.btnSelectRiskValidation.clicked.connect(self.createValidationMap)
+    self.btnSelectTransitionPrefix.clicked.connect(self.__selectSimulationOutput)
     self.btnSelectMonteCarlo.clicked.connect(self.__selectSimulationOutput)
+    self.btnSelectRiskValidation.clicked.connect(self.createValidationMap)
 
     self.btnStartSimulation.clicked.connect(self.startSimulation)
 
@@ -1126,6 +1127,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.spnIterations.setEnabled(checked)
     elif senderName == "chkTransitionPotentials":
       self.leTransitionPotentialPrefix.setEnabled(checked)
+      self.btnSelectTransitionPrefix.setEnabled(checked)
 
   def __selectSamplesOutput(self):
     if not "model" in self.inputs:
@@ -1173,6 +1175,15 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def __selectSimulationOutput(self):
     senderName = self.sender().objectName()
 
+    if senderName == "btnSelectTransitionPrefix":
+      dirname = utils.openDirectoryDialog(self,
+                                          self.settings,
+                                          self.tr("Select Directory name")
+      )
+      oldprefix = os.path.basename(self.leTransitionPotentialPrefix.text())
+      self.leTransitionPotentialPrefix.setText(dirname+'/'+oldprefix)
+      return
+
     fileName = utils.saveRasterDialog(self,
                                       self.settings,
                                       self.tr("Save file"),
@@ -1187,8 +1198,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
     elif senderName == "btnSelectMonteCarlo":
       self.leMonteCarloPath.setText(fileName)
       self.leSimulatedMapPath.setText(fileName)
-      oldprefix = os.path.basename(self.leTransitionPotentialPrefix.text())
-      self.leTransitionPotentialPrefix.setText(dirname+'/'+oldprefix)
 
   def __toggleCorrLayers(self, state):
     if state == Qt.Checked:

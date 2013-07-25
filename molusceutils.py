@@ -140,6 +140,17 @@ def openRasterDialog(parent, settings, title, fileFilter):
 
   return fileName
 
+def openDirectoryDialog(parent, settings, title):
+  lastDir = settings.value("ui/lastRasterDir", ".")
+  destDir = QFileDialog.getExistingDirectory(parent,
+                                            title,
+                                            lastDir,
+                                            QFileDialog.ShowDirsOnly
+  )
+  if destDir == "":
+    return ""
+  return  destDir
+
 def checkInputRasters(userData):
   if ("initial" in userData) and ("final" in userData):
     return True
