@@ -74,7 +74,7 @@ class AboutDialog(QDialog, Ui_Dialog):
     return self.tr("""<p>Modules for Land Use Change Simulations.</p>
 <p>Plugin provides a set of algorithms for land use change simulations such as
 ANN, LR, WoE, MCE. There is also validation using kappa statistics.</p>
-<p>Developed by <a href="http://nextgis.org">NextGIS</a> for <a href="http://www.asiaairsurvey.com/">Asia Air Survey</a>.</p>
+<p>Developed by <a href="http://www.asiaairsurvey.com/">Asia Air Survey</a> and <a href="http://nextgis.org">NextGIS</a>.</p>
 <p><strong>Homepage</strong>: <a href="http://hub.qgis.org/projects/molusce">http://hub.qgis.org/projects/molusce</a></p>
 <p>Please report bugs at <a href="http://hub.qgis.org/projects/molusce/issues">bugtracker</a></p>
 """)
