@@ -801,7 +801,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.cmbUnits.addItems([
                                        self.tr("raster units"),
                                        self.tr("sq. km."),
-                                       self.tr("sq. ha")
+                                       self.tr("ha")
                                      ])
 
   def __populateSimulationMethods(self):
@@ -995,7 +995,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     displayUnits = self.cmbUnits.currentText()
     if displayUnits == self.tr("sq. km."):
       denominator = 1000000
-    elif displayUnits == self.tr("sq. ha"):
+    elif displayUnits == self.tr("ha"):
       denominator = 10000
     else:
       denominator = 1.0
