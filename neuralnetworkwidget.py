@@ -106,7 +106,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
 
     if self.leTopology.text() == "":
       QMessageBox.warning(self.plugin,
-                          self.tr("Wriong network topology"),
+                          self.tr("Wrong network topology"),
                           self.tr("Network topology is undefined. Please define it and try again")
                          )
       return

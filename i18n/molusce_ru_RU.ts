@@ -734,7 +734,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="107"/>
-        <source>Wriong network topology</source>
+        <source>Wrong network topology</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

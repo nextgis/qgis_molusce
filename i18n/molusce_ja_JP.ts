@@ -750,7 +750,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="107"/>
-        <source>Wriong network topology</source>
+        <source>Wrong network topology</source>
         <translatorcomment>misspelling for wrong</translatorcomment>
         <translation>ネットワーク・トポロジーに間違いがあります</translation>
     </message>
