@@ -17,7 +17,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Enter either Number of intervals (min 2) or Bin breaks:</string>
+      <string>Enter either Number of intervals (min 2) or Range breaks:</string>
      </property>
     </widget>
    </item>
@@ -34,7 +34,7 @@
    <item row="5" column="0">
     <widget class="QPushButton" name="btnResetBins">
      <property name="text">
-      <string>Calculate Bins</string>
+      <string>Calculate Range breaks</string>
      </property>
     </widget>
    </item>
