@@ -96,7 +96,7 @@ class Sampler(QObject):
         Split state category value into set of dummy variables and save them in a dictionary.
         self.stateCategories[-1] is base category.
         For example:
-            self.stateCategories = [1,2,3] => dummy vars are [V1, V2]: cat1 = [1, 0], cat2 = [0, 1], cat3 = [0 ,0]
+            if self.stateCategories = [1,2,3] then dummy vars are [V1, V2]: cat1 = [1, 0], cat2 = [0, 1], cat3 = [0 ,0]
         '''
         for cat in self.stateCategories[:-1]:
             vect = np.zeros(self.categoriesCount-1)
