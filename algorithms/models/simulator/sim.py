@@ -128,7 +128,9 @@ class Simulator(QObject):
                 if initClass == finalClass: continue
 
                 # TODO: Calculate number of pixels to be moved via TransitoionMatrix and state raster
-                n = transition.getTransition(initClass, finalClass)   # Number of pixels to be moved (constant count now).
+                n = transition.getTransition(initClass, finalClass)   # Number of pixels that have to be
+                                                                      # changed the categories
+                                                                      # (use TransitoionMatrix only).
                 if n==0:
                     continue
                 # Find n appropriate places for transition initClass -> finalClass
