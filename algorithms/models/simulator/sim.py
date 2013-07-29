@@ -144,12 +144,13 @@ class Simulator(QObject):
                 if n >0:
                     # Find n places with highest confidence of traisition initClass -> finalClass
                     confidence = self.getConfidence().getBand(1)
-                    confidence = confidence * places # The higher is number in cell, the higer is probability of transition in the cell.
 
-                    sortedConf = np.argsort(-confidence, axis=None)
-                    sortedConf = sortedConf[:n]
-                    ind = [np.unravel_index(i, confidence.shape) for i in sortedConf]
-                    indices = [(ind[i][0], ind[i][1]) for i in xrange(n)]
+                    indices = []
+                    for i in range(n):
+                        ind = confidence.argmax()
+                        ind = np.unravel_index(ind, confidence.shape)
+                        indices.append(ind)
+                        confidence[ind] = 0
 
                     # Now "indices" contains indices of the appropriate places,
                     # make transition initClass -> finalClass
