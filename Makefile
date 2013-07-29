@@ -41,7 +41,7 @@ clean:
 	rm -f *.zip
 
 package:
-	cd .. && rm -f *.zip && zip -r molusce.zip molusce -x \*.pyc \*.ui \*.qrc \*.pro \*~ \*.git\* \*tests\models \*tests\*py  \*Makefile*
+	cd .. && rm -f *.zip && zip -r molusce.zip molusce -x \*.pyc \*.ui \*.qrc \*.pro \*~ \*.git\* \*.idea\* \*tests\models \*tests\*py  \*Makefile*
 	mv ../molusce.zip .
 
 upload:
