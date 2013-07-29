@@ -142,15 +142,9 @@ class Simulator(QObject):
                     QCoreApplication.processEvents()
                     n = placesCount
                 if n >0:
-                    # Find n places with highest confidence of traisition initClass -> finalClass
-                    confidence = self.getConfidence().getBand(1)
-
-                    indices = []
-                    for i in range(n):
-                        ind = confidence.argmax()
-                        ind = np.unravel_index(ind, confidence.shape)
-                        indices.append(ind)
-                        confidence[ind] = 0
+                    confidence = np.ma.filled(confidence, 0)
+                    ind = confidence.argsort(axis=None)[-n:]
+                    indices = [np.unravel_index(i, confidence.shape) for i in ind]
 
                     # Now "indices" contains indices of the appropriate places,
                     # make transition initClass -> finalClass
