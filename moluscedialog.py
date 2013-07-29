@@ -690,7 +690,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def createValidationMap(self):
     try:
-      reference = Raster(unicode(self.leReferenceMapPath.text()))
+      layerSource = unicode(self.leReferenceMapPath.text())
+      reference = Raster(layerSource, utils.getLayerMaskBySource(layerSource))
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
@@ -698,7 +699,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
       return
     try:
-      simulated = Raster(unicode(self.leSimulatedMapPath.text()))
+      layerSource = unicode(self.leSimulatedMapPath.text())
+      simulated = Raster(layerSource, utils.getLayerMaskBySource(layerSource))
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
