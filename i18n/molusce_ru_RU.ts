@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0">
+<!DOCTYPE TS><TS version="2.0" language="ru_RU" sourcelanguage="az">
 <context>
     <name>AboutDialog</name>
     <message>
         <location filename="aboutdialog.py" line="50"/>
         <source>Version: %s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Версия: %s</translation>
     </message>
     <message>
         <location filename="aboutdialog.py" line="74"/>
@@ -16,7 +16,11 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Homepage&lt;/strong&gt;: &lt;a href=&quot;http://hub.qgis.org/projects/molusce&quot;&gt;http://hub.qgis.org/projects/molusce&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Please report bugs at &lt;a href=&quot;http://hub.qgis.org/projects/molusce/issues&quot;&gt;bugtracker&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;p&gt;Modules for Land Use Change Simulations.&lt;/p&gt;
+&lt;p&gt;Плагин содержит набор методов и алгоритмов для анализа изменений территорий, таких как нейронные сети (многослойный перцептрон), логистическая регрессия, метод значимости признака (weight of evidence), метод многокритериальной оценки на основе метода Саати. Модуль также предоставляет процедуры оценки качества полученного прогноза.&lt;/p&gt;
+&lt;p&gt;Создан &lt;a href=&quot;http://www.asiaairsurvey.com/&quot;&gt;Asia Air Survey&lt;/a&gt; и &lt;a href=&quot;http://nextgis.org&quot;&gt;NextGIS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Домашняя страница&lt;/strong&gt;: &lt;a href=&quot;http://hub.qgis.org/projects/molusce&quot;&gt;http://hub.qgis.org/projects/molusce&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Отчеты об ошибках отправляйте &lt;a href=&quot;http://hub.qgis.org/projects/molusce/issues&quot;&gt;в багтрекер&lt;/a&gt;&lt;/p&gt;</translation>
     </message>
 </context>
 <context>

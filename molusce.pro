@@ -20,3 +20,4 @@ FORMS = ui/moluscedialogbase.ui \
 
 TRANSLATIONS = i18n/molusce_ru_RU.ts \
                i18n/molusce_ja_JP.ts \
+               i18n/molusce_it_IT.ts \
