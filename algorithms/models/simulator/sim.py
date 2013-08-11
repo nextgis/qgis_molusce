@@ -137,11 +137,14 @@ class Simulator(QObject):
                 cat_code = analyst.encode(initClass, finalClass)
                 places = (changes==cat_code)      # Array of places where transitions initClass -> finalClass are occured
                 placesCount = np.sum(places)
+
                 if placesCount < n:
                     self.logMessage.emit(self.tr("There are more transitions in the transition matrix, then the model have found"))
                     QCoreApplication.processEvents()
                     n = placesCount
                 if n >0:
+                    confidence = self.getConfidence().getBand(1)
+                    confidence = confidence * places # The higher is number in cell, the higer is probability of transition in the cell.
                     confidence = np.ma.filled(confidence, 0)
                     ind = confidence.argsort(axis=None)[-n:]
                     indices = [np.unravel_index(i, confidence.shape) for i in ind]

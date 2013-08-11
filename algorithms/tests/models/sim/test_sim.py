@@ -85,7 +85,7 @@ class TestSimulator(unittest.TestCase):
 
     def test_compute_table(self):
 
-        # print self.crosstab.getCrosstable().T
+        # print self.crosstab.getCrosstable().getCrosstable()
         # CrossTab:
         #  [[ 3.  1.  0.]
         #   [ 0.  1.  0.]
@@ -96,6 +96,7 @@ class TestSimulator(unittest.TestCase):
                      #  [6.0 5.0 1.0]
                      #  [-- 6.0 1.0]]
         # confidence = self.model.getConfidence()
+        # print confidence.getBand(1)
         # confidence =     [[1.0 0.5  0.33]
                          #  [0.5 0.33 0.25]
                          #  [--  0.25 0.2]]
@@ -113,8 +114,8 @@ class TestSimulator(unittest.TestCase):
         assert_array_equal(result, state)
 
         result = np.array([
+            [2.0, 1.0, 1.0],
             [2.0, 2.0, 1.0],
-            [1.0, 2.0, 1.0],
             [0,   3.0, 1.0]
         ])
         result = np.ma.array(result, mask = (result==0))
