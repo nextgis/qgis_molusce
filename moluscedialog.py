@@ -994,7 +994,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     stat = self.inputs["crosstab"].getTransitionStat()
     dimensions = len(stat["init"])
 
-    units = stat["unit"]
+    units = stat["unit"].lower()
     displayUnits = self.cmbUnits.currentText()
     if displayUnits == self.tr("sq. km."):
       denominator = 1000000
