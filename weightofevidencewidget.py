@@ -132,8 +132,8 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
 
     if not model.checkBins():
       QMessageBox.warning(self.plugin,
-                          self.tr("Wrong binning"),
-                          self.tr("Bins are not correctly specifed. Please specify them and try again")
+                          self.tr("Wrong ranges"),
+                          self.tr("Ranges are not correctly specified. Please specify them and try again (use space as separator)")
                          )
       return
 
@@ -178,8 +178,8 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
             lst[b] = [int(j) for j in reclassList.split(" ")]
           except ValueError:
             QMessageBox.warning(self.plugin,
-                          self.tr("Wrong binning"),
-                          self.tr("Bins are not correctly specifed. Please specify them and try again (use space as separator)")
+                          self.tr("Wrong ranges"),
+                          self.tr("Ranges are not correctly specified. Please specify them and try again (use space as separator)")
                          )
             return {}
       bins[n] = lst

@@ -1141,12 +1141,12 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="weightofevidencewidget.py" line="180"/>
         <source>Wrong binning</source>
-        <translation>範囲の指定が間違っています</translation>
+        <translation type="obsolete">範囲の指定が間違っています</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="134"/>
         <source>Bins are not correctly specifed. Please specify them and try again</source>
-        <translation>範囲が正しく設定されていません。設定のうえ、再試行してください</translation>
+        <translation type="obsolete">範囲が正しく設定されていません。設定のうえ、再試行してください</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="159"/>
@@ -1156,12 +1156,22 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="weightofevidencewidget.py" line="180"/>
         <source>Bins are not correctly specifed. Please specify them and try again (use space as separator)</source>
-        <translation>範囲が正しく設定されていません。設定のうえ、再試行してください（スペースで区切ってください）</translation>
+        <translation type="obsolete">範囲が正しく設定されていません。設定のうえ、再試行してください（スペースで区切ってください）</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="68"/>
         <source>Change map raster is not set. Please create it try again</source>
         <translation type="unfinished">変化図ラスターデータが設定されていません。設定のうえ、再試行してください</translation>
+    </message>
+    <message>
+        <location filename="weightofevidencewidget.py" line="180"/>
+        <source>Wrong ranges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="weightofevidencewidget.py" line="180"/>
+        <source>Ranges are not correctly specified. Please specify them and try again (use space as separator)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

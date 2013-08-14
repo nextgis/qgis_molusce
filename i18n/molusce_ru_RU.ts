@@ -975,23 +975,18 @@ Plugin will not be enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="weightofevidencewidget.py" line="180"/>
-        <source>Wrong binning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="weightofevidencewidget.py" line="134"/>
-        <source>Bins are not correctly specifed. Please specify them and try again</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="weightofevidencewidget.py" line="159"/>
         <source>WoE model trained</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="180"/>
-        <source>Bins are not correctly specifed. Please specify them and try again (use space as separator)</source>
+        <source>Wrong ranges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="weightofevidencewidget.py" line="180"/>
+        <source>Ranges are not correctly specified. Please specify them and try again (use space as separator)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

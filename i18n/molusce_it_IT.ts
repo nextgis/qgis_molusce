@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<!DOCTYPE TS><TS version="2.0" language="it_IT" sourcelanguage="">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -1132,29 +1131,24 @@ Il plugin non sarà abilitato.</translation>
         <translation>Errore nell&apos;inizializzazione</translation>
     </message>
     <message>
-        <location filename="weightofevidencewidget.py" line="180"/>
-        <source>Wrong binning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="weightofevidencewidget.py" line="134"/>
-        <source>Bins are not correctly specifed. Please specify them and try again</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="weightofevidencewidget.py" line="159"/>
         <source>WoE model trained</source>
         <translation>Il training del modello WoE è stato eseguito con successo</translation>
     </message>
     <message>
-        <location filename="weightofevidencewidget.py" line="180"/>
-        <source>Bins are not correctly specifed. Please specify them and try again (use space as separator)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="weightofevidencewidget.py" line="68"/>
         <source>Change map raster is not set. Please create it try again</source>
         <translation>Il raster della mappa dei cambiamenti non è stato impostato. Si prega di crearlo e riprovare</translation>
+    </message>
+    <message>
+        <location filename="weightofevidencewidget.py" line="180"/>
+        <source>Wrong ranges</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="weightofevidencewidget.py" line="180"/>
+        <source>Ranges are not correctly specified. Please specify them and try again (use space as separator)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1199,7 +1193,7 @@ Il plugin non sarà abilitato.</translation>
         <source>P-values</source>
         <translation>P-values</translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
         <location filename="ui/neuralnetworkwidgetbase.ui" line="73"/>
         <source>Δ RMS</source>
         <translation type="obsolete">Δ RMS</translation>
@@ -1289,7 +1283,7 @@ Il plugin non sarà abilitato.</translation>
         <source>Current Validation Kappa</source>
         <translation>Convalida del Kappa attuale </translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
         <location filename="ui/neuralnetworkwidgetbase.ui" line="175"/>
         <source>Δ Overall Accuracy</source>
         <translation>Δ precisione globale</translation>
