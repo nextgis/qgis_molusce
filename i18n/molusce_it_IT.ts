@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="it_IT" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="it_IT">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -10,7 +11,7 @@
     <message>
         <location filename="aboutdialog.py" line="50"/>
         <source>Version: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Versione: %s</translation>
     </message>
     <message>
         <location filename="aboutdialog.py" line="74"/>
@@ -21,7 +22,11 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Homepage&lt;/strong&gt;: &lt;a href=&quot;http://hub.qgis.org/projects/molusce&quot;&gt;http://hub.qgis.org/projects/molusce&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Please report bugs at &lt;a href=&quot;http://hub.qgis.org/projects/molusce/issues&quot;&gt;bugtracker&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Modules for Land Use Change Simulations.&lt;/p&gt;
+&lt;p&gt;Questo Plugin offre un insieme di algoritmi per simulare il cambiamento dell&apos;uso del suolo come ad esempio ANN, LR, WoE, MCE. La convalida è eseguita usando le statistiche kappa.&lt;/p&gt;
+&lt;p&gt;Sviluppato da &lt;a href=&quot;http://www.asiaairsurvey.com/&quot;&gt;Asia Air Survey&lt;/a&gt; e &lt;a href=&quot;http://nextgis.org&quot;&gt;NextGIS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Homepage&lt;/strong&gt;: &lt;a href=&quot;http://hub.qgis.org/projects/molusce&quot;&gt;http://hub.qgis.org/projects/molusce&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Si prega di segnalare i bug nel &lt;a href=&quot;http://hub.qgis.org/projects/molusce/issues&quot;&gt;bugtracker&lt;/a&gt;&lt;/p</translation>
     </message>
 </context>
 <context>
@@ -194,7 +199,7 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
     <message>
         <location filename="ui/moluscedialogbase.ui" line="524"/>
         <source>Validation</source>
-        <translation>Validazione</translation>
+        <translation>Convalida</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="578"/>
@@ -209,12 +214,12 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
     <message>
         <location filename="ui/moluscedialogbase.ui" line="625"/>
         <source>Number of validation iterations</source>
-        <translation>Numero di iterazioni durtante la simulazione</translation>
+        <translation>Numero di iterazioni di convalida</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="737"/>
         <source>Start validation</source>
-        <translation>Inizia validazione</translation>
+        <translation>Inizia convalida</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="658"/>
@@ -290,62 +295,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui/moluscedialogbase.ui" line="126"/>
         <source>Spatial variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Variabili spaziali</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="135"/>
         <source>Check geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Controllo della geometria</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="147"/>
         <source>Evaluating correlation</source>
-        <translation type="unfinished"></translation>
+        <translation>Valutazione della correlazione</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="259"/>
         <source>Transition Potential Modelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Modellizzazione della transizione potenziale</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="380"/>
         <source>Cellular Automata Simulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulazione Cellular Automata</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="398"/>
         <source>Certancy function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funzione di certezza</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="471"/>
         <source>Prefix of transition potential maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Prefisso delle potenziali mappe di transizione</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="484"/>
         <source>potential_</source>
-        <translation type="unfinished"></translation>
+        <translation>Potenziale_</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="564"/>
         <source>Create...</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea...</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="571"/>
         <source>Risk Class Validation Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa di convalida della classe di rischio</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="632"/>
         <source>check persistent classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Controlla le classi persistenti</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="684"/>
         <source>Kappa (overal)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappa (overal)</translation>
     </message>
 </context>
 <context>
@@ -445,7 +450,7 @@ Il plugin non sarà abilitato.</translation>
         <location filename="molusce.py" line="71"/>
         <source>Quantum GIS %s detected.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS %s è stato rilevato.</translation>
     </message>
 </context>
 <context>
@@ -729,223 +734,223 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="moluscedialog.py" line="186"/>
         <source>Set intial layer to %s</source>
-        <translation type="unfinished"></translation>
+        <translation>%s impostato come layer iniziale</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="249"/>
         <source>Memory Error occurred (loading raster %s). Perhaps the system is low on memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si è verificato un errore durante il caricamento del raster %s. Forse il sistema ha memoria insufficiente.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="211"/>
         <source>Set final layer to %s</source>
-        <translation type="unfinished"></translation>
+        <translation>%s impostato come layer finale</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="247"/>
         <source>Added factor layer %s</source>
-        <translation type="unfinished"></translation>
+        <translation>%s aggiunti come variabile spaziale</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="250"/>
         <source>Memory error</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore di memoria</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="250"/>
         <source>Memory error occurred. Perhaps the system is low on memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si è verificato un errore. Forse il sistema ha memoria insufficiente.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="284"/>
         <source>Removed factor layer %s</source>
-        <translation type="unfinished"></translation>
+        <translation>%s rimossi dalle variabili spaziali</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="321"/>
         <source>Different geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometria diversa</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="315"/>
         <source>Geometries of the initial raster and raster &apos;%s&apos; are different!</source>
-        <translation type="unfinished"></translation>
+        <translation>Le geometrie del raster iniziare e finale &apos;%s&apos; sono diverse!</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="321"/>
         <source>Geometries of the initial raster and final raster are different!</source>
-        <translation type="unfinished"></translation>
+        <translation>Le geometrie del raster iniziare e finale sono diverse!</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="326"/>
         <source>Geometry is matched</source>
-        <translation type="unfinished"></translation>
+        <translation>La geometria corrisponde correttamente </translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="326"/>
         <source>Geometries of the rasters are matched!</source>
-        <translation type="unfinished"></translation>
+        <translation>Le geometrie dei file raster corrisponde correttamente!</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="344"/>
         <source>Memory Error occurred (correlation checking). Perhaps the system is low on memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si è verificato un errore (controllo della correlazione). Forse il sistema ha memoria insufficiente.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="429"/>
         <source>Change Map is created</source>
-        <translation type="unfinished"></translation>
+        <translation>La mappa dei cambiamenti è stata creata con successo</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="441"/>
         <source>Prefix of transition potential maps is not set. Please specify it and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Prefisso delle mappe di transizione potenziali non è impostato. Si prega di specificarlo e riprovare nuovamente</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="489"/>
         <source>Simulation process is started</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo di simulatione iniziato</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="551"/>
         <source>Not implemented yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Non ancora implementato</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="551"/>
         <source>Transition potentials not implemented yet for the model.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le transizioni potenziali non sono state ancora implementate per il modello.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="565"/>
         <source>Simulation process is finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo di simulazione concluso</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="594"/>
         <source>Validation process is started</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo di convalida iniziato</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="630"/>
         <source>Validation process is finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo di convalida concluso</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="669"/>
         <source>Kappa validation process is started</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo di convalida kappa iniziato</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="688"/>
         <source>Kappa validation process is finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo di convalida kappa concluso</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="711"/>
         <source>Save validation map</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva mappa di convalida</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="742"/>
         <source>Process of Validation Map creating is started</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo per la creazione della mappa di convalida iniziato</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="761"/>
         <source>Process of Validation Map creating is finised</source>
-        <translation type="unfinished"></translation>
+        <translation>Processo per la creazione della mappa di convalida concluso</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="958"/>
         <source>Pearson&apos;s Correlation</source>
-        <translation type="unfinished"></translation>
+        <translation>Correlazione di Pearson</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="804"/>
         <source>raster units</source>
-        <translation type="unfinished"></translation>
+        <translation>Unità raster</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="999"/>
         <source>sq. km.</source>
-        <translation type="unfinished"></translation>
+        <translation>km²</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1001"/>
         <source>ha</source>
-        <translation type="unfinished"></translation>
+        <translation>ha</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1104"/>
         <source>Artificial Neural Network (Multi-layer Perceptron)</source>
-        <translation type="unfinished"></translation>
+        <translation>Artificial Neural Network (Multi-layer Perceptron)</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="820"/>
         <source>Random</source>
-        <translation type="unfinished"></translation>
+        <translation>Random</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="821"/>
         <source>Stratified</source>
-        <translation type="unfinished"></translation>
+        <translation>Stratificato</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="896"/>
         <source>Correlation checking</source>
-        <translation type="unfinished"></translation>
+        <translation>Controllo Correlazione</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1005"/>
         <source>sq. </source>
-        <translation type="unfinished"></translation>
+        <translation>quadri</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1160"/>
         <source>Can&apos;t save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Il file non può essere salvato</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1160"/>
         <source>Can&apos;t save file: &apos;%s&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Il file &apos;%s&apos; non può essere salvato</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1172"/>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Vi è stato un errore durante il caricamento dello shapefile di output: %s</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1181"/>
         <source>Select Directory name</source>
-        <translation type="unfinished"></translation>
+        <translation>Selezionare il nome della directory</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1233"/>
         <source>The system out of memory during validation procedure</source>
-        <translation type="unfinished"></translation>
+        <translation>Memoria del sistema insufficiente durante la procedura di convalida</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1236"/>
         <source>An unknown error occurs during validation procedure</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore sconosciuto durante la procedura di convalida</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1259"/>
         <source>Can&apos;t load raster %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Il raster %s non può essere caricato</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1343"/>
         <source>Init raster should be in PseudoColor mode. Style not applied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il raster iniziale deve essere in pseudocolor mode. Lo stile non è stato applicato.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1377"/>
         <source>Persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>Persistente</translation>
     </message>
 </context>
 <context>
@@ -1008,22 +1013,22 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="125"/>
         <source>Matrix filled correctly. Consistency value is: %f. The model can be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>La matrice è stata riempita correttamente. Il valore di consistenza è %f. Il modello può essere usato.</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="130"/>
         <source>Please adjust matrix before starting simulation. Consistency value is: %f</source>
-        <translation type="unfinished"></translation>
+        <translation>Si prega di aggiustare la matrice prima di iniziale la simulazione. Il valore di consistenza è %f</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="149"/>
         <source>%s (band %s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s (band %s)</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="157"/>
         <source>Weights</source>
-        <translation type="unfinished"></translation>
+        <translation>Pesi</translation>
     </message>
 </context>
 <context>
@@ -1091,7 +1096,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="neuralnetworkwidget.py" line="108"/>
         <source>Wrong network topology</source>
-        <translation type="unfinished"></translation>
+        <translation>Topologia del network sbagliata</translation>
     </message>
 </context>
 <context>
@@ -1149,7 +1154,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="weightofevidencewidget.py" line="68"/>
         <source>Change map raster is not set. Please create it try again</source>
-        <translation type="unfinished">Il raster della mappa dei cambiamenti non è stato impostato. Si prega di crearlo e riprovare</translation>
+        <translation>Il raster della mappa dei cambiamenti non è stato impostato. Si prega di crearlo e riprovare</translation>
     </message>
 </context>
 <context>
@@ -1194,7 +1199,7 @@ Il plugin non sarà abilitato.</translation>
         <source>P-values</source>
         <translation>P-values</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="ui/neuralnetworkwidgetbase.ui" line="73"/>
         <source>Δ RMS</source>
         <translation type="obsolete">Δ RMS</translation>
@@ -1267,67 +1272,67 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="ui/logisticregressionwidgetbase.ui" line="34"/>
         <source>Pseudo R-squared (count)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pseudo R-squared (count)</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="63"/>
         <source>Min Validation Overall Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Min convalida dell&apos;errore globale</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="70"/>
         <source>Hidden Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Layers nascosti</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="168"/>
         <source>Current Validation Kappa</source>
-        <translation type="unfinished"></translation>
+        <translation>Convalida del Kappa attuale </translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="ui/neuralnetworkwidgetbase.ui" line="175"/>
         <source>Δ Overall Accuracy</source>
-        <translation type="unfinished"></translation>
+        <translation>Δ precisione globale</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="182"/>
         <source>Stop</source>
-        <translation type="unfinished">Ferma</translation>
+        <translation>Ferma</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="20"/>
         <source>Enter either Number of intervals (min 2) or Range breaks:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserire il numero di intervalli (minimo 2) oppure la separazione in intervalli: </translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="37"/>
         <source>Calculate Range breaks</source>
-        <translation type="unfinished"></translation>
+        <translation>Calcola la separazione in intervalli</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="44"/>
         <source>Weights Information:</source>
-        <translation type="unfinished"></translation>
+        <translation>Informazione sui pesi:</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="63"/>
         <source>Range min</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervallo min</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="68"/>
         <source>Range max</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervallo max</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="73"/>
         <source>Number of intervals</source>
-        <translation type="unfinished"></translation>
+        <translation>Numero di intervalli</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="78"/>
         <source>Range breaks</source>
-        <translation type="unfinished"></translation>
+        <translation>Separazione in intervalli</translation>
     </message>
 </context>
 </TS>
