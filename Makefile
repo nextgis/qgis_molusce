@@ -22,6 +22,10 @@ ui: $(UI_FILES)
 ts: $(PRO_FILES)
 	pylupdate4 -verbose $<
 
+tsclear: $(PRO_FILES)
+	pylupdate4 -verbose -noobsolete $<
+
+
 lang: $(LANG_FILES)
 
 res: $(RES_FILES)
