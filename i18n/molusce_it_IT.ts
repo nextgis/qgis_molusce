@@ -3,11 +3,6 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="aboutdialog.py" line="45"/>
-        <source>Version: %1</source>
-        <translation type="obsolete">Versione: %1</translation>
-    </message>
-    <message>
         <location filename="aboutdialog.py" line="50"/>
         <source>Version: %s</source>
         <translation>Versione: %s</translation>
@@ -66,16 +61,6 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
         <translation>Aggiungi &gt;&gt;</translation>
     </message>
     <message>
-        <location filename="ui/moluscedialogbase.ui" line="120"/>
-        <source>Factors driving landuse changes</source>
-        <translation type="obsolete">Fattori determinanti i cambiamenti nell&apos;uso del suolo</translation>
-    </message>
-    <message>
-        <location filename="ui/moluscedialogbase.ui" line="134"/>
-        <source>Correlation Checking</source>
-        <translation type="obsolete">Controllo Correlazione</translation>
-    </message>
-    <message>
         <location filename="ui/moluscedialogbase.ui" line="265"/>
         <source>Method</source>
         <translation>Metodo</translation>
@@ -131,11 +116,6 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
         <translation>Crea la mappa dei cambiamenti</translation>
     </message>
     <message>
-        <location filename="ui/moluscedialogbase.ui" line="243"/>
-        <source>Samples and Model</source>
-        <translation type="obsolete">Campioni e Modelli</translation>
-    </message>
-    <message>
         <location filename="ui/moluscedialogbase.ui" line="272"/>
         <source>Define Samples</source>
         <translation>Definisci i Campioni</translation>
@@ -161,24 +141,9 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
         <translation>Aggiungi alla mappa</translation>
     </message>
     <message>
-        <location filename="ui/moluscedialogbase.ui" line="364"/>
-        <source>Risk Simulation</source>
-        <translation type="obsolete">Simulazione del Rischio</translation>
-    </message>
-    <message>
         <location filename="ui/moluscedialogbase.ui" line="602"/>
         <source>Browse...</source>
         <translation>Sfoglia...</translation>
-    </message>
-    <message>
-        <location filename="ui/moluscedialogbase.ui" line="399"/>
-        <source>Risk function</source>
-        <translation type="obsolete">Funzione di rischio</translation>
-    </message>
-    <message>
-        <location filename="ui/moluscedialogbase.ui" line="413"/>
-        <source>Risk class validation</source>
-        <translation type="obsolete">Validazione della classe di rischio</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="412"/>
@@ -231,11 +196,6 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
         <translation>Kappa (loc)</translation>
     </message>
     <message>
-        <location filename="ui/moluscedialogbase.ui" line="633"/>
-        <source>Kappa Overal</source>
-        <translation type="obsolete">Kappa Overal</translation>
-    </message>
-    <message>
         <location filename="ui/moluscedialogbase.ui" line="710"/>
         <source>Kappa (histo)</source>
         <translation>Kappa (histo)</translation>
@@ -249,11 +209,6 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
         <location filename="ui/moluscedialogbase.ui" line="747"/>
         <source>Messages</source>
         <translation>Messaggi</translation>
-    </message>
-    <message>
-        <location filename="ui/moluscedialogbase.ui" line="726"/>
-        <source>Stop</source>
-        <translation type="obsolete">Ferma</translation>
     </message>
     <message>
         <location filename="ui/aboutdialogbase.ui" line="14"/>
@@ -385,11 +340,6 @@ p, li { white-space: pre-wrap; }
         <translation>Inserire i dati per il training</translation>
     </message>
     <message>
-        <location filename="logisticregressionwidget.py" line="104"/>
-        <source>Start training LR model</source>
-        <translation type="obsolete">Inizia il training del modello LR</translation>
-    </message>
-    <message>
         <location filename="logisticregressionwidget.py" line="119"/>
         <source>LR model trained</source>
         <translation>Il training del modello LR è stato eseguito con successo</translation>
@@ -421,12 +371,6 @@ p, li { white-space: pre-wrap; }
         <location filename="molusce.py" line="71"/>
         <source>Error</source>
         <translation>Errore</translation>
-    </message>
-    <message>
-        <location filename="molusce.py" line="71"/>
-        <source>Quantum GIS %1 detected.
-</source>
-        <translation type="obsolete">QGIS %1 è stato rilevato.</translation>
     </message>
     <message>
         <location filename="molusce.py" line="71"/>
@@ -470,34 +414,14 @@ Il plugin non sarà abilitato.</translation>
         <translation>Il raster iniziale non è stato selezionato. Si prega di specificarlo e riprovare</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="171"/>
-        <source>Set intial layer to %1</source>
-        <translation type="obsolete">Impostare il layer iniziare a %1</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="199"/>
         <source>Final raster is not selected. Please specify input data and try again</source>
         <translation>Il raster finale non è stato selezionato. Si prega di specificarlo e riprovare</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="190"/>
-        <source>Set final layer to %1</source>
-        <translation type="obsolete">Impostare il layer finale a %1</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="262"/>
         <source>Factor raster is not selected. Please specify input data and try again</source>
         <translation>I fattori raster non sono stati selezionati. Si prega di specificarli e riprovare</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="217"/>
-        <source>Added factor layer %1</source>
-        <translation type="obsolete">Layer fattori aggiunti %1</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="238"/>
-        <source>Removed factor layer %1</source>
-        <translation type="obsolete">Layer fattori rimossi %1</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="296"/>
@@ -575,11 +499,6 @@ Il plugin non sarà abilitato.</translation>
         <translation>Il percorso di ouput per la funzione di rischio non è stata impostata correttamente. Questo passaggio verrà saltato</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="472"/>
-        <source>Output path for estimation errors for risk classes map is not set. Skipping this step</source>
-        <translation type="obsolete">Il percorso di ouput per l&apos;estimazione dell&apos;errore per la mappa delle classi di rischio non è stata impostata correttamente. Questo passaggio verrà saltato</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="539"/>
         <source>Output path for simulated risk map is not set. Skipping this step</source>
         <translation>Il percorso di ouput per la simulazione della mappa del rischio non è stata impostata correttamente. Questo passaggio verrà saltato</translation>
@@ -605,26 +524,6 @@ Il plugin non sarà abilitato.</translation>
         <translation>Kappa non applicabile al file: &apos;%s&apos; poiché contiene valori continui</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="794"/>
-        <source>Correlation</source>
-        <translation type="obsolete">Correlazione</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="801"/>
-        <source>Kappa (classic)</source>
-        <translation type="obsolete">Kappa (classico)</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="814"/>
-        <source>Kappa (loc)</source>
-        <translation type="obsolete">Kappa (loc)</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="827"/>
-        <source>Kappa (histo)</source>
-        <translation type="obsolete">Kappa (histo)</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="965"/>
         <source>Cramer&apos;s Coefficient</source>
         <translation>Coefficiente Cramer</translation>
@@ -633,11 +532,6 @@ Il plugin non sarà abilitato.</translation>
         <location filename="moluscedialog.py" line="975"/>
         <source>Joint Information Uncertainty</source>
         <translation>Incertezza dell&apos;Entropia Congiunta</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="876"/>
-        <source>Artificial Neural Network</source>
-        <translation type="obsolete">Artificial Neural Network</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1107"/>
@@ -660,16 +554,6 @@ Il plugin non sarà abilitato.</translation>
         <translation>Tutto</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="661"/>
-        <source>Normal</source>
-        <translation type="obsolete">Normale</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="662"/>
-        <source>Balanced</source>
-        <translation type="obsolete">Bilanciata</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="829"/>
         <source>Multiple-resolution budget</source>
         <translation>Bidget risoluzione multipla</translation>
@@ -678,11 +562,6 @@ Il plugin non sarà abilitato.</translation>
         <location filename="moluscedialog.py" line="980"/>
         <source>Not applicable</source>
         <translation>Non applicabile</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="836"/>
-        <source>Checking</source>
-        <translation type="obsolete">Controllo in corso</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1136"/>
@@ -715,20 +594,9 @@ Il plugin non sarà abilitato.</translation>
         <translation>Il file non può essere aperto</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="947"/>
-        <source>Error loading output shapefile:
-%1</source>
-        <translation type="obsolete">Vi è stato un errore durante il caricamento dello shapefile di output: %1</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="1215"/>
         <source>Open file</source>
         <translation>Apri il file</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="1021"/>
-        <source>Can&apos;t load raster %1</source>
-        <translation type="obsolete">Il raster %1 non può essere caricato</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="186"/>
@@ -995,19 +863,9 @@ Il plugin non sarà abilitato.</translation>
         <translation>Matrice consistente</translation>
     </message>
     <message>
-        <location filename="multicriteriaevaluationwidget.py" line="126"/>
-        <source>Matrix filled correctly. Consistency value is: %1. The model can be used.</source>
-        <translation type="obsolete">La matrice è stata riempita correttamente. Il valore di consistenza è %1. Il modello può essere usato.</translation>
-    </message>
-    <message>
         <location filename="multicriteriaevaluationwidget.py" line="130"/>
         <source>Inconsistent matrix</source>
         <translation>Matrice inconsistente</translation>
-    </message>
-    <message>
-        <location filename="multicriteriaevaluationwidget.py" line="131"/>
-        <source>Please adjust matrix before starting simulation. Consistency value is: %1</source>
-        <translation type="obsolete">Si prega di aggiustare la matrice prima di iniziale la simulazione. Il valore di consistenza è %1</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="125"/>
@@ -1056,11 +914,6 @@ Il plugin non sarà abilitato.</translation>
         <location filename="neuralnetworkwidget.py" line="101"/>
         <source>Change map raster is not set. Please create it try again</source>
         <translation>Il raster della mappa dei cambiamenti non è stato impostato. Si prega di crearlo e riprovare</translation>
-    </message>
-    <message>
-        <location filename="neuralnetworkwidget.py" line="107"/>
-        <source>Wriong network topology</source>
-        <translation type="obsolete">Topologia del network sbagliata</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="108"/>
@@ -1116,11 +969,6 @@ Il plugin non sarà abilitato.</translation>
         <translation>Il raster iniziale o finale non è stato impostato correttamente. Si prega di specificare i dati di input e riprovare</translation>
     </message>
     <message>
-        <location filename="weightofevidencewidget.py" line="98"/>
-        <source>Init AreaAnalyst</source>
-        <translation type="obsolete">Inizializza AreaAnalyst</translation>
-    </message>
-    <message>
         <location filename="weightofevidencewidget.py" line="121"/>
         <source>Init WoE model</source>
         <translation>Inizializza il modello WoE</translation>
@@ -1159,11 +1007,6 @@ Il plugin non sarà abilitato.</translation>
         <translation>Neighbourhood</translation>
     </message>
     <message>
-        <location filename="ui/logisticregressionwidgetbase.ui" line="34"/>
-        <source>Kappa</source>
-        <translation type="obsolete">Kappa</translation>
-    </message>
-    <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="93"/>
         <source> px</source>
         <translation> px</translation>
@@ -1193,11 +1036,6 @@ Il plugin non sarà abilitato.</translation>
         <source>P-values</source>
         <translation>P-values</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="ui/neuralnetworkwidgetbase.ui" line="73"/>
-        <source>Δ RMS</source>
-        <translation type="obsolete">Δ RMS</translation>
-    </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="189"/>
         <source>Train neural network</source>
@@ -1212,21 +1050,6 @@ Il plugin non sarà abilitato.</translation>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="49"/>
         <source>Learning rate</source>
         <translation>Tasso di apprendimento</translation>
-    </message>
-    <message>
-        <location filename="ui/neuralnetworkwidgetbase.ui" line="145"/>
-        <source>Validation RMS error</source>
-        <translation type="obsolete">Validazione dell&apos;errore RMS</translation>
-    </message>
-    <message>
-        <location filename="ui/neuralnetworkwidgetbase.ui" line="152"/>
-        <source>Network topology</source>
-        <translation type="obsolete">Topologia della rete</translation>
-    </message>
-    <message>
-        <location filename="ui/neuralnetworkwidgetbase.ui" line="182"/>
-        <source>Validation Kappa</source>
-        <translation type="obsolete">Validazione del Kappa</translation>
     </message>
     <message>
         <location filename="ui/multicriteriaevaluationwidgetbase.ui" line="26"/>
@@ -1257,11 +1080,6 @@ Il plugin non sarà abilitato.</translation>
         <location filename="ui/weightofevidencewidgetbase.ui" line="58"/>
         <source>Factor</source>
         <translation>Fattore</translation>
-    </message>
-    <message>
-        <location filename="ui/weightofevidencewidgetbase.ui" line="32"/>
-        <source>Bin breaks</source>
-        <translation type="obsolete">Separazione in intervalli</translation>
     </message>
     <message>
         <location filename="ui/logisticregressionwidgetbase.ui" line="34"/>

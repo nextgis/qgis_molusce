@@ -3,27 +3,6 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="aboutdialog.py" line="45"/>
-        <source>Version: %1</source>
-        <translation type="obsolete">バージョン: %1</translation>
-    </message>
-    <message>
-        <location filename="aboutdialog.py" line="69"/>
-        <source>&lt;p&gt;Modules for Land Use Change Simulations.&lt;/p&gt;
-&lt;p&gt;Plugin provides a set of algorithms for land use change simulations such as
-ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
-&lt;p&gt;Developed by &lt;a href=&quot;http://nextgis.org&quot;&gt;NextGIS&lt;/a&gt; for &lt;a href=&quot;http://www.asiaairsurvey.com/&quot;&gt;Asia Air Survey&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Homepage&lt;/strong&gt;: &lt;a href=&quot;http://hub.qgis.org/projects/molusce&quot;&gt;http://hub.qgis.org/projects/molusce&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Please report bugs at &lt;a href=&quot;http://hub.qgis.org/projects/molusce/issues&quot;&gt;bugtracker&lt;/a&gt;&lt;/p&gt;
-</source>
-        <translation type="obsolete">&lt;p&gt;土地利用変化シミュレーション・モジュール&lt;/p&gt;
-&lt;p&gt;プラグインとして土地利用変化シミュレーション・アルゴリズム（ANN、LR、WoE、MCE）、
-および精度検証ツールとしてKappa統計を備える。&lt;/p&gt;
-&lt;p&gt;開発：&lt;a href=&quot;http://nextgis.org&quot;&gt;NextGIS&lt;/a&gt; 監修：&lt;a href=&quot;http://www.asiaairsurvey.com/&quot;&gt;アジア航測&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;ホームページ&lt;/strong&gt;: &lt;a href=&quot;http://hub.qgis.org/projects/molusce&quot;&gt;http://hub.qgis.org/projects/molusce&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;バグについてはこちらにご報告ください。&lt;a href=&quot;http://hub.qgis.org/projects/molusce/issues&quot;&gt;bugtracker&lt;/a&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="aboutdialog.py" line="50"/>
         <source>Version: %s</source>
         <translation type="unfinished"></translation>
@@ -76,16 +55,6 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
         <location filename="ui/moluscedialogbase.ui" line="119"/>
         <source>Add &gt;&gt;</source>
         <translation>追加 &gt;&gt;</translation>
-    </message>
-    <message>
-        <location filename="ui/moluscedialogbase.ui" line="120"/>
-        <source>Factors driving landuse changes</source>
-        <translation type="obsolete">土地利用変化の誘因</translation>
-    </message>
-    <message>
-        <location filename="ui/moluscedialogbase.ui" line="134"/>
-        <source>Correlation Checking</source>
-        <translation type="obsolete">相関性検査</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="265"/>
@@ -143,11 +112,6 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
         <translation>変化図作成</translation>
     </message>
     <message>
-        <location filename="ui/moluscedialogbase.ui" line="243"/>
-        <source>Samples and Model</source>
-        <translation type="obsolete">標本とモデル</translation>
-    </message>
-    <message>
         <location filename="ui/moluscedialogbase.ui" line="272"/>
         <source>Define Samples</source>
         <translation>標本の定義</translation>
@@ -173,24 +137,9 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
         <translation>背景への追加</translation>
     </message>
     <message>
-        <location filename="ui/moluscedialogbase.ui" line="364"/>
-        <source>Risk Simulation</source>
-        <translation type="obsolete">リスク・シミュレーション</translation>
-    </message>
-    <message>
         <location filename="ui/moluscedialogbase.ui" line="602"/>
         <source>Browse...</source>
         <translation>閲覧...</translation>
-    </message>
-    <message>
-        <location filename="ui/moluscedialogbase.ui" line="399"/>
-        <source>Risk function</source>
-        <translation type="obsolete">リスク関数</translation>
-    </message>
-    <message>
-        <location filename="ui/moluscedialogbase.ui" line="413"/>
-        <source>Risk class validation</source>
-        <translation type="obsolete">リスク・クラスの検証</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="412"/>
@@ -243,11 +192,6 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
         <translation>Kappa (位置)</translation>
     </message>
     <message>
-        <location filename="ui/moluscedialogbase.ui" line="633"/>
-        <source>Kappa Overal</source>
-        <translation type="obsolete">Kappa (全体)</translation>
-    </message>
-    <message>
         <location filename="ui/moluscedialogbase.ui" line="710"/>
         <source>Kappa (histo)</source>
         <translation>Kappa (ヒストグラム)</translation>
@@ -261,11 +205,6 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
         <location filename="ui/moluscedialogbase.ui" line="747"/>
         <source>Messages</source>
         <translation>メッセージ</translation>
-    </message>
-    <message>
-        <location filename="ui/moluscedialogbase.ui" line="726"/>
-        <source>Stop</source>
-        <translation type="obsolete">停止</translation>
     </message>
     <message>
         <location filename="ui/aboutdialogbase.ui" line="14"/>
@@ -397,11 +336,6 @@ p, li { white-space: pre-wrap; }
         <translation>トレーニングデータの設定</translation>
     </message>
     <message>
-        <location filename="logisticregressionwidget.py" line="104"/>
-        <source>Start training LR model</source>
-        <translation type="obsolete">LR（ロジスティック回帰）モデルのトレーニング開始</translation>
-    </message>
-    <message>
         <location filename="logisticregressionwidget.py" line="119"/>
         <source>LR model trained</source>
         <translation>トレーニング済みLR（ロジスティック回帰）モデル</translation>
@@ -433,13 +367,6 @@ p, li { white-space: pre-wrap; }
         <location filename="molusce.py" line="71"/>
         <source>Error</source>
         <translation>エラー</translation>
-    </message>
-    <message>
-        <location filename="molusce.py" line="71"/>
-        <source>Quantum GIS %1 detected.
-</source>
-        <translation type="obsolete">Quantum GIS %1 が検出されました.
-</translation>
     </message>
     <message>
         <location filename="molusce.py" line="71"/>
@@ -483,34 +410,14 @@ Plugin will not be enabled.</source>
         <translation>１次ラスターデータが設定されていません。インプットデータを設定のうえ、再試行してください</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="171"/>
-        <source>Set intial layer to %1</source>
-        <translation type="obsolete">１次レイヤーを%1に設定します</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="199"/>
         <source>Final raster is not selected. Please specify input data and try again</source>
         <translation>最終ラスターデータが設定されていません。インプットデータを設定のうえ、再試行してください</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="190"/>
-        <source>Set final layer to %1</source>
-        <translation type="obsolete">最終レイヤーを%1に設定します</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="262"/>
         <source>Factor raster is not selected. Please specify input data and try again</source>
         <translation>誘因ラスターデータが設定されていません。インプットデータを設定のうえ、再試行してください</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="217"/>
-        <source>Added factor layer %1</source>
-        <translation type="obsolete">誘因レイヤー%1を追加しました</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="238"/>
-        <source>Removed factor layer %1</source>
-        <translation type="obsolete">誘因レイヤー%1を削除しました</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="296"/>
@@ -588,11 +495,6 @@ Plugin will not be enabled.</source>
         <translation>リスク関数図の出力パスが設定されていません。このステップをスキップしてください</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="472"/>
-        <source>Output path for estimation errors for risk classes map is not set. Skipping this step</source>
-        <translation type="obsolete">リスク・クラス図への推定誤差の出力パスが設定されていません。このステップをスキップしてください</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="539"/>
         <source>Output path for simulated risk map is not set. Skipping this step</source>
         <translation>リスク・シミュレーション図の出力パスが設定されていません。このステップをスキップしてください</translation>
@@ -618,26 +520,6 @@ Plugin will not be enabled.</source>
         <translation>&apos;%s&apos;には連続値が含まれているため、Kappaを適用できません</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="794"/>
-        <source>Correlation</source>
-        <translation type="obsolete">相関</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="801"/>
-        <source>Kappa (classic)</source>
-        <translation type="obsolete">Kappa (標準)</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="814"/>
-        <source>Kappa (loc)</source>
-        <translation type="obsolete">Kappa (位置)</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="827"/>
-        <source>Kappa (histo)</source>
-        <translation type="obsolete">Kappa (ヒストグラム)</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="965"/>
         <source>Cramer&apos;s Coefficient</source>
         <translation>Cramer係数</translation>
@@ -646,11 +528,6 @@ Plugin will not be enabled.</source>
         <location filename="moluscedialog.py" line="975"/>
         <source>Joint Information Uncertainty</source>
         <translation>結合情報の不確実性</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="876"/>
-        <source>Artificial Neural Network</source>
-        <translation type="obsolete">人工ニューラルネットワーク</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1107"/>
@@ -673,16 +550,6 @@ Plugin will not be enabled.</source>
         <translation>全て</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="661"/>
-        <source>Normal</source>
-        <translation type="obsolete">標準</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="662"/>
-        <source>Balanced</source>
-        <translation type="obsolete">バランスが取れた</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="829"/>
         <source>Multiple-resolution budget</source>
         <translation>多解像度解析</translation>
@@ -691,11 +558,6 @@ Plugin will not be enabled.</source>
         <location filename="moluscedialog.py" line="980"/>
         <source>Not applicable</source>
         <translation>適用できません</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="836"/>
-        <source>Checking</source>
-        <translation type="obsolete">検査しています</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1136"/>
@@ -728,20 +590,9 @@ Plugin will not be enabled.</source>
         <translation>ファイルを開けません</translation>
     </message>
     <message>
-        <location filename="moluscedialog.py" line="947"/>
-        <source>Error loading output shapefile:
-%1</source>
-        <translation type="obsolete">作成したシェープファイル%1のロードでエラーが発生しています</translation>
-    </message>
-    <message>
         <location filename="moluscedialog.py" line="1215"/>
         <source>Open file</source>
         <translation>ファイルを開く</translation>
-    </message>
-    <message>
-        <location filename="moluscedialog.py" line="1021"/>
-        <source>Can&apos;t load raster %1</source>
-        <translation type="obsolete">ラスターデータ%1がロードできません</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="186"/>
@@ -1008,19 +859,9 @@ Plugin will not be enabled.</source>
         <translation>一致した行列</translation>
     </message>
     <message>
-        <location filename="multicriteriaevaluationwidget.py" line="126"/>
-        <source>Matrix filled correctly. Consistency value is: %1. The model can be used.</source>
-        <translation type="obsolete">行列に値が正しく入りました。一致した値は%1です。このモデルは使用できます。</translation>
-    </message>
-    <message>
         <location filename="multicriteriaevaluationwidget.py" line="130"/>
         <source>Inconsistent matrix</source>
         <translation>不一致の行列</translation>
-    </message>
-    <message>
-        <location filename="multicriteriaevaluationwidget.py" line="131"/>
-        <source>Please adjust matrix before starting simulation. Consistency value is: %1</source>
-        <translation type="obsolete">シミュレーションを始める前に、行列の調整をしてください。一致した値は%1です</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="125"/>
@@ -1124,11 +965,6 @@ Plugin will not be enabled.</source>
         <translation>１次ラスターデータあるいは最終ラスターデータが設定されていません。インプットデータを設定のうえ、再試行してください</translation>
     </message>
     <message>
-        <location filename="weightofevidencewidget.py" line="98"/>
-        <source>Init AreaAnalyst</source>
-        <translation type="obsolete">１次面積解析</translation>
-    </message>
-    <message>
         <location filename="weightofevidencewidget.py" line="121"/>
         <source>Init WoE model</source>
         <translation>１次WoE（証拠の重み）モデル</translation>
@@ -1139,24 +975,9 @@ Plugin will not be enabled.</source>
         <translation>初期化エラー</translation>
     </message>
     <message>
-        <location filename="weightofevidencewidget.py" line="180"/>
-        <source>Wrong binning</source>
-        <translation type="obsolete">範囲の指定が間違っています</translation>
-    </message>
-    <message>
-        <location filename="weightofevidencewidget.py" line="134"/>
-        <source>Bins are not correctly specifed. Please specify them and try again</source>
-        <translation type="obsolete">範囲が正しく設定されていません。設定のうえ、再試行してください</translation>
-    </message>
-    <message>
         <location filename="weightofevidencewidget.py" line="159"/>
         <source>WoE model trained</source>
         <translation>トレーニング済みWoE（証拠の重み）モデル</translation>
-    </message>
-    <message>
-        <location filename="weightofevidencewidget.py" line="180"/>
-        <source>Bins are not correctly specifed. Please specify them and try again (use space as separator)</source>
-        <translation type="obsolete">範囲が正しく設定されていません。設定のうえ、再試行してください（スペースで区切ってください）</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="68"/>
@@ -1180,11 +1001,6 @@ Plugin will not be enabled.</source>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="56"/>
         <source>Neighbourhood</source>
         <translation>近傍</translation>
-    </message>
-    <message>
-        <location filename="ui/logisticregressionwidgetbase.ui" line="34"/>
-        <source>Kappa</source>
-        <translation type="obsolete">Kappa</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="93"/>
@@ -1216,11 +1032,6 @@ Plugin will not be enabled.</source>
         <source>P-values</source>
         <translation>P値</translation>
     </message>
-    <message encoding="UTF-8">
-        <location filename="ui/neuralnetworkwidgetbase.ui" line="73"/>
-        <source>Δ RMS</source>
-        <translation type="obsolete">Δ RMS</translation>
-    </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="189"/>
         <source>Train neural network</source>
@@ -1235,21 +1046,6 @@ Plugin will not be enabled.</source>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="49"/>
         <source>Learning rate</source>
         <translation>学習率</translation>
-    </message>
-    <message>
-        <location filename="ui/neuralnetworkwidgetbase.ui" line="145"/>
-        <source>Validation RMS error</source>
-        <translation type="obsolete">RMSエラーの検証</translation>
-    </message>
-    <message>
-        <location filename="ui/neuralnetworkwidgetbase.ui" line="152"/>
-        <source>Network topology</source>
-        <translation type="obsolete">ネットワーク・トポロジー</translation>
-    </message>
-    <message>
-        <location filename="ui/neuralnetworkwidgetbase.ui" line="182"/>
-        <source>Validation Kappa</source>
-        <translation type="obsolete">Kappaの検証</translation>
     </message>
     <message>
         <location filename="ui/multicriteriaevaluationwidgetbase.ui" line="26"/>
@@ -1280,11 +1076,6 @@ Plugin will not be enabled.</source>
         <location filename="ui/weightofevidencewidgetbase.ui" line="58"/>
         <source>Factor</source>
         <translation>誘因</translation>
-    </message>
-    <message>
-        <location filename="ui/weightofevidencewidgetbase.ui" line="32"/>
-        <source>Bin breaks</source>
-        <translation type="obsolete">範囲が途切れています</translation>
     </message>
     <message>
         <location filename="ui/logisticregressionwidgetbase.ui" line="34"/>
