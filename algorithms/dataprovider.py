@@ -324,24 +324,6 @@ class Raster(object):
             r = ma.array(data = r, mask=mask)
             self.setBand(r, i)
 
-    def reclass(self, bins, bandNum):
-        '''Reclass band bandNum to new categories.
-        @param bins     List of bins (category bounds):
-                Interval         ->   New Class Number
-                [bin[0], bin[1]) ->     1
-                [bin[1], bin[2]) ->     2
-                ...
-                [bin[n-1], bin[n]) ->   n
-        '''
-        tmp = bins[:]
-        tmp.sort()
-        if x!=tmp:
-            raise ProviderError('Reclassification error: bins must be sorted!')
-
-        r = self.getBand(bandNum)
-        r = reclass(r, bins)
-        self.setBand(r, bandNum)
-
     def roundBands(self, decimals=0):
         '''
         Round the bands to the given number of decimals.
