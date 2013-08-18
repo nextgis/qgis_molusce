@@ -991,12 +991,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="weightofevidencewidget.py" line="180"/>
         <source>Wrong ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalli sbagliati</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="180"/>
         <source>Ranges are not correctly specified. Please specify them and try again (use space as separator)</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervalli non specificati correttamente. Si prega di verificarli e provare nuovamente (usa lo spazio come separatore)</translation>
     </message>
 </context>
 <context>
