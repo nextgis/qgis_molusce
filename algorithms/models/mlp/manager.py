@@ -9,7 +9,6 @@ from PyQt4.QtCore import *
 import copy
 
 import numpy as np
-from numpy import ma as ma
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
 from molusce.algorithms.models.mlp.model import MLP, sigmoid
@@ -114,7 +113,7 @@ class MlpManager(QObject):
         '''
 
         if output.getBandsCount() != 1:
-            raise MplManagerError('Output layer must have one band!')
+            raise MlpManagerError('Output layer must have one band!')
 
         input_neurons = 0
         for raster in factors:
