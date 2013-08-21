@@ -65,6 +65,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     QDialog.__init__(self)
     self.setupUi(self)
 
+    self.setWindowFlags(Qt.WindowMinimizeButtonHint | Qt.WindowMaximizeButtonHint)
+
     self.iface = iface
     self.modelWidget = None
     self.workThread = QThread()
