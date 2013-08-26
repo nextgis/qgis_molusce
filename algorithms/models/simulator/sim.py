@@ -107,6 +107,8 @@ class Simulator(QObject):
 
         self.updatePrediction(self.state)
         changes = self.getPrediction().getBand(1)   # Predicted change map
+        changes = changes + 1                       # Filling nodata as 0 can be ambiguous:
+        changes = np.ma.filled(changes, 0)          #   (cat_code can be 0, to do not mix it with no-data, add 1)
         state = self.getState()
         new_state = state.getBand(1).copy().astype(np.uint8)    # New states (the result of simulation) will be stored there.
 
@@ -127,7 +129,7 @@ class Simulator(QObject):
             for finalClass in categories:
                 if initClass == finalClass: continue
 
-                # TODO: Calculate number of pixels to be moved via TransitoionMatrix and state raster
+                # TODO: Calculate number of pixels to be moved via TransitionMatrix and state raster
                 n = transition.getTransition(initClass, finalClass)   # Number of pixels that have to be
                                                                       # changed the categories
                                                                       # (use TransitoionMatrix only).
@@ -135,24 +137,39 @@ class Simulator(QObject):
                     continue
                 # Find n appropriate places for transition initClass -> finalClass
                 cat_code = analyst.encode(initClass, finalClass)
-                places = (changes==cat_code)      # Array of places where transitions initClass -> finalClass are occured
+                # Array of places where transitions initClass -> finalClass are occured
+                places = (changes==cat_code+1)  # cat_code can be 0, do not mix it with no-data in 'changes' variable
                 placesCount = np.sum(places)
+                # print "cat_code, placesCount, n", cat_code, placesCount
 
                 if placesCount < n:
                     self.logMessage.emit(self.tr("There are more transitions in the transition matrix, then the model have found"))
+                    # print "There are more transitions in the transition matrix, then the model have found"
+                    # print "cat_code, placesCount, n", cat_code, placesCount, n
                     QCoreApplication.processEvents()
                     n = placesCount
                 if n >0:
                     confidence = self.getConfidence().getBand(1)
+                    # Add some random value
+                    rnd = np.random.sample(size=confidence.shape)/1000 # A small random
+                    confidence = np.ma.filled(confidence, 0) + rnd
                     confidence = confidence * places # The higher is number in cell, the higer is probability of transition in the cell.
-                    confidence = np.ma.filled(confidence, 0)
+
+                    # Ensure, n is bigger then nonzero confidence
+                    placesCount = np.sum(confidence>0)
+                    if placesCount < n: # Some confidence where transitions has to be appear is zero. The transition count will be cropped.
+                        # print "Some confidence is zero. cat_code, nonzeroConf, wantedPixels", cat_code, placesCount, n
+                        n = placesCount
+
                     ind = confidence.argsort(axis=None)[-n:]
                     indices = [np.unravel_index(i, confidence.shape) for i in ind]
 
                     # Now "indices" contains indices of the appropriate places,
                     # make transition initClass -> finalClass
+                    r1 = np.zeros(confidence.shape)
                     for index in indices:
                         new_state[index] = finalClass
+
                 self.updateProgress.emit()
                 QCoreApplication.processEvents()
 

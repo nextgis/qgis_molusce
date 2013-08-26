@@ -42,19 +42,19 @@ def main(initRaster, finalRaster, factors):
 
 
     #~ # Create and Train ANN Model
-    #~ model = MlpManager(ns=0)
-    #~ model.createMlp(initRaster, factors, changeMap, [10])
-    #~ print 'Start Setting MLP Trainig Data...', clock()
-    #~ model.setTrainingData(initRaster, factors, changeMap, mode='Stratified', samples=1000)
-    #~ print 'Finish Setting Trainig Data', clock(), '\n'
-    #~ print 'Start MLP Training...', clock()
-    #~ model.train(20, valPercent=20)
-    #~ print 'Finish Trainig', clock(), '\n'
-    #~
-    #~ print 'Start ANN Prediction...', clock()
-    #~ predict = model.getPrediction(initRaster, factors, calcTransitions=True)
-    #~ confidence = model.getConfidence()
-    #~ potentials = model.getTransitionPotentials()
+    model = MlpManager(ns=1)
+    model.createMlp(initRaster, factors, changeMap, [10])
+    print 'Start Setting MLP Trainig Data...', clock()
+    model.setTrainingData(initRaster, factors, changeMap, mode='Stratified', samples=1000)
+    print 'Finish Setting Trainig Data', clock(), '\n'
+    print 'Start MLP Training...', clock()
+    model.train(20, valPercent=20)
+    print 'Finish Trainig', clock(), '\n'
+    
+    # print 'Start ANN Prediction...', clock()
+    # predict = model.getPrediction(initRaster, factors, calcTransitions=True)
+    # confidence = model.getConfidence()
+    # potentials = model.getTransitionPotentials()
 
     #~ # Create and Train LR Model
     #~ model = LR(ns=0)
@@ -75,14 +75,14 @@ def main(initRaster, finalRaster, factors):
     #~ print 'Finish LR Prediction...', clock(), '\n'
 
     # Create and Train WoE Model
-    print 'Start creating AreaAnalyst...', clock()
-    analyst = AreaAnalyst(initRaster, finalRaster)
-    print 'Finish creating AreaAnalyst ...', clock(), '\n'
-    print 'Start creating WoE model...', clock()
-    bins = {0: [[1000, 3000]], 1: [[200, 500, 1500]]}
-    model = WoeManager(factors, analyst, bins= bins)
-    model.train()
-    print 'Finish creating WoE model...', clock(), '\n'
+    # print 'Start creating AreaAnalyst...', clock()
+    # analyst = AreaAnalyst(initRaster, finalRaster)
+    # print 'Finish creating AreaAnalyst ...', clock(), '\n'
+    # print 'Start creating WoE model...', clock()
+    # bins = {0: [[1000, 3000]], 1: [[200, 500, 1500]]}
+    # model = WoeManager(factors, analyst, bins= bins)
+    # model.train()
+    # print 'Finish creating WoE model...', clock(), '\n'
 
     #~ # Create and Train MCE Model
     #~ print 'Start creating MCE model...', clock()
@@ -93,43 +93,42 @@ def main(initRaster, finalRaster, factors):
     #~ model = MCE(factors, matrix, 2, 3, analyst)
     #~ print 'Finish creating MCE model...', clock(), '\n'
 
-    predict = model.getPrediction(initRaster, factors, calcTransitions=True)
-    confidence = model.getConfidence()
-    potentials = model.getTransitionPotentials()
-    filename = 'predict.tif'
-    confname = 'confidence.tif'
-    trans_prefix='trans_'
-    try:
-        predict.save(filename)
-        confidence.save(confname)
-        if potentials != None:
-            for k,v in potentials.iteritems():
-                map = v.save(trans_prefix+str(k) + '.tif')
-    finally:
-        os.remove(filename)
-        #pass
-    print 'Finish Saving...', clock(), '\n'
+    # predict = model.getPrediction(initRaster, factors, calcTransitions=True)
+    # confidence = model.getConfidence()
+    # potentials = model.getTransitionPotentials()
+    # filename = 'predict.tif'
+    # confname = 'confidence.tif'
+    # trans_prefix='trans_'
+    # try:
+    #     predict.save(filename)
+    #     confidence.save(confname)
+    #     if potentials != None:
+    #         for k,v in potentials.iteritems():
+    #             map = v.save(trans_prefix+str(k) + '.tif')
+    # finally:
+    #     os.remove(filename)
+    #     #pass
+    # print 'Finish Saving...', clock(), '\n'
 
     # simulation
     print 'Start Simulation...', clock()
     simulator = Simulator(initRaster, factors, model, crosstab)
     # Make 1 cycle of simulation:
-    simulator.simN(1)
+    simulator.setIterationCount(1)
+    simulator.simN()
     monteCarloSim   = simulator.getState()              # Result of MonteCarlo simulation
     errors          = simulator.errorMap(finalRaster)   # Risk class validation
     riskFunct       = simulator.getConfidence()         # Risk function
 
-    # Make K cycles of simulation:
-    # simulator.simN(K)
     try:
         monteCarloSim.save('simulation_result.tiff')
         errors.save('risk_validation.tiff')
         riskFunct.save('risk_func.tiff')
     finally:
-        #pass
-        os.remove('simulation_result.tiff')
-        os.remove('risk_validation.tiff')
-        os.remove('risk_func.tiff')
+        pass
+        # os.remove('simulation_result.tiff')
+        # os.remove('risk_validation.tiff')
+        # os.remove('risk_func.tiff')
     print 'Finish Simulation', clock(), '\n'
 
     print 'Done', clock()
@@ -137,6 +136,6 @@ def main(initRaster, finalRaster, factors):
 
 if __name__=="__main__":
     #main('examples/init.tif', 'examples/final.tif', ['examples/dist_river.tif', 'examples/dist_roads.tif'])
-    main('examples/LPB_luc_1993.tif', 'examples/LPB_luc_1993.tif', ['examples/distance_to_rivers.tif', 'examples/dist_to_main_roads.tif'])
+    main('Original/Pak_lucc00.tif', 'Original/Pak_lucc07.tif', ['Original/dist_main_roads1.tif', 'Original/dist_rivers1.tif', 'Original/LPB_dem_res1.tif'])
 
 
