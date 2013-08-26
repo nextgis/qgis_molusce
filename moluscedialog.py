@@ -118,11 +118,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.chkRiskFunction.toggled.connect(self.__toggleLineEdit)
     self.chkRiskValidation.toggled.connect(self.__toggleLineEdit)
     self.chkMonteCarlo.toggled.connect(self.__toggleLineEdit)
+    self.chkModelPrediction.toggled.connect(self.__toggleLineEdit)
     self.chkTransitionPotentials.toggled.connect(self.__toggleLineEdit)
 
     self.btnSelectRiskFunction.clicked.connect(self.__selectSimulationOutput)
     self.btnSelectTransitionPrefix.clicked.connect(self.__selectSimulationOutput)
     self.btnSelectMonteCarlo.clicked.connect(self.__selectSimulationOutput)
+    self.btnSelectModelPrediction.clicked.connect(self.__selectSimulationOutput)
     self.btnSelectRiskValidation.clicked.connect(self.createValidationMap)
 
     self.btnStartSimulation.clicked.connect(self.startSimulation)
@@ -513,6 +515,28 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.applyStyle(layer, colorRamp)
       else:
         self.logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
+
+    if self.chkModelPrediction.isChecked():
+      if not self.leModelPredictionPath.text() == "":
+        res = self.simulator.getPrediction()
+        grad = res.getBandGradation(1)
+        saved = False
+        # Try to use some Values as No-data Value
+        maxVal = res.getGDALMaxVal()
+        for noData in [0, maxVal]:
+            if not noData in grad:
+                res.save(unicode(self.leModelPredictionPath.text()), nodata=noData)
+                saved = True
+                break
+        if not saved:
+            res.save(unicode(self.leModelPredictionPath.text()), nodata=maxVal-1)
+        del res
+        self.__addRasterToCanvas(self.leModelPredictionPath.text())
+        layer = utils.getLayerByName(QFileInfo(self.leModelPredictionPath.text()).baseName())
+        colorRamp = self.calcChangeMapColorRamp(layer, self.analyst, False, False)
+        self.applyStyle(layer, colorRamp)
+      else:
+        self.logMessage(self.tr("Output path for model prediction is not set. Skipping this step"))
 
     if self.chkMonteCarlo.isChecked():
       if not self.leMonteCarloPath.text() == "":
@@ -1129,6 +1153,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.btnSelectMonteCarlo.setEnabled(checked)
       self.lblIterations.setEnabled(checked)
       self.spnIterations.setEnabled(checked)
+    elif senderName == "chkModelPrediction":
+      self.leModelPredictionPath.setEnabled(checked)
+      self.btnSelectModelPrediction.setEnabled(checked)
     elif senderName == "chkTransitionPotentials":
       self.leTransitionPotentialPrefix.setEnabled(checked)
       self.btnSelectTransitionPrefix.setEnabled(checked)
@@ -1202,6 +1229,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     elif senderName == "btnSelectMonteCarlo":
       self.leMonteCarloPath.setText(fileName)
       self.leSimulatedMapPath.setText(fileName)
+    elif senderName == "btnSelectModelPrediction":
+      self.leModelPredictionPath.setText(fileName)
 
   def __toggleCorrLayers(self, state):
     if state == Qt.Checked:

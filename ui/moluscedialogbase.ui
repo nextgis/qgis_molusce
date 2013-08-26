@@ -406,7 +406,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="3" column="0">
           <widget class="QCheckBox" name="chkMonteCarlo">
            <property name="text">
             <string>Simulation result</string>
@@ -416,14 +416,14 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="3" column="1">
           <widget class="QLineEdit" name="leMonteCarloPath">
            <property name="enabled">
             <bool>false</bool>
            </property>
           </widget>
          </item>
-         <item row="2" column="2">
+         <item row="3" column="2">
           <widget class="QPushButton" name="btnSelectMonteCarlo">
            <property name="enabled">
             <bool>false</bool>
@@ -433,7 +433,7 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="4" column="1">
           <widget class="QLabel" name="lblIterations">
            <property name="enabled">
             <bool>false</bool>
@@ -443,7 +443,7 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
+         <item row="4" column="2">
           <widget class="QSpinBox" name="spnIterations">
            <property name="enabled">
             <bool>false</bool>
@@ -487,6 +487,30 @@
          </item>
          <item row="0" column="2">
           <widget class="QPushButton" name="btnSelectTransitionPrefix">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QCheckBox" name="chkModelPrediction">
+           <property name="text">
+            <string>Change map predicted by the model</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QLineEdit" name="leModelPredictionPath">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QPushButton" name="btnSelectModelPrediction">
            <property name="enabled">
             <bool>false</bool>
            </property>
