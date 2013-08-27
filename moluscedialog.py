@@ -472,7 +472,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
       return
 
-    self.simulator = Simulator(self.inputs["initial"],
+    self.simulator = Simulator(self.inputs["final"],
                                self.inputs["factors"].values(),
                                self.inputs["model"],
                                self.inputs["crosstab"]
@@ -519,17 +519,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if self.chkModelPrediction.isChecked():
       if not self.leModelPredictionPath.text() == "":
         res = self.simulator.getPrediction()
-        grad = res.getBandGradation(1)
-        saved = False
-        # Try to use some Values as No-data Value
         maxVal = res.getGDALMaxVal()
-        for noData in [0, maxVal]:
-            if not noData in grad:
-                res.save(unicode(self.leModelPredictionPath.text()), nodata=noData)
-                saved = True
-                break
-        if not saved:
-            res.save(unicode(self.leModelPredictionPath.text()), nodata=maxVal-1)
+        res.save(unicode(self.leModelPredictionPath.text()), nodata=maxVal)
         del res
         self.__addRasterToCanvas(self.leModelPredictionPath.text())
         layer = utils.getLayerByName(QFileInfo(self.leModelPredictionPath.text()).baseName())
