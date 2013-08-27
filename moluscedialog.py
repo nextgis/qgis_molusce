@@ -198,7 +198,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       layerName = self.lstLayers.selectedItems()[0].text()
       self.finalRasterId = self.lstLayers.selectedItems()[0].data(Qt.UserRole)
       self.leFinalRasterName.setText(layerName)
-      self.leReferenceMapPath.setText(unicode(utils.getLayerById(self.finalRasterId).source()))
+      # self.leReferenceMapPath.setText(unicode(utils.getLayerById(self.finalRasterId).source()))
     except IndexError:
       QMessageBox.warning(self,
                           self.tr("Missed selected row"),
