@@ -233,7 +233,7 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
     <message>
         <location filename="ui/moluscedialogbase.ui" line="656"/>
         <source>check persistent classes</source>
-        <translation>учитывать устойчивые классы</translation>
+        <translation type="obsolete">учитывать устойчивые классы</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="682"/>
@@ -306,6 +306,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui/moluscedialogbase.ui" line="595"/>
         <source>Validation Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/moluscedialogbase.ui" line="656"/>
+        <source>Check persistent classes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

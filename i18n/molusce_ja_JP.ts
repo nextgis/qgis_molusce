@@ -300,7 +300,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui/moluscedialogbase.ui" line="656"/>
         <source>check persistent classes</source>
-        <translation>持続的なクラスを確認します</translation>
+        <translation type="obsolete">持続的なクラスを確認します</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="708"/>
@@ -315,6 +315,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui/moluscedialogbase.ui" line="595"/>
         <source>Validation Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/moluscedialogbase.ui" line="656"/>
+        <source>Check persistent classes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

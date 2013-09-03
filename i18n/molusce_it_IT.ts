@@ -299,7 +299,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui/moluscedialogbase.ui" line="656"/>
         <source>check persistent classes</source>
-        <translation>Controlla le classi persistenti</translation>
+        <translation type="obsolete">Controlla le classi persistenti</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="708"/>
@@ -314,6 +314,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui/moluscedialogbase.ui" line="595"/>
         <source>Validation Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="ui/moluscedialogbase.ui" line="656"/>
+        <source>Check persistent classes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
