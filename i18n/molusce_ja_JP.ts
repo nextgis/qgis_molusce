@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="ja_JP" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="ja_JP">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -310,17 +311,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui/moluscedialogbase.ui" line="501"/>
         <source>Change map predicted by the model</source>
-        <translation type="unfinished"></translation>
+        <translation>モデルによって予測される変化図</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="595"/>
         <source>Validation Map</source>
-        <translation type="unfinished"></translation>
+        <translation>検証図</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="656"/>
         <source>Check persistent classes</source>
-        <translation type="unfinished"></translation>
+        <translation>持続的なクラスを確認します</translation>
     </message>
 </context>
 <context>
@@ -839,7 +840,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="moluscedialog.py" line="530"/>
         <source>Output path for model prediction is not set. Skipping this step</source>
-        <translation type="unfinished"></translation>
+        <translation>モデル予測の出力パスが設定されていません。このステップをスキップしてください</translation>
     </message>
 </context>
 <context>
@@ -1123,7 +1124,7 @@ Plugin will not be enabled.</source>
         <source>Current Validation Kappa</source>
         <translation>現在の検証Kappa</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="ui/neuralnetworkwidgetbase.ui" line="175"/>
         <source>Δ Overall Accuracy</source>
         <translation>Δ 全体精度</translation>

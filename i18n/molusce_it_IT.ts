@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="it_IT" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.0" language="it_IT">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -309,17 +310,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="ui/moluscedialogbase.ui" line="501"/>
         <source>Change map predicted by the model</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa dei cambiamenti predetta dal modello</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="595"/>
         <source>Validation Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappa di convalida</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="656"/>
         <source>Check persistent classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Controlla le classi persistenti</translation>
     </message>
 </context>
 <context>
@@ -837,7 +838,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="moluscedialog.py" line="530"/>
         <source>Output path for model prediction is not set. Skipping this step</source>
-        <translation type="unfinished"></translation>
+        <translation>Il percorso di ouput per il modello di previsione non è stato impostato correttamente. Questo passaggio verrà saltato</translation>
     </message>
 </context>
 <context>
@@ -1121,7 +1122,7 @@ Il plugin non sarà abilitato.</translation>
         <source>Current Validation Kappa</source>
         <translation>Convalida del Kappa attuale </translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="ui/neuralnetworkwidgetbase.ui" line="175"/>
         <source>Δ Overall Accuracy</source>
         <translation>Δ precisione globale</translation>
