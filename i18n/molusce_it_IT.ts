@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="it_IT">
+<!DOCTYPE TS><TS version="2.0" language="it_IT" sourcelanguage="">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -1122,7 +1121,7 @@ Il plugin non sarà abilitato.</translation>
         <source>Current Validation Kappa</source>
         <translation>Convalida del Kappa attuale </translation>
     </message>
-    <message utf8="true">
+    <message encoding="UTF-8">
         <location filename="ui/neuralnetworkwidgetbase.ui" line="175"/>
         <source>Δ Overall Accuracy</source>
         <translation>Δ precisione globale</translation>
