@@ -22,4 +22,6 @@ TRANSLATIONS = i18n/molusce_ru_RU.ts \
                i18n/molusce_ja_JP.ts \
                i18n/molusce_it_IT.ts \
                i18n/molusce_lang_LANG.ts \
-               i18n/molusce_fr_FR.ts
+               i18n/molusce_fr_FR.ts \
+               i18n/molusce_pt_PT.ts \
+               i18n/molusce_es_ES.ts
