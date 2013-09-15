@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0">
+<!DOCTYPE TS>
+<TS version="2.0" language="fr">
 <context>
     <name>AboutDialog</name>
     <message>
         <location filename="aboutdialog.py" line="50"/>
         <source>Version: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Version: %s</translation>
     </message>
     <message>
         <location filename="aboutdialog.py" line="74"/>
@@ -16,7 +17,12 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Homepage&lt;/strong&gt;: &lt;a href=&quot;http://hub.qgis.org/projects/molusce&quot;&gt;http://hub.qgis.org/projects/molusce&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Please report bugs at &lt;a href=&quot;http://hub.qgis.org/projects/molusce/issues&quot;&gt;bugtracker&lt;/a&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Modules for Land Use Change Simulations.&lt;/p&gt;
+&lt;p&gt;Ce plugin fournit un ensemble d&apos;algorithmes pour simuler le changement d&apos;affectation des terres, comme ANN, LR, WoE, MCE. La validation est effectuée en utilisant les statistiques kappa&lt;/p&gt;
+&lt;p&gt;Developpé par &lt;a href=&quot;http://www.asiaairsurvey.com/&quot;&gt;Asia Air Survey&lt;/a&gt; et &lt;a href=&quot;http://nextgis.org&quot;&gt;NextGIS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Homepage&lt;/strong&gt;: &lt;a href=&quot;http://hub.qgis.org/projects/molusce&quot;&gt;http://hub.qgis.org/projects/molusce&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;signaler les bugs &lt;a href=&quot;http://hub.qgis.org/projects/molusce/issues&quot;&gt;bugtracker&lt;/a&gt;&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -24,257 +30,257 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
     <message>
         <location filename="ui/moluscedialogbase.ui" line="14"/>
         <source>MOLUSCE</source>
-        <translation type="unfinished"></translation>
+        <translation>MOLUSCE</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="27"/>
         <source>Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Inputs</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="53"/>
         <source>Initial &gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Initial &gt;&gt;</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="63"/>
         <source>Final &gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Final &gt;&gt;</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="105"/>
         <source>&lt;&lt; Remove all</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;&lt; Tout supprimer</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="112"/>
         <source>&lt;&lt; Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;&lt; Supprimer</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="119"/>
         <source>Add &gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter &gt;&gt;</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="126"/>
         <source>Spatial variables</source>
-        <translation type="unfinished"></translation>
+        <translation>Variables spatiales</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="135"/>
         <source>Check geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier la géométrie</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="147"/>
         <source>Evaluating correlation</source>
-        <translation type="unfinished"></translation>
+        <translation>Évaluation de la corrélation</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="265"/>
         <source>Method</source>
-        <translation type="unfinished"></translation>
+        <translation>Méthode</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="174"/>
         <source>First Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Premier raster</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="181"/>
         <source>Second Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Deuxième raster</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="188"/>
         <source>Result</source>
-        <translation type="unfinished"></translation>
+        <translation>Résultat</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="198"/>
         <source>Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="205"/>
         <source>Check all rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier tous les rasters</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="215"/>
         <source>Area Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Changements dans la zone</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="221"/>
         <source>Class statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Statistiques de classe</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="228"/>
         <source>Transition matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice de transition</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="235"/>
         <source>Update tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à jour des tables</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="242"/>
         <source>Create changes map</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer une carte des changements</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="259"/>
         <source>Transition Potential Modelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Modélisation du potentiel de transition</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="272"/>
         <source>Define Samples</source>
-        <translation type="unfinished"></translation>
+        <translation>Définissez les échantillons</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="293"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="303"/>
         <source>Number of samples</source>
-        <translation type="unfinished"></translation>
+        <translation>Numéro d&apos;échantillons</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="320"/>
         <source>Save Samples...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer échantillons ...</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="327"/>
         <source>Add to canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter à la carte</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="380"/>
         <source>Cellular Automata Simulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulation d&apos;automates cellulaires</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="626"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Parcourir...</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="398"/>
         <source>Certancy function</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonction de certitude</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="412"/>
         <source>Simulation result</source>
-        <translation type="unfinished"></translation>
+        <translation>Résultat de la simulation</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="442"/>
         <source>Number of simulation iterations</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre d&apos;itérations de simulation</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="471"/>
         <source>Prefix of transition potential maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Préfixe de cartes de potentiel de transition</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="484"/>
         <source>potential_</source>
-        <translation type="unfinished"></translation>
+        <translation>potentiel_</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="501"/>
         <source>Change map predicted by the model</source>
-        <translation type="unfinished"></translation>
+        <translation>Carte de chargement prédite par le modèle</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="540"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrer</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="548"/>
         <source>Validation</source>
-        <translation type="unfinished"></translation>
+        <translation>Validation</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="588"/>
         <source>Create...</source>
-        <translation type="unfinished"></translation>
+        <translation>Créer...</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="595"/>
         <source>Validation Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Carte de Validation</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="602"/>
         <source>Simulated Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Carte Simulée</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="616"/>
         <source>Reference Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Carte de Référence</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="649"/>
         <source>Number of validation iterations</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre d&apos;itérations de validation</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="656"/>
         <source>Check persistent classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier les classes persistantes</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="682"/>
         <source>% of Correctness</source>
-        <translation type="unfinished"></translation>
+        <translation>% de certitude</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="708"/>
         <source>Kappa (overal)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappa (overal)</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="734"/>
         <source>Kappa (histo)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappa (histo)</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="747"/>
         <source>Kappa (loc)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappa (loc)</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="754"/>
         <source>Calculate kappa</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculer kappa</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="761"/>
         <source>Start validation</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrer la validation</translation>
     </message>
     <message>
         <location filename="ui/moluscedialogbase.ui" line="771"/>
         <source>Messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Messages</translation>
     </message>
     <message>
         <location filename="ui/aboutdialogbase.ui" line="14"/>
         <source>About MOLUSCE</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos de MOLUSCE</translation>
     </message>
     <message>
         <location filename="ui/aboutdialogbase.ui" line="20"/>
@@ -283,7 +289,11 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;MOLUSCE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;MOLUSCE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="ui/aboutdialogbase.ui" line="47"/>
@@ -292,12 +302,16 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="ui/aboutdialogbase.ui" line="74"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>TextLabel</translation>
     </message>
 </context>
 <context>
@@ -305,57 +319,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="logisticregressionwidget.py" line="75"/>
         <source>Missed input data</source>
-        <translation type="unfinished"></translation>
+        <translation>Données d&apos;entrée manquantes</translation>
     </message>
     <message>
         <location filename="logisticregressionwidget.py" line="61"/>
         <source>Initial or final raster is not set. Please specify input data and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster initial ou final n&apos;est pas défini. S&apos;il vous plaît précisez les données d&apos;entrée et réessayez</translation>
     </message>
     <message>
         <location filename="logisticregressionwidget.py" line="68"/>
         <source>Factors rasters is not set. Please specify them and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteurs rasters ne sont pas définis. S&apos;il vous plaît indiquez-les et essayez à nouveau</translation>
     </message>
     <message>
         <location filename="logisticregressionwidget.py" line="75"/>
         <source>Change map raster is not set. Please create it try again</source>
-        <translation type="unfinished"></translation>
+        <translation>La carte de changement raster n&apos;est pas définie. Veuillez la créer essayer à nouveau</translation>
     </message>
     <message>
         <location filename="logisticregressionwidget.py" line="83"/>
         <source>Init LR model</source>
-        <translation type="unfinished"></translation>
+        <translation>Init modèle LR</translation>
     </message>
     <message>
         <location filename="logisticregressionwidget.py" line="95"/>
         <source>Set training data</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir les données d&apos;entraînement</translation>
     </message>
     <message>
         <location filename="logisticregressionwidget.py" line="119"/>
         <source>LR model trained</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle LR entraînée</translation>
     </message>
     <message>
         <location filename="logisticregressionwidget.py" line="203"/>
         <source>Model is not initialised</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle n&apos;est pas initialisé</translation>
     </message>
     <message>
         <location filename="logisticregressionwidget.py" line="124"/>
         <source>To get coefficients you need to train model first</source>
-        <translation type="unfinished"></translation>
+        <translation>Pour obtenir coefficients vous devez d&apos;abord entraîner le modèle</translation>
     </message>
     <message>
         <location filename="logisticregressionwidget.py" line="161"/>
         <source>To get standard deviations you need to train model first</source>
-        <translation type="unfinished"></translation>
+        <translation>Pour obtenir l&apos;écart type vous devez d&apos;abord entraîner le modèle</translation>
     </message>
     <message>
         <location filename="logisticregressionwidget.py" line="203"/>
         <source>To get p-values you need to train model first</source>
-        <translation type="unfinished"></translation>
+        <translation>Pour obtenir les valeurs p vous devez d&apos;abord entraîner le modèle</translation>
     </message>
 </context>
 <context>
@@ -363,29 +377,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="molusce.py" line="71"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="molusce.py" line="71"/>
         <source>Quantum GIS %s detected.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS %s détecté.</translation>
     </message>
     <message>
         <location filename="molusce.py" line="71"/>
         <source>This version of MOLUSCE requires at least QGIS version 1.9.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette version de MOLUSCE nécessite au moins la version QGIS 1.9.0
+Le plugin ne sera pas activée.</translation>
     </message>
     <message>
         <location filename="molusce.py" line="97"/>
         <source>MOLUSCE</source>
-        <translation type="unfinished"></translation>
+        <translation>MOLUSCE</translation>
     </message>
     <message>
         <location filename="molusce.py" line="81"/>
         <source>About MOLUSCE...</source>
-        <translation type="unfinished"></translation>
+        <translation>À propos de MOLUSCE...</translation>
     </message>
 </context>
 <context>
@@ -393,428 +408,428 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="moluscedialog.py" line="142"/>
         <source>Start logging</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrer l&apos;enregistrement</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="266"/>
         <source>Missed selected row</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne sélectionnée manquante</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="177"/>
         <source>Initial raster is not selected. Please specify input data and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster initiale n&apos;est pas sélectionné. S&apos;il vous plaît précisez les données d&apos;entrée et réessayez</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="190"/>
         <source>Set intial layer to %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir la couche intial à %s</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="253"/>
         <source>Memory Error occurred (loading raster %s). Perhaps the system is low on memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Une erreur de mémoire s&apos;est produite (chargement raster %s). Peut-être que le système manque de mémoire.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="203"/>
         <source>Final raster is not selected. Please specify input data and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster final n&apos;est pas sélectionné. S&apos;il vous plaît précisez les données d&apos;entrée et réessayez</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="215"/>
         <source>Set final layer to %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir la couche finale à %s</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="266"/>
         <source>Factor raster is not selected. Please specify input data and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster facteur n&apos;est pas sélectionné. S&apos;il vous plaît précisez les données d&apos;entrée et réessayez</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="251"/>
         <source>Added factor layer %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche facteur ajouté %s</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="254"/>
         <source>Memory error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de memoire</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="254"/>
         <source>Memory error occurred. Perhaps the system is low on memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Une erreur de mémoire s&apos;est produite. Peut-être que le système manque de mémoire.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="288"/>
         <source>Removed factor layer %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche facteur supprimé %s</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="300"/>
         <source>Factors list cleared</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste des facteurs dégagé</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="744"/>
         <source>Missed input data</source>
-        <translation type="unfinished"></translation>
+        <translation>Données d&apos;entrée manquantes</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="455"/>
         <source>Factors rasters is not set. Please specify them and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteurs rasters ne sont pas définis. S&apos;il vous plaît indiquez-les et essayez à nouveau</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="390"/>
         <source>Initial or final raster is not set. Please specify input data and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster initial ou final n&apos;est pas défini. S&apos;il vous plaît précisez les données d&apos;entrée et réessayez</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="325"/>
         <source>Different geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Géométrie différente</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="319"/>
         <source>Geometries of the initial raster and raster &apos;%s&apos; are different!</source>
-        <translation type="unfinished"></translation>
+        <translation>Géométrie du raster initial et du raster &apos;%s&apos; sont différents!</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="325"/>
         <source>Geometries of the initial raster and final raster are different!</source>
-        <translation type="unfinished"></translation>
+        <translation>Géométrie du raster initial et final sont différents!</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="330"/>
         <source>Geometry is matched</source>
-        <translation type="unfinished"></translation>
+        <translation>La géométrie correspond</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="330"/>
         <source>Geometries of the rasters are matched!</source>
-        <translation type="unfinished"></translation>
+        <translation>La géométrie des rasters correspond!</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="348"/>
         <source>Memory Error occurred (correlation checking). Perhaps the system is low on memory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Une erreur de mémoire s&apos;est produite (contrôle de la corrélation). Peut-être que le système manque de mémoire.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="386"/>
         <source>Class statistics and transition matrix are updated</source>
-        <translation type="unfinished"></translation>
+        <translation>Les statistiques de classe et de la matrice de transition sont mises à jour</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="396"/>
         <source>Save change map</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer la carte des changements</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1237"/>
         <source>GeoTIFF (*.tif *.tiff *.TIF *.TIFF)</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoTIFF (*.tif *.tiff *.TIF *.TIFF)</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="735"/>
         <source>No file selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun fichier sélectionné</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="433"/>
         <source>Change Map is created</source>
-        <translation type="unfinished"></translation>
+        <translation>Carte des changements créée</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="744"/>
         <source>Initial raster is not set. Please specify it and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster initial n&apos;est pas définis. S&apos;il vous plaît indiquez-le et essayez à nouveau</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="445"/>
         <source>Prefix of transition potential maps is not set. Please specify it and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Préfixe des cartes de transition potentiels n&apos;est pas définie. S&apos;il vous plaît précisez les données d&apos;entrée et réessayez</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1156"/>
         <source>Missed model</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle raté</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="462"/>
         <source>Model not selected please select and train model.</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle non sélectionné veuillez sélectionner et d&apos;entraîner le modèle.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="469"/>
         <source>Missed transition matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice de transition raté</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="469"/>
         <source>Please calculate transition matrix and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous êtes priés de calculer la matrice de transition et d&apos;essayer à nouveau</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="493"/>
         <source>Simulation process is started</source>
-        <translation type="unfinished"></translation>
+        <translation>Le processus de simulation est lancée</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="517"/>
         <source>Output path for risk function map is not set. Skipping this step</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin de sortie pour la carte de la fonction risque n&apos;a pas été défini. Cette étape a été sautée</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="530"/>
         <source>Output path for model prediction is not set. Skipping this step</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin de sortie pour la prédiction du modèle n&apos;a pas été définie. Cette étape a été sautée</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="556"/>
         <source>Output path for simulated risk map is not set. Skipping this step</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin de sortie pour la carte des risques simulés n&apos;a pas été réglé. Cette étape a été sautée</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="568"/>
         <source>Not implemented yet</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas encore implémenté</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="568"/>
         <source>Transition potentials not implemented yet for the model.</source>
-        <translation type="unfinished"></translation>
+        <translation>Potentiels de transition ne sont pas encore mises en œuvre pour le modèle.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="582"/>
         <source>Simulation process is finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Processus de simulation est terminée</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="722"/>
         <source>Can&apos;t read file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="722"/>
         <source>Can&apos;t read file: &apos;%s&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier: &apos;%s&apos;</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="611"/>
         <source>Validation process is started</source>
-        <translation type="unfinished"></translation>
+        <translation>Le processus de validation est démarré</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="647"/>
         <source>Validation process is finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Le processus de validation est terminé</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="669"/>
         <source>Kappa is not applicable</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappa n&apos;est pas applicable</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="669"/>
         <source>Kappa is not applicable to the file: &apos;%s&apos; because it&apos;s contains continues value</source>
-        <translation type="unfinished"></translation>
+        <translation>Kappa n&apos;est pas applicable pour le fichier: &apos;%s&apos; parce qu&apos;il contient des valeurs continues</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="686"/>
         <source>Kappa validation process is started</source>
-        <translation type="unfinished"></translation>
+        <translation>Processus de validation Kappa est démarré</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="705"/>
         <source>Kappa validation process is finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Processus de validation Kappa est terminé</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="728"/>
         <source>Save validation map</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistration de la carte de validation</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="759"/>
         <source>Process of Validation Map creating is started</source>
-        <translation type="unfinished"></translation>
+        <translation>Processus de validation de la carte est démarré</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="778"/>
         <source>Process of Validation Map creating is finised</source>
-        <translation type="unfinished"></translation>
+        <translation>Processus de validation de la carte est terminé</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="975"/>
         <source>Pearson&apos;s Correlation</source>
-        <translation type="unfinished"></translation>
+        <translation>Corrélation de Pearson</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="982"/>
         <source>Cramer&apos;s Coefficient</source>
-        <translation type="unfinished"></translation>
+        <translation>Coefficient de Cramer</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="992"/>
         <source>Joint Information Uncertainty</source>
-        <translation type="unfinished"></translation>
+        <translation>Incertitude d&apos;Information Conjoint</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="821"/>
         <source>raster units</source>
-        <translation type="unfinished"></translation>
+        <translation>Unités raster</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1016"/>
         <source>sq. km.</source>
-        <translation type="unfinished"></translation>
+        <translation>km²</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1018"/>
         <source>ha</source>
-        <translation type="unfinished"></translation>
+        <translation>ha</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1121"/>
         <source>Artificial Neural Network (Multi-layer Perceptron)</source>
-        <translation type="unfinished"></translation>
+        <translation>Artificial Neural Network (Multi-layer Perceptron)</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1124"/>
         <source>Weights of Evidence</source>
-        <translation type="unfinished"></translation>
+        <translation>Weights of Evidence</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1127"/>
         <source>Multi Criteria Evaluation</source>
-        <translation type="unfinished"></translation>
+        <translation>Multi Criteria Evaluation</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1118"/>
         <source>Logistic Regression</source>
-        <translation type="unfinished"></translation>
+        <translation>Logistic Regression</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="836"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tout</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="837"/>
         <source>Random</source>
-        <translation type="unfinished"></translation>
+        <translation>Random</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="838"/>
         <source>Stratified</source>
-        <translation type="unfinished"></translation>
+        <translation>Stratifié</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="846"/>
         <source>Multiple-resolution budget</source>
-        <translation type="unfinished"></translation>
+        <translation>Multi-résolution budgétaire</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="913"/>
         <source>Correlation checking</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrôle de la corrélation</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="997"/>
         <source>Not applicable</source>
-        <translation type="unfinished"></translation>
+        <translation>Non applicable</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1022"/>
         <source>sq. </source>
-        <translation type="unfinished"></translation>
+        <translation>carré</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1044"/>
         <source>Class color</source>
-        <translation type="unfinished"></translation>
+        <translation>Classe de couleur</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1156"/>
         <source>Nothing to save, samples were not yet generated as the model was not trained. Train the model first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rien à sauver, les échantillons n&apos;ont pas encore été générés vu que le modèle n&apos;a pas été formé. Vous devez d&apos;abord entraîner le modèle</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1163"/>
         <source>Missed samples</source>
-        <translation type="unfinished"></translation>
+        <translation>Échantillons manquants</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1163"/>
         <source>Selected model does&apos;t use samples</source>
-        <translation type="unfinished"></translation>
+        <translation>Le modèle choisi n&apos;utilise pas d&apos;échantillons</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1209"/>
         <source>Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer le fichier</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1169"/>
         <source>Shape files (*.shp *.SHP *.Shp)</source>
-        <translation type="unfinished"></translation>
+        <translation>Shape files (*.shp *.SHP *.Shp)</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1180"/>
         <source>Can&apos;t save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;enregistrer le fichier</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1180"/>
         <source>Can&apos;t save file: &apos;%s&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;enregistrer le fichier: &apos;%s&apos;</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1192"/>
         <source>Can&apos;t open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1192"/>
         <source>Error loading output shapefile:
 %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de chargement du shapefile en sortie: %s</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1201"/>
         <source>Select Directory name</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez le nom du répertoire</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1237"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir le fichier</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1255"/>
         <source>The system out of memory during validation procedure</source>
-        <translation type="unfinished"></translation>
+        <translation>Le système manque de mémoire pendant la procédure de validation</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1258"/>
         <source>An unknown error occurs during validation procedure</source>
-        <translation type="unfinished"></translation>
+        <translation>Une erreur inconnue se produit pendant la procédure de validation</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1281"/>
         <source>Can&apos;t load raster %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de charger le raster %s</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1365"/>
         <source>Init raster should be in PseudoColor mode. Style not applied.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le raster init doit être en PseudoColeur mode. Le style ne peut pas être appliqué.</translation>
     </message>
     <message>
         <location filename="moluscedialog.py" line="1399"/>
         <source>Persistent</source>
-        <translation type="unfinished"></translation>
+        <translation>Persistent</translation>
     </message>
 </context>
 <context>
@@ -822,67 +837,67 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="83"/>
         <source>Missed input data</source>
-        <translation type="unfinished"></translation>
+        <translation>Données d&apos;entrée manquantes</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="59"/>
         <source>Initial or final raster is not set. Please specify input data and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster initial ou final n&apos;est pas défini. S&apos;il vous plaît précisez les données d&apos;entrée et réessayez</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="83"/>
         <source>Factors rasters is not set. Please specify them and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteurs rasters ne sont pas définis. S&apos;il vous plaît indiquez-les et essayez à nouveau</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="91"/>
         <source>Incorrect matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice incorrecte</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="91"/>
         <source>Please fill the matrix with values</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous êtes priés de remplir la matrice avec des valeurs</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="102"/>
         <source>Init MCE model</source>
-        <translation type="unfinished"></translation>
+        <translation>Init modèle MCE</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="113"/>
         <source>MCE model trained</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle MCE entraînée</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="125"/>
         <source>Consistent matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice cohérente</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="125"/>
         <source>Matrix filled correctly. Consistency value is: %f. The model can be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice rempli correctement. Valeur de cohérence est:%f. Le modèle peut être utilisé.</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="130"/>
         <source>Inconsistent matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Matrice incompatible</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="130"/>
         <source>Please adjust matrix before starting simulation. Consistency value is: %f</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous êtes priés d&apos;ajuster la matrice avant de commencer la simulation. Valeur de cohérence est:%f</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="149"/>
         <source>%s (band %s)</source>
-        <translation type="unfinished"></translation>
+        <translation>%s (bande %s)</translation>
     </message>
     <message>
         <location filename="multicriteriaevaluationwidget.py" line="157"/>
         <source>Weights</source>
-        <translation type="unfinished"></translation>
+        <translation>Poids</translation>
     </message>
 </context>
 <context>
@@ -890,62 +905,62 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="neuralnetworkwidget.py" line="58"/>
         <source>Neural Network learning curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Courbe d&apos;apprentissage du réseau neuronal</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="101"/>
         <source>Missed input data</source>
-        <translation type="unfinished"></translation>
+        <translation>Données d&apos;entrée manquantes</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="87"/>
         <source>Initial or final raster is not set. Please specify input data and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster initial ou final n&apos;est pas défini. S&apos;il vous plaît précisez les données d&apos;entrée et réessayez</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="94"/>
         <source>Factors rasters is not set. Please specify them and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteurs rasters ne sont pas définis. S&apos;il vous plaît indiquez-les et essayez à nouveau</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="101"/>
         <source>Change map raster is not set. Please create it try again</source>
-        <translation type="unfinished"></translation>
+        <translation>La carte de changement raster n&apos;est pas définie. Veuillez la créer essayer à nouveau</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="108"/>
         <source>Wrong network topology</source>
-        <translation type="unfinished"></translation>
+        <translation>La topologie du réseau est erronée</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="108"/>
         <source>Network topology is undefined. Please define it and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>La topologie du réseau n&apos;est pas défini. S&apos;il vous plaît définissez-la et réessayez</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="123"/>
         <source>Init ANN model</source>
-        <translation type="unfinished"></translation>
+        <translation>Init modèle ANN</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="133"/>
         <source>Set training data</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir les données d&apos;entraînement</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="177"/>
         <source>Start trainig ANN model</source>
-        <translation type="unfinished"></translation>
+        <translation>Commencer l&apos;entraînement di modèle ANN</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="189"/>
         <source>ANN model trained</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle ANN entraînée</translation>
     </message>
     <message>
         <location filename="neuralnetworkwidget.py" line="195"/>
         <source>ANN model training interrupted</source>
-        <translation type="unfinished"></translation>
+        <translation>Entraînement du modèle ANN interrompu</translation>
     </message>
 </context>
 <context>
@@ -953,47 +968,47 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="weightofevidencewidget.py" line="113"/>
         <source>Missed input data</source>
-        <translation type="unfinished"></translation>
+        <translation>Données d&apos;entrée manquantes</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="113"/>
         <source>Factors rasters is not set. Please specify them and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteurs rasters ne sont pas définis. S&apos;il vous plaît indiquez-les et essayez à nouveau</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="68"/>
         <source>Change map raster is not set. Please create it try again</source>
-        <translation type="unfinished"></translation>
+        <translation>La carte de changement raster n&apos;est pas définie. Veuillez la créer essayer à nouveau</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="106"/>
         <source>Initial or final raster is not set. Please specify input data and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster initial ou final n&apos;est pas défini. S&apos;il vous plaît précisez les données d&apos;entrée et réessayez</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="121"/>
         <source>Init WoE model</source>
-        <translation type="unfinished"></translation>
+        <translation>Init modèle WoE</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="125"/>
         <source>Initialization error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur d&apos;initialisation</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="180"/>
         <source>Wrong ranges</source>
-        <translation type="unfinished"></translation>
+        <translation>Mauvais domaines</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="180"/>
         <source>Ranges are not correctly specified. Please specify them and try again (use space as separator)</source>
-        <translation type="unfinished"></translation>
+        <translation>Les domaines ne sont pas correctement spécifiés. S&apos;il vous plaît indiquez-les et essayez à nouveau (utiliser l&apos;espace comme séparateur)</translation>
     </message>
     <message>
         <location filename="weightofevidencewidget.py" line="159"/>
         <source>WoE model trained</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle WoE entraînée</translation>
     </message>
 </context>
 <context>
@@ -1001,147 +1016,147 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="56"/>
         <source>Neighbourhood</source>
-        <translation type="unfinished"></translation>
+        <translation>Voisinage</translation>
     </message>
     <message>
         <location filename="ui/logisticregressionwidgetbase.ui" line="34"/>
         <source>Pseudo R-squared (count)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pseudo R-carré</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="93"/>
         <source> px</source>
-        <translation type="unfinished"></translation>
+        <translation> px</translation>
     </message>
     <message>
         <location filename="ui/logisticregressionwidgetbase.ui" line="51"/>
         <source>Fit model</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuster le modèle</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="125"/>
         <source>Maximum iterations</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum des itérations</translation>
     </message>
     <message>
         <location filename="ui/logisticregressionwidgetbase.ui" line="99"/>
         <source>Coefficients</source>
-        <translation type="unfinished"></translation>
+        <translation>Coefficients</translation>
     </message>
     <message>
         <location filename="ui/logisticregressionwidgetbase.ui" line="109"/>
         <source>Standard deviations</source>
-        <translation type="unfinished"></translation>
+        <translation>Écart type</translation>
     </message>
     <message>
         <location filename="ui/logisticregressionwidgetbase.ui" line="119"/>
         <source>P-values</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur p</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="42"/>
         <source>Momentum</source>
-        <translation type="unfinished"></translation>
+        <translation>Momentum</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="49"/>
         <source>Learning rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Taux d&apos;apprentissage</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="63"/>
         <source>Min Validation Overall Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de validation globale minimal</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="70"/>
         <source>Hidden Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Couches cachées</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="168"/>
         <source>Current Validation Kappa</source>
-        <translation type="unfinished"></translation>
+        <translation>Validation courant du Kappa</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="ui/neuralnetworkwidgetbase.ui" line="175"/>
         <source>Δ Overall Accuracy</source>
-        <translation type="unfinished"></translation>
+        <translation>Précision globale Δ</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="182"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrêter</translation>
     </message>
     <message>
         <location filename="ui/neuralnetworkwidgetbase.ui" line="189"/>
         <source>Train neural network</source>
-        <translation type="unfinished"></translation>
+        <translation>Entraînez le réseau de neurones</translation>
     </message>
     <message>
         <location filename="ui/multicriteriaevaluationwidgetbase.ui" line="26"/>
         <source>From class</source>
-        <translation type="unfinished"></translation>
+        <translation>À partir de la classe</translation>
     </message>
     <message>
         <location filename="ui/multicriteriaevaluationwidgetbase.ui" line="36"/>
         <source>To class</source>
-        <translation type="unfinished"></translation>
+        <translation>Jusqu&apos;à la classe</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="27"/>
         <source>Train model</source>
-        <translation type="unfinished"></translation>
+        <translation>Entraîner le modèle</translation>
     </message>
     <message>
         <location filename="ui/multicriteriaevaluationwidgetbase.ui" line="53"/>
         <source>Pairwise Comparison Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Comparaison appariée de la matrice</translation>
     </message>
     <message>
         <location filename="ui/multicriteriaevaluationwidgetbase.ui" line="60"/>
         <source>Weights Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Poids de la matrice</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="20"/>
         <source>Enter either Number of intervals (min 2) or Range breaks:</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrez soit le nombre d&apos;intervalles (min 2) ou des intervalles :</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="37"/>
         <source>Calculate Range breaks</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculer les intervalles</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="44"/>
         <source>Weights Information:</source>
-        <translation type="unfinished"></translation>
+        <translation>Information des poids:</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="58"/>
         <source>Factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Facteur</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="63"/>
         <source>Range min</source>
-        <translation type="unfinished"></translation>
+        <translation>Interval minimal</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="68"/>
         <source>Range max</source>
-        <translation type="unfinished"></translation>
+        <translation>Interval maximal</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="73"/>
         <source>Number of intervals</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre d&apos;intervalles</translation>
     </message>
     <message>
         <location filename="ui/weightofevidencewidgetbase.ui" line="78"/>
         <source>Range breaks</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervals</translation>
     </message>
 </context>
 </TS>
