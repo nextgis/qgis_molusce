@@ -49,4 +49,4 @@ package:
 	mv ../molusce.zip .
 
 upload:
-	plugin_uploader.py molusce.zip
+	plugin_uploaderNG.py molusce.zip
