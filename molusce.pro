@@ -18,10 +18,10 @@ FORMS = ui/moluscedialogbase.ui \
         ui/weightofevidencewidgetbase.ui
 
 
-TRANSLATIONS = i18n/molusce_ru_RU.ts \
-               i18n/molusce_ja_JP.ts \
-               i18n/molusce_it_IT.ts \
+TRANSLATIONS = i18n/molusce_ru.ts \
+               i18n/molusce_ja.ts \
+               i18n/molusce_it.ts \
                i18n/molusce_lang_LANG.ts \
-               i18n/molusce_fr_FR.ts \
-               i18n/molusce_pt_PT.ts \
-               i18n/molusce_es_ES.ts
+               i18n/molusce_fr.ts \
+               i18n/molusce_pt.ts \
+               i18n/molusce_es.ts
