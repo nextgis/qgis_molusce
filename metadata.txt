@@ -14,7 +14,7 @@ tags=raster,land use planning
 
 homepage=http://hub.qgis.org/projects/molusce
 tracker=http://hub.qgis.org/projects/molusce/issues
-repository=https://github.com/asiaairsurvey/molusce
+repository=https://github.com/nextgis/molusce
 
 experimental=True
 deprecated=False
