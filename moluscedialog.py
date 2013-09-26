@@ -46,7 +46,17 @@ from matplotlib import rcParams
 import neuralnetworkwidget
 import weightofevidencewidget
 import multicriteriaevaluationwidget
-import logisticregressionwidget
+
+scipyMissed = False
+try:
+  import scipy
+except ImportError:
+  scipyMissed = True
+
+if not scipyMissed:
+  import logisticregressionwidget
+  
+  
 
 from ui.ui_moluscedialogbase import Ui_Dialog
 
@@ -828,9 +838,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.cmbSimulationMethod.addItems([
                                        self.tr("Artificial Neural Network (Multi-layer Perceptron)"),
                                        self.tr("Weights of Evidence"),
-                                       self.tr("Multi Criteria Evaluation"),
-                                       self.tr("Logistic Regression")
+                                       self.tr("Multi Criteria Evaluation")
                                      ])
+    if not scipyMissed:
+      self.cmbSimulationMethod.addItem(self.tr("Logistic Regression"))
 
   def __populateSamplingModes(self):
     self.cmbSamplingMode.addItem(self.tr("All"), 0)
