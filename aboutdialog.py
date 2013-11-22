@@ -53,11 +53,12 @@ class AboutDialog(QDialog, Ui_Dialog):
     self.textBrowser.setDocument(doc)
 
     self.buttonBox.helpRequested.connect(self.openHelp)
+    self.btnUserGuide.clicked.connect(self.showUserGuide)
 
   def reject(self):
     QDialog.reject(self)
 
-  def openHelp(self):
+  def getLocaleShortName(self):
     overrideLocale = QSettings().value("locale/overrideFlag", False)
     if not overrideLocale:
       localeFullName = QLocale.system().name()
@@ -65,6 +66,10 @@ class AboutDialog(QDialog, Ui_Dialog):
       localeFullName = QSettings().value("locale/userLocale", "")
 
     localeShortName = localeFullName[ 0:2 ]
+    return localeShortName
+
+  def openHelp(self):
+    localeShortName = self.getLocaleShortName()
     if localeShortName in [ "ru", "uk" ]:
       QDesktopServices.openUrl(QUrl("http://hub.qgis.org/projects/molusce/wiki"))
     else:
@@ -78,3 +83,13 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.</p>
 <p><strong>Homepage</strong>: <a href="http://hub.qgis.org/projects/molusce">http://hub.qgis.org/projects/molusce</a></p>
 <p>Please report bugs at <a href="http://hub.qgis.org/projects/molusce/issues">bugtracker</a></p>
 """)
+
+  def showUserGuide(self):
+    dir_name =  os.path.dirname(__file__)
+    localeShortName = self.getLocaleShortName()
+    guidePath = dir_name+ "/doc/" + localeShortName + "/UserGuide.pdf"
+    if os.path.isfile(guidePath):
+        QDesktopServices.openUrl(QUrl.fromLocalFile(guidePath))
+    else: # Try to see english documentation
+      guidePath = dir_name+ "/doc/" + "en" + "/UserGuide.pdf"
+      QDesktopServices.openUrl(QUrl.fromLocalFile(guidePath))
