@@ -25,6 +25,8 @@
 #
 #******************************************************************************
 
+import os
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -32,6 +34,7 @@ from qgis.core import *
 
 import moluscedialog
 import aboutdialog
+from molusceutils import getLocaleShortName
 
 import resources_rc
 
@@ -78,15 +81,20 @@ class MoluscePlugin:
     self.iface.registerMainWindowAction(self.actionRun, "Shift+M")
     self.actionRun.setIcon(QIcon(":/icons/molusce.png"))
     self.actionRun.setWhatsThis("Start MOLUSCE plugin")
+    self.actionUserGuide = QAction(QCoreApplication.translate("MOLUSCE", "User Guide..."), self.iface.mainWindow())
+    self.actionUserGuide.setIcon(QIcon(":/icons/userguide.png"))
+    self.actionUserGuide.setWhatsThis("Show User Guide")
     self.actionAbout = QAction(QCoreApplication.translate("MOLUSCE", "About MOLUSCE..."), self.iface.mainWindow())
     self.actionAbout.setIcon(QIcon(":/icons/about.png"))
     self.actionAbout.setWhatsThis("About MOLUSCE")
 
     self.iface.addPluginToRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionRun)
+    self.iface.addPluginToRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionUserGuide)
     self.iface.addPluginToRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionAbout)
     self.iface.addRasterToolBarIcon(self.actionRun)
 
     self.actionRun.triggered.connect(self.run)
+    self.actionUserGuide.triggered.connect(self.showUserGuide)
     self.actionAbout.triggered.connect(self.about)
 
   def unload(self):
@@ -94,6 +102,7 @@ class MoluscePlugin:
 
     self.iface.removeRasterToolBarIcon(self.actionRun)
     self.iface.removePluginRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionRun)
+    self.iface.removePluginRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionUserGuide)
     self.iface.removePluginRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionAbout)
 
   def run(self):
@@ -104,3 +113,13 @@ class MoluscePlugin:
   def about(self):
     d = aboutdialog.AboutDialog()
     d.exec_()
+
+  def showUserGuide(self):
+    dir_name =  os.path.dirname(__file__)
+    localeShortName = getLocaleShortName()
+    guidePath = dir_name+ "/doc/" + localeShortName + "/UserGuide.pdf"
+    if os.path.isfile(guidePath):
+        QDesktopServices.openUrl(QUrl.fromLocalFile(guidePath))
+    else: # Try to see english documentation
+      guidePath = dir_name+ "/doc/" + "en" + "/UserGuide.pdf"
+      QDesktopServices.openUrl(QUrl.fromLocalFile(guidePath))

@@ -2,7 +2,7 @@
 name=MOLUSCE
 description=Modules for Land Use Change Simulations
 category=Raster
-version=3.0.6
+version=3.0.7
 qgisMinimumVersion=2.0
 
 author=NextGIS
@@ -16,5 +16,5 @@ homepage=http://hub.qgis.org/projects/molusce
 tracker=http://hub.qgis.org/projects/molusce/issues
 repository=https://github.com/nextgis/molusce
 
-experimental=True
+experimental=False
 deprecated=False

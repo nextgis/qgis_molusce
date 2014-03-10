@@ -1,6 +1,7 @@
 <RCC>
   <qresource>
     <file>icons/molusce.png</file>
+    <file>icons/userguide.png</file>
     <file>icons/about.png</file>
   </qresource>
 </RCC>

@@ -31,6 +31,16 @@ from PyQt4.QtXml import *
 
 from qgis.core import *
 
+def getLocaleShortName():
+    overrideLocale = QSettings().value("locale/overrideFlag", False)
+    if not overrideLocale:
+      localeFullName = QLocale.system().name()
+    else:
+      localeFullName = QSettings().value("locale/userLocale", "")
+
+    localeShortName = localeFullName[ 0:2 ]
+    return localeShortName
+
 def getRasterLayers():
   layerMap = QgsMapLayerRegistry.instance().mapLayers()
   layers = dict()
