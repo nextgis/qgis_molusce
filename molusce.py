@@ -81,20 +81,20 @@ class MoluscePlugin:
     self.iface.registerMainWindowAction(self.actionRun, "Shift+M")
     self.actionRun.setIcon(QIcon(":/icons/molusce.png"))
     self.actionRun.setWhatsThis("Start MOLUSCE plugin")
-    self.actionUserGuide = QAction(QCoreApplication.translate("MOLUSCE", "User Guide..."), self.iface.mainWindow())
-    self.actionUserGuide.setIcon(QIcon(":/icons/userguide.png"))
-    self.actionUserGuide.setWhatsThis("Show User Guide")
+    self.actionQuickHelp = QAction(QCoreApplication.translate("MOLUSCE", "Quick Help..."), self.iface.mainWindow())
+    self.actionQuickHelp.setIcon(QIcon(":/icons/quickhelp.png"))
+    self.actionQuickHelp.setWhatsThis("Show Quick Help")
     self.actionAbout = QAction(QCoreApplication.translate("MOLUSCE", "About MOLUSCE..."), self.iface.mainWindow())
     self.actionAbout.setIcon(QIcon(":/icons/about.png"))
     self.actionAbout.setWhatsThis("About MOLUSCE")
 
     self.iface.addPluginToRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionRun)
-    self.iface.addPluginToRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionUserGuide)
+    self.iface.addPluginToRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionQuickHelp)
     self.iface.addPluginToRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionAbout)
     self.iface.addRasterToolBarIcon(self.actionRun)
 
     self.actionRun.triggered.connect(self.run)
-    self.actionUserGuide.triggered.connect(self.showUserGuide)
+    self.actionQuickHelp.triggered.connect(self.showQuickHelp)
     self.actionAbout.triggered.connect(self.about)
 
   def unload(self):
@@ -102,7 +102,7 @@ class MoluscePlugin:
 
     self.iface.removeRasterToolBarIcon(self.actionRun)
     self.iface.removePluginRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionRun)
-    self.iface.removePluginRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionUserGuide)
+    self.iface.removePluginRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionQuickHelp)
     self.iface.removePluginRasterMenu(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionAbout)
 
   def run(self):
@@ -114,12 +114,12 @@ class MoluscePlugin:
     d = aboutdialog.AboutDialog()
     d.exec_()
 
-  def showUserGuide(self):
+  def showQuickHelp(self):
     dir_name =  os.path.dirname(__file__)
     localeShortName = getLocaleShortName()
-    guidePath = dir_name+ "/doc/" + localeShortName + "/UserGuide.pdf"
+    guidePath = dir_name+ "/doc/" + localeShortName + "/QuickHelp.pdf"
     if os.path.isfile(guidePath):
         QDesktopServices.openUrl(QUrl.fromLocalFile(guidePath))
     else: # Try to see english documentation
-      guidePath = dir_name+ "/doc/" + "en" + "/UserGuide.pdf"
+      guidePath = dir_name+ "/doc/" + "en" + "/QuickHelp.pdf"
       QDesktopServices.openUrl(QUrl.fromLocalFile(guidePath))
