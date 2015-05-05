@@ -2,7 +2,7 @@
 name=MOLUSCE
 description=Modules for Land Use Change Simulations
 category=Raster
-version=3.0.10
+version=3.0.11
 qgisMinimumVersion=2.0
 
 author=NextGIS
@@ -13,8 +13,12 @@ icon=icons/molusce.png
 tags=raster,land use planning
 
 homepage=http://hub.qgis.org/projects/molusce
-tracker=http://hub.qgis.org/projects/molusce/issues
+tracker=https://github.com/nextgis/molusce/issues
 repository=https://github.com/nextgis/molusce
 
 experimental=False
 deprecated=False
+
+
+changelog= 3.0.11:
+        * Check if Init and Final state raster are nominal

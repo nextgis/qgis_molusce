@@ -55,8 +55,8 @@ except ImportError:
 
 if not scipyMissed:
   import logisticregressionwidget
-  
-  
+
+
 
 from ui.ui_moluscedialogbase import Ui_Dialog
 
@@ -194,12 +194,22 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     layer = utils.getLayerById(self.initRasterId)
     try:
-      self.inputs["initial"] = Raster(unicode(layer.source()), maskVals=utils.getLayerMaskById(self.initRasterId))
+      initRaster = Raster(unicode(layer.source()), maskVals=utils.getLayerMaskById(self.initRasterId))
       self.logMessage(self.tr("Set intial layer to %s") % (layerName))
     except MemoryError:
       self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
       raise
-    gc.collect()
+
+    if initRaster.isCountinues(1):
+      QMessageBox.warning(self,
+                          self.tr("Raster must store codes of a nominal variable"),
+                          self.tr("The raster has a lot of different values. Does the raster store a nominal variable?" )
+                         )
+      initRaster = None
+      self.leInitRasterName.setText('')
+      gc.collect()
+      return
+    self.inputs["initial"] = initRaster
 
   def setFinalRaster(self):
     try:
@@ -219,12 +229,22 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.leFinalYear.setText(year)
 
     try:
-      self.inputs["final"] = Raster(unicode(utils.getLayerById(self.finalRasterId).source()), utils.getLayerMaskById(self.finalRasterId))
+      finalRaster = Raster(unicode(utils.getLayerById(self.finalRasterId).source()), utils.getLayerMaskById(self.finalRasterId))
       self.logMessage(self.tr("Set final layer to %s") % (layerName))
     except MemoryError:
       self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
       raise
-    gc.collect()
+
+    if finalRaster.isCountinues(1):
+      QMessageBox.warning(self,
+                          self.tr("Raster must store codes of a nominal variable"),
+                          self.tr("The raster has a lot of different values. Does the raster store a nominal variable?" )
+                         )
+      finalRaster = None
+      self.leFinalRasterName.setText('')
+      gc.collect()
+      return
+    self.inputs["final"] = finalRaster
 
   def addFactor(self):
     layerNames = self.lstLayers.selectedItems()
