@@ -13,3 +13,7 @@ Quickhelp (PDF):
 * English: http://hub.qgis.org/attachments/7075/MOLUSCE_Quick_help.pdf
 * Portuguese: http://ecojustus.com.br/molusce-guia-rapido/
 * Russian: http://gis-lab.info/qa/molusce-intro-ru.html
+
+License
+-------------
+This program is licensed under GNU GPL v2 or any later version
