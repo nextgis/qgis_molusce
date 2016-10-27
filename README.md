@@ -6,11 +6,11 @@ Plugin provides a set of algorithms for land use change simulations such as ANN,
 
 Developed by Asia Air Survey (http://www.asiaairsurvey.com) and NextGIS (http://nextgis.org).
 
-Homepage: http://hub.qgis.org/projects/molusce
+Homepage: https://github.com/nextgis/molusce
 
 Quickhelp (PDF):
 
-* English: http://hub.qgis.org/attachments/7075/MOLUSCE_Quick_help.pdf
+* English: https://github.com/nextgis/molusce/tree/master/doc/en
 * Portuguese: http://ecojustus.com.br/molusce-guia-rapido/
 * Russian: http://gis-lab.info/qa/molusce-intro-ru.html
 
