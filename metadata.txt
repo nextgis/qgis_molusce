@@ -1,6 +1,10 @@
 [general]
 name=MOLUSCE
-description=Modules for Land Use Change Simulations
+about=Modules for Land Use Change Simulations
+description=Plugin provides a set of algorithms 
+	for land use change simulations 
+	such as ANN, LR, WoE, MCE. 
+	There is also validation using kappa statistics.
 category=Raster
 version=3.0.13
 qgisMinimumVersion=2.0
