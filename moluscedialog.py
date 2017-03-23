@@ -109,6 +109,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.grpSampling.setSettings(self.settings)
 
+    self._geometry_matched = False
+    self.__updateAnalyticTabs(self.geometry_matched)
+
     # connect signals and slots
     self.btnSetInitialRaster.clicked.connect(self.setInitialRaster)
     self.btnSetFinalRaster.clicked.connect(self.setFinalRaster)
@@ -152,6 +155,17 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     self.manageGui()
     self.logMessage(self.tr("Start logging"))
+
+  @property
+  def geometry_matched(self):
+      return self._geometry_matched
+
+  @geometry_matched.setter
+  def geometry_matched(self, value):
+      if value not in [True, False]:
+          raise ValueError('"geometry_matched" property must be Boolean!')
+
+      self._geometry_matched = value
 
   def manageGui(self):
     try:
@@ -213,6 +227,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.leInitRasterName.setText('')
       gc.collect()
       return
+    self.geometry_matched = False
+    self.__updateAnalyticTabs(self.geometry_matched)
     self.inputs["initial"] = initRaster
 
   def setFinalRaster(self):
@@ -249,6 +265,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
       gc.collect()
       return
     self.inputs["final"] = finalRaster
+    self.geometry_matched = False
+    self.__updateAnalyticTabs(self.geometry_matched)
 
   def addFactor(self):
     layerNames = self.lstLayers.selectedItems()
@@ -289,6 +307,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
         raise
         return
+    self.geometry_matched = False
+    self.__updateAnalyticTabs(self.geometry_matched)
     gc.collect()
 
   def removeFactor(self):
@@ -314,6 +334,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
       if self.inputs["factors"] == {}:
         del self.inputs["factors"]
         del self.inputs["bandCount"]
+
+        self.geometry_matched = False
+        self.__updateAnalyticTabs(self.geometry_matched)
       else:
         self.inputs["bandCount"] = self.__bandCount()
 
@@ -329,6 +352,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except KeyError:
       pass
 
+    self.geometry_matched = False
+    self.__updateAnalyticTabs(self.geometry_matched)
     self.logMessage(self.tr("Factors list cleared"))
 
   def checkGeometry(self):
@@ -363,6 +388,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("Geometry is matched"),
                           self.tr("Geometries of the rasters are matched!" )
                          )
+    self.geometry_matched = True
+    self.__updateAnalyticTabs(self.geometry_matched)
 
   def correlationChecking(self):
     if not utils.checkFactors(self.inputs):
@@ -1444,6 +1471,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     layer.triggerRepaint()
     self.iface.legendInterface().refreshLayerSymbology(layer)
     QgsProject.instance().dirty(True)
+
+  def __updateAnalyticTabs(self, value):
+      # Enables/Disables Analytic tabs
+      for i in range(1, self.tabWidget.count()-1):  # Last tab is 'Messages'
+        self.tabWidget.setTabEnabled(i, value)
 
   def fl(self, cr, v):
     for i in cr:

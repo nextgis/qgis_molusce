@@ -2,7 +2,7 @@
 name=MOLUSCE
 description=Modules for Land Use Change Simulations
 category=Raster
-version=3.0.12
+version=3.0.13
 qgisMinimumVersion=2.0
 
 author=NextGIS
@@ -18,6 +18,9 @@ repository=https://github.com/nextgis/molusce
 
 experimental=False
 deprecated=False
+
+changelog= 3.0.13:
+        * BugFixing: disable analisys if rasterss are not matched
 
 changelog= 3.0.12:
         * BugFixing: fix import errors on Ubuntu 16.04
