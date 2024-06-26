@@ -176,10 +176,10 @@ class TestModel (unittest.TestCase):
         eb = EBudget(reference, simulated)
         stat = eb.getStat(nIter=3)
         ans0 =  {'NoNo': 0.5, 'NoMed': (5.0*5/8 + 3.0*3/8)/8, 'MedMed': 4.0/8, 'MedPer': 1.0, 'PerPer': 1.0}
-        for k in stat[0].keys():
+        for k in list(stat[0].keys()):
             np.testing.assert_almost_equal(stat[0][k],ans0[k])
         ans1 = {'NoNo': 0.5, 'NoMed': (5.0/8+5.0/32 + 3.0/16 + 3.0/32)/2, 'MedMed': 4.0/8, 'MedPer': 1.0, 'PerPer': 1.0}
-        for k in stat[1].keys():
+        for k in list(stat[1].keys()):
             np.testing.assert_almost_equal(stat[0][k],ans1[k])
 
 

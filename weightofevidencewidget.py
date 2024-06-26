@@ -30,15 +30,15 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
-from algorithms.models.area_analysis.manager import AreaAnalyst
-from algorithms.models.woe.manager import WoeManager, WoeManagerError
-from algorithms import dataprovider
+from .algorithms.models.area_analysis.manager import AreaAnalyst
+from .algorithms.models.woe.manager import WoeManager, WoeManagerError
+from .algorithms import dataprovider
 
-import spinboxdelegate
+from . import spinboxdelegate
 
-from ui.ui_weightofevidencewidgetbase import Ui_Widget
+from .ui.ui_weightofevidencewidgetbase import Ui_Widget
 
-import molusceutils as utils
+from . import molusceutils as utils
 
 class WeightOfEvidenceWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):
@@ -75,17 +75,17 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     self.delegate = spinboxdelegate.SpinBoxDelegate(self.tblReclass.model(), minRange=2, maxRange=dataprovider.MAX_CATEGORIES)
 
     row = 0
-    for k, v in self.inputs["factors"].iteritems():
+    for k, v in self.inputs["factors"].items():
       v.denormalize()   # Denormalize the factor's bands if they are normalized
-      for b in xrange(1, v.getBandsCount()+1):
+      for b in range(1, v.getBandsCount()+1):
         if v.isCountinues(b):
           self.tblReclass.insertRow(row)
           if v.getBandsCount()>1:
-            name = u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b))
+            name = "%s (band %s)" % (utils.getLayerById(k).name(), str(b))
           else:
-            name = u"%s" % (utils.getLayerById(k).name(), )
+            name = "%s" % (utils.getLayerById(k).name(), )
           stat = v.getBandStat(b)
-          for n, item_data in enumerate([name, (u"%f" % (stat["min"], )), (u"%f" % (stat["max"])), u"" , u"" ]):
+          for n, item_data in enumerate([name, ("%f" % (stat["min"], )), ("%f" % (stat["max"])), "" , "" ]):
             item = QTableWidgetItem(item_data)
             if n < 3:
               item.setFlags(item.flags() ^ Qt.ItemIsEditable)
@@ -96,7 +96,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     self.tblReclass.setItemDelegateForColumn(3, self.delegate)
     for row in range(rowCount):
       # Set 2 bins as default value
-      self.tblReclass.setItem(row, 3, QTableWidgetItem(u'2'))
+      self.tblReclass.setItem(row, 3, QTableWidgetItem('2'))
 
     self.tblReclass.resizeRowsToContents()
     self.tblReclass.resizeColumnsToContents()
@@ -120,7 +120,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
 
     self.plugin.logMessage(self.tr("Init WoE model"))
     try:
-      model = WoeManager(self.inputs["factors"].values(), self.plugin.analyst, bins=myBins)
+      model = WoeManager(list(self.inputs["factors"].values()), self.plugin.analyst, bins=myBins)
     except WoeManagerError as err:
       QMessageBox.warning(self.plugin,
                           self.tr("Initialization error"),
@@ -157,20 +157,20 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     model.errorReport.disconnect(self.plugin.logErrorReport)
     self.plugin.restoreProgressState()
     self.plugin.logMessage(self.tr("WoE model trained"))
-    self.pteWeightsInform.appendPlainText( unicode(model.weightsToText()) )
+    self.pteWeightsInform.appendPlainText( str(model.weightsToText()) )
 
   def __getBins(self):
     bins = dict()
     n = 0
-    for k, v in self.inputs["factors"].iteritems():
+    for k, v in self.inputs["factors"].items():
       lst = []
-      for b in xrange(v.getBandsCount()):
+      for b in range(v.getBandsCount()):
         lst.append(None)
         if v.isCountinues(b+1):
           if v.getBandsCount()>1:
-            name = u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b+1))
+            name = "%s (band %s)" % (utils.getLayerById(k).name(), str(b+1))
           else:
-            name = u"%s" % (utils.getLayerById(k).name(), )
+            name = "%s" % (utils.getLayerById(k).name(), )
           items = self.tblReclass.findItems(name, Qt.MatchExactly)
           idx = self.tblReclass.indexFromItem(items[0])
           reclassList = self.tblReclass.item(idx.row(), 4).text()
@@ -188,7 +188,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     return bins
 
   def __resetBins(self):
-    for row in xrange(self.tblReclass.rowCount()):
+    for row in range(self.tblReclass.rowCount()):
       try:
         rangeMin = float(self.tblReclass.item(row, 1).text())
         rangeMax = float(self.tblReclass.item(row, 2).text())
@@ -196,7 +196,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
       except ValueError:
         continue
       delta = (rangeMax - rangeMin)/intervals
-      item = [unicode( int(rangeMin + delta*(i)) )  for i in range(1,intervals)]
-      item = u" ".join(item)
+      item = [str( int(rangeMin + delta*(i)) )  for i in range(1,intervals)]
+      item = " ".join(item)
       item = QTableWidgetItem(item)
       self.tblReclass.setItem(row, 4, item)

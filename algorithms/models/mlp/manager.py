@@ -88,7 +88,7 @@ class MlpManager(QObject):
             val_sampl = val_ind[1] - val_ind[0]
             answers   = np.ma.zeros(val_sampl)
             out       = np.ma.zeros(val_sampl)
-            for i in xrange(val_ind[0], val_ind[1]):
+            for i in range(val_ind[0], val_ind[1]):
                 sample = self.data[i]
                 val_error = val_error + self.computeMlpError(sample = self.data[i])
 
@@ -260,8 +260,8 @@ class MlpManager(QObject):
                 mask = np.zeros([rows, cols], dtype=np.bool)
             self.updateProgress.emit()
             self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
-            for i in xrange(rows):
-                for j in xrange(cols):
+            for i in range(rows):
+                for j in range(cols):
                     if not mask[i,j]:
                         input = self.sampler.get_inputs(state, i,j)
                         if input != None:

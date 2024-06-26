@@ -8,7 +8,7 @@ import gc
 from PyQt4.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
-from model import woe
+from .model import woe
 from molusce.algorithms.utils import binaryzation, masks_identity, reclass
 
 
@@ -53,7 +53,7 @@ class WoeManager(QObject):
         self.prediction = None      # Raster of the prediction results
         self.confidence = None      # Raster of the results confidence(1 = the maximum confidence, 0 = the least confidence)
 
-        if (bins != None) and (len(self.factors) != len(bins.keys())):
+        if (bins != None) and (len(self.factors) != len(list(bins.keys()))):
             raise WoeManagerError('Lengths of bins and factors are different!')
 
         for r in self.factors:
@@ -143,8 +143,8 @@ class WoeManager(QObject):
             self.updateProgress.emit()
             self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
 
-            for r in xrange(rows):
-                for c in xrange(cols):
+            for r in range(rows):
+                for c in range(cols):
                     oldMax, currMax = -1000, -1000  # Small numbers
                     indexMax = -1                   # Index of Max weight
                     initCat = stateBand[r,c]        # Init category (state before transition)
@@ -193,7 +193,7 @@ class WoeManager(QObject):
                 # Reclass factors (continuous factor -> ordinal factor)
                 wMap = np.ma.zeros(changeMap.shape) # The map of summary weight of the all factors
                 self.weights[code] = {}             # Dictionary for storing wheights of every raster's band
-                for k in xrange(len(self.factors)):
+                for k in range(len(self.factors)):
                     fact = self.factors[k]
                     self.weights[code][k] = {}      # Weights of the factor
                     factorW = self.weights[code][k]
@@ -236,18 +236,18 @@ class WoeManager(QObject):
         Format self.weights as text report.
         '''
         if self.weights == {}:
-            return u""
-        text = u""
+            return ""
+        text = ""
         for code in self.codes:
             (initClass, finalClass) = self.analyst.decode(code)
             text = text + self.tr("Transition %s -> %s\n" % (int(initClass), int(finalClass)))
             try:
                 factorW = self.weights[code]
-                for factNum, factDict in factorW.iteritems():
+                for factNum, factDict in factorW.items():
                     name = self.factors[factNum].getFileName()
                     name = basename(name)
                     text = text + self.tr("\t factor: %s \n" % (name,) )
-                    for bandNum, bandWeights in factDict.iteritems():
+                    for bandNum, bandWeights in factDict.items():
                         weights = ["%f" % (w,) for w in bandWeights]
                         text = text + self.tr("\t\t Weights of band %s: %s \n" % (bandNum, ", ".join(weights)) )
             except:

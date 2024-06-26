@@ -27,16 +27,16 @@
 
 import gc
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui import *
 
 from qgis.core import *
 
-from algorithms.models.lr.lr import LR
+from .algorithms.models.lr.lr import LR
 
-from ui.ui_logisticregressionwidgetbase import Ui_Widget
+from .ui.ui_logisticregressionwidgetbase import Ui_Widget
 
-import molusceutils as utils
+from . import molusceutils as utils
 
 class LogisticRegressionWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):
@@ -87,7 +87,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     model.setMaxIter(self.spnMaxIterations.value())
 
     model.setState(self.inputs["initial"])
-    model.setFactors(self.inputs["factors"].values())
+    model.setFactors(list(self.inputs["factors"].values()))
     model.setOutput(self.inputs["changeMap"])
     model.setMode(self.inputs["samplingMode"],)
     model.setSamples(self.plugin.spnSamplesCount.value())
@@ -109,7 +109,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     # Transition labels for the coef. tables
     analyst = self.plugin.analyst
     self.labels = list(model.labelCodes)
-    self.labels = [u"%s → %s" % analyst.decode(int(c)) for c in self.labels]
+    self.labels = ["%s → %s" % analyst.decode(int(c)) for c in self.labels]
 
     # populate table
     self.showCoefficients()
@@ -139,15 +139,15 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     labels = []
     for i in range(rowCount):
-      labels.append(u"β%s" % (i,))
+      labels.append("β%s" % (i,))
     self.tblCoefficients.setVerticalHeaderLabels(labels)
     self.tblCoefficients.setHorizontalHeaderLabels(self.labels)
 
-    for i in xrange(len(fm)):
-      item = QTableWidgetItem(unicode(fm[i]))
+    for i in range(len(fm)):
+      item = QTableWidgetItem(str(fm[i]))
       self.tblCoefficients.setItem(0, i, item)
-      for j in xrange(len(coef[i])):
-        item = QTableWidgetItem(unicode(coef[i][j]))
+      for j in range(len(coef[i])):
+        item = QTableWidgetItem(str(coef[i][j]))
         self.tblCoefficients.setItem(j + 1, i, item)
 
     self.tblCoefficients.resizeRowsToContents()
@@ -175,14 +175,14 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     labels = []
     for i in range(rowCount):
-      labels.append(u"β%s" % (i,))
+      labels.append("β%s" % (i,))
     self.tblStdDev.setVerticalHeaderLabels(labels)
     self.tblStdDev.setHorizontalHeaderLabels(self.labels)
 
-    for i in xrange(len(stdErrI)):
+    for i in range(len(stdErrI)):
       item = QTableWidgetItem("%6.5f" % (stdErrI[i]))
       self.tblStdDev.setItem(0, i, item)
-      for j in xrange(len(stdErrW[i])):
+      for j in range(len(stdErrW[i])):
         item = QTableWidgetItem("%6.5f" % (stdErrW[i][j]))
         self.tblStdDev.setItem(j + 1, i, item)
 
@@ -217,17 +217,17 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
 
     labels = []
     for i in range(rowCount):
-      labels.append(u"β%s" % (i,))
+      labels.append("β%s" % (i,))
     self.tblPValues.setVerticalHeaderLabels(labels)
     self.tblPValues.setHorizontalHeaderLabels(self.labels)
 
-    for i in xrange(len(fm)):
+    for i in range(len(fm)):
       s = "%f %s" % (fm[i], significance(fm[i]))
-      item = QTableWidgetItem(unicode(s))
+      item = QTableWidgetItem(str(s))
       self.tblPValues.setItem(0, i, item)
-      for j in xrange(len(coef[i])):
+      for j in range(len(coef[i])):
         s = "%f %s" % (coef[i][j], significance(coef[i][j]))
-        item = QTableWidgetItem(unicode(s))
+        item = QTableWidgetItem(str(s))
         self.tblPValues.setItem(j + 1, i, item)
 
     self.tblPValues.resizeRowsToContents()

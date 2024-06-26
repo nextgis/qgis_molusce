@@ -57,7 +57,7 @@ class TestLRManager (unittest.TestCase):
         lr.train()
         predict = lr.getPrediction(self.state1, self.factors1, calcTransitions=True)
         predict = predict.getBand(1)
-        self.assertEquals(predict.dtype, np.uint8)
+        self.assertEqual(predict.dtype, np.uint8)
         data = [
             [0.0, 0.0, 0.0, 0.0],
             [0.0, 1.0, 2.0, 0.0],
@@ -69,14 +69,14 @@ class TestLRManager (unittest.TestCase):
 
         # Confidence is zero
         confid = lr.getConfidence()
-        self.assertEquals(confid.getBand(1).dtype, np.uint8)
+        self.assertEqual(confid.getBand(1).dtype, np.uint8)
 
         # Transition Potentials
         potentials = lr.getTransitionPotentials()
         cats = self.output.getBandGradation(1)
         for cat in [1.0, 2.0]:
             map = potentials[cat]
-            self.assertEquals(map.getBand(1).dtype, np.uint8)
+            self.assertEqual(map.getBand(1).dtype, np.uint8)
 
 if __name__ == "__main__":
     unittest.main()

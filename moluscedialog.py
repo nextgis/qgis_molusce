@@ -47,9 +47,9 @@ except ImportError:
 
 from matplotlib.figure import Figure
 
-import neuralnetworkwidget
-import weightofevidencewidget
-import multicriteriaevaluationwidget
+from . import neuralnetworkwidget
+from . import weightofevidencewidget
+from . import multicriteriaevaluationwidget
 
 scipyMissed = False
 try:
@@ -58,21 +58,21 @@ except ImportError:
   scipyMissed = True
 
 if not scipyMissed:
-  import logisticregressionwidget
+  from . import logisticregressionwidget
 
 
 
-from ui.ui_moluscedialogbase import Ui_Dialog
+from .ui.ui_moluscedialogbase import Ui_Dialog
 
-from algorithms.dataprovider import Raster, ProviderError
-from algorithms.models.correlation.model import DependenceCoef
-from algorithms.models.crosstabs.manager import CrossTableManager
-from algorithms.models.area_analysis.manager import AreaAnalyst
-from algorithms.models.sampler.sampler import SamplerError
-from algorithms.models.simulator.sim import Simulator
-from algorithms.models.errorbudget.ebmodel import EBudget
+from .algorithms.dataprovider import Raster, ProviderError
+from .algorithms.models.correlation.model import DependenceCoef
+from .algorithms.models.crosstabs.manager import CrossTableManager
+from .algorithms.models.area_analysis.manager import AreaAnalyst
+from .algorithms.models.sampler.sampler import SamplerError
+from .algorithms.models.simulator.sim import Simulator
+from .algorithms.models.errorbudget.ebmodel import EBudget
 
-import molusceutils as utils
+from . import molusceutils as utils
 
 class MolusceDialog(QDialog, Ui_Dialog):
   def __init__(self, iface):
@@ -212,7 +212,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     layer = utils.getLayerById(self.initRasterId)
     try:
-      initRaster = Raster(unicode(layer.source()), maskVals=utils.getLayerMaskById(self.initRasterId))
+      initRaster = Raster(str(layer.source()), maskVals=utils.getLayerMaskById(self.initRasterId))
       self.logMessage(self.tr("Set intial layer to %s") % (layerName))
     except MemoryError:
       self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
@@ -249,7 +249,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.leFinalYear.setText(year)
 
     try:
-      finalRaster = Raster(unicode(utils.getLayerById(self.finalRasterId).source()), utils.getLayerMaskById(self.finalRasterId))
+      finalRaster = Raster(str(utils.getLayerById(self.finalRasterId).source()), utils.getLayerMaskById(self.finalRasterId))
       self.logMessage(self.tr("Set final layer to %s") % (layerName))
     except MemoryError:
       self.logErrorReport(self.tr("Memory Error occurred (loading raster %s). Perhaps the system is low on memory.") % (layerName))
@@ -285,15 +285,15 @@ class MolusceDialog(QDialog, Ui_Dialog):
         return
 
       item = QListWidgetItem(i)
-      layerId = unicode(item.data(Qt.UserRole))
+      layerId = str(item.data(Qt.UserRole))
       self.lstFactors.insertItem(self.lstFactors.count() + 1, item)
 
       try:
         if "factors" in self.inputs:
-          self.inputs["factors"][layerId] = Raster(unicode(utils.getLayerById(layerId).source()), utils.getLayerMaskById(layerId))
+          self.inputs["factors"][layerId] = Raster(str(utils.getLayerById(layerId).source()), utils.getLayerMaskById(layerId))
         else:
           d = dict()
-          d[layerId] = Raster(unicode(utils.getLayerById(layerId).source()), utils.getLayerMaskById(layerId))
+          d[layerId] = Raster(str(utils.getLayerById(layerId).source()), utils.getLayerMaskById(layerId))
           self.inputs["factors"] = d
 
         self.inputs["bandCount"] = self.__bandCount()
@@ -323,7 +323,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
 
     for i in layerNames:
-      layerId = unicode(i.data(Qt.UserRole))
+      layerId = str(i.data(Qt.UserRole))
       layerName = i.text()
 
       self.lstFactors.takeItem(self.lstFactors.row(i))
@@ -371,7 +371,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       return
 
     initRaster = self.inputs["initial"]
-    for k, v in self.inputs["factors"].iteritems():
+    for k, v in self.inputs["factors"].items():
       if not initRaster.geoDataMatch(v):
         QMessageBox.warning(self,
                           self.tr("Different geometry"),
@@ -462,7 +462,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.logMessage(self.tr("No file selected"))
       return
 
-    self.inputs["changeMapName"] = unicode(fileName)
+    self.inputs["changeMapName"] = str(fileName)
 
     self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
     self.analyst.moveToThread(self.workThread)
@@ -532,7 +532,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       return
 
     self.simulator = Simulator(self.inputs["final"],
-                               self.inputs["factors"].values(),
+                               list(self.inputs["factors"].values()),
                                self.inputs["model"],
                                self.inputs["crosstab"]
                               )
@@ -562,11 +562,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
         maxVal = res.getGDALMaxVal()
         for noData in [0, maxVal]:
             if not noData in grad:
-                res.save(unicode(self.leRiskFunctionPath.text()), nodata=noData)
+                res.save(str(self.leRiskFunctionPath.text()), nodata=noData)
                 saved = True
                 break
         if not saved:
-            res.save(unicode(self.leRiskFunctionPath.text()), nodata=maxVal-1)
+            res.save(str(self.leRiskFunctionPath.text()), nodata=maxVal-1)
         del res
         self.__addRasterToCanvas(self.leRiskFunctionPath.text())
         layer = utils.getLayerByName(QFileInfo(self.leRiskFunctionPath.text()).baseName())
@@ -584,11 +584,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
         maxVal = res.getGDALMaxVal()
         for noData in [0, maxVal]:
             if not noData in grad:
-                res.save(unicode(self.leMonteCarloPath.text()), nodata=noData)
+                res.save(str(self.leMonteCarloPath.text()), nodata=noData)
                 saved = True
                 break
         if not saved:
-            res.save(unicode(self.leRiskFunctionPath.text()), nodata=maxVal-1)
+            res.save(str(self.leRiskFunctionPath.text()), nodata=maxVal-1)
         del res
         self.__addRasterToCanvas(self.leMonteCarloPath.text())
         if utils.copySymbology(utils.getLayerByName(self.leInitRasterName.text()), utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName())):
@@ -607,7 +607,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         if not hasattr(self, 'analyst'):
             self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
         if potentials != None:
-            for k,v in potentials.iteritems():
+            for k,v in potentials.items():
                 initcat, finalcat = self.analyst.decode(int(k))
                 map = v.save(trans_prefix+'_from_'+str(initcat)+ '_to_' +str(finalcat) + '.tif')
         else:
@@ -629,19 +629,19 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def startValidation(self):
     try:
-      reference = Raster(unicode(self.leReferenceMapPath.text()))
+      reference = Raster(str(self.leReferenceMapPath.text()))
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % unicode(self.leReferenceMapPath.text()))
+                          self.tr("Can't read file: '%s'" % str(self.leReferenceMapPath.text()))
                          )
       return
     try:
-      simulated = Raster(unicode(self.leSimulatedMapPath.text()))
+      simulated = Raster(str(self.leSimulatedMapPath.text()))
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % unicode(self.leSimulatedMapPath.text()))
+                          self.tr("Can't read file: '%s'" % str(self.leSimulatedMapPath.text()))
                          )
       return
 
@@ -666,9 +666,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     gc.collect()
     self.restoreProgressState()
 
-    self.scaleData = stat.keys()
+    self.scaleData = list(stat.keys())
     self.noNoData, self.noMedData, self.medMedData, self.medPerData, self.perPerData = [], [], [], [], []
-    for k in stat.keys():
+    for k in list(stat.keys()):
       self.noNoData.append(stat[k]['NoNo'])
       self.noMedData.append(stat[k]['NoMed'])
       self.medMedData.append(stat[k]['MedMed'])
@@ -695,26 +695,26 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def startKappaValidation(self):
     try:
-      reference = Raster(unicode(self.leReferenceMapPath.text()))
+      reference = Raster(str(self.leReferenceMapPath.text()))
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % unicode(self.leReferenceMapPath.text()))
+                          self.tr("Can't read file: '%s'" % str(self.leReferenceMapPath.text()))
                          )
       return
     try:
-      simulated = Raster(unicode(self.leSimulatedMapPath.text()))
+      simulated = Raster(str(self.leSimulatedMapPath.text()))
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % unicode(self.leSimulatedMapPath.text()))
+                          self.tr("Can't read file: '%s'" % str(self.leSimulatedMapPath.text()))
                          )
       return
     for raster in [reference, simulated]:
       if raster.isCountinues(bandNo=1):
         QMessageBox.warning(self,
                             self.tr("Kappa is not applicable"),
-                            self.tr("Kappa is not applicable to the file: '%s' because it's contains continues value" % unicode(raster.getFileName()))
+                            self.tr("Kappa is not applicable to the file: '%s' because it's contains continues value" % str(raster.getFileName()))
                            )
         return
 
@@ -753,21 +753,21 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def createValidationMap(self):
     try:
-      layerSource = unicode(self.leReferenceMapPath.text())
+      layerSource = str(self.leReferenceMapPath.text())
       reference = Raster(layerSource, utils.getLayerMaskBySource(layerSource))
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % unicode(self.leReferenceMapPath.text()))
+                          self.tr("Can't read file: '%s'" % str(self.leReferenceMapPath.text()))
                          )
       return
     try:
-      layerSource = unicode(self.leSimulatedMapPath.text())
+      layerSource = str(self.leSimulatedMapPath.text())
       simulated = Raster(layerSource, utils.getLayerMaskBySource(layerSource))
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % unicode(self.leSimulatedMapPath.text()))
+                          self.tr("Can't read file: '%s'" % str(self.leSimulatedMapPath.text()))
                          )
       return
 
@@ -781,7 +781,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.logMessage(self.tr("No file selected"))
       return
 
-    self.inputs["valMapName"] = unicode(fileName)
+    self.inputs["valMapName"] = str(fileName)
 
     self.analystVM = AreaAnalyst(reference, simulated)
 
@@ -835,7 +835,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def __populateLayers(self):
     layers = utils.getRasterLayers()
     #~ relations = self.iface.legendInterface().groupLayerRelationship()
-    for layer in sorted(layers.iteritems(), cmp=locale.strcoll, key=operator.itemgetter(1)):
+    for layer in sorted(iter(layers.items()), cmp=locale.strcoll, key=operator.itemgetter(1)):
       #~ groupName = utils.getLayerGroup(relations, layer[0])
       groupName = ""
       item = QListWidgetItem()
@@ -851,7 +851,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def __populateRasterNames(self):
     self.cmbFirstRaster.clear()
     self.cmbSecondRaster.clear()
-    for index in xrange(self.lstFactors.count()):
+    for index in range(self.lstFactors.count()):
       item = self.lstFactors.item(index)
       self.cmbFirstRaster.addItem(item.text(), item.data(Qt.UserRole))
       self.cmbSecondRaster.addItem(item.text(), item.data(Qt.UserRole))
@@ -939,13 +939,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     labels = []
     mapping, labNo = {}, 0    # Maping between raster ID and label number
-    for k, v in self.inputs["factors"].iteritems():
+    for k, v in self.inputs["factors"].items():
       mapping[k] = {}
-      for b in xrange(v.getBandsCount()):
+      for b in range(v.getBandsCount()):
         if v.getBandsCount()>1:
-          name = u"%s (band %s)" % (utils.getLayerById(k).name(), unicode(b + 1))
+          name = "%s (band %s)" % (utils.getLayerById(k).name(), str(b + 1))
         else:
-          name = u"%s" % (utils.getLayerById(k).name())
+          name = "%s" % (utils.getLayerById(k).name())
         mapping[k][b] = labNo
         labNo = labNo + 1
         labels.append(name)
@@ -958,19 +958,19 @@ class MolusceDialog(QDialog, Ui_Dialog):
     ]
     # Loop over all rasters and all bands
     self.setProgressRange(self.tr('Correlation checking'), dim*(dim-1)/2)
-    for i, fact1 in self.inputs["factors"].iteritems():
+    for i, fact1 in self.inputs["factors"].items():
         for b1 in range(fact1.getBandsCount()):
           labNo1 = mapping[i][b1]
-          for j, fact2 in self.inputs["factors"].iteritems():
+          for j, fact2 in self.inputs["factors"].items():
             for b2 in range(fact2.getBandsCount()):
               labNo2 = mapping[j][b2]
               if labNo2 < labNo1:
                 continue
               if labNo2==labNo1:
-                item = QTableWidgetItem(unicode("--"))
+                item = QTableWidgetItem(str("--"))
               # Check if method is applicable to the bands
               elif (fact1.isCountinues(b1+1) or fact2.isCountinues(b2+1)) and  method in discreteMethods:
-                item = QTableWidgetItem(unicode(self.tr("Not applicable")))
+                item = QTableWidgetItem(str(self.tr("Not applicable")))
               else:
                 depCoef = DependenceCoef(fact1.getBand(b1+1), fact2.getBand(b2+1))
                 if method == self.tr("Pearson's Correlation"):
@@ -979,7 +979,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                   coef = depCoef.jiu()
                 elif method ==self.tr("Cramer's Coefficient"):
                   coef = depCoef.cramer()
-                item = QTableWidgetItem(unicode(coef))
+                item = QTableWidgetItem(str(coef))
               self.tblCorrelation.setItem(labNo1, labNo2, item)
               self.showProgress()
     try:
@@ -990,10 +990,10 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __checkTwoCorr(self):
     index = self.cmbFirstRaster.currentIndex()
-    layerId = unicode(self.cmbFirstRaster.itemData(index, Qt.UserRole))
+    layerId = str(self.cmbFirstRaster.itemData(index, Qt.UserRole))
     first = {'Raster': self.inputs["factors"][layerId], 'Name': self.cmbFirstRaster.currentText()}
     index = self.cmbSecondRaster.currentIndex()
-    layerId = unicode(self.cmbSecondRaster.itemData(index, Qt.UserRole))
+    layerId = str(self.cmbSecondRaster.itemData(index, Qt.UserRole))
     second = {'Raster': self.inputs["factors"][layerId], 'Name': self.cmbSecondRaster.currentText()}
 
     dimensions = first['Raster'].getBandsCount(), second['Raster'].getBandsCount()
@@ -1003,48 +1003,48 @@ class MolusceDialog(QDialog, Ui_Dialog):
     for i in range(dimensions[0]):
       raster = first["Raster"]
       if raster.getBandsCount()>1:
-        name = u"%s (band %s)" % (first['Name'], unicode(i+1))
+        name = "%s (band %s)" % (first['Name'], str(i+1))
       else:
-        name = u"%s" % (first['Name'], )
+        name = "%s" % (first['Name'], )
       labels.append(name)
     self.tblCorrelation.setVerticalHeaderLabels(labels)
     labels = []
     for i in range(dimensions[1]):
       raster = second["Raster"]
       if raster.getBandsCount()>1:
-        name = u"%s (band %s)" % (second['Name'], unicode(i+1))
+        name = "%s (band %s)" % (second['Name'], str(i+1))
       else:
-        name = u"%s" % (second['Name'], )
+        name = "%s" % (second['Name'], )
       labels.append(name)
     self.tblCorrelation.setHorizontalHeaderLabels(labels)
 
     method = self.cmbCorrCheckMethod.currentText()
     if method == self.tr("Pearson's Correlation"):
-      for col in xrange(dimensions[1]):
-        for row in xrange(dimensions[0]):
+      for col in range(dimensions[1]):
+        for row in range(dimensions[0]):
           depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
           corr = depCoef.correlation()
-          item = QTableWidgetItem(unicode(corr))
+          item = QTableWidgetItem(str(corr))
           self.tblCorrelation.setItem(row, col, item)
     elif method == self.tr("Cramer's Coefficient"):
-      for col in xrange(dimensions[1]):
-        for row in xrange(dimensions[0]):
+      for col in range(dimensions[1]):
+        for row in range(dimensions[0]):
           depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
           if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
-              item = QTableWidgetItem(unicode(self.tr("Not applicable")))
+              item = QTableWidgetItem(str(self.tr("Not applicable")))
           else:
               corr = depCoef.cramer()
-              item = QTableWidgetItem(unicode(corr))
+              item = QTableWidgetItem(str(corr))
           self.tblCorrelation.setItem(row, col, item)
     elif method == self.tr("Joint Information Uncertainty"):
-      for col in xrange(dimensions[1]):
-        for row in xrange(dimensions[0]):
+      for col in range(dimensions[1]):
+        for row in range(dimensions[0]):
           depCoef = DependenceCoef(first["Raster"].getBand(row+1), second["Raster"].getBand(col + 1))
           if first["Raster"].isCountinues(row+1) or second["Raster"].isCountinues(col + 1):
-              item = QTableWidgetItem(unicode(self.tr("Not applicable")))
+              item = QTableWidgetItem(str(self.tr("Not applicable")))
           else:
               corr = depCoef.jiu()
-              item = QTableWidgetItem(unicode(corr))
+              item = QTableWidgetItem(str(corr))
           self.tblCorrelation.setItem(row, col, item)
     try:
       del depCoef
@@ -1052,7 +1052,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       pass
 
   def __drawTransitionStat(self):
-    if not self.inputs.has_key("crosstab"):
+    if "crosstab" not in self.inputs:
       return
 
     stat = self.inputs["crosstab"].getTransitionStat()
@@ -1081,27 +1081,27 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if "singlebandpseudocolor" in layer.renderer().type().lower():
       legend = layer.legendSymbologyItems()
       for i in legend:
-        labels.append(unicode(i[0]))
+        labels.append(str(i[0]))
         colors.append(i[1])
     else:
-      labels = [unicode(i) for i in xrange(1, 7)]
+      labels = [str(i) for i in range(1, 7)]
 
     self.tblStatistics.setVerticalHeaderLabels(labels)
 
     labels = [self.tr("Class color"),
               self.leInitYear.text(),
               self.leFinalYear.text(),
-              u"Δ",
+              "Δ",
               self.leInitYear.text() + " %",
               self.leFinalYear.text() + " %",
-              u"Δ %"
+              "Δ %"
              ]
     self.tblStatistics.setHorizontalHeaderLabels(labels)
 
     # legend colors
     d = len(colors)
     if d > 0:
-      for i in xrange(0, d):
+      for i in range(0, d):
         item = QTableWidgetItem("")
         item.setBackground(QBrush(colors[i]))
         self.tblStatistics.setItem(i, 0, item)
@@ -1129,16 +1129,16 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if "singlebandpseudocolor" in layer.renderer().type().lower():
       legend = layer.legendSymbologyItems()
       for i in legend:
-        labels.append(unicode(i[0]))
+        labels.append(str(i[0]))
     else:
-      labels = [unicode(i) for i in xrange(1, dimensions + 1)]
+      labels = [str(i) for i in range(1, dimensions + 1)]
 
     self.tblTransMatrix.setVerticalHeaderLabels(labels)
     self.tblTransMatrix.setHorizontalHeaderLabels(labels)
 
-    for row in xrange(0, dimensions):
-      for col in xrange(0, dimensions):
-        item = QTableWidgetItem(u"%f" % (transition[row, col],))
+    for row in range(0, dimensions):
+      for col in range(0, dimensions):
+        item = QTableWidgetItem("%f" % (transition[row, col],))
         self.tblTransMatrix.setItem(row, col, item)
 
     self.tblTransMatrix.resizeRowsToContents()
@@ -1219,11 +1219,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
       return
 
     try:
-      model.saveSamples(unicode(fileName))
+      model.saveSamples(str(fileName))
     except SamplerError:
       QMessageBox.warning(self,
                           self.tr("Can't save file"),
-                          self.tr("Can't save file: '%s'" % unicode(fileName))
+                          self.tr("Can't save file: '%s'" % str(fileName))
                          )
       return
 
@@ -1235,7 +1235,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       else:
         QMessageBox.warning(self,
                             self.tr("Can't open file"),
-                            self.tr("Error loading output shapefile:\n%s") % (unicode(fileName))
+                            self.tr("Error loading output shapefile:\n%s") % (str(fileName))
                            )
 
   def __selectSimulationOutput(self):
@@ -1301,18 +1301,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
       raise
 
   def logMessage(self, message):
-    self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime(u"%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))
+    self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))
 
   def logErrorReport(self, message):
-    self.logMessage(u'ERROR: '+message)
+    self.logMessage('ERROR: '+message)
 
   def __addTableColumn(self, col, values, units=""):
     dimensions = len(values)
-    for r in xrange(0, dimensions):
+    for r in range(0, dimensions):
       if units == "":
-        item = QTableWidgetItem(unicode(values[r]))
+        item = QTableWidgetItem(str(values[r]))
       else:
-        item = QTableWidgetItem(unicode(values[r]) + " " + units)
+        item = QTableWidgetItem(str(values[r]) + " " + units)
       self.tblStatistics.setItem(r, col, item)
 
   def __addRasterToCanvas(self, filePath):
@@ -1324,7 +1324,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __bandCount(self):
     bands = 0
-    for k, v in self.inputs["factors"].iteritems():
+    for k, v in self.inputs["factors"].items():
       bands +=  v.getBandsCount()
     return bands
 
@@ -1372,7 +1372,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.chkAllCorr.setChecked(bool(self.settings.value("ui/checkAllRasters", False)))
 
   def calcCertancyColorRamp(self, layer):
-    r = Raster(unicode(layer.source()))
+    r = Raster(str(layer.source()))
     stat = r.getBandStat(1)
     minVal = 0.0
     maxVal = 100.0
@@ -1385,18 +1385,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
     currentValue = float(minVal)
     intervalDiff = float(maxVal - minVal) / float(numberOfEntries - 1)
 
-    for i in xrange(numberOfEntries):
+    for i in range(numberOfEntries):
       entryValues.append(currentValue)
       currentValue += intervalDiff
       entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
 
     colorRampItems = []
-    for i in xrange(len(entryValues)):
+    for i in range(len(entryValues)):
       item = QgsColorRampShader.ColorRampItem()
 
       item.value = entryValues[i]
       item.color = entryColors[i]
-      item.label = unicode(entryValues[i])
+      item.label = str(entryValues[i])
       colorRampItems.append(item)
 
     return colorRampItems
@@ -1407,7 +1407,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.logMessage(self.tr("Init raster should be in PseudoColor mode. Style not applied."))
       return None
 
-    r = Raster(unicode(layer.source()))
+    r = Raster(str(layer.source()))
     stat = r.getBandStat(1)
     minVal = float(stat["min"])
     maxVal = float(stat["max"])
@@ -1423,7 +1423,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     currentValue = float(minVal)
     intervalDiff = float(maxVal - minVal) / float(numberOfEntries - 1)
 
-    for i in xrange(numberOfEntries):
+    for i in range(numberOfEntries):
       entryValues.append(currentValue)
       currentValue += intervalDiff
       entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
@@ -1431,7 +1431,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     cr = l.renderer().shader().rasterShaderFunction().colorRampItemList()
 
     colorRampItems = []
-    for i in xrange(len(entryValues)):
+    for i in range(len(entryValues)):
       item = QgsColorRampShader.ColorRampItem()
 
       item.value = entryValues[i]
@@ -1441,7 +1441,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         item.label = self.tr("Persistent")
       else:
         ic, fc = analyst.decode(int(entryValues[i]))
-        item.label = unicode(self.fl(cr, ic) + u" → " + self.fl(cr, fc))
+        item.label = str(self.fl(cr, ic) + " → " + self.fl(cr, fc))
         if ic == fc and validationMode:
           item.color = QColor(255, 255, 255, 0)
 

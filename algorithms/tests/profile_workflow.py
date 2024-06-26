@@ -19,36 +19,36 @@ from molusce.algorithms.models.mce.mce import MCE
 
 
 def main(initRaster, finalRaster, factors):
-    print 'Start Reading Init Data...', clock()
+    print('Start Reading Init Data...', clock())
     initRaster = Raster(initRaster)
     finalRaster = Raster(finalRaster)
     factors = [Raster(rasterName) for rasterName in factors]
-    print 'Finish Reading Init Data', clock(), '\n'
+    print('Finish Reading Init Data', clock(), '\n')
 
-    print "Start Making CrossTable...", clock()
+    print("Start Making CrossTable...", clock())
     crosstab = CrossTableManager(initRaster, finalRaster)
-    print "Finish Making CrossTable", clock(), '\n'
+    print("Finish Making CrossTable", clock(), '\n')
 
     # Create and Train LR Model
     model = LR(ns=1)
-    print 'Start Setting LR Trainig Data...', clock()
+    print('Start Setting LR Trainig Data...', clock())
     model.setTrainingData(initRaster, factors, finalRaster, mode='Stratified', samples=1000)
-    print 'Finish Setting Trainig Data', clock(), '\n'
-    print 'Start LR Training...', clock()
+    print('Finish Setting Trainig Data', clock(), '\n')
+    print('Start LR Training...', clock())
     model.train()
-    print 'Finish Trainig', clock(), '\n'
+    print('Finish Trainig', clock(), '\n')
 
-    print 'Start LR Prediction...', clock()
+    print('Start LR Prediction...', clock())
     predict = model.getPrediction(initRaster, factors)
     filename = 'lr_predict.tiff'
     try:
         predict.save(filename)
     finally:
         os.remove(filename)
-    print 'Finish LR Prediction...', clock(), '\n'
+    print('Finish LR Prediction...', clock(), '\n')
 
     # simulation
-    print 'Start Simulation...', clock()
+    print('Start Simulation...', clock())
     simulator = Simulator(initRaster, factors, model, crosstab)
     # Make 1 cycle of simulation:
     simulator.simN(1)
@@ -69,9 +69,9 @@ def main(initRaster, finalRaster, factors):
         os.remove('simulation_result.tiff')
         os.remove('risk_validation.tiff')
         os.remove('risk_func.tiff')
-    print 'Finish Simulation', clock(), '\n'
+    print('Finish Simulation', clock(), '\n')
 
-    print 'Done', clock()
+    print('Done', clock())
 
 
 if __name__=="__main__":

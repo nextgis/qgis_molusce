@@ -121,8 +121,8 @@ class AreaAnalyst(QObject):
         raster = None
         try:
             self.rangeChanged.emit(self.tr("Creating change map %p%"), rows)
-            for i in xrange(rows):
-                for j in xrange(cols):
+            for i in range(rows):
+                for j in range(cols):
                     if (f.mask.shape == ()) or (not f.mask[i,j]):
                         r = f[i,j]
                         c = s[i,j]

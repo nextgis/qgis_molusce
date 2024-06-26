@@ -19,37 +19,37 @@ from molusce.algorithms.models.mce.mce import MCE
 
 
 def main(initRaster, finalRaster, factors):
-    print 'Start Reading Init Data...', clock()
+    print('Start Reading Init Data...', clock())
     initRaster = Raster(initRaster)
     finalRaster = Raster(finalRaster)
     factors = [Raster(rasterName) for rasterName in factors]
-    print 'Finish Reading Init Data', clock(), '\n'
+    print('Finish Reading Init Data', clock(), '\n')
 
-    print "Start Making CrossTable...", clock()
+    print("Start Making CrossTable...", clock())
     crosstab = CrossTableManager(initRaster, finalRaster)
     #print crosstab.getTransitionStat()
-    print "Finish Making CrossTable", clock(), '\n'
+    print("Finish Making CrossTable", clock(), '\n')
 
     # Create and Train Analyst
-    print 'Start creating AreaAnalyst...', clock()
+    print('Start creating AreaAnalyst...', clock())
     analyst = AreaAnalyst(initRaster, finalRaster)
-    print 'Finish creating AreaAnalyst ...', clock(), '\n'
+    print('Finish creating AreaAnalyst ...', clock(), '\n')
 
-    print 'Start Making Change Map...', clock()
+    print('Start Making Change Map...', clock())
     analyst = AreaAnalyst(initRaster,finalRaster)
     changeMap = analyst.getChangeMap()
-    print 'Finish Making Change Map', clock(), '\n'
+    print('Finish Making Change Map', clock(), '\n')
 
 
     #~ # Create and Train ANN Model
     model = MlpManager(ns=1)
     model.createMlp(initRaster, factors, changeMap, [10])
-    print 'Start Setting MLP Trainig Data...', clock()
+    print('Start Setting MLP Trainig Data...', clock())
     model.setTrainingData(initRaster, factors, changeMap, mode='Stratified', samples=1000)
-    print 'Finish Setting Trainig Data', clock(), '\n'
-    print 'Start MLP Training...', clock()
+    print('Finish Setting Trainig Data', clock(), '\n')
+    print('Start MLP Training...', clock())
     model.train(20, valPercent=20)
-    print 'Finish Trainig', clock(), '\n'
+    print('Finish Trainig', clock(), '\n')
     
     # print 'Start ANN Prediction...', clock()
     # predict = model.getPrediction(initRaster, factors, calcTransitions=True)
@@ -111,7 +111,7 @@ def main(initRaster, finalRaster, factors):
     # print 'Finish Saving...', clock(), '\n'
 
     # simulation
-    print 'Start Simulation...', clock()
+    print('Start Simulation...', clock())
     simulator = Simulator(initRaster, factors, model, crosstab)
     # Make 1 cycle of simulation:
     simulator.setIterationCount(1)
@@ -129,9 +129,9 @@ def main(initRaster, finalRaster, factors):
         # os.remove('simulation_result.tiff')
         # os.remove('risk_validation.tiff')
         # os.remove('risk_func.tiff')
-    print 'Finish Simulation', clock(), '\n'
+    print('Finish Simulation', clock(), '\n')
 
-    print 'Done', clock()
+    print('Done', clock())
 
 
 if __name__=="__main__":

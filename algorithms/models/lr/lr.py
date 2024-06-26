@@ -7,7 +7,7 @@ from PyQt4.QtCore import *
 
 import numpy as np
 
-import multinomial_logistic_regression as mlr
+from . import multinomial_logistic_regression as mlr
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
 from molusce.algorithms.models.sampler.sampler import Sampler
@@ -154,8 +154,8 @@ class LR(QObject):
                 mask = np.zeros([rows, cols], dtype=np.bool)
             self.updateProgress.emit()
             self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
-            for i in xrange(rows):
-                for j in xrange(cols):
+            for i in range(rows):
+                for j in range(cols):
                     if not mask[i,j]:
                         input = self.sampler.get_inputs(state, i,j)
                         if input != None:

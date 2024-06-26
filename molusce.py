@@ -32,9 +32,9 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
-import moluscedialog
-import aboutdialog
-from molusceutils import getLocaleShortName
+from . import moluscedialog
+from . import aboutdialog
+from .molusceutils import getLocaleShortName
 
 import resources_rc
 
@@ -43,9 +43,9 @@ class MoluscePlugin:
     self.iface = iface
 
     try:
-      self.QgisVersion = unicode(QGis.QGIS_VERSION_INT)
+      self.QgisVersion = str(QGis.QGIS_VERSION_INT)
     except:
-      self.QgisVersion = unicode(QGis.qgisVersion)[ 0 ]
+      self.QgisVersion = str(QGis.qgisVersion)[ 0 ]
 
     # For i18n support
     userPluginPath = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/molusce"

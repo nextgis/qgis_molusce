@@ -43,8 +43,8 @@ class Model(object):
 
         # Let the confidence is 1/(1+row+col), where row is row number of the cell, col is column number of the cell.
         confidence_band = np.zeros([rows, cols])
-        for i in xrange(cols):
-            for j in xrange(rows):
+        for i in range(cols):
+            for j in range(rows):
                 confidence_band[i,j] = 1.0/(1+i+j)
 
         predicted_bands  = [np.ma.array(data = predicted_band, mask = band.mask)]

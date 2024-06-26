@@ -6,7 +6,7 @@ from osgeo import osr
 import numpy as np
 from numpy import ma as ma
 
-from utils import binaryzation, reclass, get_gradations
+from .utils import binaryzation, reclass, get_gradations
 
 # If a raster band has more then MAX_CATEGORIES categories, we think that the band contains continues values
 MAX_CATEGORIES = 99
@@ -333,7 +333,7 @@ class Raster(object):
     def save(self, filename, format="GTiff", rastertype=None, nodata=None):
         driver = gdal.GetDriverByName(format)
         metadata = driver.GetMetadata()
-        if metadata.has_key(gdal.DCAP_CREATE) and metadata[gdal.DCAP_CREATE] == "YES":
+        if gdal.DCAP_CREATE in metadata and metadata[gdal.DCAP_CREATE] == "YES":
             if not rastertype:
                 dtype = self.get_dtype()
                 conv = FormatConverter()

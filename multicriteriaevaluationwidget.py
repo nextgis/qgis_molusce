@@ -30,14 +30,14 @@ from PyQt4.QtGui import *
 
 from qgis.core import *
 
-from algorithms.models.area_analysis.manager import AreaAnalyst
-from algorithms.models.mce.mce import MCE
+from .algorithms.models.area_analysis.manager import AreaAnalyst
+from .algorithms.models.mce.mce import MCE
 
-import spinboxdelegate
+from . import spinboxdelegate
 
-from ui.ui_multicriteriaevaluationwidgetbase import Ui_Widget
+from .ui.ui_multicriteriaevaluationwidgetbase import Ui_Widget
 
-import molusceutils as utils
+from . import molusceutils as utils
 
 class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):
@@ -101,7 +101,7 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
     self.plugin.logMessage(self.tr("Init MCE model"))
 
-    model = MCE(self.inputs["factors"].values(),
+    model = MCE(list(self.inputs["factors"].values()),
                      matrix,
                      self.spnInitialClass.value(),
                      self.spnFinalClass.value(),
@@ -114,7 +114,7 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
     weights = model.getWeights()
     for i, w in enumerate(weights):
-        item = QTableWidgetItem(unicode(w))
+        item = QTableWidgetItem(str(w))
         self.tblWeights.setItem(0, i, item)
     self.tblWeights.resizeRowsToContents()
     self.tblWeights.resizeColumnsToContents()
@@ -143,12 +143,12 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.tblWeights.setColumnCount(bandCount)
 
     labels = []
-    for k, v in self.inputs["factors"].iteritems():
-      for b in xrange(v.getBandsCount()):
+    for k, v in self.inputs["factors"].items():
+      for b in range(v.getBandsCount()):
         if v.getBandsCount()>1:
-          name = self.tr("%s (band %s)") % (utils.getLayerById(k).name(), unicode(b+1))
+          name = self.tr("%s (band %s)") % (utils.getLayerById(k).name(), str(b+1))
         else:
-          name = u"%s" % (utils.getLayerById(k).name(), )
+          name = "%s" % (utils.getLayerById(k).name(), )
         labels.append(name)
 
     self.tblMatrix.setVerticalHeaderLabels(labels)
@@ -157,8 +157,8 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.tblWeights.setVerticalHeaderLabels([self.tr("Weights")])
 
     self.delegate = spinboxdelegate.SpinBoxDelegate(self.tblMatrix.model())
-    for row in xrange(bandCount):
-      for col in xrange(bandCount):
+    for row in range(bandCount):
+      for col in range(bandCount):
         item = QTableWidgetItem()
         if row == col:
           item.setText("1")
@@ -177,7 +177,7 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     value = float(item.text())
 
     self.tblMatrix.blockSignals(True)
-    self.tblMatrix.item(col, row).setText(unicode(1.0/value))
+    self.tblMatrix.item(col, row).setText(str(1.0/value))
     self.tblMatrix.blockSignals(False)
 
     self.tblMatrix.resizeRowsToContents()
@@ -188,9 +188,9 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
   def __checkMatrix(self):
     bandCount = self.inputs["bandCount"]
     matrix = []
-    for row in xrange(bandCount):
+    for row in range(bandCount):
       mrow = []
-      for col in xrange(bandCount):
+      for col in range(bandCount):
         if self.tblMatrix.item(row, col).text() == "":
           return []
 

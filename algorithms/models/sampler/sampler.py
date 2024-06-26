@@ -286,8 +286,8 @@ class Sampler(QObject):
             if mode == 'All':
                 self.rangeChanged.emit(self.tr("Sampling..."), rows - 2*self.ns)
                 # i,j  are pixel indexes
-                for i in xrange(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
-                    for j in xrange(self.ns, cols - self.ns):     # the samples are incomplete in that region
+                for i in range(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
+                    for j in range(self.ns, cols - self.ns):     # the samples are incomplete in that region
                         sample = self._getSample(state, output, i,j)
                         if sample != None:
                             self.data[samples_count] = sample
@@ -319,7 +319,7 @@ class Sampler(QObject):
                 for i,cat in enumerate(categories):
                     # Find indices of "cat"-category pixels
                     rows, cols = np.where(band == cat)
-                    indices = [ (rows[i], cols[i]) for i in xrange(len(cols))]
+                    indices = [ (rows[i], cols[i]) for i in range(len(cols))]
 
                     # Get samples
                     count = 0

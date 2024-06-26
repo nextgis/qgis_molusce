@@ -26,13 +26,13 @@
 #******************************************************************************
 
 import os
-import ConfigParser
+import configparser
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from ui.ui_aboutdialogbase import Ui_Dialog
-from molusceutils import getLocaleShortName
+from .ui.ui_aboutdialogbase import Ui_Dialog
+from .molusceutils import getLocaleShortName
 
 import resources_rc
 

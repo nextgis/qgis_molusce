@@ -42,11 +42,11 @@ except ImportError:
 from matplotlib.figure import Figure
 from matplotlib import rcParams
 
-from algorithms.models.mlp.manager import MlpManager
+from .algorithms.models.mlp.manager import MlpManager
 
-from ui.ui_neuralnetworkwidgetbase import Ui_Widget
+from .ui.ui_neuralnetworkwidgetbase import Ui_Widget
 
-import molusceutils as utils
+from . import molusceutils as utils
 
 class NeuralNetworkWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):
@@ -130,14 +130,14 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     model = MlpManager(ns=self.spnNeigbourhood.value())
     self.inputs["model"] = model
     model.createMlp(self.inputs["initial"],
-                         self.inputs["factors"].values(),
+                         list(self.inputs["factors"].values()),
                          self.inputs["changeMap"],
                          [int(n) for n in self.leTopology.text().split(" ")]
                         )
 
     self.plugin.logMessage(self.tr("Set training data"))
     model.setTrainingData(self.inputs["initial"],
-                               self.inputs["factors"].values(),
+                               list(self.inputs["factors"].values()),
                                self.inputs["changeMap"],
                                mode=self.inputs["samplingMode"],
                                samples=self.plugin.spnSamplesCount.value()

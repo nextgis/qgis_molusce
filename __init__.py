@@ -26,5 +26,5 @@
 #******************************************************************************
 
 def classFactory(iface):
-  from molusce import MoluscePlugin
+  from .molusce import MoluscePlugin
   return MoluscePlugin(iface)

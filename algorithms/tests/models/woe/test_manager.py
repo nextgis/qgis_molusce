@@ -86,7 +86,7 @@ class TestWoEManager (unittest.TestCase):
         w.train()
         #print w.woe
         p = w.getPrediction(initState).getBand(1)
-        self.assertEquals(p.dtype, np.uint8)
+        self.assertEqual(p.dtype, np.uint8)
 
         # Calculate by hands:
         #1->1 transition raster:
@@ -155,7 +155,7 @@ class TestWoEManager (unittest.TestCase):
         geodata = initState.getGeodata()
         sites = {'11': r11, '12': r12, '13': r13, '21': r21, '22': r22, '23': r23, '31': r31, '32': r32, '33': r33}
         woeDict = {}    # WoE of transitions
-        for k in sites.keys(): #
+        for k in list(sites.keys()): #
             if k !='21' : # !!! r21 is zero
                 x = Raster()
                 x.create([np.ma.array(data=sites[k])], geodata)
@@ -176,9 +176,9 @@ class TestWoEManager (unittest.TestCase):
         w = WoeManager([initState], aa, bins = {0: [[2], ],})
         w.train()
         p = w.getPrediction(initState).getBand(1)
-        self.assertEquals(p.dtype, np.uint8)
+        self.assertEqual(p.dtype, np.uint8)
         c = w.getConfidence().getBand(1)
-        self.assertEquals(c.dtype, np.uint8)
+        self.assertEqual(c.dtype, np.uint8)
 
 if __name__ == "__main__":
     unittest.main()
