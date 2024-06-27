@@ -1,6 +1,6 @@
 import numpy as np
 
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.mlp.manager import MlpManager

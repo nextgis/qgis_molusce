@@ -15,7 +15,7 @@
 #       publisher={Elsevier}
 #   }
 
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import *
 
 import numpy as np
 from numpy import ma as ma

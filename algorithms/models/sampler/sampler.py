@@ -8,7 +8,7 @@ import osgeo.osr as osr
 
 import os.path
 
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
 

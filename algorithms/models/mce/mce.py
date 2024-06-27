@@ -4,7 +4,7 @@
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import *
 
 import numpy as np
 

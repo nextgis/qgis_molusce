@@ -5,7 +5,7 @@ from os.path import basename
 import numpy as np
 import gc
 
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
 from .model import woe

@@ -25,8 +25,8 @@
 #
 #******************************************************************************
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtGui import *
 
 class SpinBoxDelegate(QItemDelegate):
   def __init__(self, parent=None, minRange=1, maxRange=9):

@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import *
 
 import math
 import numpy as np

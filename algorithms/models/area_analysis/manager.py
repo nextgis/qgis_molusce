@@ -3,7 +3,7 @@
 import numpy as np
 from numpy import ma as ma
 
-from PyQt4.QtCore import *
+from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.utils import masks_identity
