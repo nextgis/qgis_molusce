@@ -41,12 +41,12 @@ class MoluscePlugin:
     self.iface = iface
 
     try:
-      self.QgisVersion = str(QGis.QGIS_VERSION_INT)
+      self.QgisVersion = str(Qgis.QGIS_VERSION_INT)
     except:
-      self.QgisVersion = str(QGis.qgisVersion)[ 0 ]
+      self.QgisVersion = str(Qgis.qgisVersion)[ 0 ]
 
     # For i18n support
-    userPluginPath = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/molusce"
+    userPluginPath = QFileInfo(QgsApplication.qgisUserDatabaseFilePath()).path() + "/python/plugins/molusce"
     systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/molusce"
 
     overrideLocale = QSettings().value("locale/overrideFlag", False)
