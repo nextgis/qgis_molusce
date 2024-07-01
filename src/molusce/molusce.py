@@ -27,16 +27,14 @@
 
 import os
 
+# import resources_rc
+from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
 
-from qgis.core import *
-
-from . import moluscedialog
-from . import aboutdialog
+from . import aboutdialog, moluscedialog
 from .molusceutils import getLocaleShortName
 
-import resources_rc
 
 class MoluscePlugin:
   def __init__(self, iface):
