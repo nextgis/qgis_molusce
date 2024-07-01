@@ -26,19 +26,19 @@
 #******************************************************************************
 
 import datetime
+import gc
 import locale
 import operator
 import os.path
 
-import gc
-
+import numpy
+from matplotlib.backends.backend_qt5agg import (
+  FigureCanvasQTAgg as FigureCanvas,
+)
+from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-
-from qgis.core import *
-
-import numpy
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from qgis.PyQt.QtWidgets import QDialog
 
 try:
   from matplotlib.backends.backend_qt5agg import NavigationToolbar2QTAgg as NavigationToolbar

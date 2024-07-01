@@ -8,7 +8,7 @@ from collections import namedtuple
 from molusce.algorithms.utils import binaryzation, get_gradations
 
 
-EPSILON = 4*np.finfo(np.float).eps # Small number > 0
+EPSILON = 4*np.finfo(float).eps # Small number > 0
 
 Weights = namedtuple('Weights', ['wPlus', 'wMinus'])
 

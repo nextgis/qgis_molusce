@@ -25,19 +25,17 @@
 #
 #******************************************************************************
 
+from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-
-from qgis.core import *
-
-from .algorithms.models.area_analysis.manager import AreaAnalyst
-from .algorithms.models.mce.mce import MCE
-
-from . import spinboxdelegate
-
-from .ui.ui_multicriteriaevaluationwidgetbase import Ui_Widget
+from qgis.PyQt.QtWidgets import QWidget
 
 from . import molusceutils as utils
+from . import spinboxdelegate
+from .algorithms.models.area_analysis.manager import AreaAnalyst
+from .algorithms.models.mce.mce import MCE
+from .ui.ui_multicriteriaevaluationwidgetbase import Ui_Widget
+
 
 class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):

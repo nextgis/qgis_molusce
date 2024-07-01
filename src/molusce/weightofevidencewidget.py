@@ -25,20 +25,18 @@
 #
 #******************************************************************************
 
+from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-
-from qgis.core import *
-
-from .algorithms.models.area_analysis.manager import AreaAnalyst
-from .algorithms.models.woe.manager import WoeManager, WoeManagerError
-from .algorithms import dataprovider
-
-from . import spinboxdelegate
-
-from .ui.ui_weightofevidencewidgetbase import Ui_Widget
+from qgis.PyQt.QtWidgets import QWidget
 
 from . import molusceutils as utils
+from . import spinboxdelegate
+from .algorithms import dataprovider
+from .algorithms.models.area_analysis.manager import AreaAnalyst
+from .algorithms.models.woe.manager import WoeManager, WoeManagerError
+from .ui.ui_weightofevidencewidgetbase import Ui_Widget
+
 
 class WeightOfEvidenceWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):

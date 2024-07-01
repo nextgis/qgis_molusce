@@ -27,16 +27,15 @@
 
 import gc
 
+from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-
-from qgis.core import *
-
-from .algorithms.models.lr.lr import LR
-
-from .ui.ui_logisticregressionwidgetbase import Ui_Widget
+from qgis.PyQt.QtWidgets import QWidget
 
 from . import molusceutils as utils
+from .algorithms.models.lr.lr import LR
+from .ui.ui_logisticregressionwidgetbase import Ui_Widget
+
 
 class LogisticRegressionWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):
