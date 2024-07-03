@@ -42,7 +42,7 @@ def getLocaleShortName():
     return localeShortName
 
 def getRasterLayers():
-  layerMap = QgsMapLayerRegistry.instance().mapLayers()
+  layerMap = QgsProject.instance().mapLayers()
   layers = dict()
   for name, layer in layerMap.items():
     if layer.type() == QgsMapLayer.RasterLayer and layer.providerType() == "gdal":

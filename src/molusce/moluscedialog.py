@@ -105,7 +105,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     # existing factor)
     self.inputs = dict()
 
-    self.settings = QSettings("NextGIS", "MOLUSCE")
+    self.settings = QgsSettings("NextGIS", "MOLUSCE")
 
     self.grpSampling.setSettings(self.settings)
 
@@ -1301,7 +1301,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       raise
 
   def logMessage(self, message):
-    self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S".encode("utf-8")).decode("utf-8"), message))
+    self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S".encode("utf-8").decode("utf-8")), message))
 
   def logErrorReport(self, message):
     self.logMessage('ERROR: '+message)
