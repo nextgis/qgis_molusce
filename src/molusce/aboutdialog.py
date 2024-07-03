@@ -25,12 +25,13 @@
 #
 #******************************************************************************
 
+import configparser
 import os
 
 import qgis
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from .molusceutils import getLocaleShortName
 from .ui.ui_aboutdialogbase import Ui_Dialog
@@ -43,7 +44,7 @@ class AboutDialog(QDialog, Ui_Dialog):
 
     self.btnHelp = self.buttonBox.button(QDialogButtonBox.Help)
 
-    cfg = ConfigParser.SafeConfigParser()
+    cfg = configparser.ConfigParser()
     cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
     version = cfg.get("general", "version")
 
