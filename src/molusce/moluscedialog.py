@@ -26,6 +26,7 @@
 #******************************************************************************
 
 import datetime
+import functools
 import gc
 import locale
 import operator
@@ -835,7 +836,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def __populateLayers(self):
     layers = utils.getRasterLayers()
     #~ relations = self.iface.legendInterface().groupLayerRelationship()
-    for layer in sorted(iter(layers.items()), cmp=locale.strcoll, key=operator.itemgetter(1)):
+    for layer in sorted(layers.items(), key=functools.cmp_to_key(lambda lhs, rhs: locale.strcoll(lhs[1], rhs[1]))):
       #~ groupName = utils.getLayerGroup(relations, layer[0])
       groupName = ""
       item = QListWidgetItem()
