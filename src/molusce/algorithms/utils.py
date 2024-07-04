@@ -14,7 +14,7 @@ class UtilsError(Exception):
 
 def in1d(ar1, ar2, assume_unique=False):
     # The code was taken from numpy v.1.7
-    mask = np.zeros(len(ar1), dtype=np.bool)
+    mask = np.zeros(len(ar1), dtype=bool)
     for a in ar2:
         mask |= (ar1 == a)
     return mask
@@ -37,7 +37,7 @@ def binaryzation( raster, trueList ):
     res = in1d(data, trueList)
     res.shape = shape
     data.shape = shape
-    return np.ma.array(data=res, mask=mask, dtype=np.bool)
+    return np.ma.array(data=res, mask=mask, dtype=bool)
 
 
 def get_gradations(band):

@@ -44,7 +44,7 @@ class TestWoEManager (unittest.TestCase):
             [False, False, True,]
         ]
         self.factraster  = ma.array(data = fact, mask=self.mask, dtype=np.int)
-        self.sitesraster = ma.array(data = site, mask=self.mask, dtype=np.bool)
+        self.sitesraster = ma.array(data = site, mask=self.mask, dtype=bool)
 
     def test_CheckBins(self):
         aa = AreaAnalyst(self.sites, self.sites)

@@ -19,7 +19,7 @@ class ProviderError(Exception):
 class FormatConverter(object):
     '''Tarnslates formats between GDAL and numpy data formats'''
     def __init__(self):
-        self.dtypes = np.bool, np.int, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64, np.float, np.float32, np.float64 #np.float16
+        self.dtypes = bool, np.int, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64, np.float, np.float32, np.float64 #np.float16
         self.GDT = gdal.GDT_Byte, gdal.GDT_UInt16, gdal.GDT_Int16, gdal.GDT_UInt32, gdal.GDT_Int32, gdal.GDT_Float32, gdal.GDT_Float64
         self.dtype2GDT = {  # raster type, max value
             np.dtype('bool'): (gdal.GDT_Byte, 255),

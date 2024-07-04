@@ -1,10 +1,9 @@
 # encoding: utf-8
 
-import sys
-sys.path.insert(0, '../../../../../')
 
 import unittest
 from numpy.testing import assert_array_equal
+from pathlib import Path
 
 import numpy as np
 from numpy import ma as ma
@@ -14,7 +13,8 @@ from molusce.algorithms.models.area_analysis.manager import AreaAnalyst, AreaAna
 
 class TestAreaAnalysisManager (unittest.TestCase):
     def setUp(self):
-        self.r1 = Raster('../../examples/multifact.tif')
+        sample_path = Path(__file__).parents[2]/"examples"/"multifact.tif"
+        self.r1 = Raster(sample_path)
         # r1 -> r1 transition
         self.r1r1 = [
             [5,  5,  15,],
@@ -22,7 +22,7 @@ class TestAreaAnalysisManager (unittest.TestCase):
             [0,  15, 5, ]
         ]
 
-        self.r2  = Raster('../../examples/multifact.tif')
+        self.r2  = Raster(sample_path)
         self.r2.resetMask([0])
         self.r2r2 = [
             [0,   0, 8,],
@@ -30,7 +30,7 @@ class TestAreaAnalysisManager (unittest.TestCase):
             [100, 8, 0,]
         ]
 
-        self.r3 = Raster('../../examples/multifact.tif')
+        self.r3 = Raster(sample_path)
         self.r3.resetMask([2])
 
     def test_AreaAnalyst(self):

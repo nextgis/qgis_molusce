@@ -29,9 +29,9 @@ def _binary_woe(factor, sites, unitcell=1):
     '''
 
     # Check rasters type
-    if factor.dtype != np.bool:
+    if factor.dtype != bool:
         raise WoeError('Factor raster must be binary in this mode of the method!')
-    if sites.dtype != np.bool:
+    if sites.dtype != bool:
         raise WoeError('Site raster must be binary in this mode of the method!')
     # Check rasters dimentions
     if factor.shape != sites.shape:

@@ -257,7 +257,7 @@ class MlpManager(QObject):
             self.sampler = Sampler(state, factors, ns=self.ns)
             mask = state.getBand(1).mask.copy()
             if mask.shape == ():
-                mask = np.zeros([rows, cols], dtype=np.bool)
+                mask = np.zeros([rows, cols], dtype=bool)
             self.updateProgress.emit()
             self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
             for i in range(rows):

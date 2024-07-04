@@ -77,15 +77,15 @@ class TestModel (unittest.TestCase):
             [False, False, False, True,  False, False,]
         ]
 
-        self.factor     = ma.array(data = fact,      mask=self.mask,     dtype=np.bool)
-        self.fact1      = ma.array(data = fact,      mask=self.mask1,    dtype=np.bool)
+        self.factor     = ma.array(data = fact,      mask=self.mask,     dtype=bool)
+        self.fact1      = ma.array(data = fact,      mask=self.mask1,    dtype=bool)
         self.multifact  = ma.array(data = multifact, mask=self.mask,     dtype=np.int)
-        self.sites      = ma.array(data = site,      mask=self.mask,     dtype=np.bool)
+        self.sites      = ma.array(data = site,      mask=self.mask,     dtype=bool)
         self.sites1     = ma.array(data = site1,     mask=self.mask1,    dtype=np.int)
         self.sites2     = ma.array(data = site1,     mask=self.mask,     dtype=np.int)
-        self.zero       = ma.array(data = zero,      mask=self.mask,     dtype=np.bool)
-        self.bigfactor  = ma.array(data = bigfact,   mask=self.bigmask,  dtype=np.bool)
-        self.bigsite    = ma.array(data = bigsite,   mask=self.bigmask,  dtype=np.bool)
+        self.zero       = ma.array(data = zero,      mask=self.mask,     dtype=bool)
+        self.bigfactor  = ma.array(data = bigfact,   mask=self.bigmask,  dtype=bool)
+        self.bigsite    = ma.array(data = bigsite,   mask=self.bigmask,  dtype=bool)
 
     def test_binary_woe(self):
         wPlus  = np.math.log ( (2.0/3 + EPSILON)/(2.0/5 + EPSILON) )
