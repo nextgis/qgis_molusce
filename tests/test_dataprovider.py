@@ -1,21 +1,24 @@
 # encoding: utf-8
 
-import sys
 import os
-sys.path.insert(0, '../../../')
 
 import unittest
 from numpy.testing import assert_array_equal
 import numpy as np
 from numpy import ma as ma
+from pathlib import Path
 
 from molusce.algorithms.dataprovider import Raster, ProviderError
 
 class TestRaster (unittest.TestCase):
     def setUp(self):
-        self.r1 = Raster('examples/multifact.tif')
-        self.r2 = Raster('examples/sites.tif')
-        self.r3 = Raster('examples/two_band.tif')
+        self.sample_path1 = Path(__file__).parents[0]/"examples"/"multifact.tif"
+        self.sample_path2 = Path(__file__).parents[0]/"examples"/"sites.tif"
+        self.sample_path3 = Path(__file__).parents[0]/"examples"/"two_band.tif"
+        self.sample_path4 = Path(__file__).parents[0]/"examples"/"dist_roads.tif"
+        self.r1 = Raster(self.sample_path1)
+        self.r2 = Raster(self.sample_path2)
+        self.r3 = Raster(self.sample_path3)
 
         # r1
         data1 = np.array(
@@ -64,7 +67,7 @@ class TestRaster (unittest.TestCase):
 
 
     def test_roundBands(self):
-        rast = Raster('examples/multifact.tif')
+        rast = Raster(self.sample_path1)
         rast.bands = rast.bands*0.1
         rast.roundBands()
         answer = [[[ 0,  0,  0,],
@@ -72,7 +75,7 @@ class TestRaster (unittest.TestCase):
           [ 0, 0,  0]]]
         assert_array_equal(answer, rast.bands)
 
-        rast = Raster('examples/multifact.tif')
+        rast = Raster(self.sample_path1)
         rast.bands = rast.bands*1.1
         rast.roundBands(decimals=1)
         answer = np.array(
@@ -84,9 +87,9 @@ class TestRaster (unittest.TestCase):
         assert_array_equal(answer, rast.bands)
 
     def test_isContinues(self):
-        rast = Raster('examples/multifact.tif')
+        rast = Raster(self.sample_path1)
         self.assertFalse(rast.isCountinues(bandNo=1))
-        rast = Raster('examples/dist_roads.tif')
+        rast = Raster(self.sample_path4)
         self.assertTrue(rast.isCountinues(bandNo=1))
 
 
@@ -103,24 +106,24 @@ class TestRaster (unittest.TestCase):
         ]
 
         # Normalize using std and mean
-        r1 = Raster('examples/multifact.tif')
+        r1 = Raster(self.sample_path1)
         r1.normalize()
         r1.denormalize()
         assert_array_equal(r1.getBand(1), multifact)
 
         # Normalize using min and max
-        r1 = Raster('examples/multifact.tif')
+        r1 = Raster(self.sample_path1)
         r1.normalize(mode='maxmin')
         r1.denormalize()
         assert_array_equal(r1.getBand(1), multifact)
 
         # Two normalization procedures
-        r1 = Raster('examples/multifact.tif')
+        r1 = Raster(self.sample_path1)
         r1.normalize()
         r1.normalize(mode='maxmin')
         r1.denormalize()
         assert_array_equal(r1.getBand(1), multifact)
-        r1 = Raster('examples/multifact.tif')
+        r1 = Raster(self.sample_path1)
         r1.normalize(mode='maxmin')
         r1.normalize()
         r1.denormalize()
