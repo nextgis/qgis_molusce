@@ -463,7 +463,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.logMessage(self.tr("No file selected"))
       return
 
-    self.inputs["changeMapName"] = str(fileName)
+    self.inputs["changeMapName"] = fileName
 
     self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
     self.analyst.moveToThread(self.workThread)
@@ -1232,7 +1232,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       newLayer = QgsVectorLayer(fileName, QFileInfo(fileName).baseName(), "ogr")
 
       if newLayer.isValid():
-        QgsMapLayerRegistry.instance().addMapLayer(newLayer)
+        QgsProject.instance().addMapLayer(newLayer)
       else:
         QMessageBox.warning(self,
                             self.tr("Can't open file"),
@@ -1319,7 +1319,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def __addRasterToCanvas(self, filePath):
     layer = QgsRasterLayer(filePath, QFileInfo(filePath).baseName())
     if layer.isValid():
-      QgsMapLayerRegistry.instance().addMapLayers([layer])
+      QgsProject.instance().addMapLayers([layer])
     else:
       self.logMessage(self.tr("Can't load raster %s") % (filePath))
 
@@ -1382,7 +1382,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     entryValues = []
     entryColors = []
 
-    colorRamp = QgsStyleV2().defaultStyle().colorRamp("Spectral")
+    colorRamp = QgsStyle().defaultStyle().colorRamp("Spectral")
     currentValue = float(minVal)
     intervalDiff = float(maxVal - minVal) / float(numberOfEntries - 1)
 
@@ -1420,7 +1420,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     entryValues = []
     entryColors = []
 
-    colorRamp = QgsStyleV2().defaultStyle().colorRamp("Spectral")
+    colorRamp = QgsStyle().defaultStyle().colorRamp("Spectral")
     currentValue = float(minVal)
     intervalDiff = float(maxVal - minVal) / float(numberOfEntries - 1)
 

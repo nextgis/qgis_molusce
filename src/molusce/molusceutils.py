@@ -28,6 +28,7 @@
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtXml import *
+from qgis.PyQt.QtWidgets import *
 
 from qgis.core import *
 
@@ -128,7 +129,7 @@ def saveDialog(parent, settings, title, fileFilter, fileExt):
                                          title,
                                          lastDir,
                                          fileFilter
-                                        )
+                                        )[0]
 
   if fileName == "":
     return ""
@@ -197,7 +198,7 @@ def copySymbology(src, dst):
   dt = di.createDocumentType("qgis", "http://mrcc.com/qgis.dtd", "SYSTEM")
   doc = QDomDocument(dt)
   root = doc.createElement("qgis")
-  root.setAttribute("version", "%s" % str(QGis.QGIS_VERSION))
+  root.setAttribute("version", "%s" % str(Qgis.QGIS_VERSION))
   doc.appendChild(root)
   errMsg = ""
   if not src.writeSymbology(root, doc, errMsg):

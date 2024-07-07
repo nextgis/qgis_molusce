@@ -83,7 +83,7 @@ class CrossTable(QObject):
             self.crossTableFinished.emit()
 
     def getCrosstable(self):
-        if self._T == None:
+        if self._T.all() == None:
             self.computeCrosstable()
         return self._T
 
