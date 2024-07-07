@@ -85,7 +85,7 @@ def getLayerMaskBySource(layerSource):
   return maskVals
 
 def getLayerById(layerId):
-  layerMap = QgsMapLayerRegistry.instance().mapLayers()
+  layerMap = QgsProject.instance().mapLayers()
   for name, layer in layerMap.items():
     if layer.id() == layerId:
       if layer.isValid():
@@ -94,7 +94,7 @@ def getLayerById(layerId):
         return None
 
 def getLayerByName(layerName):
-  layerMap = QgsMapLayerRegistry.instance().mapLayers()
+  layerMap = QgsProject.instance().mapLayers()
   for name, layer in layerMap.items():
     if layer.name() == layerName:
       if layer.isValid():
@@ -103,7 +103,7 @@ def getLayerByName(layerName):
         return None
 
 def getLayerBySource(layerSource):
-  layerMap = QgsMapLayerRegistry.instance().mapLayers()
+  layerMap = QgsProject.instance().mapLayers()
   for name, layer in layerMap.items():
     if layer.source() == layerSource:
       if layer.isValid():

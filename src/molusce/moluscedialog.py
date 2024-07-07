@@ -39,7 +39,7 @@ from matplotlib.backends.backend_qt5agg import (
 from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtWidgets import *
 
 try:
   from matplotlib.backends.backend_qt5agg import NavigationToolbar2QTAgg as NavigationToolbar
@@ -1331,7 +1331,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def setProgressRange(self, message, maxValue):
     self.progressBar.setFormat(message)
-    self.progressBar.setRange(0, maxValue)
+    self.progressBar.setRange(0, int(maxValue))
 
   def showProgress(self):
     self.progressBar.setValue(self.progressBar.value() + 1)
