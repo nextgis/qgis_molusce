@@ -28,7 +28,7 @@
 from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtWidgets import *
 
 from . import molusceutils as utils
 from . import spinboxdelegate
@@ -70,9 +70,9 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
     self.spnFinalClass.setValue(int(self.settings.value("ui/MCE/finalClass", 0)))
 
     gradations = self.inputs["initial"].getBandGradation(1)
-    self.spnInitialClass.setRange(min(gradations), max(gradations))
+    self.spnInitialClass.setRange(int(min(gradations)), int(max(gradations)))
     gradations = self.inputs["final"].getBandGradation(1)
-    self.spnFinalClass.setRange(min(gradations), max(gradations))
+    self.spnFinalClass.setRange(int(min(gradations)), int(max(gradations)))
 
     self.__prepareTable()
 

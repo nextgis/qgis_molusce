@@ -596,7 +596,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
           layer = utils.getLayerByName(QFileInfo(self.leMonteCarloPath.text()).baseName())
           layer.setCacheImage(None)
           layer.triggerRepaint()
-          self.iface.legendInterface().refreshLayerSymbology(layer)
+          self.iface.layerTreeView().refreshLayerSymbology(layer.id())
           self.iface.mapCanvas().refresh()
           QgsProject.instance().dirty(True)
       else:
@@ -1457,7 +1457,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     colorRampShader = QgsColorRampShader()
 
     colorRampShader.setColorRampItemList(colorRampItems)
-    colorRampShader.setColorRampType(QgsColorRampShader.INTERPOLATED)
+    colorRampShader.setColorRampType(QgsColorRampShader.Interpolated)
     rasterShader.setRasterShaderFunction(colorRampShader)
 
     renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rasterShader)
@@ -1465,13 +1465,13 @@ class MolusceDialog(QDialog, Ui_Dialog):
     maxVal = colorRampItems[-1].value
     renderer.setClassificationMin(minVal)
     renderer.setClassificationMax(maxVal)
-    renderer.setClassificationMinMaxOrigin(QgsRasterRenderer.minMaxOriginFromName("FullExtent"))
+    renderer.setMinMaxOrigin(QgsRasterRenderer.minMaxOrigin(renderer))
 
     layer.setRenderer(renderer)
-    layer.setCacheImage(None)
+    # layer.setCacheImage(None)
     layer.triggerRepaint()
-    self.iface.legendInterface().refreshLayerSymbology(layer)
-    QgsProject.instance().dirty(True)
+    self.iface.layerTreeView().refreshLayerSymbology(layer.id())
+    QgsProject.instance().setDirty(True)
 
   def __updateAnalyticTabs(self, value):
       # Enables/Disables Analytic tabs
