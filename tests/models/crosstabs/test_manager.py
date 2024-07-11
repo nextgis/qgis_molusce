@@ -1,6 +1,8 @@
 from pathlib import Path
+
 import unittest
 import math
+from pathlib import Path
 
 import numpy as np
 from numpy import ma as ma
@@ -14,7 +16,6 @@ class TestCrossTableManager(unittest.TestCase):
         self.examples_path = Path(__file__).parents[2] / "examples"
         self.init = Raster(self.examples_path / 'init.tif', maskVals = {1: [255]})
         self.final  = Raster(self.examples_path / 'final.tif', maskVals ={1: [255]})
-
 
     def test_getTransitionMatrix(self):
         table = CrossTableManager(self.init, self.final)

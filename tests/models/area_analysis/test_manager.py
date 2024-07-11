@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-
 import unittest
 from numpy.testing import assert_array_equal
 from pathlib import Path
@@ -37,13 +36,19 @@ class TestAreaAnalysisManager (unittest.TestCase):
         aa = AreaAnalyst(self.r1, self.r1)
         raster = aa.getChangeMap()
         band = raster.getBand(1)
-        assert_array_equal(band, self.r1r1)
+        try:
+            assert_array_equal(band, self.r1r1)
+        except AssertionError as error:
+            self.fail(error)
 
         # Masked raster
         aa = AreaAnalyst(self.r2, self.r2)
         raster = aa.getChangeMap()
         band = raster.getBand(1)
-        assert_array_equal(band, self.r2r2)
+        try:
+            assert_array_equal(band, self.r2r2)
+        except AssertionError as error:
+            self.fail(error)
 
     def test_encode(self):
         aa = AreaAnalyst(self.r1, self.r1)

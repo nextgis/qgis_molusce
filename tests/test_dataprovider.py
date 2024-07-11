@@ -52,7 +52,10 @@ class TestRaster (unittest.TestCase):
 
         self.assertEqual(self.r2.getBandsCount(), 1)
         band = self.r2.getBand(1)
-        assert_array_equal(band, self.data2)
+        try:
+            assert_array_equal(band, self.data2)
+        except AssertionError as error:
+            self.fail(error)
 
         self.assertTrue(self.r1.geoDataMatch(self.r2))
 
@@ -71,7 +74,10 @@ class TestRaster (unittest.TestCase):
         answer = [[[ 0,  0,  0,],
           [ 0,  0,  0],
           [ 0, 0,  0]]]
-        assert_array_equal(answer, rast.bands)
+        try:
+            assert_array_equal(answer, rast.bands)
+        except AssertionError as error:
+            self.fail(error)
 
         rast = Raster(self.sample_path1)
         rast.bands = rast.bands*1.1
@@ -82,7 +88,10 @@ class TestRaster (unittest.TestCase):
                 [3.3,2.2,1.1],
                 [0.0,3.3,1.1]
             ]])
-        assert_array_equal(answer, rast.bands)
+        try:
+            assert_array_equal(answer, rast.bands)
+        except AssertionError as error:
+            self.fail(error)
 
     def test_isContinues(self):
         rast = Raster(self.sample_path1)
@@ -107,25 +116,37 @@ class TestRaster (unittest.TestCase):
         r1 = Raster(self.sample_path1)
         r1.normalize()
         r1.denormalize()
-        assert_array_equal(r1.getBand(1), multifact)
+        try:
+            assert_array_equal(r1.getBand(1), multifact)
+        except AssertionError as error:
+            self.fail(error)
 
         # Normalize using min and max
         r1 = Raster(self.sample_path1)
         r1.normalize(mode='maxmin')
         r1.denormalize()
-        assert_array_equal(r1.getBand(1), multifact)
+        try:
+            assert_array_equal(r1.getBand(1), multifact)
+        except AssertionError as error:
+            self.fail(error)
 
         # Two normalization procedures
         r1 = Raster(self.sample_path1)
         r1.normalize()
         r1.normalize(mode='maxmin')
         r1.denormalize()
-        assert_array_equal(r1.getBand(1), multifact)
+        try:
+            assert_array_equal(r1.getBand(1), multifact)
+        except AssertionError as error:
+            self.fail(error)
         r1 = Raster(self.sample_path1)
         r1.normalize(mode='maxmin')
         r1.normalize()
         r1.denormalize()
-        assert_array_equal(r1.getBand(1), multifact)
+        try:
+            assert_array_equal(r1.getBand(1), multifact)
+        except AssertionError as error:
+            self.fail(error)
 
 
     def test_getNeighbours(self):
@@ -133,10 +154,16 @@ class TestRaster (unittest.TestCase):
         self.assertEqual(neighbours, [[1]])
 
         neighbours = self.r2.getNeighbours(row=1,col=1, size=1)
-        assert_array_equal(neighbours, [self.data2])
+        try:
+            assert_array_equal(neighbours, [self.data2])
+        except AssertionError as error:
+            self.fail(error)
 
         neighbours = self.r3.getNeighbours(row=1,col=1, size=1)
-        assert_array_equal(neighbours, [self.data2, self.data1])
+        try:
+            assert_array_equal(neighbours, [self.data2, self.data1])
+        except AssertionError as error:
+            self.fail(error)
 
         # Check pixel on the raster bound and nonzero neighbour size
         self.assertRaises(ProviderError, self.r2.getNeighbours, col=1, row=0, size=1)
@@ -162,7 +189,10 @@ class TestRaster (unittest.TestCase):
             self.assertEqual(r2.get_dtype(), self.r1.get_dtype())
             self.assertEqual(r2.getBandsCount(), self.r1.getBandsCount())
             for i in range(r2.getBandsCount()):
-                assert_array_equal(r2.getBand(i+1), self.r1.getBand(i+1))
+                try:
+                    assert_array_equal(r2.getBand(i+1), self.r1.getBand(i+1))
+                except AssertionError as error:
+                    self.fail(error)
         finally:
             os.remove(filename)
 
