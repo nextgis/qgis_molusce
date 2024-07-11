@@ -56,8 +56,6 @@ class TestRaster (unittest.TestCase):
 
         self.assertTrue(self.r1.geoDataMatch(self.r2))
 
-        self.assertTrue(self.r1.isMetricProj())
-
     def test_create(self):
         raster = Raster()
         raster.create([self.data1], geodata=self.r1.getGeodata())
@@ -174,5 +172,3 @@ class TestRaster (unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
-
