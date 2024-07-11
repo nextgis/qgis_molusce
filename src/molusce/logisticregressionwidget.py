@@ -25,8 +25,6 @@
 #
 #******************************************************************************
 
-import gc
-
 from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *

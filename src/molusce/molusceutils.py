@@ -155,7 +155,7 @@ def openRasterDialog(parent, settings, title, fileFilter):
                                          title,
                                          lastDir,
                                          fileFilter
-                                        )
+                                        )[0]
 
   if fileName == "":
     return ""
