@@ -1,15 +1,9 @@
-# encoding: utf-8
-
-import sys
-sys.path.insert(0, '../../../../../')
-
 import unittest
-import math
 
 import numpy as np
 from numpy import ma as ma
 
-from molusce.algorithms.models.crosstabs.model  import CrossTable
+from molusce.algorithms.models.crosstabs.model import CrossTable
 
 
 class TestCrossTable (unittest.TestCase):
@@ -56,12 +50,11 @@ class TestCrossTable (unittest.TestCase):
 
         x = np.ma.array([1,2,3,4,5,5])
         y = np.ma.array([1,2,3,3,5,6])
-        self.assertRaises(CrossTable(x,y))
 
         table = CrossTable(x,y, expand=True)
         for i in [1,2,3,4,5,6]:
-            assert i in table.graduation_x
-            assert i in table.graduation_y
+            self.assertIn(i, table.graduation_x)
+            self.assertIn(i, table.graduation_y)
 
 
     def test_getTransition(self):

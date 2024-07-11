@@ -1,8 +1,4 @@
-# encoding: utf-8
-
-import sys
-sys.path.insert(0, '../../../../../')
-
+from pathlib import Path
 import unittest
 from numpy.testing import assert_array_equal
 
@@ -17,12 +13,13 @@ from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 
 class TestWoEManager (unittest.TestCase):
     def setUp(self):
-        self.factor = Raster('../../examples/multifact.tif')
+        self.examples_path = Path(__file__).parents[2] / "examples"
+        self.factor = Raster(self.examples_path / 'multifact.tif')
                 #~ [1,1,3]
                 #~ [3,2,1]
                 #~ [0,3,1]
 
-        self.sites  = Raster('../../examples/sites.tif')
+        self.sites  = Raster(self.examples_path / 'sites.tif')
                     #~ [1,2,1],
                     #~ [1,2,1],
                     #~ [0,1,2]
@@ -43,7 +40,7 @@ class TestWoEManager (unittest.TestCase):
             [False, True,  False,],
             [False, False, True,]
         ]
-        self.factraster  = ma.array(data = fact, mask=self.mask, dtype=np.int)
+        self.factraster  = ma.array(data = fact, mask=self.mask, dtype=int)
         self.sitesraster = ma.array(data = site, mask=self.mask, dtype=bool)
 
     def test_CheckBins(self):
@@ -71,12 +68,12 @@ class TestWoEManager (unittest.TestCase):
         answer = ma.array(data = answer, mask = self.mask)
         assert_array_equal(p, answer)
 
-        initState = Raster('../../examples/data.tif')
+        initState = Raster(self.examples_path / 'data.tif')
             #~ [1,1,1,1],
             #~ [1,1,2,2],
             #~ [2,2,2,2],
             #~ [3,3,3,3]
-        finalState = Raster('../../examples/data1.tif')
+        finalState = Raster(self.examples_path / 'data1.tif')
             #~ [1,1,2,3],
             #~ [3,1,2,3],
             #~ [3,3,3,3],

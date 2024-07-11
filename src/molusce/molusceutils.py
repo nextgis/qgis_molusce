@@ -52,7 +52,7 @@ def getRasterLayers():
   return layers
 
 def getLayerMask(layer):
-  if layer == None:
+  if layer is None:
     return None
   else:
       provider = layer.dataProvider()

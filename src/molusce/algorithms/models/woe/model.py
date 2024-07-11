@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+import math
 import numpy as np
 from numpy import ma as ma
 from collections import namedtuple
@@ -74,8 +75,8 @@ def _binary_woe(factor, sites, unitcell=1):
     pNonSiteNonFactor = pNonSiteNonFactor + EPSILON
 
     # Weights
-    wPlus  = np.math.log(pSiteFactor/pNonSiteFactor)
-    wMinus = np.math.log(pSiteNonFactor/pNonSiteNonFactor)
+    wPlus  = math.log(pSiteFactor/pNonSiteFactor)
+    wMinus = math.log(pSiteNonFactor/pNonSiteNonFactor)
 
     return Weights(wPlus, wMinus)
 
@@ -129,12 +130,3 @@ def woe(factor, sites, unit_cell=1):
 def contrast(wPlus, wMinus):
     'Weight contrast'
     return wPlus - wMinus
-
-
-
-
-
-
-
-
-

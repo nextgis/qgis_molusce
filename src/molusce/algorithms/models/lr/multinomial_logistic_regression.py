@@ -83,7 +83,7 @@ def mlr_nll_and_gradient(X, Y, W, sigma2, weighted):
     return nll, grad
 
 
-class FuncGradComputer(object):
+class FuncGradComputer:
     """ Convenience class to pass func and grad separately to optimize
     """
     def __init__(self, X, Y, ss, weighted):
@@ -118,7 +118,7 @@ class FuncGradComputer(object):
         return grad
 
 
-class MLR(object):
+class MLR:
     """ Multinomial Logistic Regression classifier
 
     Parameters

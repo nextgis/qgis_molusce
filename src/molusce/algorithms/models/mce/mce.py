@@ -112,7 +112,7 @@ class MCE(QObject):
 
 
     def getConsistency(self):
-        if self.consistency == None:
+        if self.consistency is None:
             self.setWeights()
         return self.consistency
 
@@ -130,7 +130,7 @@ class MCE(QObject):
         return self.prediction
 
     def getWeights(self):
-        if self.weights == None:
+        if self.weights is None:
             self.setWeights()
         return self.weights
 
@@ -217,10 +217,3 @@ class MCE(QObject):
                 self.consistency = -1
         else:
             self.consistency = 0
-
-
-
-
-
-
-

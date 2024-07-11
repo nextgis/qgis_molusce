@@ -1,8 +1,8 @@
-# encoding: utf-8
+
+from typing import Optional
 
 import numpy as np
 from numpy import ma as ma
-
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
@@ -30,26 +30,26 @@ class AreaAnalyst(QObject):
     errorReport = pyqtSignal(str)
     logMessage = pyqtSignal(str)
 
-    def __init__(self, first, second=None):
+    def __init__(self, first: Raster, second: Optional[Raster]=None):
         '''
         @param first        Raster of the first stage (the state before transition).
         @param second       Raster of the second stage (the state after transition).
         '''
         QObject.__init__(self)
 
-        if second != None and (not first.geoDataMatch(second)):
+        if second is not None and (not first.geoDataMatch(second)):
             raise AreaAnalizerError('Geometries of the rasters are different!')
 
         if first.getBandsCount() != 1:
-            raise AreaAnalizerError('First raster mast have 1 band!')
+            raise AreaAnalizerError('First raster must have 1 band!')
 
-        if second !=None and second.getBandsCount() != 1:
-            raise AreaAnalizerError('Second raster mast have 1 band!')
+        if second is not None and second.getBandsCount() != 1:
+            raise AreaAnalizerError('Second raster must have 1 band!')
 
         self.geodata = first.getGeodata()
         self.categories = first.getBandGradation(1)
 
-        if second != None:
+        if second is not None:
             self.categoriesSecond = second.getBandGradation(1)
             first, second = masks_identity(first.getBand(1), second.getBand(1), dtype=np.uint8)
 
@@ -79,10 +79,10 @@ class AreaAnalyst(QObject):
             the result is tuple of (initialClass, finalClass).
         '''
         m = len(self.categories)
-        initialClassIndex = code/m
-        finalClassIndex   = code - initialClassIndex*m
+        initialClassIndex = code // m
+        finalClassIndex   = code - initialClassIndex * m
         try:
-            initClass, finalClass = (self.categories[int(initialClassIndex)], self.categories[int(finalClassIndex)])
+            initClass, finalClass = (self.categories[initialClassIndex], self.categories[finalClassIndex])
         except ValueError:
             raise AreaAnalizerError('The code is not in list!')
         return (initClass, finalClass)
@@ -104,7 +104,7 @@ class AreaAnalyst(QObject):
         return [self.encode(initialClass, c) for c in self.categories]
 
     def getChangeMap(self):
-        if self.changeMap == None:
+        if self.changeMap is None:
             self.makeChangeMap()
         return self.changeMap
 
@@ -113,7 +113,7 @@ class AreaAnalyst(QObject):
         band = np.zeros([rows, cols], dtype=np.int16)
 
         f, s = self.first, self.second
-        if self.initRaster == None:
+        if self.initRaster is None:
             checkPersistent = False
         else:
             checkPersistent = True

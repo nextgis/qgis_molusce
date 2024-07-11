@@ -99,7 +99,7 @@ class EBudget(QObject):
         if (rows < scale) or (cols< scale): # Nothing to do
             return
 
-        newRows, newCols = rows/scale, cols/scale
+        newRows, newCols = rows//scale, cols//scale
         scale2 = scale*scale
 
         newW = np.zeros((newRows, newCols))
@@ -114,16 +114,16 @@ class EBudget(QObject):
             while c/scale < newCols:
                 w = self.W[r: r+scale, c: c+scale]
                 sum_w = 1.0*np.sum(w)
-                newW[r/scale, c/scale] = 1.0*sum_w/scale2
+                newW[r//scale, c//scale] = 1.0*sum_w/scale2
                 for cat in self.categories:
                     if sum_w == 0:
-                        newSj[cat][r/scale, c/scale] = 0
+                        newSj[cat][r//scale, c//scale] = 0
                         newRj[cat][r/scale, c/scale] = 0
                     else:
                         S = self.Sj[cat]
                         R = self.Rj[cat]
-                        newSj[cat][r/scale, c/scale] = 1.0*np.sum(S[r: r+scale, c: c+scale]*w)/sum_w
-                        newRj[cat][r/scale, c/scale] = 1.0*np.sum(R[r: r+scale, c: c+scale]*w)/sum_w
+                        newSj[cat][r//scale, c//scale] = 1.0*np.sum(S[r: r+scale, c: c+scale]*w)/sum_w
+                        newRj[cat][r//scale, c//scale] = 1.0*np.sum(R[r: r+scale, c: c+scale]*w)/sum_w
                 c = c + scale
             r = r + scale
             QCoreApplication.processEvents()
@@ -207,14 +207,3 @@ class EBudget(QObject):
         Perfect information about quantity, perfect information about location
         """
         return 1.0
-
-
-
-
-
-
-
-
-
-
-

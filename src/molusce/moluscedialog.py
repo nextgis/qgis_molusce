@@ -607,7 +607,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         trans_prefix = self.leTransitionPotentialPrefix.text()
         if not hasattr(self, 'analyst'):
             self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
-        if potentials != None:
+        if potentials is not None:
             for k,v in potentials.items():
                 initcat, finalcat = self.analyst.decode(int(k))
                 map = v.save(trans_prefix+'_from_'+str(initcat)+ '_to_' +str(finalcat) + '.tif')

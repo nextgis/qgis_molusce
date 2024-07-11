@@ -1,8 +1,4 @@
-# encoding: utf-8
-
-import sys
-sys.path.insert(0, '../../../../../')
-
+from pathlib import Path
 import unittest
 
 import numpy as np
@@ -14,17 +10,18 @@ from molusce.algorithms.models.sampler.sampler import Sampler
 
 class TestSample (unittest.TestCase):
     def setUp(self):
-        self.factors = [Raster('../../examples/multifact.tif')]
-        self.output = Raster('../../examples/sites.tif')
+        self.examples_path = Path(__file__).parents[2] / "examples"
+        self.factors = [Raster(self.examples_path / 'multifact.tif')]
+        self.output = Raster(self.examples_path / 'sites.tif')
         self.state = self.output
         #~ sites.tif is 1-band 3x3 raster:
             #~ [1,2,1],
             #~ [1,2,1],
             #~ [0,1,2]
 
-        self.factors2 = [Raster('../../examples/multifact.tif'), Raster('../../examples/multifact.tif')]
-        self.factors3 = [Raster('../../examples/two_band.tif')]
-        self.factors4 = [Raster('../../examples/two_band.tif'), Raster('../../examples/multifact.tif')]
+        self.factors2 = [Raster(self.examples_path / 'multifact.tif'), Raster(self.examples_path / 'multifact.tif')]
+        self.factors3 = [Raster(self.examples_path / 'two_band.tif')]
+        self.factors4 = [Raster(self.examples_path / 'two_band.tif'), Raster(self.examples_path / 'multifact.tif')]
 
     def test_cat2vect(self):
         smp = Sampler(self.state, self.factors,  self.output, ns=0)
@@ -32,7 +29,7 @@ class TestSample (unittest.TestCase):
         assert_array_equal(smp.cat2vect(1), [0, 1])
         assert_array_equal(smp.cat2vect(2), [0, 0])
 
-        inputRast = Raster('../../examples/sites.tif')
+        inputRast = Raster(self.examples_path / 'sites.tif')
         inputRast.resetMask([0])
         smp = Sampler(inputRast, self.factors,  self.output, ns=0)
         assert_array_equal(smp.cat2vect(1), [1])
@@ -50,7 +47,7 @@ class TestSample (unittest.TestCase):
             ]
         assert_array_equal(smp.get_state(self.state, 1,1), res)
 
-        inputRast = Raster('../../examples/sites.tif')
+        inputRast = Raster(self.examples_path / 'sites.tif')
         inputRast.resetMask([0])
         smp = Sampler(inputRast, self.factors,  self.output, ns=0)
         assert_array_equal(smp.get_state(self.state, 1,1), [0])

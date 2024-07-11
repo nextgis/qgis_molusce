@@ -1,9 +1,5 @@
-# encoding: utf-8
-
-import sys
-sys.path.insert(0, '../../../../../')
-
 import unittest
+from pathlib import Path
 
 import numpy as np
 from numpy import ma as ma
@@ -14,13 +10,14 @@ from molusce.algorithms.models.errorbudget.ebmodel import EBudget, weightedSum
 
 class TestModel (unittest.TestCase):
     def setUp(self):
-        self.reference = Raster('../../examples/data.tif')
+        self.examples_path = Path(__file__).parents[2] / "examples"
+        self.reference = Raster(self.examples_path / 'data.tif')
             #~ [1,1,1,1],
             #~ [1,1,2,2],
             #~ [2,2,2,2],
             #~ [3,3,3,3]
 
-        self.simulated = Raster('../../examples/data1.tif')
+        self.simulated = Raster(self.examples_path / 'data1.tif')
             #~ [1,1,2,3],
             #~ [3,1,2,3],
             #~ [3,3,3,3],
@@ -105,8 +102,8 @@ class TestModel (unittest.TestCase):
         np.testing.assert_almost_equal(medP, answer)
 
     def test_Mask(self):
-        reference = Raster('../../examples/data.tif')
-        simulated = Raster('../../examples/data1.tif')
+        reference = Raster(self.examples_path / 'data.tif')
+        simulated = Raster(self.examples_path / 'data1.tif')
         reference.resetMask([2])
         simulated.resetMask([2])
 
@@ -131,8 +128,8 @@ class TestModel (unittest.TestCase):
         np.testing.assert_almost_equal(medP, 1.0)
 
     def test_coarse(self):
-        reference = Raster('../../examples/data.tif')
-        simulated = Raster('../../examples/data1.tif')
+        reference = Raster(self.examples_path / 'data.tif')
+        simulated = Raster(self.examples_path / 'data1.tif')
         reference.resetMask([2])
         simulated.resetMask([2])
 
@@ -168,8 +165,8 @@ class TestModel (unittest.TestCase):
         np.testing.assert_equal(eb.Sj, ans)
 
     def test_getStat(self):
-        reference = Raster('../../examples/data.tif')
-        simulated = Raster('../../examples/data1.tif')
+        reference = Raster(self.examples_path / 'data.tif')
+        simulated = Raster(self.examples_path / 'data1.tif')
         reference.resetMask([2])
         simulated.resetMask([2])
 

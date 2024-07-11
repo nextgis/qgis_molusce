@@ -41,13 +41,14 @@ class Simulator(QObject):
         self.crosstable = crosstable
         self.calcTransitions = False
 
-        try:    # Not all models have the signals
+        if all(hasattr(self.model, signal) for signal in (
+            "rangeChanged", "updateProgress", "errorReport")
+        ):
+            # Not all models have the signals
             self.model.rangeChanged.connect(self.__modelProgressRangeChanged)
             self.model.updateProgress.connect(self.__modelProgressChanged)
 
             self.model.errorReport.connect(self.__modelErrorReport)
-        except AttributeError:
-            pass
 
     def getConfidence(self):
         '''
@@ -191,11 +192,13 @@ class Simulator(QObject):
             self.errorReport.emit(self.tr("An unknown error occurs during simulation"))
             raise
         finally:
-            try:    # Not all models have the signals
+            if all(hasattr(self.model, signal) for signal in (
+                "rangeChanged", "updateProgress")
+            ):
+                # Not all models have the signals
                 self.model.rangeChanged.disconnect(self.__modelProgressRangeChanged)
                 self.model.updateProgress.disconnect(self.__modelProgressChanged)
-            except AttributeError:
-                pass
+
             self.simFinished.emit()
             QCoreApplication.processEvents()
 
@@ -204,4 +207,3 @@ class Simulator(QObject):
         Update prediction using new categories (raster "state")
         '''
         self.predicted = self.model.getPrediction(state, self.factors, calcTransitions=self.calcTransitions)
-

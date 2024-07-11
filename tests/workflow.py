@@ -1,9 +1,4 @@
-# encoding: utf-8
-
-import sys
-import os
 from time import clock
-sys.path.insert(0, '../../../')
 
 import numpy as np
 from numpy import ma as ma
@@ -50,7 +45,7 @@ def main(initRaster, finalRaster, factors):
     print('Start MLP Training...', clock())
     model.train(20, valPercent=20)
     print('Finish Trainig', clock(), '\n')
-    
+
     # print 'Start ANN Prediction...', clock()
     # predict = model.getPrediction(initRaster, factors, calcTransitions=True)
     # confidence = model.getConfidence()
@@ -102,7 +97,7 @@ def main(initRaster, finalRaster, factors):
     # try:
     #     predict.save(filename)
     #     confidence.save(confname)
-    #     if potentials != None:
+    #     if potentials is not None:
     #         for k,v in potentials.iteritems():
     #             map = v.save(trans_prefix+str(k) + '.tif')
     # finally:
@@ -137,5 +132,3 @@ def main(initRaster, finalRaster, factors):
 if __name__=="__main__":
     #main('examples/init.tif', 'examples/final.tif', ['examples/dist_river.tif', 'examples/dist_roads.tif'])
     main('Original/Pak_lucc00.tif', 'Original/Pak_lucc07.tif', ['Original/dist_main_roads1.tif', 'Original/dist_rivers1.tif', 'Original/LPB_dem_res1.tif'])
-
-

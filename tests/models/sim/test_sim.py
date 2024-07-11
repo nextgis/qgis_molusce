@@ -1,8 +1,4 @@
-# encoding: utf-8
-
-import sys
-sys.path.insert(0, '../../../../../')
-
+from pathlib import Path
 import unittest
 from numpy.testing import assert_array_equal
 
@@ -15,7 +11,7 @@ from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.simulator.sim import Simulator
 
 
-class Model(object):
+class Model:
     '''
     Simple predicting model for Simulator tests
     '''
@@ -64,7 +60,8 @@ class TestSimulator(unittest.TestCase):
             #~ [1, 1, 3,],
             #~ [3, 2, 1,],
             #~ [0, 3, 1,]
-        self.raster1 = Raster('../../examples/multifact.tif')
+        self.examples_path = Path(__file__).parents[2] / "examples"
+        self.raster1 = Raster(self.examples_path / 'multifact.tif')
         self.raster1.resetMask([0])
 
         self.X = np.array([

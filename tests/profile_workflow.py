@@ -1,9 +1,5 @@
-# encoding: utf-8
-
-import sys
 import os
 from time import clock
-sys.path.insert(0, '../../../')
 
 import numpy as np
 from numpy import ma as ma
@@ -76,5 +72,3 @@ def main(initRaster, finalRaster, factors):
 
 if __name__=="__main__":
     main('examples/init.tif', 'examples/final.tif', ['examples/dist_river.tif', 'examples/dist_roads.tif'])
-
-

@@ -264,7 +264,7 @@ class MlpManager(QObject):
                 for j in range(cols):
                     if not mask[i,j]:
                         input = self.sampler.get_inputs(state, i,j)
-                        if input != None:
+                        if input is not None:
                             out = self.getOutput(input)
                             res = self.outCategory(out)
                             predicted_band[i, j] = res
@@ -450,4 +450,3 @@ class MlpManager(QObject):
             input = np.hstack( (sample['state'],sample['factors']) )
             self.getOutput( input )     # Forward propagation
             self.MLP.propagate_backward( sample['output'], lrate, momentum )
-

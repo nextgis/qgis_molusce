@@ -16,7 +16,7 @@ class ProviderError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
-class FormatConverter(object):
+class FormatConverter:
     '''Tarnslates formats between GDAL and numpy data formats'''
     def __init__(self):
         self.dtypes = bool, int, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64, float, np.float32, np.float64 #np.float16
@@ -38,7 +38,7 @@ class FormatConverter(object):
             np.dtype('float64'): (gdal.GDT_Float64,  -9999),
         }
 
-class Raster(object):
+class Raster:
     # TODO use dtypes for raster inutialization
     def __init__(self, filename=None, maskVals=None):
         if filename == "":
@@ -88,10 +88,10 @@ class Raster(object):
     def geoDataMatch(self, raster, geodata=None):
         '''Return true if RasterSize, Projection and GetGeoTransform of the rasters are matched'''
 
-        if (geodata != None) and (raster != None):
+        if (geodata is not None) and (raster is not None):
             raise ProviderError('Use raster or geodata, not both!')
 
-        if geodata == None:
+        if geodata is None:
             geodata = raster.geodata
 
         # TODO check proj also.
@@ -111,10 +111,10 @@ class Raster(object):
         4) rotations are equal.
         '''
 
-        if (geodata != None) and (raster != None):
+        if (geodata is not None) and (raster is not None):
             raise ProviderError('Use raster or geodata, not both!')
 
-        if geodata == None:
+        if geodata is None:
             geodata = raster.geodata
         s_cornerX, s_width, s_rot1, s_cornerY, s_rot2, s_height  = self.geodata['transform']
         r_cornerX, r_width, r_rot1, r_cornerY, r_rot2, r_height  = geodata['transform']
@@ -146,9 +146,9 @@ class Raster(object):
         '''
         Return list of categories of raster's band
         '''
-        try:
+        if bandNo < len(self.bandgradation):
             res = self.bandgradation[bandNo]
-        except KeyError:
+        else:
             band = self.getBand(bandNo)
             res = get_gradations(band.compressed())
             self.bandgradation[bandNo] = res
@@ -286,22 +286,25 @@ class Raster(object):
 
         self.bands = np.ma.zeros((data.RasterCount,self.geodata['ySize'], self.geodata['xSize']), dtype=float)
         self.bandcount = data.RasterCount
-        if self.maskVals != None and len(self.maskVals) != self.bandcount:
+        if self.maskVals is not None and len(self.maskVals) != self.bandcount:
             raise ProviderError("Band count of the file '%s' does't match nodata values count" % self.filename)
 
         for i in range(1, data.RasterCount+1):
             r = data.GetRasterBand(i)
             nodataValue =  r.GetNoDataValue()
-            if nodataValue != None:
+            if nodataValue is not None:
                 nodataValues = [nodataValue]
             else:
                 nodataValues = []
             r = r.ReadAsArray()
             #self.bandgradation[i] = None
-            try:
-                userNodataValues =  self.maskVals[i]
-            except TypeError:
+            if self.maskVals is None:
                 userNodataValues = []
+            else:
+                try:
+                    userNodataValues =  self.maskVals[i]
+                except TypeError:
+                    userNodataValues = []
             nodataValues += userNodataValues
             if nodataValues != []:
                 mask = binaryzation(r, nodataValues)
@@ -317,7 +320,7 @@ class Raster(object):
         '''
         for i in range(self.getBandsCount()):
             r = self.getBand(i)
-            if maskVals != None:
+            if maskVals is not None:
                 mask = binaryzation(r, maskVals)
             else:
                 mask = False
@@ -365,7 +368,3 @@ class Raster(object):
                 raise ProviderError("Existing bands don't match new geodata geometry!")
 
         self.geodata = geodata
-
-
-
-

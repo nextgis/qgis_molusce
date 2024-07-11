@@ -1,7 +1,4 @@
-# encoding: utf-8
-
-import sys
-sys.path.insert(0, '../../../../../')
+from pathlib import Path
 
 import unittest
 
@@ -15,12 +12,13 @@ from molusce.algorithms.models.mce.mce import MCE
 
 class TestMCE(unittest.TestCase):
     def setUp(self):
-        self.factor = Raster('../../examples/multifact.tif')
+        self.examples_path = Path(__file__).parents[2] / "examples"
+        self.factor = Raster(self.examples_path / 'multifact.tif')
             #~ [1,1,3]
             #~ [3,2,1]
             #~ [0,3,1]
 
-        self.state  = Raster('../../examples/sites.tif')
+        self.state  = Raster(self.examples_path / 'sites.tif')
         self.state.resetMask(maskVals= [0])
             #~ [1,2,1],
             #~ [1,2,1],
@@ -36,7 +34,7 @@ class TestMCE(unittest.TestCase):
             [1.0/7, 1.0/4, 1.0/2, 1]
         ]
         # Multiband
-        factor = Raster('../../examples/two_band.tif')
+        factor = Raster(self.examples_path / 'two_band.tif')
 
         mce = MCE([self.factor, factor, self.factor], data, 1, 2, self.areaAnalyst)
         w = mce.getWeights()

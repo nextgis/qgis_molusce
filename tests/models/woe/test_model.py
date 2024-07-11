@@ -1,8 +1,4 @@
-# encoding: utf-8
-
-import sys
-sys.path.insert(0, '../../../../../')
-
+import math
 import unittest
 
 import numpy as np
@@ -79,26 +75,26 @@ class TestModel (unittest.TestCase):
 
         self.factor     = ma.array(data = fact,      mask=self.mask,     dtype=bool)
         self.fact1      = ma.array(data = fact,      mask=self.mask1,    dtype=bool)
-        self.multifact  = ma.array(data = multifact, mask=self.mask,     dtype=np.int)
+        self.multifact  = ma.array(data = multifact, mask=self.mask,     dtype=int)
         self.sites      = ma.array(data = site,      mask=self.mask,     dtype=bool)
-        self.sites1     = ma.array(data = site1,     mask=self.mask1,    dtype=np.int)
-        self.sites2     = ma.array(data = site1,     mask=self.mask,     dtype=np.int)
+        self.sites1     = ma.array(data = site1,     mask=self.mask1,    dtype=int)
+        self.sites2     = ma.array(data = site1,     mask=self.mask,     dtype=int)
         self.zero       = ma.array(data = zero,      mask=self.mask,     dtype=bool)
         self.bigfactor  = ma.array(data = bigfact,   mask=self.bigmask,  dtype=bool)
         self.bigsite    = ma.array(data = bigsite,   mask=self.bigmask,  dtype=bool)
 
     def test_binary_woe(self):
-        wPlus  = np.math.log ( (2.0/3 + EPSILON)/(2.0/5 + EPSILON) )
-        wMinus = np.math.log ( (1.0/3 + EPSILON)/(3.0/5 + EPSILON) )
+        wPlus  = math.log ( (2.0/3 + EPSILON)/(2.0/5 + EPSILON) )
+        wMinus = math.log ( (1.0/3 + EPSILON)/(3.0/5 + EPSILON) )
         self.assertEqual(_binary_woe(self.factor, self.sites), (wPlus, wMinus))
 
-        wPlus  = np.math.log ( (5.0/7 + EPSILON)/(0.5/3.5 + EPSILON) )
-        wMinus = np.math.log ( (2.0/7 + EPSILON)/(3.0/3.5 + EPSILON) )
+        wPlus  = math.log ( (5.0/7 + EPSILON)/(0.5/3.5 + EPSILON) )
+        wMinus = math.log ( (2.0/7 + EPSILON)/(3.0/3.5 + EPSILON) )
         self.assertEqual(_binary_woe(self.bigfactor, self.bigsite, unitcell=2), (wPlus, wMinus))
 
         # if Sites=Factor:
-        wPlus  = np.math.log ( (1 + EPSILON)/EPSILON )
-        wMinus = np.math.log ( EPSILON/(1 + EPSILON)  )
+        wPlus  = math.log ( (1 + EPSILON)/EPSILON )
+        wMinus = math.log ( EPSILON/(1 + EPSILON)  )
         self.assertEqual(_binary_woe(self.factor, self.factor), (wPlus, wMinus))
 
 
@@ -113,14 +109,14 @@ class TestModel (unittest.TestCase):
         woe(self.multifact, self.sites2)
 
     def test_woe(self):
-        wPlus1  = np.math.log ( (2.0/3 + EPSILON)/(2.0/5 + EPSILON) )
-        wMinus1 = np.math.log ( (1.0/3 + EPSILON)/(3.0/5 + EPSILON) )
+        wPlus1  = math.log ( (2.0/3 + EPSILON)/(2.0/5 + EPSILON) )
+        wMinus1 = math.log ( (1.0/3 + EPSILON)/(3.0/5 + EPSILON) )
 
-        wPlus2  = np.math.log ( (1.0/3 + EPSILON)/(EPSILON) )
-        wMinus2 = np.math.log ( (2.0/3 + EPSILON)/(1.0 + EPSILON) )
+        wPlus2  = math.log ( (1.0/3 + EPSILON)/(EPSILON) )
+        wMinus2 = math.log ( (2.0/3 + EPSILON)/(1.0 + EPSILON) )
 
-        wPlus3  = np.math.log ( (EPSILON)/(3.0/5 + EPSILON) )
-        wMinus3 = np.math.log ( (1.0 + EPSILON)/(2.0/5 + EPSILON) )
+        wPlus3  = math.log ( (EPSILON)/(3.0/5 + EPSILON) )
+        wMinus3 = math.log ( (1.0 + EPSILON)/(2.0/5 + EPSILON) )
 
         # Binary categories
         ans = [

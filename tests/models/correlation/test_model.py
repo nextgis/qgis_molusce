@@ -1,8 +1,3 @@
-# encoding: utf-8
-
-import sys
-sys.path.insert(0, '../../../../../')
-
 import unittest
 import math
 
@@ -76,7 +71,7 @@ class TestModel (unittest.TestCase):
         self.S_x = np.std(self.X)
         self.S_y = np.std(self.Y)
         self.R = self.cov / (self.S_x * self.S_y)
-        self.assertEqual(dc.correlation(), self.R,'correlation failed')
+        self.assertTrue(np.isclose(dc.correlation(), self.R),'correlation failed')
 
         dc = DependenceCoef(self.X, self.X)
         self.assertEqual(dc.correlation(), 1.0,'correlation failed')

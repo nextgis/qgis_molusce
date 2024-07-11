@@ -53,7 +53,7 @@ class WoeManager(QObject):
         self.prediction = None      # Raster of the prediction results
         self.confidence = None      # Raster of the results confidence(1 = the maximum confidence, 0 = the least confidence)
 
-        if (bins != None) and (len(self.factors) != len(list(bins.keys()))):
+        if (bins is not None) and (len(self.factors) != len(list(bins.keys()))):
             raise WoeManagerError('Lengths of bins and factors are different!')
 
         for r in self.factors:
@@ -90,11 +90,11 @@ class WoeManager(QObject):
         """
         Check if bins are applicable to the factors
         """
-        if self.bins != None:
+        if self.bins is not None:
             for i, factor in enumerate(self.factors):
                 factor.denormalize()
                 bin = self.bins[i]
-                if (bin != None) and (bin != [None]):
+                if (bin is not None) and (bin != [None]):
                     for j in range(factor.getBandsCount()):
                         b = bin[j]
                         tmp = b[:]
@@ -199,7 +199,7 @@ class WoeManager(QObject):
                     factorW = self.weights[code][k]
                     if self.bins: # Get bins of the factor
                         bin = self.bins[k]
-                        if (bin != None) and fact.getBandsCount() != len(bin):
+                        if (bin is not None) and fact.getBandsCount() != len(bin):
                             raise WoeManagerError("Count of bins list for multiband factor is't equal to band count!")
                     else: bin = None
                     for i in range(1, fact.getBandsCount()+1):

@@ -1,7 +1,5 @@
-# encoding: utf-8
 
-import sys
-sys.path.insert(0, '../../../../../')
+from pathlib import Path
 
 import unittest
 
@@ -15,21 +13,23 @@ from molusce.algorithms.models.lr.lr import LR
 
 class TestLRManager (unittest.TestCase):
     def setUp(self):
-        self.output  = Raster('../../examples/multifact.tif')
+        self.examples_path = Path(__file__).parents[2] / "examples"
+
+        self.output  = Raster(self.examples_path / 'multifact.tif')
             #~ [1,1,3]
             #~ [3,2,1]
             #~ [0,3,1]
         self.output.resetMask([0])
         self.state   = self.output
-        self.factors = [Raster('../../examples/sites.tif'), Raster('../../examples/sites.tif')]
+        self.factors = [Raster(self.examples_path / 'sites.tif'), Raster(self.examples_path / 'sites.tif')]
             #~ [1,2,1],
             #~ [1,2,1],
             #~ [0,1,2]
 
 
-        self.output1  = Raster('../../examples/data.tif')
+        self.output1  = Raster(self.examples_path / 'data.tif')
         self.state1   = self.output1
-        self.factors1 = [Raster('../../examples/fact16.tif')]
+        self.factors1 = [Raster(self.examples_path / 'fact16.tif')]
 
     def test_LR(self):
         #~ data = [

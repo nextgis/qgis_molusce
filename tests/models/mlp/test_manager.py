@@ -1,8 +1,4 @@
-# encoding: utf-8
-
-import sys
-sys.path.insert(0, '../../../../../')
-
+from pathlib import Path
 import unittest
 
 import numpy as np
@@ -15,20 +11,21 @@ from molusce.algorithms.models.mlp.manager import MlpManager, sigmoid
 
 class TestMlpManager (unittest.TestCase):
     def setUp(self):
-        self.factors = [Raster('../../examples/multifact.tif')]
-        self.output = Raster('../../examples/sites.tif')
+        self.examples_path = Path(__file__).parents[2] / "examples"
+        self.factors = [Raster(self.examples_path / 'multifact.tif')]
+        self.output = Raster(self.examples_path / 'sites.tif')
         #~ sites.tif is 1-band 3x3 raster:
             #~ [1,2,1],
             #~ [1,2,1],
             #~ [0,1,2]
 
-        self.factors2 = [Raster('../../examples/multifact.tif'), Raster('../../examples/multifact.tif')]
-        self.factors3 = [Raster('../../examples/two_band.tif')]
-        self.factors4 = [Raster('../../examples/two_band.tif'), Raster('../../examples/multifact.tif')]
+        self.factors2 = [Raster(self.examples_path / 'multifact.tif'), Raster(self.examples_path / 'multifact.tif')]
+        self.factors3 = [Raster(self.examples_path / 'two_band.tif')]
+        self.factors4 = [Raster(self.examples_path / 'two_band.tif'), Raster(self.examples_path / 'multifact.tif')]
 
-        self.output1  = Raster('../../examples/data.tif')
+        self.output1  = Raster(self.examples_path / 'data.tif')
         self.state1   = self.output1
-        self.factors1 = [Raster('../../examples/fact16.tif')]
+        self.factors1 = [Raster(self.examples_path / 'fact16.tif')]
 
     def test_MlpManager(self):
         mng = MlpManager(ns=1)

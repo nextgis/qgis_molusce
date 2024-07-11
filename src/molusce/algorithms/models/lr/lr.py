@@ -158,7 +158,7 @@ class LR(QObject):
                 for j in range(cols):
                     if not mask[i,j]:
                         input = self.sampler.get_inputs(state, i,j)
-                        if input != None:
+                        if input is not None:
                             input = np.array([input])
                             out = self.logreg.predict(input)
                             predicted_band[i,j] = out

@@ -39,7 +39,7 @@ class DependenceCoef(QObject):
         self.crosstable = None
 
     def getCrosstable(self):
-        if self.crosstable == None:
+        if self.crosstable is None:
             self.calculateCrosstable()
         return self.crosstable
 
@@ -172,7 +172,7 @@ class DependenceCoef(QObject):
         pexpect = sum(prows * pcols)
         pmax = sum(np.min([prows, pcols], axis=0))
 
-        if mode == None:
+        if mode is None:
             result = (pa - pexpect)/(1-pexpect)
         elif mode == "loc":
             result = (pa - pexpect)/(pmax - pexpect)
@@ -205,11 +205,3 @@ class DependenceCoef(QObject):
 
     def __crosstableError(self, message):
         self.errorReport.emit(message)
-
-
-
-
-
-
-
-
