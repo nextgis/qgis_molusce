@@ -217,3 +217,5 @@ compile_commands.json
 
 *_qmlcache.qrc
 resources_rc.py
+
+/.vscode
