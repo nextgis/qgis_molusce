@@ -122,10 +122,10 @@ class Sampler(QObject):
         '''
         try:
             state_data = self.get_state(state, row,col)
-            if state_data == None: # Eliminate incomplete samples
+            if state_data is None: # Eliminate incomplete samples
                 return None
             factors_data = self.get_factors(row,col)
-            if factors_data == None: # Eliminate incomplete samples
+            if factors_data is None: # Eliminate incomplete samples
                 return None
         except ProviderError:
             return None
@@ -170,17 +170,17 @@ class Sampler(QObject):
         data = np.zeros(1, dtype=[('coords', float, 2), ('state', float, self.stateVecLen),('factors',  float, self.factorVectLen), ('output', float, self.outputVecLen)])
         try:
             out_data = output.getPixelFromBand(row, col, band=1)  # Get the pixel
-            if out_data == None:                                 # Eliminate masked samples
+            if out_data is None:                                 # Eliminate masked samples
                 return None
             else: data['output'] = out_data
 
             state_data = self.get_state(state, row,col)
-            if state_data == None: # Eliminate incomplete samples
+            if state_data is None: # Eliminate incomplete samples
                 return None
             else: data['state'] = state_data
 
             factors_data = self.get_factors(row,col)
-            if factors_data == None: # Eliminate incomplete samples
+            if factors_data is None: # Eliminate incomplete samples
                 return None
             else: data['factors'] = factors_data
         except ProviderError:
@@ -198,7 +198,7 @@ class Sampler(QObject):
         sr.ImportFromWkt(self.proj)
 
         ds = driver.CreateDataSource(workdir)
-        lyr = ds.CreateLayer(fileName.encode('utf-8'), sr, ogr.wkbPoint)
+        lyr = ds.CreateLayer(fileName, sr, ogr.wkbPoint)
         if lyr is None:
             raise SamplerError("Creating output file failed!")
 
@@ -289,7 +289,7 @@ class Sampler(QObject):
                 for i in range(self.ns, rows - self.ns):         # Eliminate the raster boundary (of (ns)-size width) because
                     for j in range(self.ns, cols - self.ns):     # the samples are incomplete in that region
                         sample = self._getSample(state, output, i,j)
-                        if sample != None:
+                        if sample is not None:
                             self.data[samples_count] = sample
                             samples_count = samples_count + 1
                     self.updateProgress.emit()
@@ -301,7 +301,7 @@ class Sampler(QObject):
                     row = np.random.randint(rows)
                     col = np.random.randint(cols)
                     sample = self._getSample(state, output, row,col)
-                    if sample != None:
+                    if sample is not None:
                         self.data[samples_count] = sample
                         samples_count = samples_count + 1
                         self.updateProgress.emit()
@@ -323,15 +323,17 @@ class Sampler(QObject):
 
                     # Get samples
                     count = 0
-                    while count< average:
+                    while count < average:
                         index = np.random.randint(len(indices))
                         row, col = indices[index]
                         sample = self._getSample(state, output, row,col)
-                        if sample != None:
+                        if sample is not None and samples_count < samples:
                             self.data[samples_count] = sample
                             samples_count = samples_count + 1
                             count = count + 1
                             self.updateProgress.emit()
+                        else:
+                            count = count + 1
             else:
                 raise SamplerError('The mode of sampling is unknown!')
 

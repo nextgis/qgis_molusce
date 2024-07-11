@@ -30,7 +30,7 @@ import gc
 from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import QWidget
+from qgis.PyQt.QtWidgets import *
 
 from . import molusceutils as utils
 from .algorithms.models.lr.lr import LR

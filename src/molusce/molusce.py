@@ -30,6 +30,7 @@ import os
 from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtWidgets import *
 
 from . import aboutdialog, moluscedialog, resources_rc
 from .molusceutils import getLocaleShortName

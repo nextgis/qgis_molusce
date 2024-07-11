@@ -169,7 +169,7 @@ class MLR(object):
         self.stdErr_.shape = (n_features+1, n_classes)
 
     def calcPvalues(self, X):
-        if self.stdErr_ == None:
+        if self.stdErr_ is None:
             self.calcSTD(X)
         stderr = self.stdErr_
         stderr = stderr + 0.000000001 # to prevent devision by zero
@@ -179,34 +179,34 @@ class MLR(object):
     def get_intercept(self):
         """Return array of the intercept estimates (numpy array, shape [1, n_classes])
         """
-        if self.W_ == None:
+        if self.W_ is None:
             return
         return self.W_[0, :]
 
     def get_pval_intercept(self, X):
-        if self.pVal_ == None:
+        if self.pVal_ is None:
             self.calcPvalues(X)
         return self.pVal_[0, :]
 
     def get_pval_weights(self, X):
-        if self.pVal_ == None:
+        if self.pVal_ is None:
             self.calcPvalues(X)
         return self.pVal_[1:, :]
 
     def get_stderr_intercept(self, X):
-        if self.stdErr_ == None:
+        if self.stdErr_ is None:
             self.calcSTD(X)
         return self.stdErr_[0, :]
 
     def get_stderr_weights(self, X):
-        if self.stdErr_ == None:
+        if self.stdErr_ is None:
             self.calcSTD(X)
         return self.stdErr_[1:, :]
 
     def get_weights(self):
         """Return array of the coefficient estimates (numpy array, shape [n_features, n_classes])
         """
-        if self.W_ == None:
+        if self.W_ is None:
             return
         return self.W_[1:, :]
 

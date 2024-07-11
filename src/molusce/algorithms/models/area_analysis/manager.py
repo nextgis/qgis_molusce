@@ -56,7 +56,7 @@ class AreaAnalyst(QObject):
         self.first = first
         self.second = second
 
-        if second != None:
+        if second is not None:
             for cat in self.categoriesSecond:
                 if cat not in self.categories:
                     raise AreaAnalizerError("List of categories of the first raster doesn't contains a category of the second raster!")
@@ -82,7 +82,7 @@ class AreaAnalyst(QObject):
         initialClassIndex = code/m
         finalClassIndex   = code - initialClassIndex*m
         try:
-            initClass, finalClass = (self.categories[initialClassIndex], self.categories[finalClassIndex])
+            initClass, finalClass = (self.categories[int(initialClassIndex)], self.categories[int(finalClassIndex)])
         except ValueError:
             raise AreaAnalizerError('The code is not in list!')
         return (initClass, finalClass)

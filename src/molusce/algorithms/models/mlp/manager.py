@@ -79,23 +79,23 @@ class MlpManager(QObject):
         '''
         train_error = 0
         train_sampl = train_indexes[1] - train_indexes[0]       # Count of training samples
-        for i in range(train_indexes[0], train_indexes[1]):
+        for i in range(int(train_indexes[0]), int(train_indexes[1])):
             train_error = train_error + self.computeMlpError(sample = self.data[i])
         self.setTrainError(train_error/train_sampl)
 
         if val_ind:
             val_error = 0
-            val_sampl = val_ind[1] - val_ind[0]
+            val_sampl = int(val_ind[1]) - int(val_ind[0])
             answers   = np.ma.zeros(val_sampl)
             out       = np.ma.zeros(val_sampl)
-            for i in range(val_ind[0], val_ind[1]):
+            for i in range(int(val_ind[0]), int(val_ind[1])):
                 sample = self.data[i]
                 val_error = val_error + self.computeMlpError(sample = self.data[i])
 
                 input = np.hstack( (sample['state'],sample['factors']) )
                 output = self.getOutput(input)
-                out[i-val_ind[0]]     = self.outCategory(output)
-                answers[i-val_ind[0]] = self.outCategory(sample['output'])
+                out[i-int(val_ind[0])]     = self.outCategory(output)
+                answers[i-int(val_ind[0])] = self.outCategory(sample['output'])
             self.setValError(val_error/val_sampl)
             depCoef = DependenceCoef(out, answers, expand=True)
             self.valKappa = depCoef.kappa(mode=None)
@@ -304,8 +304,8 @@ class MlpManager(QObject):
         pass
 
     def resetErrors(self):
-        self.val_error = np.finfo(np.float).max
-        self.train_error = np.finfo(np.float).max
+        self.val_error = np.finfo(float).max
+        self.train_error = np.finfo(float).max
 
     def resetMlp(self):
         self.MLP.reset()
@@ -444,7 +444,7 @@ class MlpManager(QObject):
         '''
         train_sampl = train_indexes[1] - train_indexes[0]
 
-        for i in range(train_sampl):
+        for i in range(int(train_sampl)):
             n = np.random.randint( *train_indexes )
             sample = self.data[n]
             input = np.hstack( (sample['state'],sample['factors']) )
