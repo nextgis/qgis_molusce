@@ -73,8 +73,6 @@ class TestModel (unittest.TestCase):
         self.assertEqual(S2, 3.0/16)
         self.assertEqual(S3, 8.0/16)
 
-
-
     def test_NoNo(self):
         eb = EBudget(self.reference, self.simulated)
 

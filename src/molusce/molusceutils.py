@@ -201,10 +201,10 @@ def copySymbology(src, dst):
   root.setAttribute("version", "%s" % str(Qgis.QGIS_VERSION))
   doc.appendChild(root)
   errMsg = ""
-  if not src.writeSymbology(root, doc, errMsg):
+  if not src.writeSymbology(root, doc, errMsg, QgsReadWriteContext(), QgsMapLayer.AllStyleCategories):
     return False
 
-  if not dst.readSymbology(root, errMsg):
+  if not dst.readSymbology(root, errMsg, QgsReadWriteContext(), QgsMapLayer.AllStyleCategories):
     return False
 
   return True

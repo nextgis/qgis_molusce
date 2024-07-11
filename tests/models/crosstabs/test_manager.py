@@ -1,13 +1,12 @@
 from pathlib import Path
 
 import unittest
-import math
 from pathlib import Path
 
 import numpy as np
 from numpy import ma as ma
 
-from molusce.algorithms.models.crosstabs.manager  import CrossTableManager
+from molusce.algorithms.models.crosstabs.manager import CrossTableManager
 from molusce.algorithms.dataprovider import Raster
 
 
