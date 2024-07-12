@@ -122,7 +122,7 @@ class MCE(QObject):
     def getTransitionPotentials(self):
         return self.transitionPotentials
 
-    def getPrediction(self, state, factors=None, calcTransitions=False):
+    def getPrediction(self, state, *, calcTransitions=False):
         '''
         Most of the models use factors for prediction, but MCE takes list of factors only once (during the initialization).
         '''
@@ -134,7 +134,7 @@ class MCE(QObject):
             self.setWeights()
         return self.weights
 
-    def _predict(self, state, calcTransitions=False):
+    def _predict(self, state):
         '''
         Predict the changes.
         '''

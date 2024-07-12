@@ -13,7 +13,7 @@ class UtilsError(Exception):
         self.msg = msg
 
 
-def in1d(ar1, ar2, assume_unique=False):
+def in1d(ar1, ar2):
     # The code was taken from numpy v.1.7
     mask = np.zeros(len(ar1), dtype=bool)
     for a in ar2:

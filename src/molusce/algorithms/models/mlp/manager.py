@@ -173,7 +173,7 @@ class MlpManager(QObject):
     def getKappa(self):
         return self.valKappa
 
-    def getPrediction(self, state, factors, calcTransitions=False):
+    def getPrediction(self, state, factors, *, calcTransitions=False):
         self._predict(state, factors, calcTransitions)
         return self.prediction
 
@@ -193,7 +193,7 @@ class MlpManager(QObject):
         res = self.catlist[res]
         return res
 
-    def outputConfidence(self, output, scale=True):
+    def outputConfidence(self, output, *, scale=True):
         '''
         Return confidence (difference between 2 biggest values) of the MLP output.
         @param output: The confidence
@@ -203,7 +203,7 @@ class MlpManager(QObject):
         out_scl.sort()
         return out_scl[-1] - out_scl[-2]
 
-    def outputTransitions(self, output, scale=True):
+    def outputTransitions(self, output, *, scale=True):
         '''
         Return transition potencial of the outputs scaled to [0,1] or 1-100
         @param output: The output of MLP
@@ -216,7 +216,7 @@ class MlpManager(QObject):
             result[cat] = v
         return result
 
-    def scaleOutput(self, output, percent=True):
+    def scaleOutput(self, output, *, percent=True):
         '''
         Scale the output to range [0,1] or 1-100
         @param output: Output of a MLP
@@ -321,7 +321,7 @@ class MlpManager(QObject):
         '''Set weights of the MLP'''
         self.MLP.weights = w
 
-    def setTrainingData(self, state, factors, output, shuffle=True, mode='All', samples=None):
+    def setTrainingData(self, state, factors, output, *, shuffle=True, mode='All', samples=None):
         '''
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
@@ -372,7 +372,7 @@ class MlpManager(QObject):
     def setMomentum(self, value=0.01):
         self.momentum = value
 
-    def setContinueTrain(self, value=False):
+    def setContinueTrain(self, *, value=False):
         self.continueTrain = value
 
     def startTrain(self):
@@ -381,7 +381,7 @@ class MlpManager(QObject):
     def stopTrain(self):
         self.interrupted = True
 
-    def train(self, epochs, valPercent=20, lrate=0.1, momentum=0.01, continue_train=False):
+    def train(self, epochs, valPercent=20, lrate=0.1, momentum=0.01, *, continue_train=False):
         '''Perform the training procedure on the MLP and save the best neural net
         @param epoch            Max iteration count.
         @param valPercent       Percent of the validation set.

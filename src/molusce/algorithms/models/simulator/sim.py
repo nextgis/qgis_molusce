@@ -167,7 +167,6 @@ class Simulator(QObject):
 
                     # Now "indices" contains indices of the appropriate places,
                     # make transition initClass -> finalClass
-                    r1 = np.zeros(confidence.shape)
                     for index in indices:
                         new_state[index] = finalClass
 

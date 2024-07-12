@@ -89,7 +89,7 @@ class LR(QObject):
         X = np.column_stack( (self.data['state'], self.data['factors']) )
         return self.logreg.get_pval_weights(X).T
 
-    def getPrediction(self, state, factors, calcTransitions=False):
+    def getPrediction(self, state, factors, *, calcTransitions=False):
         self._predict(state, factors, calcTransitions)
         return self.prediction
 

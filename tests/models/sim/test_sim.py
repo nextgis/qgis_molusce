@@ -20,7 +20,7 @@ class Model:
     def getConfidence(self):
         return self.confidence
 
-    def getPrediction(self, state, factors=None, calcTransitions=False):
+    def getPrediction(self, state, factors=None):
         self._predict(state, factors)
         return self.prediction
 

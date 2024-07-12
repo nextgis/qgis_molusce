@@ -140,7 +140,7 @@ class MLR:
     infos_ : dict,
              various output infos about the optimization
     """
-    def __init__(self, ss=None, weighted=False, seed=None):
+    def __init__(self, ss=None, *, weighted=False, seed=None):
         assert ss is None or ss > 0, "ss must be None or > 0"
         self.ss = ss
         self.weighted = weighted
