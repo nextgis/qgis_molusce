@@ -66,8 +66,8 @@ class TestMCE(unittest.TestCase):
         c = mce.getConfidence().getBand(1)
         self.assertEqual(c.dtype, np.uint8)
         answer = [      # The locations where the big numbers are stored must be masked (see mask and self.state)
-            [sum((w*100).astype(int))/3,   0,  sum((w*100).astype(int))],
-            [sum((w*100).astype(int)),     0,  sum((w*100).astype(int))/3],
+            [sum((w*100).astype(int))//3,   0,  sum((w*100).astype(int))],
+            [sum((w*100).astype(int)),     0,  sum((w*100).astype(int))//3],
             [10000,  sum((w*100).astype(int)),  10000]
         ]
         answer = np.ma.array(data = answer, mask = mask)
