@@ -23,6 +23,7 @@ class TestMCE(unittest.TestCase):
             #~ [1,2,1],
             #~ [1,2,1],
             #~ [0,1,2]
+
         self.areaAnalyst = AreaAnalyst(self.state, second=None)
 
     def test_MCE(self):
@@ -71,6 +72,7 @@ class TestMCE(unittest.TestCase):
         ]
         answer = np.ma.array(data = answer, mask = mask)
         assert_almost_equal(c, answer)
+
 
 if __name__ == "__main__":
     unittest.main()

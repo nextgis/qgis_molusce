@@ -2,11 +2,10 @@ from pathlib import Path
 import unittest
 
 import numpy as np
-from numpy.testing import assert_array_equal, assert_allclose
+from numpy.testing import assert_array_equal
 
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.mlp.manager import MlpManager, sigmoid
-
 
 
 class TestMlpManager (unittest.TestCase):
@@ -30,11 +29,17 @@ class TestMlpManager (unittest.TestCase):
     def test_MlpManager(self):
         mng = MlpManager(ns=1)
         mng.createMlp(self.output, self.factors2, self.output, [10])
-        assert_array_equal(mng.getMlpTopology(), [2*9 + 2*9, 10, 3])
+        try:
+            assert_array_equal(mng.getMlpTopology(), [2*9 + 2*9, 10, 3])
+        except AssertionError as error:
+            self.fail(error)
 
         mng = MlpManager()
         mng.createMlp(self.output, self.factors, self.output, [10])
-        assert_array_equal(mng.getMlpTopology(), [2*1 + 1*1, 10, 3])
+        try:
+            assert_array_equal(mng.getMlpTopology(), [2*1 + 1*1, 10, 3])
+        except AssertionError as error:
+            self.fail(error)
 
     def test_setTrainingData(self):
         mng = MlpManager()
@@ -60,9 +65,12 @@ class TestMlpManager (unittest.TestCase):
         )
         self.assertEqual(mng.data.shape, (9,))
         for i in range(len(data)):
-            assert_array_equal(data[i]['coords'], mng.data[i]['coords'])
-            assert_array_equal(data[i]['factors'], mng.data[i]['factors'])
-            assert_array_equal(data[i]['output'], mng.data[i]['output'])
+            try:
+                assert_array_equal(data[i]['coords'], mng.data[i]['coords'])
+                assert_array_equal(data[i]['factors'], mng.data[i]['factors'])
+                assert_array_equal(data[i]['output'], mng.data[i]['output'])
+            except AssertionError as error:
+                self.fail(error)
 
         # two input rasters
         mng = MlpManager(ns=1)
@@ -77,9 +85,12 @@ class TestMlpManager (unittest.TestCase):
             }
         ]
         self.assertEqual(mng.data.shape, (1,))
-        assert_array_equal(data[0]['factors'], mng.data[0]['factors'])
-        assert_array_equal(data[0]['output'], mng.data[0]['output'])
-        assert_array_equal(data[0]['state'], mng.data[0]['state'])
+        try:
+            assert_array_equal(data[0]['factors'], mng.data[0]['factors'])
+            assert_array_equal(data[0]['output'], mng.data[0]['output'])
+            assert_array_equal(data[0]['state'], mng.data[0]['state'])
+        except AssertionError as error:
+            self.fail(error)
 
         # Multiband input
         mng = MlpManager(ns=1)
@@ -99,9 +110,12 @@ class TestMlpManager (unittest.TestCase):
             }
         ]
         self.assertEqual(mng.data.shape, (1,))
-        assert_array_equal(data[0]['factors'], mng.data[0]['factors'])
-        assert_array_equal(data[0]['output'], mng.data[0]['output'])
-        assert_array_equal(data[0]['state'], mng.data[0]['state'])
+        try:
+            assert_array_equal(data[0]['factors'], mng.data[0]['factors'])
+            assert_array_equal(data[0]['output'], mng.data[0]['output'])
+            assert_array_equal(data[0]['state'], mng.data[0]['state'])
+        except AssertionError as error:
+            self.fail(error)
 
         # Complex case:
         mng = MlpManager(ns=1)
@@ -125,9 +139,12 @@ class TestMlpManager (unittest.TestCase):
             }
         ]
         self.assertEqual(mng.data.shape, (1,))
-        assert_array_equal(data[0]['factors'], mng.data[0]['factors'])
-        assert_array_equal(data[0]['output'], mng.data[0]['output'])
-        assert_array_equal(data[0]['state'], mng.data[0]['state'])
+        try:
+            assert_array_equal(data[0]['factors'], mng.data[0]['factors'])
+            assert_array_equal(data[0]['output'], mng.data[0]['output'])
+            assert_array_equal(data[0]['state'], mng.data[0]['state'])
+        except AssertionError as error:
+            self.fail(error)
 
     def test_train(self):
         mng = MlpManager()
@@ -166,18 +183,27 @@ class TestMlpManager (unittest.TestCase):
 
         # Prediction ( the output must be sigmoid(0) )
         raster = mng.getPrediction(self.output, self.factors, calcTransitions=True)
-        assert_array_equal(raster.getBand(1), sigmoid(0)*np.ones((3,3)))
+        try:
+            assert_array_equal(raster.getBand(1), sigmoid(0)*np.ones((3,3)))
+        except AssertionError as error:
+            self.fail(error)
         # Confidence is zero
         confid = mng.getConfidence()
         self.assertEqual(confid.getBand(1).dtype, np.uint8)
-        assert_array_equal(confid.getBand(1), np.zeros((3,3)))
+        try:
+            assert_array_equal(confid.getBand(1), np.zeros((3,3)))
+        except AssertionError as error:
+            self.fail(error)
         # Transition Potentials (is (sigmoid(0) - sigmin)/sigrange )
         potentials = mng.getTransitionPotentials()
         cats = self.output.getBandGradation(1)
         for cat in cats:
             map = potentials[cat]
             self.assertEqual(map.getBand(1).dtype, np.uint8)
-            assert_array_equal(map.getBand(1), 50*np.ones((3,3)))
+            try:
+                assert_array_equal(map.getBand(1), 50*np.ones((3,3)))
+            except AssertionError as error:
+                self.fail(error)
 
     # Commented while we don't have free rasters to test
     #~ def test_real(self):
@@ -188,7 +214,6 @@ class TestMlpManager (unittest.TestCase):
         #~ mng.createMlp(output, inputs, output, [10])
         #~ mng.setTrainingData(output, inputs, output)
         #~ mng.train(1, valPercent=20)
-
 
 
 if __name__ == "__main__":

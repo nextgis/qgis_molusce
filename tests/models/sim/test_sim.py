@@ -51,7 +51,6 @@ class Model:
         self.confidence.create(confidence_bands, state.geodata)
 
 
-
 class TestSimulator(unittest.TestCase):
 
     def setUp(self):
@@ -108,7 +107,10 @@ class TestSimulator(unittest.TestCase):
         simulator.setIterationCount(1)
         simulator.simN()
         state = simulator.getState().getBand(1)
-        assert_array_equal(result, state)
+        try:
+            assert_array_equal(result, state)
+        except AssertionError as error:
+            self.fail(error)
 
         result = np.array([
             [2.0, 1.0, 1.0],
@@ -121,7 +123,10 @@ class TestSimulator(unittest.TestCase):
         simulator.setIterationCount(2)
         simulator.simN()
         state = simulator.getState().getBand(1)
-        assert_array_equal(result, state)
+        try:
+            assert_array_equal(result, state)
+        except AssertionError as error:
+            self.fail(error)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 import unittest
 from numpy.testing import assert_array_equal
 from pathlib import Path
@@ -9,6 +7,7 @@ from numpy import ma as ma
 
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst, AreaAnalizerError
+
 
 class TestAreaAnalysisManager (unittest.TestCase):
     def setUp(self):

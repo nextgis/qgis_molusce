@@ -135,7 +135,10 @@ class TestModel (unittest.TestCase):
         eb.coarse(2)
         # W
         answer = np.array([[1.0, 0.25], [0.5, 0.25]])
-        np.testing.assert_array_equal(eb.W, answer)
+        try:
+            np.testing.assert_array_equal(eb.W, answer)
+        except AssertionError as error:
+            self.fail(error)
         # Rj
         answer1 = np.array([[1.0, 1.0], [0, 0]])
         answer3 = np.array([[0, 0], [1.0, 1.0]])
@@ -150,7 +153,10 @@ class TestModel (unittest.TestCase):
         eb.coarse(2)
         # W
         answer = np.array([[0.5]])
-        np.testing.assert_array_equal(eb.W, answer)
+        try:
+            np.testing.assert_array_equal(eb.W, answer)
+        except AssertionError as error:
+            self.fail(error)
         # Rj
         answer1 = np.array([[(1+1.0/4)/2]])
         answer3 = np.array([[(1.0/2 + 1.0/4)/2]])
@@ -176,9 +182,6 @@ class TestModel (unittest.TestCase):
         ans1 = {'NoNo': 0.5, 'NoMed': (5.0/8+5.0/32 + 3.0/16 + 3.0/32)/2, 'MedMed': 4.0/8, 'MedPer': 1.0, 'PerPer': 1.0}
         for k in list(stat[1].keys()):
             np.testing.assert_almost_equal(stat[0][k],ans1[k])
-
-
-
 
 
 if __name__ == "__main__":

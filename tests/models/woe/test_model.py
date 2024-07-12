@@ -4,7 +4,6 @@ import unittest
 import numpy as np
 from numpy import ma as ma
 
-
 from molusce.algorithms.models.woe.model import WoeError, _binary_woe, woe, EPSILON
 
 
@@ -139,8 +138,6 @@ class TestModel (unittest.TestCase):
         weights = woe(self.multifact, self.sites)
 
         np.testing.assert_equal(ans, weights['map'])
-
-
 
 
 if __name__ == "__main__":

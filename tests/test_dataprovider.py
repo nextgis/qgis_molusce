@@ -1,7 +1,4 @@
-# encoding: utf-8
-
 import os
-
 import unittest
 from numpy.testing import assert_array_equal
 import numpy as np
@@ -65,7 +62,6 @@ class TestRaster (unittest.TestCase):
         self.assertTrue(raster.geoDataMatch(self.r1))
         self.assertEqual(raster.getBandsCount(), 1)
         self.assertEqual(set(raster.getBandGradation(1)), set([0, 1, 2, 3]))
-
 
     def test_roundBands(self):
         rast = Raster(self.sample_path1)
@@ -147,7 +143,6 @@ class TestRaster (unittest.TestCase):
             assert_array_equal(r1.getBand(1), multifact)
         except AssertionError as error:
             self.fail(error)
-
 
     def test_getNeighbours(self):
         neighbours = self.r2.getNeighbours(row=1,col=0, size=0)

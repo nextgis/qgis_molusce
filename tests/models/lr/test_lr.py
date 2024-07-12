@@ -9,22 +9,20 @@ from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.lr.lr import LR
 
 
-
 class TestLRManager (unittest.TestCase):
     def setUp(self):
         self.examples_path = Path(__file__).parents[2] / "examples"
-
         self.output  = Raster(self.examples_path / 'multifact.tif')
             #~ [1,1,3]
             #~ [3,2,1]
             #~ [0,3,1]
+
         self.output.resetMask([0])
         self.state   = self.output
         self.factors = [Raster(self.examples_path / 'sites.tif'), Raster(self.examples_path / 'sites.tif')]
             #~ [1,2,1],
             #~ [1,2,1],
             #~ [0,1,2]
-
 
         self.output1  = Raster(self.examples_path / 'data.tif')
         self.state1   = self.output1
@@ -46,7 +44,10 @@ class TestLRManager (unittest.TestCase):
         lr.train()
         predict = lr.getPrediction(self.state, self.factors)
         predict = predict.getBand(1)
-        assert_array_equal(predict, self.output.getBand(1))
+        try:
+            assert_array_equal(predict, self.output.getBand(1))
+        except AssertionError as error:
+            self.fail(error)
 
         lr = LR(ns=1) # Two-class problem (it's because of boundary effect)
         lr.setState(self.state1)
@@ -64,7 +65,10 @@ class TestLRManager (unittest.TestCase):
             [0.0, 0.0, 0.0, 0.0],
         ]
         result = np.ma.array(data = data, mask = (data==0))
-        assert_array_equal(predict, result)
+        try:
+            assert_array_equal(predict, result)
+        except AssertionError as error:
+            self.fail(error)
 
         # Confidence is zero
         confid = lr.getConfidence()
@@ -76,6 +80,7 @@ class TestLRManager (unittest.TestCase):
         for cat in [1.0, 2.0]:
             map = potentials[cat]
             self.assertEqual(map.getBand(1).dtype, np.uint8)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -58,7 +58,6 @@ class TestWoEManager (unittest.TestCase):
         w1 = WoeManager([self.factor], aa, bins = {0: [[2, 3, 1]]})
         self.assertFalse(w1.checkBins())
 
-
     def test_WoeManager(self):
         aa = AreaAnalyst(self.sites, self.sites)
         w1 = WoeManager([self.factor], aa)
@@ -66,7 +65,10 @@ class TestWoEManager (unittest.TestCase):
         p = w1.getPrediction(self.sites).getBand(1)
         answer = [[0,3,0], [0,3,0], [9,0,3]]
         answer = ma.array(data = answer, mask = self.mask)
-        assert_array_equal(p, answer)
+        try:
+            assert_array_equal(p, answer)
+        except AssertionError as error:
+            self.fail(error)
 
         initState = Raster(self.examples_path / 'data.tif')
             #~ [1,1,1,1],
@@ -168,7 +170,10 @@ class TestWoEManager (unittest.TestCase):
             [5, 5, 5, 5],
             [6, 6, 6, 6]
         ]
-        assert_array_equal(p, answer)
+        try:
+            assert_array_equal(p, answer)
+        except AssertionError as error:
+            self.fail(error)
 
         w = WoeManager([initState], aa, bins = {0: [[2], ],})
         w.train()
@@ -176,6 +181,7 @@ class TestWoEManager (unittest.TestCase):
         self.assertEqual(p.dtype, np.uint8)
         c = w.getConfidence().getBand(1)
         self.assertEqual(c.dtype, np.uint8)
+
 
 if __name__ == "__main__":
     unittest.main()

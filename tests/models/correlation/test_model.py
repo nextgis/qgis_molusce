@@ -6,6 +6,7 @@ from numpy import ma as ma
 
 from molusce.algorithms.models.correlation.model  import DependenceCoef
 
+
 class TestModel (unittest.TestCase):
 
     def setUp(self):
@@ -60,7 +61,6 @@ class TestModel (unittest.TestCase):
             [False, False, False,],
             [True , False, False,]
         ])
-
 
     def test_correlation(self):
         dc = DependenceCoef(self.X, self.Y)

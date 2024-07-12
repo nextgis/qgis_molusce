@@ -1,11 +1,10 @@
-# encoding: utf-8
-
 import unittest
 
 import numpy as np
 from numpy.testing import assert_array_equal
 
 from molusce.algorithms.utils import masks_identity, sizes_equal, reclass, binaryzation
+
 
 class TestRaster (unittest.TestCase):
     def setUp(self):
@@ -46,8 +45,11 @@ class TestRaster (unittest.TestCase):
             [False, True, False,],
             [True,  False,True ]
         ])
-        assert_array_equal(t, answer1)
-        assert_array_equal(t, answer2)
+        try:
+            assert_array_equal(t, answer1)
+            assert_array_equal(t, answer2)
+        except AssertionError as error:
+            self.fail(error)
 
         mask = [[False, False, False],
                  [False, False, False],
@@ -55,11 +57,16 @@ class TestRaster (unittest.TestCase):
         data = [[False, True, False],
                  [False, True, False],
                  [False, False, True]]
-        assert_array_equal(binaryzation(np.array(data), [True]), np.ma.array(data=data, mask = mask))
+        try:
+            assert_array_equal(binaryzation(np.array(data), [True]), np.ma.array(data=data, mask = mask))
+        except AssertionError as error:
+            self.fail(error)
+
         data = np.ma.array(data=data, mask=mask)
-        assert_array_equal(binaryzation(data, [True]), np.ma.array(data=data, mask = mask))
-
-
+        try:
+            assert_array_equal(binaryzation(data, [True]), np.ma.array(data=data, mask = mask))
+        except AssertionError as error:
+            self.fail(error)
 
     def test_masks_identity(self):
         self.X, self.Y = masks_identity(self.X, self.Y)
@@ -82,7 +89,11 @@ class TestRaster (unittest.TestCase):
             [1, 1, 4,],
             [1, 1, 4,]
         ])
-        assert_array_equal(X, answer)
+        try:
+            assert_array_equal(X, answer)
+        except AssertionError as error:
+            self.fail(error)
+
 
 if __name__ == "__main__":
     unittest.main()
