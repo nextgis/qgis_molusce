@@ -107,10 +107,7 @@ class TestSimulator(unittest.TestCase):
         simulator.setIterationCount(1)
         simulator.simN()
         state = simulator.getState().getBand(1)
-        try:
-            assert_array_equal(result, state)
-        except AssertionError as error:
-            self.fail(error)
+        assert_array_equal(result, state)
 
         result = np.array([
             [2.0, 1.0, 1.0],
@@ -123,10 +120,7 @@ class TestSimulator(unittest.TestCase):
         simulator.setIterationCount(2)
         simulator.simN()
         state = simulator.getState().getBand(1)
-        try:
-            assert_array_equal(result, state)
-        except AssertionError as error:
-            self.fail(error)
+        assert_array_equal(result, state)
 
 
 if __name__ == "__main__":

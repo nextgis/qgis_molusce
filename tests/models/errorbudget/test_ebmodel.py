@@ -135,10 +135,7 @@ class TestModel (unittest.TestCase):
         eb.coarse(2)
         # W
         answer = np.array([[1.0, 0.25], [0.5, 0.25]])
-        try:
-            np.testing.assert_array_equal(eb.W, answer)
-        except AssertionError as error:
-            self.fail(error)
+        np.testing.assert_array_equal(eb.W, answer)
         # Rj
         answer1 = np.array([[1.0, 1.0], [0, 0]])
         answer3 = np.array([[0, 0], [1.0, 1.0]])
@@ -153,10 +150,7 @@ class TestModel (unittest.TestCase):
         eb.coarse(2)
         # W
         answer = np.array([[0.5]])
-        try:
-            np.testing.assert_array_equal(eb.W, answer)
-        except AssertionError as error:
-            self.fail(error)
+        np.testing.assert_array_equal(eb.W, answer)
         # Rj
         answer1 = np.array([[(1+1.0/4)/2]])
         answer3 = np.array([[(1.0/2 + 1.0/4)/2]])

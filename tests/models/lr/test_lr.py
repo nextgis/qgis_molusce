@@ -44,10 +44,7 @@ class TestLRManager (unittest.TestCase):
         lr.train()
         predict = lr.getPrediction(self.state, self.factors)
         predict = predict.getBand(1)
-        try:
-            assert_array_equal(predict, self.output.getBand(1))
-        except AssertionError as error:
-            self.fail(error)
+        assert_array_equal(predict, self.output.getBand(1))
 
         lr = LR(ns=1) # Two-class problem (it's because of boundary effect)
         lr.setState(self.state1)
@@ -65,10 +62,7 @@ class TestLRManager (unittest.TestCase):
             [0.0, 0.0, 0.0, 0.0],
         ]
         result = np.ma.array(data = data, mask = (data==0))
-        try:
-            assert_array_equal(predict, result)
-        except AssertionError as error:
-            self.fail(error)
+        assert_array_equal(predict, result)
 
         # Confidence is zero
         confid = lr.getConfidence()

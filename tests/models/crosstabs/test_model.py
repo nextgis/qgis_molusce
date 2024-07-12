@@ -75,22 +75,16 @@ class TestCrossTable (unittest.TestCase):
             [20/8.0, 5/8.0, 15/8.0],
             [12/8.0, 3/8.0,  9/8.0]
         ]
-        try:
-            np.testing.assert_array_equal(answer, tab)
-        except AssertionError as error:
-            self.fail(error)
+        np.testing.assert_array_equal(answer, tab)
 
         tab = table.getExpectedProbtable()
         answer = [
             [20/64.0, 5/64.0, 15/64.0],
             [12/64.0, 3/64.0,  9/64.0]
         ]
-        try:
-            np.testing.assert_array_equal(answer, tab)
-            np.testing.assert_array_equal(table.getProbCols(), [4.0/8, 1.0/8, 3.0/8])
-            np.testing.assert_array_equal(table.getProbRows(), [5.0/8, 3.0/8])
-        except AssertionError as error:
-            self.fail(error)
+        np.testing.assert_array_equal(answer, tab)
+        np.testing.assert_array_equal(table.getProbCols(), [4.0/8, 1.0/8, 3.0/8])
+        np.testing.assert_array_equal(table.getProbRows(), [5.0/8, 3.0/8])
 
 
 if __name__ == "__main__":

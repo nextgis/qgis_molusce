@@ -65,10 +65,7 @@ class TestWoEManager (unittest.TestCase):
         p = w1.getPrediction(self.sites).getBand(1)
         answer = [[0,3,0], [0,3,0], [9,0,3]]
         answer = ma.array(data = answer, mask = self.mask)
-        try:
-            assert_array_equal(p, answer)
-        except AssertionError as error:
-            self.fail(error)
+        assert_array_equal(p, answer)
 
         initState = Raster(self.examples_path / 'data.tif')
             #~ [1,1,1,1],
@@ -170,10 +167,7 @@ class TestWoEManager (unittest.TestCase):
             [5, 5, 5, 5],
             [6, 6, 6, 6]
         ]
-        try:
-            assert_array_equal(p, answer)
-        except AssertionError as error:
-            self.fail(error)
+        assert_array_equal(p, answer)
 
         w = WoeManager([initState], aa, bins = {0: [[2], ],})
         w.train()
