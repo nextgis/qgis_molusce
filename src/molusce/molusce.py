@@ -32,7 +32,7 @@ from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import *
 
-from . import aboutdialog, moluscedialog, resources_rc
+from . import aboutdialog, moluscedialog
 from .molusceutils import getLocaleShortName
 
 
@@ -42,7 +42,7 @@ class MoluscePlugin:
 
     try:
       self.QgisVersion = str(Qgis.QGIS_VERSION_INT)
-    except:
+    except Exception:
       self.QgisVersion = str(Qgis.qgisVersion)[ 0 ]
 
     # For i18n support

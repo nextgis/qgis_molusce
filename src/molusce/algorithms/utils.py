@@ -6,6 +6,7 @@ Some array utilites
 
 import numpy as np
 
+
 class UtilsError(Exception):
     '''Base class for exceptions in this module.'''
     def __init__(self, msg):
@@ -56,7 +57,7 @@ def masks_identity(X, Y, dtype=None):
     maskY = Y.mask
     mask = np.ma.mask_or(maskX, maskY)
 
-    if dtype==None:
+    if dtype is None:
         X = np.ma.array(X, mask = mask)
         Y = np.ma.array(Y, mask = mask)
     else:

@@ -1,11 +1,12 @@
 import os
 import unittest
-from numpy.testing import assert_array_equal
-import numpy as np
-from numpy import ma as ma
 from pathlib import Path
 
-from molusce.algorithms.dataprovider import Raster, ProviderError
+import numpy as np
+from molusce.algorithms.dataprovider import ProviderError, Raster
+from numpy import ma as ma
+from numpy.testing import assert_array_equal
+
 
 class TestRaster (unittest.TestCase):
     def setUp(self):
@@ -64,7 +65,7 @@ class TestRaster (unittest.TestCase):
         rast = Raster(self.sample_path1)
         rast.bands = rast.bands*0.1
         rast.roundBands()
-        answer = [[[ 0,  0,  0,],
+        answer = [[[ 0,  0,  0],
           [ 0,  0,  0],
           [ 0, 0,  0]]]
         assert_array_equal(answer, rast.bands)

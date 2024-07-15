@@ -1,13 +1,12 @@
 # encoding: utf-8
 
 import math
-import numpy as np
-from numpy import ma as ma
 from collections import namedtuple
 
+import numpy as np
+from numpy import ma as ma
 
 from molusce.algorithms.utils import binaryzation, get_gradations
-
 
 EPSILON = 4*np.finfo(float).eps # Small number > 0
 
@@ -46,12 +45,12 @@ def _binary_woe(factor, sites, unitcell=1):
     sm = sites.compressed ( )  # masked sites
 
     A  = 1.0 * len(fm)/unitcell               # Total map area in unit cells
-    B  = 1.0 * len(fm[fm==True])/unitcell     # Total factor area in unit cells
-    N  = 1.0 * len(sm[sm==True])              # Count of sites
+    B  = 1.0 * len(fm[fm is True])/unitcell     # Total factor area in unit cells
+    N  = 1.0 * len(sm[sm is True])              # Count of sites
 
     # Count of sites inside area where the factor occurs:
     siteAndPatten = fm&sm       # Sites inside area where the factor occurs
-    Nb = 1.0 * len(siteAndPatten[siteAndPatten==True]) # Count of sites inside factor area
+    Nb = 1.0 * len(siteAndPatten[siteAndPatten is True]) # Count of sites inside factor area
 
     # Check areas size
     if A == 0:

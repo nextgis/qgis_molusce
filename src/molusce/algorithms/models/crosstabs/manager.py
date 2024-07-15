@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import numpy as np
 from qgis.PyQt.QtCore import *
 
-import numpy as np
+from molusce.algorithms.models.crosstabs.model import CrossTable
 
-from molusce.algorithms.models.crosstabs.model  import CrossTable
 
 class CrossTabManagerError(Exception):
     '''Base class for exceptions in this module.'''

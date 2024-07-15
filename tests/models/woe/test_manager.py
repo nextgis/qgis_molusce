@@ -1,14 +1,13 @@
-from pathlib import Path
 import unittest
-from numpy.testing import assert_array_equal
+from pathlib import Path
 
 import numpy as np
-from numpy import ma as ma
-
 from molusce.algorithms.dataprovider import Raster
+from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 from molusce.algorithms.models.woe.manager import WoeManager
 from molusce.algorithms.models.woe.model import woe
-from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
+from numpy import ma as ma
+from numpy.testing import assert_array_equal
 
 
 class TestWoEManager (unittest.TestCase):
@@ -26,19 +25,19 @@ class TestWoEManager (unittest.TestCase):
         self.sites.resetMask(maskVals= [0])
 
         self.mask = [
-            [False, False, False,],
-            [False, False, False,],
-            [True,  False, False,]
+            [False, False, False],
+            [False, False, False],
+            [True,  False, False]
         ]
         fact = [
-            [1, 1, 3,],
-            [3, 2, 1,],
-            [0, 3, 1,]
+            [1, 1, 3],
+            [3, 2, 1],
+            [0, 3, 1]
         ]
         site = [
-            [False, True,  False,],
-            [False, True,  False,],
-            [False, False, True,]
+            [False, True,  False],
+            [False, True,  False],
+            [False, False, True]
         ]
         self.factraster  = ma.array(data = fact, mask=self.mask, dtype=int)
         self.sitesraster = ma.array(data = site, mask=self.mask, dtype=bool)
@@ -169,7 +168,7 @@ class TestWoEManager (unittest.TestCase):
         ]
         assert_array_equal(p, answer)
 
-        w = WoeManager([initState], aa, bins = {0: [[2], ],})
+        w = WoeManager([initState], aa, bins = {0: [[2] ]})
         w.train()
         p = w.getPrediction(initState).getBand(1)
         self.assertEqual(p.dtype, np.uint8)

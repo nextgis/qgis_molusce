@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #******************************************************************************
 #
 # MOLUSCE
@@ -28,7 +26,6 @@
 import configparser
 import os
 
-import qgis
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox

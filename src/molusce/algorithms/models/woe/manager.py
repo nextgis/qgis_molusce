@@ -1,15 +1,15 @@
 # encoding: utf-8
 
+import gc
 from os.path import basename
 
 import numpy as np
-import gc
-
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
-from .model import woe
 from molusce.algorithms.utils import binaryzation, masks_identity, reclass
+
+from .model import woe
 
 
 def sigmoid(x):
@@ -93,10 +93,10 @@ class WoeManager(QObject):
         if self.bins is not None:
             for i, factor in enumerate(self.factors):
                 factor.denormalize()
-                bin = self.bins[i]
-                if (bin is not None) and (bin != [None]):
+                boundary_bin = self.bins[i]
+                if (boundary_bin is not None) and (boundary_bin != [None]):
                     for j in range(factor.getBandsCount()):
-                        b = bin[j]
+                        b = boundary_bin[j]
                         tmp = b[:]
                         tmp.sort()
                         if b!=tmp: # Mast be sorted
@@ -152,10 +152,10 @@ class WoeManager(QObject):
                         codes = self.analyst.codes(initCat)   # Possible final states
                         for code in codes:
                             try: # If not all possible transitions are presented in the changeMap
-                                map = self.woe[code]     # Get WoE map of transition 'code'
+                                transition_map = self.woe[code]     # Get WoE map of transition 'code'
                             except KeyError:
                                 continue
-                            w = map[r,c]        # The weight in the (r,c)-pixel
+                            w = transition_map[r,c]        # The weight in the (r,c)-pixel
                             if w > currMax:
                                 indexMax, oldMax, currMax = code, currMax, w
                         prediction[r,c] = indexMax
@@ -198,14 +198,15 @@ class WoeManager(QObject):
                     self.weights[code][k] = {}      # Weights of the factor
                     factorW = self.weights[code][k]
                     if self.bins: # Get bins of the factor
-                        bin = self.bins[k]
-                        if (bin is not None) and fact.getBandsCount() != len(bin):
+                        boundary_bin = self.bins[k]
+                        if (boundary_bin is not None) and fact.getBandsCount() != len(boundary_bin):
                             raise WoeManagerError("Count of bins list for multiband factor is't equal to band count!")
-                    else: bin = None
+                    else:
+                        boundary_bin = None
                     for i in range(1, fact.getBandsCount()+1):
                         band = fact.getBand(i)
-                        if bin and bin[i-1]: #
-                            band = reclass(band, bin[i-1])
+                        if boundary_bin and boundary_bin[i-1]: #
+                            band = reclass(band, boundary_bin[i-1])
                         band, sites = masks_identity(band, sites, dtype=np.uint8)   # Combine masks of the rasters
                         woeRes = woe(band, sites, self.unit_cell)   # WoE for the 'code' (initState->finalState) transition and current 'factor'.
                         weights = woeRes['map']

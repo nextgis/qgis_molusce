@@ -27,7 +27,7 @@
 
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import QItemDelegate
+from qgis.PyQt.QtWidgets import *
 
 
 class SpinBoxDelegate(QItemDelegate):

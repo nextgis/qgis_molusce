@@ -25,30 +25,31 @@
 #
 #******************************************************************************
 
+import numpy
+from matplotlib.backends.backend_qt5agg import (
+  FigureCanvasQTAgg as FigureCanvas,
+)
+from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-
 from qgis.PyQt.QtWidgets import *
 
-from qgis.core import *
-
-import numpy
-
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-
 try:
-  from matplotlib.backends.backend_qt5agg import NavigationToolbar2QTAgg as NavigationToolbar
+  from matplotlib.backends.backend_qt5agg import (
+    NavigationToolbar2QTAgg as NavigationToolbar,
+  )
 except ImportError:
-  from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+  from matplotlib.backends.backend_qt5agg import (
+    NavigationToolbar2QT as NavigationToolbar,
+  )
 
-from matplotlib.figure import Figure
 from matplotlib import rcParams
-
-from .algorithms.models.mlp.manager import MlpManager
-
-from .ui.ui_neuralnetworkwidgetbase import Ui_Widget
+from matplotlib.figure import Figure
 
 from . import molusceutils as utils
+from .algorithms.models.mlp.manager import MlpManager
+from .ui.ui_neuralnetworkwidgetbase import Ui_Widget
+
 
 class NeuralNetworkWidget(QWidget, Ui_Widget):
   def __init__(self, plugin, parent=None):

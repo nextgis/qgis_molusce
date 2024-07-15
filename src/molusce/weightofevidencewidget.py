@@ -33,7 +33,6 @@ from qgis.PyQt.QtWidgets import *
 from . import molusceutils as utils
 from . import spinboxdelegate
 from .algorithms import dataprovider
-from .algorithms.models.area_analysis.manager import AreaAnalyst
 from .algorithms.models.woe.manager import WoeManager, WoeManagerError
 from .ui.ui_weightofevidencewidgetbase import Ui_Widget
 

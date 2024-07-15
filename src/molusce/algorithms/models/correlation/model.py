@@ -1,14 +1,15 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from qgis.PyQt.QtCore import *
-
 import math
+
 import numpy as np
 from numpy import ma as ma
+from qgis.PyQt.QtCore import *
 
-from molusce.algorithms.utils import masks_identity, sizes_equal
 from molusce.algorithms.models.crosstabs.model import CrossTable
+from molusce.algorithms.utils import masks_identity
+
 
 class CoeffError(Exception):
     '''Base class for exceptions in this module.'''

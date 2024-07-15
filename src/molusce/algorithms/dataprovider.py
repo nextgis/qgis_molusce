@@ -1,12 +1,10 @@
 # encoding: utf-8
 
-from osgeo import gdal
-from osgeo import osr
-
 import numpy as np
 from numpy import ma as ma
+from osgeo import gdal, osr
 
-from .utils import binaryzation, reclass, get_gradations
+from .utils import binaryzation, get_gradations
 
 # If a raster band has more then MAX_CATEGORIES categories, we think that the band contains continues values
 MAX_CATEGORIES = 99
@@ -51,7 +49,8 @@ class Raster:
         self.stat     = None     # Initial (before normalizing) statistic (means and stds) of the bands
         self.isNormalazed = None # Is the bands of the raster normalized? It contains the mode of normalization.
         self.bandgradation = dict() # Dict for store lists of bands categories
-        if self.filename: self._read()
+        if self.filename: 
+            self._read()
 
     def binaryzation(self, trueVals, bandNum):
         '''Reclass band bandNum to true/false mode. Set true for pixels from trueVals.'''
@@ -268,8 +267,8 @@ class Raster:
     def _read(self):
         try:
             data = gdal.Open( self.filename )
-        except RuntimeError:
-            raise ProviderError("Can't read the file '%s'" % self.filename)
+        except RuntimeError as exc:
+            raise ProviderError("Can't read the file '%s'" % self.filename) from exc
         if data is None:
             raise ProviderError("Can't read the file '%s'" % self.filename)
 
@@ -333,15 +332,15 @@ class Raster:
         '''
         self.bands = np.around(self.bands, decimals)
 
-    def save(self, filename, format="GTiff", rastertype=None, nodata=None):
-        driver = gdal.GetDriverByName(format)
+    def save(self, filename, driver_name="GTiff", rastertype=None, nodata=None):
+        driver = gdal.GetDriverByName(driver_name)
         metadata = driver.GetMetadata()
         if gdal.DCAP_CREATE in metadata and metadata[gdal.DCAP_CREATE] == "YES":
             if not rastertype:
                 dtype = self.get_dtype()
                 conv = FormatConverter()
                 rastertype, maxVal = conv.dtype2GDT[dtype]
-            if nodata==None:
+            if nodata is None:
                 nodata = maxVal
             xsize, ysize = self.getXSize(), self.getYSize()
             bandcount = self.getBandsCount()
@@ -355,7 +354,7 @@ class Raster:
                 outRaster.GetRasterBand( i + 1 ).SetNoDataValue(nodata)
             outRaster = None
         else:
-          raise ProviderError("Driver %s does not support Create() method!" % format)
+          raise ProviderError("Driver %s does not support Create() method!" % driver_name)
 
     def setBand(self, raster, bandNum=1):
         self.bands[bandNum-1] = raster

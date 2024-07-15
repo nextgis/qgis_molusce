@@ -3,15 +3,15 @@
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
+import numpy as np
 from qgis.PyQt.QtCore import *
 
-import numpy as np
+from molusce.algorithms.dataprovider import Raster
+from molusce.algorithms.models.correlation.model import DependenceCoef
+from molusce.algorithms.models.sampler.sampler import Sampler
 
 from . import multinomial_logistic_regression as mlr
 
-from molusce.algorithms.dataprovider import Raster, ProviderError
-from molusce.algorithms.models.sampler.sampler import Sampler
-from molusce.algorithms.models.correlation.model import DependenceCoef
 
 class LRError(Exception):
     '''Base class for exceptions in this module.'''
@@ -99,21 +99,21 @@ class LR(QObject):
     def getTransitionPotentials(self):
         return self.transitionPotentials
 
-    def _outputConfidence(self, input):
+    def _outputConfidence(self, input_data):
         '''
         Return confidence (difference between 2 biggest probabilities) of the LR output.
         1 = the maximum confidence, 0 = the least confidence
         '''
-        out_scl = self.logreg.predict_proba(input)[0]
+        out_scl = self.logreg.predict_proba(input_data)[0]
         # Calculate the confidence:
         out_scl.sort()
         return int(100 * (out_scl[-1] - out_scl[-2]) )
 
-    def outputTransitions(self, input):
+    def outputTransitions(self, input_data):
         '''
         Return transition potential of the outputs
         '''
-        out_scl = self.logreg.predict_proba(input)[0]
+        out_scl = self.logreg.predict_proba(input_data)[0]
         out_scl = [int(100 * x) for x in out_scl]
         result = {}
         for r, v in enumerate(out_scl):
@@ -121,7 +121,7 @@ class LR(QObject):
             result[cat] = v
         return result
 
-    def _predict(self, state, factors, calcTransitions=False):
+    def _predict(self, state, factors, calcTransitions=False): # noqa: C901
         '''
         Calculate output and confidence rasters using LR model and input rasters
         @param state            Raster of the current state (categories) values.
@@ -157,19 +157,19 @@ class LR(QObject):
             for i in range(rows):
                 for j in range(cols):
                     if not mask[i,j]:
-                        input = self.sampler.get_inputs(state, i,j)
-                        if input is not None:
-                            input = np.array([input])
-                            out = self.logreg.predict(input)
+                        input_data = self.sampler.get_inputs(state, i,j)
+                        if input_data is not None:
+                            input_data = np.array([input_data])
+                            out = self.logreg.predict(input_data)
                             predicted_band[i,j] = out
-                            confidence = self._outputConfidence(input)
+                            confidence = self._outputConfidence(input_data)
                             confidence_band[i, j] = confidence
 
                             if calcTransitions:
-                                potentials = self.outputTransitions(input)
+                                potentials = self.outputTransitions(input_data)
                                 for cat in self.catlist:
-                                    map = self.transitionPotentials[cat]
-                                    map[i, j] = potentials[cat]
+                                    potential_map = self.transitionPotentials[cat]
+                                    potential_map[i, j] = potentials[cat]
                         else: # Input sample is incomplete => mask this pixel
                             mask[i, j] = True
                 self.updateProgress.emit()
@@ -233,11 +233,6 @@ class LR(QObject):
         self.sampler = Sampler(state, factors, output, ns=self.ns)
         self.__propagateSamplerSignals()
         self.sampler.setTrainingData(state, output, shuffle=False, mode=mode, samples=samples)
-
-        outputVecLen  = self.sampler.outputVecLen
-        stateVecLen   = self.sampler.stateVecLen
-        factorVectLen = self.sampler.factorVectLen
-        size = len(self.sampler.data)
 
         self.data = self.sampler.data
         self.catlist = np.unique(self.data['output'])

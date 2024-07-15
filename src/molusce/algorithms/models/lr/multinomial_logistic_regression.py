@@ -13,6 +13,7 @@ import numpy as np
 from scipy.optimize import fmin_bfgs
 from scipy.stats import norm
 
+
 def mlr_nll_and_gradient(X, Y, W, sigma2, weighted):
     """ Compute the MLR negative log-likelihood and its gradient
 

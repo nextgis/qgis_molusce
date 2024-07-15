@@ -1,12 +1,10 @@
 import unittest
-from numpy.testing import assert_array_equal
 from pathlib import Path
 
-import numpy as np
-from numpy import ma as ma
-
 from molusce.algorithms.dataprovider import Raster
-from molusce.algorithms.models.area_analysis.manager import AreaAnalyst, AreaAnalizerError
+from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
+from numpy import ma as ma
+from numpy.testing import assert_array_equal
 
 
 class TestAreaAnalysisManager (unittest.TestCase):
@@ -15,17 +13,17 @@ class TestAreaAnalysisManager (unittest.TestCase):
         self.r1 = Raster(sample_path)
         # r1 -> r1 transition
         self.r1r1 = [
-            [5,  5,  15,],
-            [15, 10, 5, ],
-            [0,  15, 5, ]
+            [5,  5,  15],
+            [15, 10, 5 ],
+            [0,  15, 5 ]
         ]
 
         self.r2  = Raster(sample_path)
         self.r2.resetMask([0])
         self.r2r2 = [
-            [0,   0, 8,],
-            [8,   4, 0,],
-            [100, 8, 0,]
+            [0,   0, 8],
+            [8,   4, 0],
+            [100, 8, 0]
         ]
 
         self.r3 = Raster(sample_path)

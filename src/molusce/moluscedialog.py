@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #******************************************************************************
 #
 # MOLUSCE
@@ -29,7 +27,6 @@ import datetime
 import functools
 import gc
 import locale
-import operator
 import os.path
 
 import numpy
@@ -42,38 +39,39 @@ from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import *
 
 try:
-  from matplotlib.backends.backend_qt5agg import NavigationToolbar2QTAgg as NavigationToolbar
+  from matplotlib.backends.backend_qt5agg import (
+    NavigationToolbar2QTAgg as NavigationToolbar,
+  )
 except ImportError:
-  from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+  from matplotlib.backends.backend_qt5agg import (
+    NavigationToolbar2QT as NavigationToolbar,
+  )
+
+from importlib.util import find_spec
 
 from matplotlib.figure import Figure
 
-from . import neuralnetworkwidget
-from . import weightofevidencewidget
-from . import multicriteriaevaluationwidget
-
-scipyMissed = False
-try:
-  import scipy
-except ImportError:
-  scipyMissed = True
-
-if not scipyMissed:
-  from . import logisticregressionwidget
-
-
-
-from .ui.ui_moluscedialogbase import Ui_Dialog
-
-from .algorithms.dataprovider import Raster, ProviderError
+from . import molusceutils as utils
+from . import (
+  multicriteriaevaluationwidget,
+  neuralnetworkwidget,
+  weightofevidencewidget,
+)
+from .algorithms.dataprovider import ProviderError, Raster
+from .algorithms.models.area_analysis.manager import AreaAnalyst
 from .algorithms.models.correlation.model import DependenceCoef
 from .algorithms.models.crosstabs.manager import CrossTableManager
-from .algorithms.models.area_analysis.manager import AreaAnalyst
+from .algorithms.models.errorbudget.ebmodel import EBudget
 from .algorithms.models.sampler.sampler import SamplerError
 from .algorithms.models.simulator.sim import Simulator
-from .algorithms.models.errorbudget.ebmodel import EBudget
+from .ui.ui_moluscedialogbase import Ui_Dialog
 
-from . import molusceutils as utils
+scipyMissed = False
+if find_spec("scipy") is not None:
+  from . import logisticregressionwidget
+else:
+  scipyMissed = True
+
 
 class MolusceDialog(QDialog, Ui_Dialog):
   def __init__(self, iface):
@@ -171,7 +169,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def manageGui(self):
     try:
       self.restoreGeometry(self.settings.value("/ui/geometry"))
-    except:
+    except Exception:
       pass
 
     self.tabWidget.setCurrentIndex(0)
@@ -207,7 +205,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
       return
     rx = QRegExp("(19|2\d)\d\d")
-    pos = rx.indexIn(layerName)
     year = rx.cap()
     self.leInitYear.setText(year)
 
@@ -245,7 +242,6 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
       return
     rx = QRegExp("(19|2\d)\d\d")
-    pos = rx.indexIn(layerName)
     year = rx.cap()
     self.leFinalYear.setText(year)
 
@@ -372,7 +368,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       return
 
     initRaster = self.inputs["initial"]
-    for k, v in self.inputs["factors"].items():
+    for _k, v in self.inputs["factors"].items():
       if not initRaster.geoDataMatch(v):
         QMessageBox.warning(self,
                           self.tr("Different geometry"),
@@ -518,14 +514,14 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
       return
 
-    if not "model" in self.inputs:
+    if "model" not in self.inputs:
       QMessageBox.warning(self,
                           self.tr("Missed model"),
                           self.tr("Model not selected please select and train model.")
                          )
       return
 
-    if not "crosstab" in self.inputs:
+    if "crosstab" not in self.inputs:
       QMessageBox.warning(self,
                           self.tr("Missed transition matrix"),
                           self.tr("Please calculate transition matrix and try again")
@@ -562,7 +558,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         # Try to use some Values as No-data Value
         maxVal = res.getGDALMaxVal()
         for noData in [0, maxVal]:
-            if not noData in grad:
+            if noData not in grad:
                 res.save(str(self.leRiskFunctionPath.text()), nodata=noData)
                 saved = True
                 break
@@ -584,7 +580,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         # Try to use some Values as No-data Value
         maxVal = res.getGDALMaxVal()
         for noData in [0, maxVal]:
-            if not noData in grad:
+            if noData not in grad:
                 res.save(str(self.leMonteCarloPath.text()), nodata=noData)
                 saved = True
                 break
@@ -610,7 +606,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         if potentials is not None:
             for k,v in potentials.items():
                 initcat, finalcat = self.analyst.decode(int(k))
-                map = v.save(trans_prefix+'_from_'+str(initcat)+ '_to_' +str(finalcat) + '.tif')
+                _potential_map = v.save(trans_prefix+'_from_'+str(initcat)+ '_to_' +str(finalcat) + '.tif')
         else:
             QMessageBox.warning(self,
                           self.tr("Not implemented yet"),
@@ -1197,7 +1193,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       self.btnSelectTransitionPrefix.setEnabled(checked)
 
   def __selectSamplesOutput(self):
-    if not "model" in self.inputs:
+    if "model" not in self.inputs:
       QMessageBox.warning(self,
                           self.tr("Missed model"),
                           self.tr("Nothing to save, samples were not yet generated as the model was not trained. Train the model first.")
@@ -1325,7 +1321,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def __bandCount(self):
     bands = 0
-    for k, v in self.inputs["factors"].items():
+    for _k, v in self.inputs["factors"].items():
       bands +=  v.getBandsCount()
     return bands
 
@@ -1403,8 +1399,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     return colorRampItems
 
   def calcChangeMapColorRamp(self, layer, analyst, validationMode, usePercistentClass):
-    l = utils.getLayerByName(self.leInitRasterName.text())
-    if "singlebandpseudocolor" not in l.renderer().type().lower():
+    L = utils.getLayerByName(self.leInitRasterName.text())
+    if "singlebandpseudocolor" not in L.renderer().type().lower():
       self.logMessage(self.tr("Init raster should be in PseudoColor mode. Style not applied."))
       return None
 
@@ -1429,7 +1425,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       currentValue += intervalDiff
       entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
 
-    cr = l.renderer().shader().rasterShaderFunction().colorRampItemList()
+    cr = L.renderer().shader().rasterShaderFunction().colorRampItemList()
 
     colorRampItems = []
     for i in range(len(entryValues)):
@@ -1451,7 +1447,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     return colorRampItems
 
   def applyStyle(self, layer, colorRampItems):
-    if colorRampItems==None:
+    if colorRampItems is None:
       return
     rasterShader = QgsRasterShader()
     colorRampShader = QgsColorRampShader()

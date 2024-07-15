@@ -1,16 +1,15 @@
 # encoding: utf-8
 
-import numpy as np
-from numpy import ma as ma
-
-import osgeo.ogr as ogr
-import osgeo.osr as osr
-
 import os.path
 
+import numpy as np
+import osgeo.ogr as ogr
+import osgeo.osr as osr
+from numpy import ma as ma
 from qgis.PyQt.QtCore import *
 
-from molusce.algorithms.dataprovider import Raster, ProviderError
+from molusce.algorithms.dataprovider import ProviderError
+
 
 class SamplerError(Exception):
     '''Base class for exceptions in this module.'''
@@ -65,7 +64,7 @@ class Sampler(QObject):
         self.ns = ns        # Neighbourhood size
 
         self.factorsGeoData = state.getGeodata()
-        for r in factors:
+        for _r in factors:
             if not state.geoDataMatch(raster=None, geodata=self.factorsGeoData):
                 raise SamplerError('Geometries of the inputs and output rasters are different!')
 
@@ -139,7 +138,8 @@ class Sampler(QObject):
 
         # Mask neighbours.mask can be boolean array or single boolean => set it as iterable object
         mask = neighbours.mask
-        if mask.shape == (): mask = [mask]
+        if mask.shape == ():
+            mask = [mask]
         if any(mask): # Eliminate incomplete samples
             return None
         return neighbours
@@ -154,7 +154,8 @@ class Sampler(QObject):
 
         # Mask neighbours.mask can be boolean array or single boolean => set it as iterable object
         mask = neighbours.mask
-        if mask.shape == (): mask = [mask]
+        if mask.shape == ():
+            mask = [mask]
 
         if any(mask): # Eliminate incomplete samples
             return None
@@ -172,17 +173,20 @@ class Sampler(QObject):
             out_data = output.getPixelFromBand(row, col, band=1)  # Get the pixel
             if out_data is None:                                 # Eliminate masked samples
                 return None
-            else: data['output'] = out_data
+            else:
+                data['output'] = out_data
 
             state_data = self.get_state(state, row,col)
             if state_data is None: # Eliminate incomplete samples
                 return None
-            else: data['state'] = state_data
+            else:
+                data['state'] = state_data
 
             factors_data = self.get_factors(row,col)
             if factors_data is None: # Eliminate incomplete samples
                 return None
-            else: data['factors'] = factors_data
+            else:
+                data['factors'] = factors_data
         except ProviderError:
             return None
         x,y = state.getPixelCoords(col,row)
@@ -251,7 +255,7 @@ class Sampler(QObject):
                 feat.Destroy()
         ds = None
 
-    def setTrainingData(self, state, output, shuffle=True, mode='All', samples=None):
+    def setTrainingData(self, state, output, shuffle=True, mode='All', samples=None): 
         '''
         @param state            Raster of the current state (categories) values.
         @param output           Raster of the output (target) data

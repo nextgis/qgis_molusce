@@ -2,9 +2,13 @@ import math
 import unittest
 
 import numpy as np
+from molusce.algorithms.models.woe.model import (
+    EPSILON,
+    WoeError,
+    _binary_woe,
+    woe,
+)
 from numpy import ma as ma
-
-from molusce.algorithms.models.woe.model import WoeError, _binary_woe, woe, EPSILON
 
 
 class TestModel (unittest.TestCase):
@@ -12,64 +16,59 @@ class TestModel (unittest.TestCase):
     def setUp(self):
 
         fact = [
-            [True,  True,  False,],
-            [False, False, True, ],
-            [None,  False, True, ]
-        ]
-        fact1 = [
-            [True,  True,  False,],
-            [False, False, True, ],
-            [None,  False, True, ]
+            [True,  True,  False],
+            [False, False, True ],
+            [None,  False, True ]
         ]
         site = [
-            [False, True,  False,],
-            [False, True,  False,],
-            [False, False, True, ]
+            [False, True,  False],
+            [False, True,  False],
+            [False, False, True ]
         ]
         site1 = [
-            [1, 2, 1,],
-            [1, 2, 1,],
-            [0, 1, 2,]
+            [1, 2, 1],
+            [1, 2, 1],
+            [0, 1, 2]
         ]
         zero = [
-            [False, False, False,],
-            [False, False, False,],
-            [None,  False, False,]
+            [False, False, False],
+            [False, False, False],
+            [None,  False, False]
         ]
 
         self.mask = [
-            [False, False, False,],
-            [False, False, False,],
-            [True,  False, False,]
+            [False, False, False],
+            [False, False, False],
+            [True,  False, False]
         ]
         self.mask1 = [
-            [False, False, False,],
-            [False, False, False,],
-            [False,  False, False,]
+            [False, False, False],
+            [False, False, False],
+            [False,  False, False]
         ]
         multifact = [
-            [1, 1, 3,],
-            [3, 2, 1,],
-            [0, 3, 1,]
+            [1, 1, 3],
+            [3, 2, 1],
+            [0, 3, 1]
         ]
 
         bigfact = [
-            [True,  True,  False, True,  True,  False,],
-            [False, False, True,  False, False, True, ],
-            [None,  False, True,  None,  False, True, ],
-            [True,  False, True,  None,  False, True, ]
+            [True,  True,  False, True,  True,  False],
+            [False, False, True,  False, False, True ],
+            [None,  False, True,  None,  False, True ],
+            [True,  False, True,  None,  False, True ]
         ]
         bigsite = [
-            [False, True,  False, False, True,  False,],
-            [False, True,  False, False, False, True, ],
-            [None,  False, False, None,  True,  True, ],
-            [False, False, True,  None,  False, False,]
+            [False, True,  False, False, True,  False],
+            [False, True,  False, False, False, True ],
+            [None,  False, False, None,  True,  True ],
+            [False, False, True,  None,  False, False]
         ]
         self.bigmask = [
-            [False, False, False, False, False, False,],
-            [False, False, False, False, False, False,],
-            [True,  False, False, True,  False, False, ],
-            [False, False, False, True,  False, False,]
+            [False, False, False, False, False, False],
+            [False, False, False, False, False, False],
+            [True,  False, False, True,  False, False ],
+            [False, False, False, True,  False, False]
         ]
 
         self.factor     = ma.array(data = fact,      mask=self.mask,     dtype=bool)
@@ -119,9 +118,9 @@ class TestModel (unittest.TestCase):
 
         # Binary categories
         ans = [
-            [wPlus1,  wPlus1,  wMinus1,],
-            [wMinus1, wMinus1, wPlus1, ],
-            [None,   wMinus1,  wPlus1, ]
+            [wPlus1,  wPlus1,  wMinus1],
+            [wMinus1, wMinus1, wPlus1 ],
+            [None,   wMinus1,  wPlus1 ]
         ]
         ans = ma.array(data=ans, mask=self.mask)
         w = woe(self.factor, self.sites)
@@ -130,9 +129,9 @@ class TestModel (unittest.TestCase):
         # Multiclass
         w1, w2, w3 = (wPlus1 + wMinus2+wMinus3), (wPlus2 + wMinus1 + wMinus3), (wPlus3 + wMinus1 + wMinus2)
         ans = [
-            [w1, w1, w3,],
-            [w3, w2, w1,],
-            [ 0, w3, w1,]
+            [w1, w1, w3],
+            [w3, w2, w1],
+            [ 0, w3, w1]
         ]
         ans = ma.array(data=ans, mask=self.mask)
         weights = woe(self.multifact, self.sites)

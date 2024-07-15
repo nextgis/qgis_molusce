@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import numpy as np
 from qgis.PyQt.QtCore import *
 
-import numpy as np
+from molusce.algorithms.utils import (
+    get_gradations,
+    masks_identity,
+    sizes_equal,
+)
 
-from molusce.algorithms.utils import masks_identity, sizes_equal, get_gradations
 
 class CrossTabError(Exception):
     '''Base class for exceptions in this module.'''

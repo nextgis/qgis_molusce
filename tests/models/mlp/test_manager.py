@@ -1,11 +1,10 @@
-from pathlib import Path
 import unittest
+from pathlib import Path
 
 import numpy as np
-from numpy.testing import assert_array_equal
-
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.mlp.manager import MlpManager, sigmoid
+from numpy.testing import assert_array_equal
 
 
 class TestMlpManager (unittest.TestCase):
@@ -42,18 +41,18 @@ class TestMlpManager (unittest.TestCase):
         m,s = stat['mean'], stat['std']
         mng.setTrainingData(self.output, self.factors, self.output, shuffle=False)
 
-        min, max = mng.sigmin, mng.sigmax
+        minimum, maximum = mng.sigmin, mng.sigmax
         data = np.array(
             [
-                ((0,3), [0, 1], (1.0-m)/s, [min,  max, min]),
-                ((1,3), [0, 0], (1.0-m)/s, [min,  min, max]),
-                ((2,3), [0, 1], (3.0-m)/s, [min,  max, min]),
-                ((0,2), [0, 1], (3.0-m)/s, [min,  max, min]),
-                ((1,2), [0, 0], (2.0-m)/s, [min,  min, max]),
-                ((2,2), [0, 1], (1.0-m)/s, [min,  max, min]),
-                ((0,1), [1, 0], (0.0-m)/s, [max,  min, min]),
-                ((1,1), [0, 1], (3.0-m)/s, [min,  max, min]),
-                ((2,1), [0, 0], (1.0-m)/s, [min,  min, max]),
+                ((0,3), [0, 1], (1.0-m)/s, [minimum, maximum, minimum]),
+                ((1,3), [0, 0], (1.0-m)/s, [minimum, minimum, maximum]),
+                ((2,3), [0, 1], (3.0-m)/s, [minimum, maximum, minimum]),
+                ((0,2), [0, 1], (3.0-m)/s, [minimum, maximum, minimum]),
+                ((1,2), [0, 0], (2.0-m)/s, [minimum, minimum, maximum]),
+                ((2,2), [0, 1], (1.0-m)/s, [minimum, maximum, minimum]),
+                ((0,1), [1, 0], (0.0-m)/s, [maximum, minimum, minimum]),
+                ((1,1), [0, 1], (3.0-m)/s, [minimum, maximum, minimum]),
+                ((2,1), [0, 0], (1.0-m)/s, [minimum, minimum, maximum]),
             ],
             dtype=[('coords', float, 2),('state', float, (2,)), ('factors', float, (1,)), ('output', float, 3)]
         )
@@ -71,7 +70,7 @@ class TestMlpManager (unittest.TestCase):
             {
             'factors': (np.array([ 1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.,
                                 1.,  1.,  3.,  3.,  2.,  1.,  0.,  3.,  1.]) - stat['mean'])/stat['std'],
-            'output': np.array([min, min,  max]),
+            'output': np.array([minimum, minimum,  maximum]),
             'state': np.array([0,1,  0,0,  0,1,   0,1,  0,0,  0,1,   1,0,  0,1,  0,0])
             }
         ]
@@ -93,7 +92,7 @@ class TestMlpManager (unittest.TestCase):
             {
             'factors': np.array([ (1.-m1)/s1,  (2.-m1)/s1,  (1.-m1)/s1,  (1.-m1)/s1,  (2.-m1)/s1,  (1.-m1)/s1,  (0.-m1)/s1,  (1.-m1)/s1,  (2.-m1)/s1,
                                 (1.-m2)/s2,  (1.-m2)/s2,  (3.-m2)/s2,  (3.-m2)/s2,  (2.-m2)/s2,  (1.-m2)/s2,  (0.-m2)/s2,  (3.-m2)/s2,  (1.-m2)/s2]),
-            'output': np.array([min, min,  max]),
+            'output': np.array([minimum, minimum, maximum]),
             'state': np.array([0,1,  0,0,  0,1,   0,1,  0,0,  0,1,   1,0,  0,1,  0,0])
             }
         ]
@@ -119,7 +118,7 @@ class TestMlpManager (unittest.TestCase):
             'factors': np.array([ (1.-m1)/s1,  (2.-m1)/s1,  (1.-m1)/s1,  (1.-m1)/s1,  (2.-m1)/s1,  (1.-m1)/s1,  (0.-m1)/s1,  (1.-m1)/s1,  (2.-m1)/s1,
                                 (1.-m2)/s2,  (1.-m2)/s2,  (3.-m2)/s2,  (3.-m2)/s2,  (2.-m2)/s2,  (1.-m2)/s2,  (0.-m2)/s2,  (3.-m2)/s2,  (1.-m2)/s2,
                                 (1.-m3)/s3,  (1.-m3)/s3,  (3.-m3)/s3,  (3.-m3)/s3,  (2.-m3)/s3,  (1.-m3)/s3,  (0.-m3)/s3,  (3.-m3)/s3,  (1.-m3)/s3]),
-            'output': np.array([min, min,  max]),
+            'output': np.array([minimum, minimum, maximum]),
             'state': np.array([0,1,  0,0,  0,1,   0,1,  0,0,  0,1,   1,0,  0,1,  0,0])
             }
         ]
@@ -135,7 +134,6 @@ class TestMlpManager (unittest.TestCase):
 
         mng.train(1, valPercent=50)
         val = mng.getMinValError()
-        tr  = mng.getTrainError()
         mng.train(20, valPercent=50, continue_train=True)
         self.assertGreaterEqual(val, mng.getMinValError())
 
@@ -174,9 +172,9 @@ class TestMlpManager (unittest.TestCase):
         potentials = mng.getTransitionPotentials()
         cats = self.output.getBandGradation(1)
         for cat in cats:
-            map = potentials[cat]
-            self.assertEqual(map.getBand(1).dtype, np.uint8)
-            assert_array_equal(map.getBand(1), 50*np.ones((3,3)))
+            potential_map = potentials[cat]
+            self.assertEqual(potential_map.getBand(1).dtype, np.uint8)
+            assert_array_equal(potential_map.getBand(1), 50*np.ones((3,3)))
 
     # Commented while we don't have free rasters to test
     #~ def test_real(self):

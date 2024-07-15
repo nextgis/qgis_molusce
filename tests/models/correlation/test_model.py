@@ -1,10 +1,9 @@
-import unittest
 import math
+import unittest
 
 import numpy as np
+from molusce.algorithms.models.correlation.model import DependenceCoef
 from numpy import ma as ma
-
-from molusce.algorithms.models.correlation.model  import DependenceCoef
 
 
 class TestModel (unittest.TestCase):
@@ -12,26 +11,26 @@ class TestModel (unittest.TestCase):
     def setUp(self):
 
         self.X = np.array([
-            [1, 2, 1,],
-            [1, 2, 1,],
-            [0, 1, 2,]
+            [1, 2, 1],
+            [1, 2, 1],
+            [0, 1, 2]
         ])
 
         self.Y = np.array([
-            [1, 1, 3,],
-            [3, 2, 1,],
-            [0, 3, 1,]
+            [1, 1, 3],
+            [3, 2, 1],
+            [0, 3, 1]
         ])
         self.Y1 = np.array([
-            [2, 1, 1,],
-            [1, 2, 2,],
-            [0, 3, 3,]
+            [2, 1, 1],
+            [1, 2, 2],
+            [0, 3, 3]
         ])
         self.X2 = np.array([
-            [1, 2, 1,],
-            [1, 2, 1,],
-            [0, 1, 2,],
-            [0, 1, 2,]
+            [1, 2, 1],
+            [1, 2, 1],
+            [0, 1, 2],
+            [0, 1, 2]
         ])
         '''
         self.T = np.array([
@@ -57,9 +56,9 @@ class TestModel (unittest.TestCase):
         self.Y = np.ma.array(self.Y, mask=(self.Y == 0))
         self.Y1 = np.ma.array(self.Y1, mask=(self.Y1 == 0))
         self.combo_mask = np.array([
-            [False, False, False,],
-            [False, False, False,],
-            [True , False, False,]
+            [False, False, False],
+            [False, False, False],
+            [True , False, False]
         ])
 
     def test_correlation(self):

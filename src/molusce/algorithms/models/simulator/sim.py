@@ -1,10 +1,9 @@
 import numpy as np
-
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
-from molusce.algorithms.models.mlp.manager import MlpManager
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
+
 
 class Simulator(QObject):
     """
@@ -128,7 +127,8 @@ class Simulator(QObject):
         QCoreApplication.processEvents()
         for initClass in categories:
             for finalClass in categories:
-                if initClass == finalClass: continue
+                if initClass == finalClass:
+                    continue
 
                 # TODO: Calculate number of pixels to be moved via TransitionMatrix and state raster
                 n = transition.getTransition(initClass, finalClass)   # Number of pixels that have to be
@@ -183,7 +183,7 @@ class Simulator(QObject):
         Make N iterations of simulation.
         '''
         try:
-            for i in range(self.iterationCount):
+            for _i in range(self.iterationCount):
                 self.__sim()
         except MemoryError:
             self.errorReport.emit(self.tr("The system out of memory during simulation"))

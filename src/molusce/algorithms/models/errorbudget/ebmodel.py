@@ -15,12 +15,12 @@
 #       publisher={Elsevier}
 #   }
 
-from qgis.PyQt.QtCore import *
-
 import numpy as np
 from numpy import ma as ma
+from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.utils import binaryzation, masks_identity
+
 
 class EBError(Exception):
     '''Base class for exceptions in this module.'''
@@ -65,7 +65,7 @@ class EBudget(QObject):
 
         self.categories = referenceMap.getBandGradation(1)
         for s in simulatedMap.getBandGradation(1):
-            if not s in self.categories:
+            if s not in self.categories:
                 raise EBError('Categories in the reference and simulated rasters are different!')
 
         R = referenceMap.getBand(1)

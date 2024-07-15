@@ -86,7 +86,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     model.setState(self.inputs["initial"])
     model.setFactors(list(self.inputs["factors"].values()))
     model.setOutput(self.inputs["changeMap"])
-    model.setMode(self.inputs["samplingMode"],)
+    model.setMode(self.inputs["samplingMode"])
     model.setSamples(self.plugin.spnSamplesCount.value())
 
     self.plugin.logMessage(self.tr("Set training data"))

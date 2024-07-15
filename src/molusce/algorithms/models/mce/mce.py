@@ -4,12 +4,12 @@
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
+import numpy as np
 from qgis.PyQt.QtCore import *
 
-import numpy as np
-
-from molusce.algorithms.dataprovider import Raster, ProviderError
+from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.utils import binaryzation
+
 
 class MCEError(Exception):
     '''Base class for exceptions in this module.'''

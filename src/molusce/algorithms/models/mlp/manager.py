@@ -4,16 +4,16 @@
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
-from qgis.PyQt.QtCore import *
-
 import copy
 
 import numpy as np
+from qgis.PyQt.QtCore import *
 
-from molusce.algorithms.dataprovider import Raster, ProviderError
+from molusce.algorithms.dataprovider import Raster
+from molusce.algorithms.models.correlation.model import DependenceCoef
 from molusce.algorithms.models.mlp.model import MLP, sigmoid
 from molusce.algorithms.models.sampler.sampler import Sampler
-from molusce.algorithms.models.correlation.model import DependenceCoef
+
 
 class MlpManagerError(Exception):
     '''Base class for exceptions in this module.'''
@@ -67,8 +67,8 @@ class MlpManager(QObject):
 
     def computeMlpError(self, sample):
         '''Get MLP error on the sample'''
-        input = np.hstack( (sample['state'], sample['factors']) )
-        out = self.getOutput( input )
+        input_data = np.hstack( (sample['state'], sample['factors']) )
+        out = self.getOutput( input_data )
         err = ((sample['output'] - out)**2).sum()/len(out)
         return err
 
@@ -92,8 +92,8 @@ class MlpManager(QObject):
                 sample = self.data[i]
                 val_error = val_error + self.computeMlpError(sample = self.data[i])
 
-                input = np.hstack( (sample['state'],sample['factors']) )
-                output = self.getOutput(input)
+                input_data = np.hstack( (sample['state'],sample['factors']) )
+                output = self.getOutput(input_data)
                 out[i-int(val_ind[0])]     = self.outCategory(output)
                 answers[i-int(val_ind[0])] = self.outCategory(sample['output'])
             self.setValError(val_error/val_sampl)
@@ -227,7 +227,7 @@ class MlpManager(QObject):
             res = [ int(100 * x) for x in res]
         return res
 
-    def _predict(self, state, factors, calcTransitions=False):
+    def _predict(self, state, factors, calcTransitions=False): 
         '''
         Calculate output and confidence rasters using MLP model and input rasters
         @param state            Raster of the current state (categories) values.
@@ -263,9 +263,9 @@ class MlpManager(QObject):
             for i in range(rows):
                 for j in range(cols):
                     if not mask[i,j]:
-                        input = self.sampler.get_inputs(state, i,j)
-                        if input is not None:
-                            out = self.getOutput(input)
+                        input_data = self.sampler.get_inputs(state, i,j)
+                        if input_data is not None:
+                            out = self.getOutput(input_data)
                             res = self.outCategory(out)
                             predicted_band[i, j] = res
 
@@ -275,8 +275,8 @@ class MlpManager(QObject):
                             if calcTransitions:
                                 potentials = self.outputTransitions(out)
                                 for cat in self.catlist:
-                                    map = self.transitionPotentials[cat]
-                                    map[i, j] = potentials[cat]
+                                    potential_map = self.transitionPotentials[cat]
+                                    potential_map[i, j] = potentials[cat]
                         else: # Input sample is incomplete => mask this pixel
                             mask[i, j] = True
                 self.updateProgress.emit()
@@ -399,13 +399,14 @@ class MlpManager(QObject):
             train_indexes = (0, train_sampl_count)
             val_indexes = (train_sampl_count, samples_count) if apply_validation else None
 
-            if not continue_train: self.resetMlp()
+            if not continue_train: 
+                self.resetMlp()
             self.minValError = self.getValError()  # The minimum error that is achieved on the validation set
             last_train_err = self.getTrainError()
             best_weights = self.copyWeights()   # The MLP weights when minimum error that is achieved on the validation set
 
             self.rangeChanged.emit(self.tr("Train model %p%"), epochs)
-            for epoch in range(epochs):
+            for _epoch in range(epochs):
                 self.trainEpoch(train_indexes, lrate, momentum)
                 self.computePerformance(train_indexes, val_indexes)
                 self.updateGraph.emit(self.getTrainError(), self.getValError())
@@ -444,9 +445,9 @@ class MlpManager(QObject):
         '''
         train_sampl = train_indexes[1] - train_indexes[0]
 
-        for i in range(int(train_sampl)):
+        for _i in range(int(train_sampl)):
             n = np.random.randint( *train_indexes )
             sample = self.data[n]
-            input = np.hstack( (sample['state'],sample['factors']) )
-            self.getOutput( input )     # Forward propagation
+            input_data = np.hstack( (sample['state'],sample['factors']) )
+            self.getOutput( input_data )     # Forward propagation
             self.MLP.propagate_backward( sample['output'], lrate, momentum )

@@ -1,9 +1,8 @@
 import unittest
 
 import numpy as np
-from numpy import ma as ma
-
 from molusce.algorithms.models.crosstabs.model import CrossTable
+from numpy import ma as ma
 
 
 class TestCrossTable (unittest.TestCase):
@@ -11,15 +10,15 @@ class TestCrossTable (unittest.TestCase):
     def setUp(self):
 
         self.X = np.array([
-            [1, 2, 1,],
-            [1, 2, 1,],
-            [0, 1, 2,]
+            [1, 2, 1],
+            [1, 2, 1],
+            [0, 1, 2]
         ])
 
         self.Y = np.array([
-            [1, 1, 3,],
-            [3, 2, 1,],
-            [0, 3, 1,]
+            [1, 1, 3],
+            [3, 2, 1],
+            [0, 3, 1]
         ])
 
         self.T = np.array([

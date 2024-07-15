@@ -83,8 +83,8 @@ class AreaAnalyst(QObject):
         finalClassIndex   = code - initialClassIndex * m
         try:
             initClass, finalClass = (self.categories[initialClassIndex], self.categories[finalClassIndex])
-        except ValueError:
-            raise AreaAnalizerError('The code is not in list!')
+        except ValueError as exc:
+            raise AreaAnalizerError('The code is not in list!') from exc
         return (initClass, finalClass)
 
     def encode(self, initialClass, finalClass):

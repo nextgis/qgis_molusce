@@ -10,6 +10,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 
+
 def sigmoid(x):
     ''' Sigmoid like function using tanh '''
     return np.tanh(x)
@@ -42,7 +43,7 @@ class MLP:
                                          self.layers[i+1].size)))
 
         # dw will hold last change in weights (for momentum)
-        self.dw = [0,]*len(self.weights)
+        self.dw = [0]*len(self.weights)
 
         # Reset weights
         self.reset()
@@ -98,12 +99,11 @@ class MLP:
 
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
-    import matplotlib
     import matplotlib.pyplot as plt
 
     def learn(network,samples, epochs=2500, lrate=.1, momentum=0.1):
         # Train 
-        for i in range(epochs):
+        for _i in range(epochs):
             n = np.random.randint(samples.size)
             network.propagate_forward( samples['input'][n] )
             network.propagate_backward( samples['output'][n], lrate, momentum )
@@ -155,7 +155,7 @@ if __name__ == '__main__':
     samples['x'] = np.linspace(0,1,500)
     samples['y'] = np.sin(samples['x']*np.pi)
 
-    for i in range(10000):
+    for _i in range(10000):
         n = np.random.randint(samples.size)
         network.propagate_forward(samples['x'][n])
         network.propagate_backward(samples['y'][n])

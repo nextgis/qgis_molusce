@@ -1,11 +1,10 @@
-from pathlib import Path
 import unittest
+from pathlib import Path
 
 import numpy as np
-from numpy.testing import assert_array_equal
-
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.sampler.sampler import Sampler
+from numpy.testing import assert_array_equal
 
 
 class TestSample (unittest.TestCase):
