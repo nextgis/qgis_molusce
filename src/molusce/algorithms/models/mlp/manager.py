@@ -16,14 +16,14 @@ from molusce.algorithms.models.sampler.sampler import Sampler
 
 
 class MlpManagerError(Exception):
-    '''Base class for exceptions in this module.'''
+    """Base class for exceptions in this module."""
     def __init__(self, msg):
         self.msg = msg
 
 class MlpManager(QObject):
-    '''This class gets the data extracted from the UI and
+    """This class gets the data extracted from the UI and
     pass it to multi-layer perceptron, then gets and stores the result.
-    '''
+    """
 
     updateGraph = pyqtSignal(float, float)      # Train error, val. error
     updateMinValErr = pyqtSignal(float)         # Min validation error
@@ -66,17 +66,17 @@ class MlpManager(QObject):
         self.sigrange = self.sigmax - self.sigmin               # Range of the sigmoid
 
     def computeMlpError(self, sample):
-        '''Get MLP error on the sample'''
-        input_data = np.hstack( (sample['state'], sample['factors']) )
+        """Get MLP error on the sample"""
+        input_data = np.hstack( (sample["state"], sample["factors"]) )
         out = self.getOutput( input_data )
-        err = ((sample['output'] - out)**2).sum()/len(out)
+        err = ((sample["output"] - out)**2).sum()/len(out)
         return err
 
     def computePerformance(self, train_indexes, val_ind):
-        '''Check errors of training and validation sets
+        """Check errors of training and validation sets
         @param train_indexes     Tuple that contains indexes of the first and last elements of the training set.
         @param val_ind           Tuple that contains indexes of the first and last elements of the validation set.
-        '''
+        """
         train_error = 0
         train_sampl = train_indexes[1] - train_indexes[0]       # Count of training samples
         for i in range(int(train_indexes[0]), int(train_indexes[1])):
@@ -92,28 +92,28 @@ class MlpManager(QObject):
                 sample = self.data[i]
                 val_error = val_error + self.computeMlpError(sample = self.data[i])
 
-                input_data = np.hstack( (sample['state'],sample['factors']) )
+                input_data = np.hstack( (sample["state"],sample["factors"]) )
                 output = self.getOutput(input_data)
                 out[i-int(val_ind[0])]     = self.outCategory(output)
-                answers[i-int(val_ind[0])] = self.outCategory(sample['output'])
+                answers[i-int(val_ind[0])] = self.outCategory(sample["output"])
             self.setValError(val_error/val_sampl)
             depCoef = DependenceCoef(out, answers, expand=True)
             self.valKappa = depCoef.kappa(mode=None)
 
     def copyWeights(self):
-        '''Deep copy of the MLP weights'''
+        """Deep copy of the MLP weights"""
         return copy.deepcopy(self.MLP.weights)
 
     def createMlp(self, state, factors, output, hidden_layers):
-        '''
+        """
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param hidden_layers    List of neuron counts in hidden layers.
         @param ns               Neighbourhood size.
-        '''
+        """
 
         if output.getBandsCount() != 1:
-            raise MlpManagerError('Output layer must have one band!')
+            raise MlpManagerError("Output layer must have one band!")
 
         input_neurons = 0
         for raster in factors:
@@ -137,7 +137,7 @@ class MlpManager(QObject):
         return self.confidence
 
     def getInputVectLen(self):
-        '''Length of input data vector of the MLP'''
+        """Length of input data vector of the MLP"""
         shape = self.getMlpTopology()
         return shape[0]
 
@@ -146,18 +146,18 @@ class MlpManager(QObject):
         return out
 
     def getOutputVectLen(self):
-        '''Length of input data vector of the MLP'''
+        """Length of input data vector of the MLP"""
         shape = self.getMlpTopology()
         return shape[-1]
 
     def getOutputVector(self, val):
-        '''Convert a number val into vector,
+        """Convert a number val into vector,
         for example, let self.catlist = [1, 3, 4] then
         if val = 1, result = [ 1, -1, -1]
         if val = 3, result = [-1,  1, -1]
         if val = 4, result = [-1, -1,  1]
         where -1 is minimum of the sigmoid, 1 is max of the sigmoid
-        '''
+        """
         size = self.getOutputVectLen()
         res = np.ones(size) * (self.sigmin)
         ind = np.where(self.catlist==val)
@@ -194,21 +194,21 @@ class MlpManager(QObject):
         return res
 
     def outputConfidence(self, output, scale=True):
-        '''
+        """
         Return confidence (difference between 2 biggest values) of the MLP output.
         @param output: The confidence
         @param scale: If True, then scale the confidence to int [0, 1, ..., 100] percent
-        '''
+        """
         out_scl = self.scaleOutput(output, percent=scale)
         out_scl.sort()
         return out_scl[-1] - out_scl[-2]
 
     def outputTransitions(self, output, scale=True):
-        '''
+        """
         Return transition potencial of the outputs scaled to [0,1] or 1-100
         @param output: The output of MLP
         @param scale: If True, then scale the transitions to int ([0, 1, ..., 100]) percent
-        '''
+        """
         out_scl = self.scaleOutput(output, percent=scale)
         result = {}
         for r, v in enumerate(out_scl):
@@ -217,35 +217,35 @@ class MlpManager(QObject):
         return result
 
     def scaleOutput(self, output, percent=True):
-        '''
+        """
         Scale the output to range [0,1] or 1-100
         @param output: Output of a MLP
         @param percent: If True, then scale the output to int [0, 1, ..., 100] percent
-        '''
+        """
         res = 1.0 * (output - self.sigmin) / self.sigrange
         if percent:
             res = [ int(100 * x) for x in res]
         return res
 
     def _predict(self, state, factors, calcTransitions=False): 
-        '''
+        """
         Calculate output and confidence rasters using MLP model and input rasters
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
-        '''
+        """
         try:
             self.rangeChanged.emit(self.tr("Initialize model %p%"), 1)
             geodata = state.getGeodata()
-            rows, cols = geodata['ySize'], geodata['xSize']
+            rows, cols = geodata["ySize"], geodata["xSize"]
             for r in factors:
                 if not state.geoDataMatch(r):
-                    raise MlpManagerError('Geometries of the input rasters are different!')
+                    raise MlpManagerError("Geometries of the input rasters are different!")
 
             self.transitionPotentials = None    # Reset tr.potentials if they exist
 
             # Normalize factors before prediction:
             for f in factors:
-                f.normalize(mode = 'mean')
+                f.normalize(mode = "mean")
 
             predicted_band  = np.zeros([rows, cols], dtype=np.uint8)
             confidence_band = np.zeros([rows, cols], dtype=np.uint8)
@@ -318,11 +318,11 @@ class MlpManager(QObject):
         self.sampler.saveSamples(fileName)
 
     def setMlpWeights(self, w):
-        '''Set weights of the MLP'''
+        """Set weights of the MLP"""
         self.MLP.weights = w
 
-    def setTrainingData(self, state, factors, output, shuffle=True, mode='All', samples=None):
-        '''
+    def setTrainingData(self, state, factors, output, shuffle=True, mode="All", samples=None):
+        """
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param output           Raster that contains categories to predict.
@@ -332,13 +332,13 @@ class MlpManager(QObject):
                                     Random          Get samples. Count of samples in the data=samples.
                                     Stratified      Undersampling of major categories and/or oversampling of minor categories.
         @samples                Sample count of the training data (doesn't used in 'All' mode).
-        '''
+        """
         if not self.MLP:
-            raise MlpManagerError('You must create a MLP before!')
+            raise MlpManagerError("You must create a MLP before!")
 
         # Normalize factors before sampling:
         for f in factors:
-            f.normalize(mode = 'mean')
+            f.normalize(mode = "mean")
 
         self.sampler = Sampler(state, factors, output, self.ns)
         self.sampler.setTrainingData(state=state, output=output, shuffle=shuffle, mode=mode, samples=samples)
@@ -348,11 +348,11 @@ class MlpManager(QObject):
         factorVectLen = self.sampler.factorVectLen
         size = len(self.sampler.data)
 
-        self.data = np.zeros(size, dtype=[('coords', float, 2), ('state', float, stateVecLen), ('factors',  float, factorVectLen), ('output', float, outputVecLen)])
-        self.data['coords']   = self.sampler.data['coords']
-        self.data['state']    = self.sampler.data['state']
-        self.data['factors']  = self.sampler.data['factors']
-        self.data['output']   = [self.getOutputVector(sample['output']) for sample in self.sampler.data]
+        self.data = np.zeros(size, dtype=[("coords", float, 2), ("state", float, stateVecLen), ("factors",  float, factorVectLen), ("output", float, outputVecLen)])
+        self.data["coords"]   = self.sampler.data["coords"]
+        self.data["state"]    = self.sampler.data["state"]
+        self.data["factors"]  = self.sampler.data["factors"]
+        self.data["output"]   = [self.getOutputVector(sample["output"]) for sample in self.sampler.data]
 
     def setTrainError(self, error):
         self.train_error = error
@@ -382,13 +382,13 @@ class MlpManager(QObject):
         self.interrupted = True
 
     def train(self, epochs, valPercent=20, lrate=0.1, momentum=0.01, continue_train=False):
-        '''Perform the training procedure on the MLP and save the best neural net
+        """Perform the training procedure on the MLP and save the best neural net
         @param epoch            Max iteration count.
         @param valPercent       Percent of the validation set.
         @param lrate            Learning rate.
         @param momentum         Learning momentum.
         @param continue_train   If False then it is new training cycle, reset weights training and validation error. If True, then continue training.
-        '''
+        """
         try:
             samples_count = len(self.data)
             val_sampl_count = samples_count*valPercent/100
@@ -437,17 +437,17 @@ class MlpManager(QObject):
             self.processFinished.emit()
 
     def trainEpoch(self, train_indexes, lrate=0.1, momentum=0.01):
-        '''Perform a training epoch on the MLP
+        """Perform a training epoch on the MLP
         @param train_ind        Tuple of the min&max indexes of training samples in the samples data.
         @param val_ind          Tuple of the min&max indexes of validation samples in the samples data.
         @param lrate            Learning rate.
         @param momentum         Learning momentum.
-        '''
+        """
         train_sampl = train_indexes[1] - train_indexes[0]
 
         for _i in range(int(train_sampl)):
             n = np.random.randint( *train_indexes )
             sample = self.data[n]
-            input_data = np.hstack( (sample['state'],sample['factors']) )
+            input_data = np.hstack( (sample["state"],sample["factors"]) )
             self.getOutput( input_data )     # Forward propagation
-            self.MLP.propagate_backward( sample['output'], lrate, momentum )
+            self.MLP.propagate_backward( sample["output"], lrate, momentum )

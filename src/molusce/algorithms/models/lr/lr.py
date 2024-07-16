@@ -14,7 +14,7 @@ from . import multinomial_logistic_regression as mlr
 
 
 class LRError(Exception):
-    '''Base class for exceptions in this module.'''
+    """Base class for exceptions in this module."""
     def __init__(self, msg):
         self.msg = msg
 
@@ -74,19 +74,19 @@ class LR(QObject):
         return self.Kappa
 
     def getStdErrIntercept(self):
-        X = np.column_stack( (self.data['state'], self.data['factors']) )
+        X = np.column_stack( (self.data["state"], self.data["factors"]) )
         return self.logreg.get_stderr_intercept(X)
 
     def getStdErrWeights(self):
-        X = np.column_stack( (self.data['state'], self.data['factors']) )
+        X = np.column_stack( (self.data["state"], self.data["factors"]) )
         return self.logreg.get_stderr_weights(X).T
 
     def get_PvalIntercept(self):
-        X = np.column_stack( (self.data['state'], self.data['factors']) )
+        X = np.column_stack( (self.data["state"], self.data["factors"]) )
         return self.logreg.get_pval_intercept(X)
 
     def get_PvalWeights(self):
-        X = np.column_stack( (self.data['state'], self.data['factors']) )
+        X = np.column_stack( (self.data["state"], self.data["factors"]) )
         return self.logreg.get_pval_weights(X).T
 
     def getPrediction(self, state, factors, calcTransitions=False):
@@ -100,19 +100,19 @@ class LR(QObject):
         return self.transitionPotentials
 
     def _outputConfidence(self, input_data):
-        '''
+        """
         Return confidence (difference between 2 biggest probabilities) of the LR output.
         1 = the maximum confidence, 0 = the least confidence
-        '''
+        """
         out_scl = self.logreg.predict_proba(input_data)[0]
         # Calculate the confidence:
         out_scl.sort()
         return int(100 * (out_scl[-1] - out_scl[-2]) )
 
     def outputTransitions(self, input_data):
-        '''
+        """
         Return transition potential of the outputs
-        '''
+        """
         out_scl = self.logreg.predict_proba(input_data)[0]
         out_scl = [int(100 * x) for x in out_scl]
         result = {}
@@ -122,24 +122,24 @@ class LR(QObject):
         return result
 
     def _predict(self, state, factors, calcTransitions=False): # noqa: C901
-        '''
+        """
         Calculate output and confidence rasters using LR model and input rasters
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
-        '''
+        """
         try:
             self.rangeChanged.emit(self.tr("Initialize model %p%"), 1)
             geodata = state.getGeodata()
-            rows, cols = geodata['ySize'], geodata['xSize']
+            rows, cols = geodata["ySize"], geodata["xSize"]
             for r in factors:
                 if not state.geoDataMatch(r):
-                    raise LRError('Geometries of the input rasters are different!')
+                    raise LRError("Geometries of the input rasters are different!")
 
             self.transitionPotentials = None    # Reset tr.potentials if they exist
 
             # Normalize factors before prediction:
             for f in factors:
-                f.normalize(mode = 'mean')
+                f.normalize(mode = "mean")
 
             predicted_band  = np.zeros([rows, cols], dtype=np.uint8)
             confidence_band = np.zeros([rows, cols], dtype=np.uint8)
@@ -224,22 +224,22 @@ class LR(QObject):
     def setTrainingData(self):
         state, factors, output, mode, samples = self.state, self.factors, self.output, self.mode, self.samples
         if not self.logreg:
-            raise LRError('You must create a Logistic Regression model before!')
+            raise LRError("You must create a Logistic Regression model before!")
 
         # Normalize factors before sampling:
         for f in factors:
-            f.normalize(mode = 'mean')
+            f.normalize(mode = "mean")
 
         self.sampler = Sampler(state, factors, output, ns=self.ns)
         self.__propagateSamplerSignals()
         self.sampler.setTrainingData(state, output, shuffle=False, mode=mode, samples=samples)
 
         self.data = self.sampler.data
-        self.catlist = np.unique(self.data['output'])
+        self.catlist = np.unique(self.data["output"])
 
     def train(self):
-        X = np.column_stack( (self.data['state'], self.data['factors']) )
-        Y = self.data['output']
+        X = np.column_stack( (self.data["state"], self.data["factors"]) )
+        Y = self.data["output"]
         self.labelCodes = np.unique(Y)
         self.logreg.fit(X, Y, maxiter=self.maxiter)
         out = self.logreg.predict(X)

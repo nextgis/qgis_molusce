@@ -59,9 +59,7 @@ def getLayerMask(layer):
       maskVals = dict()
       bCount = layer.bandCount()
       for i in range(bCount):
-        mask = []
-        for rasterRange in provider.userNoDataValues(i+1):
-          mask.append(rasterRange.min())
+        mask = [rasterRange.min() for rasterRange in provider.userNoDataValues(i+1)]
 
         # Provider nodata value ALWAYS used during raster reading
         # (see algorithms.dataprovider._read)

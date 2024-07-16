@@ -23,7 +23,7 @@ from molusce.algorithms.utils import binaryzation, masks_identity
 
 
 class EBError(Exception):
-    '''Base class for exceptions in this module.'''
+    """Base class for exceptions in this module."""
     def __init__(self, msg):
         self.msg = msg
 
@@ -58,15 +58,15 @@ class EBudget(QObject):
 
         QObject.__init__(self)
 
-        if referenceMap.getBandsCount() + simulatedMap.getBandsCount() !=2:
-            raise EBError('The reference and simulated rasters must be 1-band rasters!')
+        if referenceMap.getBandsCount() + simulatedMap.getBandsCount() != 2:
+            raise EBError("The reference and simulated rasters must be 1-band rasters!")
         if not referenceMap.geoDataMatch(simulatedMap):
-            raise EBError('Geometries of the reference and simulated rasters are different!')
+            raise EBError("Geometries of the reference and simulated rasters are different!")
 
         self.categories = referenceMap.getBandGradation(1)
         for s in simulatedMap.getBandGradation(1):
             if s not in self.categories:
-                raise EBError('Categories in the reference and simulated rasters are different!')
+                raise EBError("Categories in the reference and simulated rasters are different!")
 
         R = referenceMap.getBand(1)
         S = simulatedMap.getBand(1)
@@ -135,13 +135,13 @@ class EBudget(QObject):
         self.shape = (newRows, newCols)
 
     def getStat(self, nIter, scale=2):
-        '''
+        """
         Perform nIter iterations of error budget calculation and rescaling to coarse scale.
-        '''
+        """
         try:
             result = {}
             for i in range(nIter):
-                result[i] = {'NoNo': self.NoNo(), 'NoMed': self.NoMed(), 'MedMed': self.MedMed(), 'MedPer': self.MedPer(), 'PerPer': self.PerPer()}
+                result[i] = {"NoNo": self.NoNo(), "NoMed": self.NoMed(), "MedMed": self.MedMed(), "MedPer": self.MedPer(), "PerPer": self.PerPer()}
                 self.coarse(scale)
 
         except MemoryError:

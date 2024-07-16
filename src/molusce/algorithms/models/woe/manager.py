@@ -16,14 +16,14 @@ def sigmoid(x):
     return 1/(1+np.exp(-x))
 
 class WoeManagerError(Exception):
-    '''Base class for exceptions in this module.'''
+    """Base class for exceptions in this module."""
     def __init__(self, msg):
         self.msg = msg
 
 class WoeManager(QObject):
-    '''This class gets the data extracted from the UI and
+    """This class gets the data extracted from the UI and
     pass it to woe function, then gets and stores the result.
-    '''
+    """
 
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
@@ -32,7 +32,7 @@ class WoeManager(QObject):
     errorReport = pyqtSignal(str)
 
     def __init__(self, factors, areaAnalyst, unit_cell=1, bins = None):
-        '''
+        """
         @param factors      List of the pattern rasters used for prediction of point objects (sites).
         @param areaAnalyst  AreaAnalyst that contains map of the changes, encodes and decodes category numbers.
         @param unit_cell    Method parameter, pixelsize of resampled rasters.
@@ -40,7 +40,7 @@ class WoeManager(QObject):
                                 For example if factors = [f0, f1], then bins could be (for example) {0:[bins for f0], 1:[bins for f1]} = {0:[[10, 100, 250]],1:[[0.2, 1, 1.5, 4]]}.
                                 List of list used because a factor can be a multiband raster, we need get a list of bins for every band. For example:
                                 factors = [f0, 2-band-factor], bins= {0: [[10, 100, 250]], 1:[[0.2, 1, 1.5, 4], [3, 4, 7]] }
-        '''
+        """
 
         QObject.__init__(self)
 
@@ -54,14 +54,14 @@ class WoeManager(QObject):
         self.confidence = None      # Raster of the results confidence(1 = the maximum confidence, 0 = the least confidence)
 
         if (bins is not None) and (len(self.factors) != len(list(bins.keys()))):
-            raise WoeManagerError('Lengths of bins and factors are different!')
+            raise WoeManagerError("Lengths of bins and factors are different!")
 
         for r in self.factors:
             if not self.changeMap.geoDataMatch(r):
-                raise WoeManagerError('Geometries of the input rasters are different!')
+                raise WoeManagerError("Geometries of the input rasters are different!")
 
         if self.changeMap.getBandsCount() != 1:
-            raise WoeManagerError('Change map must have one band!')
+            raise WoeManagerError("Change map must have one band!")
 
         self.geodata = self.changeMap.getGeodata()
 
@@ -103,7 +103,7 @@ class WoeManager(QObject):
                             return False
                         b0, bMax = b[0], b[len(b)-1]
                         bandStat = factor.getBandStat(j+1)
-                        if bandStat['min'] >b0 or bandStat['max']<bMax:
+                        if bandStat["min"] >b0 or bandStat["max"]<bMax:
                             return False
         return True
 
@@ -111,9 +111,9 @@ class WoeManager(QObject):
         return self.confidence
 
     def getPrediction(self, state, calcTransitions=False):
-        '''
+        """
         Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
-        '''
+        """
         self._predict(state, calcTransitions)
         return self.prediction
 
@@ -124,15 +124,15 @@ class WoeManager(QObject):
         return self.woe
 
     def _predict(self, state):
-        '''
+        """
         Predict the changes.
-        '''
+        """
         try:
             self.rangeChanged.emit(self.tr("Initialize model %p%"), 1)
 
-            rows, cols = self.geodata['ySize'], self.geodata['xSize']
+            rows, cols = self.geodata["ySize"], self.geodata["xSize"]
             if not self.changeMap.geoDataMatch(state):
-                raise WoeManagerError('Geometries of the state and changeMap rasters are different!')
+                raise WoeManagerError("Geometries of the state and changeMap rasters are different!")
 
             prediction = np.zeros((rows,cols), dtype=np.uint8)
             confidence = np.zeros((rows,cols), dtype=np.uint8)
@@ -180,9 +180,9 @@ class WoeManager(QObject):
             self.processFinished.emit()
 
     def train(self):
-        '''
+        """
         Train the model
-        '''
+        """
         self.transitionPotentials = {}
         try:
             iterCount = len(self.codes)*len(self.factors)
@@ -209,9 +209,9 @@ class WoeManager(QObject):
                             band = reclass(band, boundary_bin[i-1])
                         band, sites = masks_identity(band, sites, dtype=np.uint8)   # Combine masks of the rasters
                         woeRes = woe(band, sites, self.unit_cell)   # WoE for the 'code' (initState->finalState) transition and current 'factor'.
-                        weights = woeRes['map']
+                        weights = woeRes["map"]
                         wMap = wMap + weights
-                        factorW[i] = woeRes['weights']
+                        factorW[i] = woeRes["weights"]
                     self.updateProgress.emit()
 
                 # Reclassification finished => set WoE coefficients
@@ -224,7 +224,7 @@ class WoeManager(QObject):
                 self.transitionPotentials[code] = p
                 gc.collect()
         except MemoryError:
-            self.errorReport.emit('The system out of memory during WoE trainig')
+            self.errorReport.emit("The system out of memory during WoE trainig")
             raise
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during WoE trainig"))
@@ -233,9 +233,9 @@ class WoeManager(QObject):
             self.processFinished.emit()
 
     def weightsToText(self):
-        '''
+        """
         Format self.weights as text report.
-        '''
+        """
         if self.weights == {}:
             return ""
         text = ""
@@ -252,6 +252,6 @@ class WoeManager(QObject):
                         weights = ["%f" % (w,) for w in bandWeights]
                         text = text + self.tr("\t\t Weights of band %s: %s \n" % (bandNum, ", ".join(weights)) )
             except:
-                text = text + self.tr('W for code % s (%s -> %s) causes error' % (code, initClass, finalClass))
+                text = text + self.tr("W for code % s (%s -> %s) causes error" % (code, initClass, finalClass))
                 raise
         return text

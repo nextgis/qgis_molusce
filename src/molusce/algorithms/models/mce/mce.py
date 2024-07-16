@@ -12,7 +12,7 @@ from molusce.algorithms.utils import binaryzation
 
 
 class MCEError(Exception):
-    '''Base class for exceptions in this module.'''
+    """Base class for exceptions in this module."""
     def __init__(self, msg):
         self.msg = msg
 
@@ -62,13 +62,13 @@ class MCE(QObject):
         39: 1.70
     }
     def __init__(self, factors, wMatr, initStateNum, finalStateNum, areaAnalyst):
-        '''
+        """
         Multicriteria evaluation based on Saaty method. It defines transition probability of two categories (initStateNum, finalStateNum).
         @param factors          List of the factor rasters used for prediction.
         @param wMatr            List of lists -- NxN comparison matrix.
         @param initStateNum     Number of initial state (the state before transition).
         @param finalStateNum    Number of final state (the state after transition).
-        '''
+        """
 
         QObject.__init__(self)
 
@@ -81,21 +81,21 @@ class MCE(QObject):
         self.dim = 0
         for f in factors:
             self.dim = self.dim + f.getBandsCount()
-            f.normalize(mode = 'maxmin')
+            f.normalize(mode = "maxmin")
         if self.dim != len(wMatr):
-            raise MCEError('Matrix size is different from the number of variables!')
+            raise MCEError("Matrix size is different from the number of variables!")
 
         # Check if the matrix is valid
         for i in range(self.dim):
             if len(wMatr[i]) != self.dim:
-                raise MCEError('The weight matrix is not NxN!')
+                raise MCEError("The weight matrix is not NxN!")
         EPSILON = 0.000001      # A small number
         for i in range(self.dim):
             if wMatr[i][i] != 1:
-                raise MCEError('w[i,i] not equal 1 !')
+                raise MCEError("w[i,i] not equal 1 !")
             for j in range(i+1, self.dim):
                 if abs(wMatr[i][j] * wMatr[j][i] - 1) > EPSILON:
-                    raise MCEError('w[i,j] * w[j,i] not equal 1 !')
+                    raise MCEError("w[i,j] * w[j,i] not equal 1 !")
 
         self.wMatr = np.array(wMatr)
 
@@ -123,9 +123,9 @@ class MCE(QObject):
         return self.transitionPotentials
 
     def getPrediction(self, state, calcTransitions=False):
-        '''
+        """
         Most of the models use factors for prediction, but MCE takes list of factors only once (during the initialization).
-        '''
+        """
         self._predict(state, calcTransitions)
         return self.prediction
 
@@ -135,12 +135,12 @@ class MCE(QObject):
         return self.weights
 
     def _predict(self, state):
-        '''
+        """
         Predict the changes.
-        '''
+        """
         try:
             geodata = state.getGeodata()
-            rows, cols = geodata['ySize'], geodata['xSize']
+            rows, cols = geodata["ySize"], geodata["xSize"]
 
             self.transitionPotentials = None    # Reset tr.potentials if they exist
 
@@ -163,8 +163,8 @@ class MCE(QObject):
             weightNum = 0               # Number of processed weights
             for f in self.factors:
                 if not f.geoDataMatch(state):
-                    raise MCEError('Geometries of the state and factor rasters are different!')
-                f.normalize(mode = 'maxmin')
+                    raise MCEError("Geometries of the state and factor rasters are different!")
+                f.normalize(mode = "maxmin")
                 for i in range(f.getBandsCount()):
                     band = f.getBand(i+1)
                     confidence = confidence + (band*weights[weightNum]*100).astype(np.uint8)
@@ -195,9 +195,9 @@ class MCE(QObject):
             raise
 
     def setWeights(self):
-        '''
+        """
         Calculate the weigths and consistency ratio.
-        '''
+        """
         # Weights
         w, v = np.linalg.eig(self.wMatr)
         maxW = np.max(w)

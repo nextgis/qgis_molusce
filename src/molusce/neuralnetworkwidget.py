@@ -72,11 +72,11 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.layoutPlot.addWidget(self.mpltoolbar)
 
     # and configure matplotlib params
-    rcParams['font.serif'] = "Verdana, Arial, Liberation Serif"
-    rcParams['font.sans-serif'] = "Tahoma, Arial, Liberation Sans"
-    rcParams['font.cursive'] = "Courier New, Arial, Liberation Sans"
-    rcParams['font.fantasy'] = "Comic Sans MS, Arial, Liberation Sans"
-    rcParams['font.monospace'] = "Courier New, Liberation Mono"
+    rcParams["font.serif"] = "Verdana, Arial, Liberation Serif"
+    rcParams["font.sans-serif"] = "Tahoma, Arial, Liberation Sans"
+    rcParams["font.cursive"] = "Courier New, Arial, Liberation Sans"
+    rcParams["font.fantasy"] = "Comic Sans MS, Arial, Liberation Sans"
+    rcParams["font.monospace"] = "Courier New, Liberation Mono"
 
     self.btnTrainNetwork.clicked.connect(self.trainNetwork)
 
@@ -158,15 +158,15 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
     self.dataVal = []
     self.plotTrain = self.axes.plot(self.dataTrain,
                                     linewidth=1,
-                                    color="green",  marker='o'
+                                    color="green",  marker="o"
                                    )[0]
     self.plotVal = self.axes.plot(self.dataVal,
                                   linewidth=1,
                                   color="red",
                                  )[0]
-    leg = self.axes.legend(('Train', 'Validation'), 'upper right', shadow=False)
+    leg = self.axes.legend(("Train", "Validation"), "upper right", shadow=False)
     for t in leg.get_texts():
-        t.set_fontsize('small')
+        t.set_fontsize("small")
     model.moveToThread(self.plugin.workThread)
 
     self.plugin.workThread.started.connect(model.startTrain)

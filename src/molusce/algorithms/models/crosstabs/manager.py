@@ -8,14 +8,14 @@ from molusce.algorithms.models.crosstabs.model import CrossTable
 
 
 class CrossTabManagerError(Exception):
-    '''Base class for exceptions in this module.'''
+    """Base class for exceptions in this module."""
     def __init__(self, msg):
         self.msg = msg
 
 class CrossTableManager(QObject):
-    '''
+    """
     Provides statistic information about transitions InitState->FinalState.
-    '''
+    """
 
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
@@ -27,7 +27,7 @@ class CrossTableManager(QObject):
         QObject.__init__(self)
 
         if not initRaster.geoDataMatch(finalRaster):
-            raise CrossTabManagerError('Geometries of the raster maps are different!')
+            raise CrossTabManagerError("Geometries of the raster maps are different!")
 
         if initRaster.getBandsCount() + finalRaster.getBandsCount() != 2:
             raise CrossTabManagerError("An input raster has more then one band. Use 1-band rasters!")
@@ -72,26 +72,26 @@ class CrossTableManager(QObject):
         return tab*s[:,None]
 
     def getTransitionStat(self):
-        pixelArea = self.pixelArea['area']
-        stat = {'unit': self.pixelArea['unit']}
+        pixelArea = self.pixelArea["area"]
+        stat = {"unit": self.pixelArea["unit"]}
         tab = self.getCrosstable()
 
         initArea = tab.getSumRows()
         initArea = pixelArea * initArea
         initPerc = 100.0 * initArea / sum(initArea)
-        stat['init'] = initArea
-        stat['initPerc'] = initPerc
+        stat["init"] = initArea
+        stat["initPerc"] = initPerc
 
         finalArea = tab.getSumCols()
         finalArea = pixelArea * finalArea
         finalPerc = 100.0 * finalArea / sum(finalArea)
-        stat['final'] = finalArea
-        stat['finalPerc'] = finalPerc
+        stat["final"] = finalArea
+        stat["finalPerc"] = finalPerc
 
         deltas = finalArea - initArea
         deltasPerc = finalPerc - initPerc
-        stat['deltas'] = deltas
-        stat['deltasPerc'] = deltasPerc
+        stat["deltas"] = deltas
+        stat["deltasPerc"] = deltasPerc
 
         return stat
 

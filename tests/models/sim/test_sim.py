@@ -11,9 +11,9 @@ from numpy.testing import assert_array_equal
 
 
 class Model:
-    '''
+    """
     Simple predicting model for Simulator tests
-    '''
+    """
     def __init__(self, state):
         self._predict(state)
 
@@ -27,7 +27,7 @@ class Model:
     def _predict(self, state, factors=None, calcTransitions=False):
         geodata = state.getGeodata()
         band = state.getBand(1)
-        rows, cols = geodata['ySize'], geodata['xSize']
+        rows, cols = geodata["ySize"], geodata["xSize"]
         # Let the new state is: 1 -> 2, 2- >3, 3 -> 1, then
         # the prediction is 1->1, 2->5, 3->6
 
@@ -59,7 +59,7 @@ class TestSimulator(unittest.TestCase):
             #~ [3, 2, 1,],
             #~ [0, 3, 1,]
         self.examples_path = Path(__file__).parents[2] / "examples"
-        self.raster1 = Raster(self.examples_path / 'multifact.tif')
+        self.raster1 = Raster(self.examples_path / "multifact.tif")
         self.raster1.resetMask([0])
 
         self.X = np.array([

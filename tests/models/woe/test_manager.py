@@ -13,12 +13,12 @@ from numpy.testing import assert_array_equal
 class TestWoEManager (unittest.TestCase):
     def setUp(self):
         self.examples_path = Path(__file__).parents[2] / "examples"
-        self.factor = Raster(self.examples_path / 'multifact.tif')
+        self.factor = Raster(self.examples_path / "multifact.tif")
                 #~ [1,1,3]
                 #~ [3,2,1]
                 #~ [0,3,1]
 
-        self.sites  = Raster(self.examples_path / 'sites.tif')
+        self.sites  = Raster(self.examples_path / "sites.tif")
                     #~ [1,2,1],
                     #~ [1,2,1],
                     #~ [0,1,2]
@@ -66,12 +66,12 @@ class TestWoEManager (unittest.TestCase):
         answer = ma.array(data = answer, mask = self.mask)
         assert_array_equal(p, answer)
 
-        initState = Raster(self.examples_path / 'data.tif')
+        initState = Raster(self.examples_path / "data.tif")
             #~ [1,1,1,1],
             #~ [1,1,2,2],
             #~ [2,2,2,2],
             #~ [3,3,3,3]
-        finalState = Raster(self.examples_path / 'data1.tif')
+        finalState = Raster(self.examples_path / "data1.tif")
             #~ [1,1,2,3],
             #~ [3,1,2,3],
             #~ [3,3,3,3],
@@ -148,10 +148,10 @@ class TestWoEManager (unittest.TestCase):
             [0, 0, 1, 0]
         ]
         geodata = initState.getGeodata()
-        sites = {'11': r11, '12': r12, '13': r13, '21': r21, '22': r22, '23': r23, '31': r31, '32': r32, '33': r33}
+        sites = {"11": r11, "12": r12, "13": r13, "21": r21, "22": r22, "23": r23, "31": r31, "32": r32, "33": r33}
         woeDict = {}    # WoE of transitions
         for k in list(sites.keys()): #
-            if k !='21' : # !!! r21 is zero
+            if k !="21" : # !!! r21 is zero
                 x = Raster()
                 x.create([np.ma.array(data=sites[k])], geodata)
                 sites[k] = x

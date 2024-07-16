@@ -222,7 +222,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("The raster has a lot of different values. Does the raster store a nominal variable?" )
                          )
       initRaster = None
-      self.leInitRasterName.setText('')
+      self.leInitRasterName.setText("")
       gc.collect()
       return
     self.geometry_matched = False
@@ -258,7 +258,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("The raster has a lot of different values. Does the raster store a nominal variable?" )
                          )
       finalRaster = None
-      self.leFinalRasterName.setText('')
+      self.leFinalRasterName.setText("")
       gc.collect()
       return
     self.inputs["final"] = finalRaster
@@ -601,12 +601,12 @@ class MolusceDialog(QDialog, Ui_Dialog):
     if self.chkTransitionPotentials.isChecked():
         potentials = self.simulator.getTransitionPotentials()
         trans_prefix = self.leTransitionPotentialPrefix.text()
-        if not hasattr(self, 'analyst'):
+        if not hasattr(self, "analyst"):
             self.analyst = AreaAnalyst(self.inputs["initial"], self.inputs["final"])
         if potentials is not None:
             for k,v in potentials.items():
                 initcat, finalcat = self.analyst.decode(int(k))
-                _potential_map = v.save(trans_prefix+'_from_'+str(initcat)+ '_to_' +str(finalcat) + '.tif')
+                _potential_map = v.save(trans_prefix+"_from_"+str(initcat)+ "_to_" +str(finalcat) + ".tif")
         else:
             QMessageBox.warning(self,
                           self.tr("Not implemented yet"),
@@ -666,11 +666,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.scaleData = list(stat.keys())
     self.noNoData, self.noMedData, self.medMedData, self.medPerData, self.perPerData = [], [], [], [], []
     for k in list(stat.keys()):
-      self.noNoData.append(stat[k]['NoNo'])
-      self.noMedData.append(stat[k]['NoMed'])
-      self.medMedData.append(stat[k]['MedMed'])
-      self.medPerData.append(stat[k]['MedPer'])
-      self.perPerData.append(stat[k]['PerPer'])
+      self.noNoData.append(stat[k]["NoNo"])
+      self.noMedData.append(stat[k]["NoMed"])
+      self.medMedData.append(stat[k]["MedMed"])
+      self.medPerData.append(stat[k]["MedPer"])
+      self.perPerData.append(stat[k]["PerPer"])
 
     self.valAxes.set_xbound(lower=0, upper=len(self.scaleData)-1)
     self.valAxes.set_ybound(lower=0, upper=1)
@@ -737,7 +737,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.workThread.quit()
     self.restoreProgressState()
 
-    kappas = self.depCoef.kappa(mode='all')
+    kappas = self.depCoef.kappa(mode="all")
     self.leKappaOveral.setText("%6.5f" % (kappas["overal"]))
     self.leKappaHisto.setText("%6.5f" %(kappas["histo"]))
     self.leKappaLoc.setText("%6.5f" % (kappas["loc"]))
@@ -899,34 +899,34 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.noNoData = []
     self.noNo = self.valAxes.plot(self.noNoData,
                             linewidth=1,
-                            color="green", linestyle='dashed', marker='o',
+                            color="green", linestyle="dashed", marker="o",
                             )[0]
     self.noMedData = []
     self.noMed = self.valAxes.plot(self.noMedData,
                             linewidth=1,
-                            color="red", marker='o',
+                            color="red", marker="o",
                             )[0]
     self.medMedData = []
     self.medMed = self.valAxes.plot(self.medMedData,
                             linewidth=1,
-                            color="purple", linestyle='dashed', marker='v',
+                            color="purple", linestyle="dashed", marker="v",
                             )[0]
     self.medPerData = []
     self.medPer = self.valAxes.plot(self.medPerData,
                             linewidth=1,
-                            color="black", linestyle='dashed', marker='+',
+                            color="black", linestyle="dashed", marker="+",
                             )[0]
     self.perPerData = []
     self.perPer = self.valAxes.plot(self.perPerData,
                             linewidth=1,
-                            color="yellow", marker='*',
+                            color="yellow", marker="*",
                             )[0]
     box = self.valAxes.get_position()
     self.valAxes.set_position([box.x0, box.y0 + box.height * 0.2, box.width, box.height * 0.8])
-    leg = self.valAxes.legend(('No location, no quantity inform.', 'No location, medium quantity inform.', 'Medium location, medium quantity inform.', 'Perfect location, medium quantity inform.', 'Perfect location, perfect quantity inform.'), loc='upper center', bbox_to_anchor=(0.5, -0.05),
+    leg = self.valAxes.legend(("No location, no quantity inform.", "No location, medium quantity inform.", "Medium location, medium quantity inform.", "Perfect location, medium quantity inform.", "Perfect location, perfect quantity inform."), loc="upper center", bbox_to_anchor=(0.5, -0.05),
           fancybox=True, ncol=3, shadow=False)
     for t in leg.get_texts():
-        t.set_fontsize('small')
+        t.set_fontsize("small")
 
   def __checkAllCorr(self):
     dim = self.__bandCount()
@@ -954,7 +954,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
             self.tr("Cramer's Coefficient"), self.tr("Joint Information Uncertainty")
     ]
     # Loop over all rasters and all bands
-    self.setProgressRange(self.tr('Correlation checking'), dim*(dim-1)/2)
+    self.setProgressRange(self.tr("Correlation checking"), dim*(dim-1)/2)
     for i, fact1 in self.inputs["factors"].items():
         for b1 in range(fact1.getBandsCount()):
           labNo1 = mapping[i][b1]
@@ -988,30 +988,30 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def __checkTwoCorr(self):
     index = self.cmbFirstRaster.currentIndex()
     layerId = str(self.cmbFirstRaster.itemData(index, Qt.UserRole))
-    first = {'Raster': self.inputs["factors"][layerId], 'Name': self.cmbFirstRaster.currentText()}
+    first = {"Raster": self.inputs["factors"][layerId], "Name": self.cmbFirstRaster.currentText()}
     index = self.cmbSecondRaster.currentIndex()
     layerId = str(self.cmbSecondRaster.itemData(index, Qt.UserRole))
-    second = {'Raster': self.inputs["factors"][layerId], 'Name': self.cmbSecondRaster.currentText()}
+    second = {"Raster": self.inputs["factors"][layerId], "Name": self.cmbSecondRaster.currentText()}
 
-    dimensions = first['Raster'].getBandsCount(), second['Raster'].getBandsCount()
+    dimensions = first["Raster"].getBandsCount(), second["Raster"].getBandsCount()
     self.tblCorrelation.setRowCount(dimensions[0])
     self.tblCorrelation.setColumnCount(dimensions[1])
     labels = []
     for i in range(dimensions[0]):
       raster = first["Raster"]
       if raster.getBandsCount()>1:
-        name = "%s (band %s)" % (first['Name'], str(i+1))
+        name = "%s (band %s)" % (first["Name"], str(i+1))
       else:
-        name = "%s" % (first['Name'], )
+        name = "%s" % (first["Name"], )
       labels.append(name)
     self.tblCorrelation.setVerticalHeaderLabels(labels)
     labels = []
     for i in range(dimensions[1]):
       raster = second["Raster"]
       if raster.getBandsCount()>1:
-        name = "%s (band %s)" % (second['Name'], str(i+1))
+        name = "%s (band %s)" % (second["Name"], str(i+1))
       else:
-        name = "%s" % (second['Name'], )
+        name = "%s" % (second["Name"], )
       labels.append(name)
     self.tblCorrelation.setHorizontalHeaderLabels(labels)
 
@@ -1098,7 +1098,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     # legend colors
     d = len(colors)
     if d > 0:
-      for i in range(0, d):
+      for i in range(d):
         item = QTableWidgetItem("")
         item.setBackground(QBrush(colors[i]))
         self.tblStatistics.setItem(i, 0, item)
@@ -1133,8 +1133,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.tblTransMatrix.setVerticalHeaderLabels(labels)
     self.tblTransMatrix.setHorizontalHeaderLabels(labels)
 
-    for row in range(0, dimensions):
-      for col in range(0, dimensions):
+    for row in range(dimensions):
+      for col in range(dimensions):
         item = QTableWidgetItem("%f" % (transition[row, col],))
         self.tblTransMatrix.setItem(row, col, item)
 
@@ -1200,7 +1200,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                          )
       return
     model = self.inputs["model"]
-    if not hasattr(model, 'saveSamples'):
+    if not hasattr(model, "saveSamples"):
       QMessageBox.warning(self,
                           self.tr("Missed samples"),
                           self.tr("Selected model does't use samples")
@@ -1244,7 +1244,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                                           self.tr("Select Directory name")
       )
       oldprefix = os.path.basename(self.leTransitionPotentialPrefix.text())
-      self.leTransitionPotentialPrefix.setText(dirname+'/'+oldprefix)
+      self.leTransitionPotentialPrefix.setText(dirname+"/"+oldprefix)
       return
 
     fileName = utils.saveRasterDialog(self,
@@ -1301,11 +1301,11 @@ class MolusceDialog(QDialog, Ui_Dialog):
     self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S".encode("utf-8").decode("utf-8")), message))
 
   def logErrorReport(self, message):
-    self.logMessage('ERROR: '+message)
+    self.logMessage("ERROR: "+message)
 
   def __addTableColumn(self, col, values, units=""):
     dimensions = len(values)
-    for r in range(0, dimensions):
+    for r in range(dimensions):
       if units == "":
         item = QTableWidgetItem(str(values[r]))
       else:
@@ -1370,7 +1370,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
   def calcCertancyColorRamp(self, layer):
     r = Raster(str(layer.source()))
-    stat = r.getBandStat(1)
+    _stat = r.getBandStat(1)
     minVal = 0.0
     maxVal = 100.0
     numberOfEntries = 11

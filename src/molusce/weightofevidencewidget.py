@@ -93,7 +93,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
     self.tblReclass.setItemDelegateForColumn(3, self.delegate)
     for row in range(rowCount):
       # Set 2 bins as default value
-      self.tblReclass.setItem(row, 3, QTableWidgetItem('2'))
+      self.tblReclass.setItem(row, 3, QTableWidgetItem("2"))
 
     self.tblReclass.resizeRowsToContents()
     self.tblReclass.resizeColumnsToContents()

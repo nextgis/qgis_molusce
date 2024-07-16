@@ -90,8 +90,8 @@ class TestRaster (unittest.TestCase):
 
     def test_getBandStat(self):
         stat = self.r1.getBandStat(1)
-        self.assertAlmostEqual(stat['mean'], 15.0/9)
-        self.assertAlmostEqual(stat['std'], np.sqrt(10.0/9))
+        self.assertAlmostEqual(stat["mean"], 15.0/9)
+        self.assertAlmostEqual(stat["std"], np.sqrt(10.0/9))
 
     def test_normalize(self):
         multifact = [
@@ -108,18 +108,18 @@ class TestRaster (unittest.TestCase):
 
         # Normalize using min and max
         r1 = Raster(self.sample_path1)
-        r1.normalize(mode='maxmin')
+        r1.normalize(mode="maxmin")
         r1.denormalize()
         assert_array_equal(r1.getBand(1), multifact)
 
         # Two normalization procedures
         r1 = Raster(self.sample_path1)
         r1.normalize()
-        r1.normalize(mode='maxmin')
+        r1.normalize(mode="maxmin")
         r1.denormalize()
         assert_array_equal(r1.getBand(1), multifact)
         r1 = Raster(self.sample_path1)
-        r1.normalize(mode='maxmin')
+        r1.normalize(mode="maxmin")
         r1.normalize()
         r1.denormalize()
         assert_array_equal(r1.getBand(1), multifact)
@@ -141,7 +141,7 @@ class TestRaster (unittest.TestCase):
     def test_geodata(self):
         geodata = self.r1.getGeodata()
         self.r1.setGeoData(geodata)
-        geodata['xSize'] = geodata['xSize'] + 10
+        geodata["xSize"] = geodata["xSize"] + 10
         self.assertRaises(ProviderError, self.r1.setGeoData, geodata=geodata)
 
         self.assertTrue(self.r1.geoDataMatch(self.r1))
@@ -152,7 +152,7 @@ class TestRaster (unittest.TestCase):
 
     def test_save(self):
         try:
-            filename = 'temp.tiff'
+            filename = "temp.tiff"
             self.r1.save(filename)
             r2 = Raster(filename)
             self.assertEqual(r2.get_dtype(), self.r1.get_dtype())

@@ -18,7 +18,7 @@ class Simulator(QObject):
     errorReport = pyqtSignal(str)
 
     def __init__(self, state, factors, model, crosstable):
-        '''
+        """
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param model            Model that is used for predict. The model mast implement next methods:
@@ -28,7 +28,7 @@ class Simulator(QObject):
         @param crosstable       Crosstable, contains transition matrix between states T(i,j).
                                 The matrix contains number of pixels that are moved
                                 from init category i to final category j.
-        '''
+        """
         QObject.__init__(self)
 
         self.state = state
@@ -50,29 +50,29 @@ class Simulator(QObject):
             self.model.errorReport.connect(self.__modelErrorReport)
 
     def getConfidence(self):
-        '''
+        """
         Return raster of model's prediction confidence.
-        '''
+        """
         return self.model.getConfidence()
 
     def getTransitionPotentials(self):
         return self.model.getTransitionPotentials()
 
     def getPrediction(self):
-        '''
+        """
         Predict new states via model.
-        '''
+        """
         return self.predicted
 
     def getState(self):
         return self.state
 
     def errorMap(self, answer):
-        '''
+        """
         Create map of correct and incorrect prediction.
         This function compares the known answer and the result of predicting procedure,
         correct pixel is marked as 0.
-        '''
+        """
         state = self.getState()
         b = state.getBand(1)
         a = answer.getBand(1)
@@ -100,9 +100,9 @@ class Simulator(QObject):
         self.iterationCount = Count
 
     def __sim(self):
-        '''
+        """
         1 iteracion of simulation.
-        '''
+        """
         transition = self.crosstable.getCrosstable()
 
         self.updatePrediction(self.state)
@@ -178,9 +178,9 @@ class Simulator(QObject):
         self.state = result
 
     def simN(self):
-        '''
+        """
         Make N iterations of simulation.
-        '''
+        """
         try:
             for _i in range(self.iterationCount):
                 self.__sim()

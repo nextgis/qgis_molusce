@@ -12,13 +12,13 @@ from molusce.algorithms.utils import (
 
 
 class CrossTabError(Exception):
-    '''Base class for exceptions in this module.'''
+    """Base class for exceptions in this module."""
     def __init__(self, msg):
         self.msg = msg
 
 
 class CrossTable(QObject):
-    '''Class for compute gradations, contingency (cross)table T'''
+    """Class for compute gradations, contingency (cross)table T"""
 
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
@@ -35,7 +35,7 @@ class CrossTable(QObject):
         QObject.__init__(self)
 
         if not sizes_equal(band1, band2):
-            raise CrossTabError('Sizes of rasters are not equal!')
+            raise CrossTabError("Sizes of rasters are not equal!")
 
         band1, band2 = masks_identity(band1, band2, dtype=np.uint8)
 
@@ -78,7 +78,7 @@ class CrossTable(QObject):
                     k = 0
                     self.updateProgress.emit()
         except MemoryError:
-            self.errorReport.emit('The system out of memory during calculation of cross table')
+            self.errorReport.emit("The system out of memory during calculation of cross table")
             raise
         except:
             self.errorReport.emit(self.tr("An unknown error occurs during calculation of cross table"))
@@ -92,16 +92,16 @@ class CrossTable(QObject):
         return self._T
 
     def getExpectedProbtable(self):
-        '''
+        """
         Return expected probabilities table. (if dependencies between X, Y are not present).
-        '''
+        """
         t = self.getExpectedTable()
         return t/self.n
 
     def getExpectedTable(self):
-        '''
+        """
         Return expected crosstable. (if dependencies between X, Y are not present).
-        '''
+        """
         #compute expected table T*
         #creation array : T*ij = (sum_r[i] * sum_s[j])/ total
         crostable = self.getCrosstable()
@@ -119,18 +119,18 @@ class CrossTable(QObject):
         return 1.0*self.getSumRows() / self.n
 
     def getProbtable(self):
-        '''
+        """
         Return probability table of transitions
-        '''
+        """
         return 1.0*self.getCrosstable() / self.n
 
     def getSumRows(self):
-        '''This function returns sums in the rows (Ti.)'''
+        """This function returns sums in the rows (Ti.)"""
         crosstable = self.getCrosstable()
         return crosstable.sum(axis=1)
 
     def getSumCols(self):
-        '''This function returns sums in the cols (T.j)'''
+        """This function returns sums in the cols (T.j)"""
         crosstable = self.getCrosstable()
         return crosstable.sum(axis=0)
 

@@ -124,7 +124,7 @@ class TestModel (unittest.TestCase):
         ]
         ans = ma.array(data=ans, mask=self.mask)
         w = woe(self.factor, self.sites)
-        np.testing.assert_equal(w['map'], ans)
+        np.testing.assert_equal(w["map"], ans)
 
         # Multiclass
         w1, w2, w3 = (wPlus1 + wMinus2+wMinus3), (wPlus2 + wMinus1 + wMinus3), (wPlus3 + wMinus1 + wMinus2)
@@ -136,7 +136,7 @@ class TestModel (unittest.TestCase):
         ans = ma.array(data=ans, mask=self.mask)
         weights = woe(self.multifact, self.sites)
 
-        np.testing.assert_equal(ans, weights['map'])
+        np.testing.assert_equal(ans, weights["map"])
 
 
 if __name__ == "__main__":

@@ -35,7 +35,7 @@ class TestCrossTable (unittest.TestCase):
         self.Y = np.ma.array(self.Y, mask=(self.Y == 0))
 
     def test_init(self):
-        mess = 'compute table failed'
+        mess = "compute table failed"
         table = CrossTable(self.X, self.Y)
         crTab = table.getCrosstable()
         for i in range(self.r):

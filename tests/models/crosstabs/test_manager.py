@@ -10,8 +10,8 @@ from numpy import ma as ma
 class TestCrossTableManager(unittest.TestCase):
     def setUp(self):
         self.examples_path = Path(__file__).parents[2] / "examples"
-        self.init = Raster(self.examples_path / 'init.tif', maskVals = {1: [255]})
-        self.final  = Raster(self.examples_path / 'final.tif', maskVals ={1: [255]})
+        self.init = Raster(self.examples_path / "init.tif", maskVals = {1: [255]})
+        self.final  = Raster(self.examples_path / "final.tif", maskVals ={1: [255]})
 
     def test_getTransitionMatrix(self):
         table = CrossTableManager(self.init, self.final)
@@ -31,8 +31,8 @@ class TestCrossTableManager(unittest.TestCase):
         stat = table.getTransitionStat()
         initArea = [2543020.1301162727, 40688322.08186036, 52278673.40671987, 5433894.43814875]
         finalArea = [3895716.9871476693, 39612284.83132246, 50559386.95823998, 6876521.28013514]
-        np.testing.assert_almost_equal(initArea, stat['init'])
-        np.testing.assert_almost_equal(finalArea, stat['final'])
+        np.testing.assert_almost_equal(initArea, stat["init"])
+        np.testing.assert_almost_equal(finalArea, stat["final"])
 
 
 if __name__ == "__main__":

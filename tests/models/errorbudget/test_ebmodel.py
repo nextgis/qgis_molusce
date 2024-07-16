@@ -10,13 +10,13 @@ from numpy import ma as ma
 class TestModel (unittest.TestCase):
     def setUp(self):
         self.examples_path = Path(__file__).parents[2] / "examples"
-        self.reference = Raster(self.examples_path / 'data.tif')
+        self.reference = Raster(self.examples_path / "data.tif")
             #~ [1,1,1,1],
             #~ [1,1,2,2],
             #~ [2,2,2,2],
             #~ [3,3,3,3]
 
-        self.simulated = Raster(self.examples_path / 'data1.tif')
+        self.simulated = Raster(self.examples_path / "data1.tif")
             #~ [1,1,2,3],
             #~ [3,1,2,3],
             #~ [3,3,3,3],
@@ -99,8 +99,8 @@ class TestModel (unittest.TestCase):
         np.testing.assert_almost_equal(medP, answer)
 
     def test_Mask(self):
-        reference = Raster(self.examples_path / 'data.tif')
-        simulated = Raster(self.examples_path / 'data1.tif')
+        reference = Raster(self.examples_path / "data.tif")
+        simulated = Raster(self.examples_path / "data1.tif")
         reference.resetMask([2])
         simulated.resetMask([2])
 
@@ -125,8 +125,8 @@ class TestModel (unittest.TestCase):
         np.testing.assert_almost_equal(medP, 1.0)
 
     def test_coarse(self):
-        reference = Raster(self.examples_path / 'data.tif')
-        simulated = Raster(self.examples_path / 'data1.tif')
+        reference = Raster(self.examples_path / "data.tif")
+        simulated = Raster(self.examples_path / "data1.tif")
         reference.resetMask([2])
         simulated.resetMask([2])
 
@@ -162,17 +162,17 @@ class TestModel (unittest.TestCase):
         np.testing.assert_equal(eb.Sj, ans)
 
     def test_getStat(self):
-        reference = Raster(self.examples_path / 'data.tif')
-        simulated = Raster(self.examples_path / 'data1.tif')
+        reference = Raster(self.examples_path / "data.tif")
+        simulated = Raster(self.examples_path / "data1.tif")
         reference.resetMask([2])
         simulated.resetMask([2])
 
         eb = EBudget(reference, simulated)
         stat = eb.getStat(nIter=3)
-        ans0 =  {'NoNo': 0.5, 'NoMed': (5.0*5/8 + 3.0*3/8)/8, 'MedMed': 4.0/8, 'MedPer': 1.0, 'PerPer': 1.0}
+        ans0 =  {"NoNo": 0.5, "NoMed": (5.0*5/8 + 3.0*3/8)/8, "MedMed": 4.0/8, "MedPer": 1.0, "PerPer": 1.0}
         for k in list(stat[0].keys()):
             np.testing.assert_almost_equal(stat[0][k],ans0[k])
-        ans1 = {'NoNo': 0.5, 'NoMed': (5.0/8+5.0/32 + 3.0/16 + 3.0/32)/2, 'MedMed': 4.0/8, 'MedPer': 1.0, 'PerPer': 1.0}
+        ans1 = {"NoNo": 0.5, "NoMed": (5.0/8+5.0/32 + 3.0/16 + 3.0/32)/2, "MedMed": 4.0/8, "MedPer": 1.0, "PerPer": 1.0}
         for k in list(stat[1].keys()):
             np.testing.assert_almost_equal(stat[0][k],ans1[k])
 

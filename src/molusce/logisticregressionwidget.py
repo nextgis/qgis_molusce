@@ -134,9 +134,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblCoefficients.setColumnCount(colCount)
     self.tblCoefficients.setRowCount(rowCount)
 
-    labels = []
-    for i in range(rowCount):
-      labels.append("β%s" % (i,))
+    labels = [f"β{i}" for i in range(rowCount)]
     self.tblCoefficients.setVerticalHeaderLabels(labels)
     self.tblCoefficients.setHorizontalHeaderLabels(self.labels)
 
@@ -170,9 +168,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblStdDev.setColumnCount(colCount)
     self.tblStdDev.setRowCount(rowCount)
 
-    labels = []
-    for i in range(rowCount):
-      labels.append("β%s" % (i,))
+    labels = [f"β{i}" for i in range(rowCount)]
     self.tblStdDev.setVerticalHeaderLabels(labels)
     self.tblStdDev.setHorizontalHeaderLabels(self.labels)
 
@@ -212,9 +208,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblPValues.setColumnCount(colCount)
     self.tblPValues.setRowCount(rowCount)
 
-    labels = []
-    for i in range(rowCount):
-      labels.append("β%s" % (i,))
+    labels = [f"β{i}" for i in range(rowCount)]
     self.tblPValues.setVerticalHeaderLabels(labels)
     self.tblPValues.setHorizontalHeaderLabels(self.labels)
 

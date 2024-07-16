@@ -12,18 +12,18 @@ import numpy as np
 
 
 def sigmoid(x):
-    ''' Sigmoid like function using tanh '''
+    """ Sigmoid like function using tanh """
     return np.tanh(x)
 
 def dsigmoid(x):
-    ''' Derivative of sigmoid above '''
+    """ Derivative of sigmoid above """
     return 1.0-x**2
 
 class MLP:
-    ''' Multi-layer perceptron class. '''
+    """ Multi-layer perceptron class. """
 
     def __init__(self, *args):
-        ''' Initialization of the perceptron with given sizes.  '''
+        """ Initialization of the perceptron with given sizes.  """
 
         self.shape = args
         n = len(args)
@@ -49,14 +49,14 @@ class MLP:
         self.reset()
 
     def reset(self):
-        ''' Reset weights '''
+        """ Reset weights """
 
         for i in range(len(self.weights)):
             Z = np.random.random((self.layers[i].size,self.layers[i+1].size))
             self.weights[i][...] = (2*Z-1)*0.25
 
     def propagate_forward(self, data):
-        ''' Propagate data from input layer to output layer. '''
+        """ Propagate data from input layer to output layer. """
 
         # Set input layer
         self.layers[0][0:-1] = data
@@ -71,7 +71,7 @@ class MLP:
 
 
     def propagate_backward(self, target, lrate=0.1, momentum=0.1):
-        ''' Back propagate error related to target using lrate. '''
+        """ Back propagate error related to target using lrate. """
 
         deltas = []
 
@@ -98,24 +98,24 @@ class MLP:
 
 
 # -----------------------------------------------------------------------------
-if __name__ == '__main__':
+if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     def learn(network,samples, epochs=2500, lrate=.1, momentum=0.1):
         # Train 
         for _i in range(epochs):
             n = np.random.randint(samples.size)
-            network.propagate_forward( samples['input'][n] )
-            network.propagate_backward( samples['output'][n], lrate, momentum )
+            network.propagate_forward( samples["input"][n] )
+            network.propagate_backward( samples["output"][n], lrate, momentum )
         # Test
         for i in range(samples.size):
-            o = network.propagate_forward( samples['input'][i] )
-            print(i, samples['input'][i], '%.2f' % o[0], end=' ')
-            print('(expected %.2f)' % samples['output'][i])
+            o = network.propagate_forward( samples["input"][i] )
+            print(i, samples["input"][i], "%.2f" % o[0], end=" ")
+            print("(expected %.2f)" % samples["output"][i])
         print()
 
     network = MLP(2,2,1)
-    samples = np.zeros(4, dtype=[('input',  float, 2), ('output', float, 1)])
+    samples = np.zeros(4, dtype=[("input",  float, 2), ("output", float, 1)])
 
     # Example 1 : OR logical function
     # -------------------------------------------------------------------------
@@ -151,22 +151,22 @@ if __name__ == '__main__':
     # -------------------------------------------------------------------------
     print("Learning the sin function")
     network = MLP(1,7,1)
-    samples = np.zeros(500, dtype=[('x',  float, 1), ('y', float, 1)])
-    samples['x'] = np.linspace(0,1,500)
-    samples['y'] = np.sin(samples['x']*np.pi)
+    samples = np.zeros(500, dtype=[("x",  float, 1), ("y", float, 1)])
+    samples["x"] = np.linspace(0,1,500)
+    samples["y"] = np.sin(samples["x"]*np.pi)
 
     for _i in range(10000):
         n = np.random.randint(samples.size)
-        network.propagate_forward(samples['x'][n])
-        network.propagate_backward(samples['y'][n])
+        network.propagate_forward(samples["x"][n])
+        network.propagate_backward(samples["y"][n])
 
     plt.figure(figsize=(10,5))
     # Draw real function
-    x,y = samples['x'],samples['y']
-    plt.plot(x,y,color='b',lw=1)
+    x,y = samples["x"],samples["y"]
+    plt.plot(x,y,color="b",lw=1)
     # Draw network approximated function
     for i in range(samples.shape[0]):
         y[i] = network.propagate_forward(x[i])
-    plt.plot(x,y,color='r',lw=3)
+    plt.plot(x,y,color="r",lw=3)
     plt.axis([0,1,0,1])
     plt.show()

@@ -12,7 +12,7 @@ from molusce.algorithms.utils import masks_identity
 
 
 class CoeffError(Exception):
-    '''Base class for exceptions in this module.'''
+    """Base class for exceptions in this module."""
     def __init__(self, msg):
         self.msg = msg
 
@@ -46,7 +46,7 @@ class DependenceCoef(QObject):
 
     def calculateCrosstable(self):
         try:
-            self.rangeChanged.emit('Initialization...', 2)
+            self.rangeChanged.emit("Initialization...", 2)
             self.updateProgress.emit()
             self.crosstable = CrossTable(self.X, self.Y, expand=self.expand)
             self.updateProgress.emit()
@@ -62,9 +62,9 @@ class DependenceCoef(QObject):
             self.processFinished.emit()
 
     def correlation(self):
-        '''
+        """
         Define correlation coefficient of the rasters.
-        '''
+        """
         x, y = masks_identity(self.X.flatten(), self.Y.flatten())
         x, y = np.ma.compressed(x), np.ma.compressed(y)
         R = np.corrcoef(x, y)
@@ -84,7 +84,7 @@ class DependenceCoef(QObject):
         crosstable = table.getCrosstable()
         rows, cols = table.shape
         if rows != cols:
-            raise CoeffError('The method is applicable for NxN crosstable only!')
+            raise CoeffError("The method is applicable for NxN crosstable only!")
         n = table.n
         s = 0.0
         for i in range(rows):
@@ -96,14 +96,14 @@ class DependenceCoef(QObject):
             return s/n
 
     def cramer(self):
-        '''
+        """
         Define Cramer's relationship coefficient of the rasters for discrete values
         Coefficient change between [0, 1]
         0 - no dependence
         1 - full connection
         @param X    First raster's array
         @param Y    Second raster's array
-        '''
+        """
         table = self.getCrosstable()
         crosstable = table.getCrosstable()
         rows, cols = table.shape
@@ -120,14 +120,14 @@ class DependenceCoef(QObject):
         return Cramer
 
     def jiu(self):
-        '''
+        """
         Define Joint Information Uncertainty coef., based on entropy., for discrete values
         Coefficient change between [0, 1]
         0 - no connection
         1 - full connection
         @param X    First raster's array
         @param Y    Second raster's array
-        '''
+        """
         #T, sum_r, sum_s, total, r, s = compute_table(X, Y)
         table = self.getCrosstable()
         T = table.getProbtable()             #Pij = Tij / total
@@ -151,7 +151,7 @@ class DependenceCoef(QObject):
         return U
 
     def kappa(self, mode=None):
-        '''
+        """
         Kappa statistic
         @param X    Raster array.
         @param Y    Raster array.
@@ -159,11 +159,11 @@ class DependenceCoef(QObject):
             mode = None:    classic kappa
             mode = loc:     kappa location
             mode = histo    kappa histogram
-        '''
+        """
         table = self.getCrosstable()
         rows, cols = table.shape
         if rows != cols:
-            raise CoeffError('Kappa is applicable for NxN crosstable only!')
+            raise CoeffError("Kappa is applicable for NxN crosstable only!")
         t_expect =  table.getProbtable()
         pa = 0
         for i in range(rows):
@@ -182,7 +182,7 @@ class DependenceCoef(QObject):
         elif mode == "all":
             result = {"loc": (pa - pexpect)/(pmax - pexpect), "histo": (pmax - pexpect)/(1 - pexpect), "overal": (pa - pexpect)/(1-pexpect)}
         else:
-            raise CoeffError('Unknown mode of kappa statistics!')
+            raise CoeffError("Unknown mode of kappa statistics!")
 
         return result
 
