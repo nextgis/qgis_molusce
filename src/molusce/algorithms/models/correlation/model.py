@@ -92,8 +92,7 @@ class DependenceCoef(QObject):
 
         if percent:
             return 100.0*s/n
-        else:
-            return s/n
+        return s/n
 
     def cramer(self):
         """

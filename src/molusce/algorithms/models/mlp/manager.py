@@ -392,7 +392,7 @@ class MlpManager(QObject):
         try:
             samples_count = len(self.data)
             val_sampl_count = samples_count*valPercent/100
-            apply_validation = True if val_sampl_count>0 else False # Use or not use validation set
+            apply_validation = bool(val_sampl_count > 0) # Use or not use validation set
             train_sampl_count = samples_count - val_sampl_count
 
             # Set first train_sampl_count as training set, the other as validation set

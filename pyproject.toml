@@ -31,12 +31,12 @@ select = [
     # "PTH", # flake8-use-pathlib
     "PYI", # flake8-pyi
     "Q",   # flake8-quotes
-    # "RET", # flake8-return
-    # "RSE", # flake8-raise
+    "RET", # flake8-return
+    "RSE", # flake8-raise
     # "RUF",
-    # "SIM", # flake8-simplify
+    "SIM", # flake8-simplify
     # "SLF", # flake8-self
-    # "T10", # flake8-debugger
+    "T10", # flake8-debugger
     # "T20", # flake8-print
     # "TCH", # flake8-type-checking
     # "TD",  # flake8-todos
@@ -50,7 +50,7 @@ select = [
     # "FIX",  # flake8-fixme
 ]
 ignore = ["ANN101", "ANN102", "TD003", "FBT003", "ISC001", "COM812", "E501", 
-          "C901", "F403", "F405", "PERF102", "PYI024"]
+          "C901", "F403", "F405", "PERF102", "PYI024", "RET504", "SIM105"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]

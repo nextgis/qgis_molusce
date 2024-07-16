@@ -121,7 +121,7 @@ class LR(QObject):
             result[cat] = v
         return result
 
-    def _predict(self, state, factors, calcTransitions=False): # noqa: C901
+    def _predict(self, state, factors, calcTransitions=False):
         """
         Calculate output and confidence rasters using LR model and input rasters
         @param state            Raster of the current state (categories) values.

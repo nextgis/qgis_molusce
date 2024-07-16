@@ -551,7 +551,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
   def simulationDone(self):
     self.btnStartSimulation.setEnabled(True)
     if self.chkRiskFunction.isChecked():
-      if not self.leRiskFunctionPath.text() == "":
+      if self.leRiskFunctionPath.text() != "":
         res = self.simulator.getConfidence()
         grad = res.getBandGradation(1)
         saved = False
@@ -573,7 +573,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         self.logMessage(self.tr("Output path for risk function map is not set. Skipping this step"))
 
     if self.chkMonteCarlo.isChecked():
-      if not self.leMonteCarloPath.text() == "":
+      if self.leMonteCarloPath.text() != "":
         res = self.simulator.getState()
         grad = res.getBandGradation(1)
         saved = False

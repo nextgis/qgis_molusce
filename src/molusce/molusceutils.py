@@ -46,27 +46,26 @@ def getRasterLayers():
   layerMap = QgsProject.instance().mapLayers()
   layers = dict()
   for _name, layer in layerMap.items():
-    if layer.type() == QgsMapLayer.RasterLayer and layer.providerType() == "gdal":
-      if layer.id() not in list(layers.keys()):
-        layers[layer.id()] = str(layer.name())
+    if layer.type() == QgsMapLayer.RasterLayer and layer.providerType() == "gdal" and layer.id() not in list(layers.keys()):
+      layers[layer.id()] = str(layer.name())
   return layers
 
 def getLayerMask(layer):
   if layer is None:
     return None
-  else:
-      provider = layer.dataProvider()
-      maskVals = dict()
-      bCount = layer.bandCount()
-      for i in range(bCount):
-        mask = [rasterRange.min() for rasterRange in provider.userNoDataValues(i+1)]
+  
+  provider = layer.dataProvider()
+  maskVals = dict()
+  bCount = layer.bandCount()
+  for i in range(bCount):
+    mask = [rasterRange.min() for rasterRange in provider.userNoDataValues(i+1)]
 
-        # Provider nodata value ALWAYS used during raster reading
-        # (see algorithms.dataprovider._read)
-        #if provider.useSrcNoDataValue(i+1):
-        #  mask.append(provider.srcNoDataValue(i+1))
-        maskVals[i+1] = mask
-      return maskVals
+    # Provider nodata value ALWAYS used during raster reading
+    # (see algorithms.dataprovider._read)
+    #if provider.useSrcNoDataValue(i+1):
+    #  mask.append(provider.srcNoDataValue(i+1))
+    maskVals[i+1] = mask
+  return maskVals
 
 def getLayerMaskById(layerId):
   layer = getLayerById(layerId)
@@ -89,8 +88,8 @@ def getLayerById(layerId):
     if layer.id() == layerId:
       if layer.isValid():
         return layer
-      else:
-        return None
+      return None
+  return None
 
 def getLayerByName(layerName):
   layerMap = QgsProject.instance().mapLayers()
@@ -98,8 +97,8 @@ def getLayerByName(layerName):
     if layer.name() == layerName:
       if layer.isValid():
         return layer
-      else:
-        return None
+      return None
+  return None
 
 def getLayerBySource(layerSource):
   layerMap = QgsProject.instance().mapLayers()
@@ -107,8 +106,8 @@ def getLayerBySource(layerSource):
     if layer.source() == layerSource:
       if layer.isValid():
         return layer
-      else:
-        return None
+      return None
+  return None
 
 def getLayerGroup(relations, layerId):
   group = None
@@ -176,20 +175,17 @@ def openDirectoryDialog(parent, settings, title):
 def checkInputRasters(userData):
   if ("initial" in userData) and ("final" in userData):
     return True
-  else:
-    return False
+  return False
 
 def checkFactors(userData):
   if "factors" in userData:
     return True
-  else:
-    return False
+  return False
 
 def checkChangeMap(userData):
   if "changeMap" in userData:
     return True
-  else:
-    return False
+  return False
 
 def copySymbology(src, dst):
   di = QDomImplementation()

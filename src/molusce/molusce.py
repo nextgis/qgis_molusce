@@ -73,7 +73,7 @@ class MoluscePlugin:
                            QCoreApplication.translate("MOLUSCE", "Error"),
                            QCoreApplication.translate("MOLUSCE", "Quantum GIS %s detected.\n") %s (qgisVersion) +
                            QCoreApplication.translate("MOLUSCE", "This version of MOLUSCE requires at least QGIS version 1.9.0\nPlugin will not be enabled."))
-      return None
+      return
 
     self.actionRun = QAction(QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.iface.mainWindow())
     self.iface.registerMainWindowAction(self.actionRun, "Shift+M")

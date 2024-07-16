@@ -181,7 +181,7 @@ class MLR:
         """Return array of the intercept estimates (numpy array, shape [1, n_classes])
         """
         if self.W_ is None:
-            return
+            return None
         return self.W_[0, :]
 
     def get_pval_intercept(self, X):
@@ -208,7 +208,7 @@ class MLR:
         """Return array of the coefficient estimates (numpy array, shape [n_features, n_classes])
         """
         if self.W_ is None:
-            return
+            return None
         return self.W_[1:, :]
 
     def fit(self, X, y, maxiter=None):

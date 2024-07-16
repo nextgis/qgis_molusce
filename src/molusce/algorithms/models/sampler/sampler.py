@@ -172,20 +172,20 @@ class Sampler(QObject):
             out_data = output.getPixelFromBand(row, col, band=1)  # Get the pixel
             if out_data is None:                                 # Eliminate masked samples
                 return None
-            else:
-                data["output"] = out_data
+            
+            data["output"] = out_data
 
             state_data = self.get_state(state, row,col)
             if state_data is None: # Eliminate incomplete samples
                 return None
-            else:
-                data["state"] = state_data
+            
+            data["state"] = state_data
 
             factors_data = self.get_factors(row,col)
             if factors_data is None: # Eliminate incomplete samples
                 return None
-            else:
-                data["factors"] = factors_data
+            
+            data["factors"] = factors_data
         except ProviderError:
             return None
         x,y = state.getPixelCoords(col,row)

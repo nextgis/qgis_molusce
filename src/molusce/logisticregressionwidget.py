@@ -187,10 +187,9 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     def significance(p):
       if p <= 0.01:
         return "**"
-      elif p<= 0.05:
-        return "*"
-      else:
-        return "-"
+      if p <= 0.05:
+        return "*"      
+      return "-"
 
     if model is None:
       QMessageBox.warning(self.plugin,

@@ -291,10 +291,7 @@ class Raster:
         for i in range(1, data.RasterCount+1):
             r = data.GetRasterBand(i)
             nodataValue =  r.GetNoDataValue()
-            if nodataValue is not None:
-                nodataValues = [nodataValue]
-            else:
-                nodataValues = []
+            nodataValues = [nodataValue] if nodataValue is not None else []
             r = r.ReadAsArray()
             #self.bandgradation[i] = None
             if self.maskVals is None:
@@ -319,10 +316,7 @@ class Raster:
         """
         for i in range(self.getBandsCount()):
             r = self.getBand(i)
-            if maskVals is not None:
-                mask = binaryzation(r, maskVals)
-            else:
-                mask = False
+            mask = binaryzation(r, maskVals) if maskVals is not None else False
             r = ma.array(data = r, mask=mask)
             self.setBand(r, i)
 
