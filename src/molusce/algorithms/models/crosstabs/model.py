@@ -26,7 +26,7 @@ class CrossTable(QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    def __init__(self, band1, band2, *, expand = False):
+    def __init__(self, band1, band2, expand = False):
         """
         @param band1    First band (numpy masked array)
         @param band2    Second band (numpy masked array)

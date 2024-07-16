@@ -52,7 +52,7 @@ class Sampler(QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    def __init__(self, state, factors, ns=0):
+    def __init__(self, state, factors, output=None, ns=0):
         '''
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).

@@ -24,7 +24,7 @@ class DependenceCoef(QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    def __init__(self, X, Y, *, expand=False):
+    def __init__(self, X, Y, expand=False):
         """
         @param band1    First band (numpy masked array)
         @param band2    Second band (numpy masked array)
@@ -76,7 +76,7 @@ class DependenceCoef(QObject):
 
         return R[0][1]
 
-    def correctness(self, *, percent = True):
+    def correctness(self, percent = True):
         """
         % (or count) of correct results
         """

@@ -1368,7 +1368,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     # correlation tab
     self.chkAllCorr.setChecked(bool(self.settings.value("ui/checkAllRasters", False)))
 
-  def calcCertancyColorRamp(self):
+  def calcCertancyColorRamp(self, layer):
+    r = Raster(str(layer.source()))
+    stat = r.getBandStat(1)
     minVal = 0.0
     maxVal = 100.0
     numberOfEntries = 11

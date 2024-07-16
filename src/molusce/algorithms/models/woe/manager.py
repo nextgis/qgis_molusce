@@ -110,7 +110,7 @@ class WoeManager(QObject):
     def getConfidence(self):
         return self.confidence
 
-    def getPrediction(self, state, *, calcTransitions=False):
+    def getPrediction(self, state, calcTransitions=False):
         '''
         Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
         '''
