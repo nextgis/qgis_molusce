@@ -38,19 +38,20 @@ select = [
     # "SLF", # flake8-self
     "T10", # flake8-debugger
     # "T20", # flake8-print
-    # "TCH", # flake8-type-checking
-    # "TD",  # flake8-todos
-    # "TID", # flake8-tidy-imports
-    # "TRY", # tryceratops
+    "TCH", # flake8-type-checking
+    "TD",  # flake8-todos
+    "TID", # flake8-tidy-imports
+    "TRY", # tryceratops
     # "UP",  # pyupgrade
-    # "W",   # pycodesytle warnings
+    "W",   # pycodesytle warnings
     # "ANN",  # flake8-annotations
-    # "CPY",  # flake8-copyright
+    "CPY",  # flake8-copyright
     # "D",  # pydocstyle
     # "FIX",  # flake8-fixme
 ]
 ignore = ["ANN101", "ANN102", "TD003", "FBT003", "ISC001", "COM812", "E501", 
-          "C901", "F403", "F405", "PERF102", "PYI024", "RET504", "SIM105"]
+          "C901", "F403", "F405", "PERF102", "PYI024", "RET504", "SIM105",
+          "TD002", "TRY003"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]

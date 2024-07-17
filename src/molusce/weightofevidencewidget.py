@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 #******************************************************************************
 #
@@ -78,9 +77,9 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
         if v.isCountinues(b):
           self.tblReclass.insertRow(row)
           if v.getBandsCount()>1:
-            name = "%s (band %s)" % (utils.getLayerById(k).name(), str(b))
+            name = (f"{utils.getLayerById(k).name()} (band {str(b)})")
           else:
-            name = "%s" % (utils.getLayerById(k).name(), )
+            name = (f"{(utils.getLayerById(k).name(),)}")
           stat = v.getBandStat(b)
           for n, item_data in enumerate([name, ("%f" % (stat["min"], )), ("%f" % (stat["max"])), "" , "" ]):
             item = QTableWidgetItem(item_data)
@@ -165,9 +164,9 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
         lst.append(None)
         if v.isCountinues(b+1):
           if v.getBandsCount()>1:
-            name = "%s (band %s)" % (utils.getLayerById(k).name(), str(b+1))
+            name = (f"{utils.getLayerById(k).name()} (band {str(b+1)})")
           else:
-            name = "%s" % (utils.getLayerById(k).name(), )
+            name = (f"{(utils.getLayerById(k).name(),)}")
           items = self.tblReclass.findItems(name, Qt.MatchExactly)
           idx = self.tblReclass.indexFromItem(items[0])
           reclassList = self.tblReclass.item(idx.row(), 4).text()

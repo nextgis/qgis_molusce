@@ -6,8 +6,7 @@ from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 
 
 class Simulator(QObject):
-    """
-    Based on a model, controls simulation via cellular automaton
+    """Based on a model, controls simulation via cellular automaton
     over a number of cycles
     """
 
@@ -18,8 +17,7 @@ class Simulator(QObject):
     errorReport = pyqtSignal(str)
 
     def __init__(self, state, factors, model, crosstable):
-        """
-        @param state            Raster of the current state (categories) values.
+        """@param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param model            Model that is used for predict. The model mast implement next methods:
                                     getConfidence(),
@@ -50,8 +48,7 @@ class Simulator(QObject):
             self.model.errorReport.connect(self.__modelErrorReport)
 
     def getConfidence(self):
-        """
-        Return raster of model's prediction confidence.
+        """Return raster of model's prediction confidence.
         """
         return self.model.getConfidence()
 
@@ -59,8 +56,7 @@ class Simulator(QObject):
         return self.model.getTransitionPotentials()
 
     def getPrediction(self):
-        """
-        Predict new states via model.
+        """Predict new states via model.
         """
         return self.predicted
 
@@ -68,8 +64,7 @@ class Simulator(QObject):
         return self.state
 
     def errorMap(self, answer):
-        """
-        Create map of correct and incorrect prediction.
+        """Create map of correct and incorrect prediction.
         This function compares the known answer and the result of predicting procedure,
         correct pixel is marked as 0.
         """
@@ -100,8 +95,7 @@ class Simulator(QObject):
         self.iterationCount = Count
 
     def __sim(self):
-        """
-        1 iteracion of simulation.
+        """1 iteracion of simulation.
         """
         transition = self.crosstable.getCrosstable()
 
@@ -178,8 +172,7 @@ class Simulator(QObject):
         self.state = result
 
     def simN(self):
-        """
-        Make N iterations of simulation.
+        """Make N iterations of simulation.
         """
         try:
             for _i in range(self.iterationCount):
@@ -202,7 +195,6 @@ class Simulator(QObject):
             QCoreApplication.processEvents()
 
     def updatePrediction(self, state):
-        '''
-        Update prediction using new categories (raster "state")
-        '''
+        """Update prediction using new categories (raster "state")
+        """
         self.predicted = self.model.getPrediction(state, self.factors, calcTransitions=self.calcTransitions)

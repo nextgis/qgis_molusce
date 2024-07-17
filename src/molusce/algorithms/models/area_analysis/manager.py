@@ -11,6 +11,7 @@ from molusce.algorithms.utils import masks_identity
 
 class AreaAnalizerError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
@@ -31,8 +32,7 @@ class AreaAnalyst(QObject):
     logMessage = pyqtSignal(str)
 
     def __init__(self, first: Raster, second: Optional[Raster]=None):
-        """
-        @param first        Raster of the first stage (the state before transition).
+        """@param first        Raster of the first stage (the state before transition).
         @param second       Raster of the second stage (the state after transition).
         """
         QObject.__init__(self)
@@ -66,18 +66,16 @@ class AreaAnalyst(QObject):
         self.persistentCategoryCode = -1
 
     def codes(self, initialClass):
-        """
-        Get list of possible encodes for initialClass (see 'encode').
+        """Get list of possible encodes for initialClass (see 'encode').
         """
         return [self.encode(initialClass, f) for f in self.categories]
 
     def decode(self, code):
-        '''
-        Decode transition (initialClass -> finalClass).
+        """Decode transition (initialClass -> finalClass).
         The procedure is the back operation of "encode" (see encode):
             code = initialClass*m + finalClass,
             the result is tuple of (initialClass, finalClass).
-        '''
+        """
         m = len(self.categories)
         initialClassIndex = code // m
         finalClassIndex   = code - initialClassIndex * m
@@ -88,18 +86,16 @@ class AreaAnalyst(QObject):
         return (initClass, finalClass)
 
     def encode(self, initialClass, finalClass):
-        """
-        Encode transition (initialClass -> finalClass):
-            if for a given pixel the initial category is initialClass,
-            the final category finalClass, and there are m categories, the output pixel will have
-            value k = initialClass*m + finalClass
+        """Encode transition (initialClass -> finalClass):
+        if for a given pixel the initial category is initialClass,
+        the final category finalClass, and there are m categories, the output pixel will have
+        value k = initialClass*m + finalClass
         """
         m = len(self.categories)
         return self.categories.index(initialClass) * m + self.categories.index(finalClass)
 
     def finalCodes(self, initialClass):
-        """
-        For given initial category return codes of possible final categories. (see 'encode')
+        """For given initial category return codes of possible final categories. (see 'encode')
         """
         return [self.encode(initialClass, c) for c in self.categories]
 

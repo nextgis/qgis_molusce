@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 import math
 from collections import namedtuple
@@ -15,19 +14,18 @@ Weights = namedtuple("Weights", ["wPlus", "wMinus"])
 
 class WoeError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
 def _binary_woe(factor, sites, unitcell=1):
-    """
-    Weight of evidence method (binary form).
+    """Weight of evidence method (binary form).
 
     @param factor     Binary pattern raster used for prediction of point objects (sites).
     @param sites      Raster layer consisting of the locations at which the point objects are known to occur.
 
     @return (W+, W-)  Tuple of the factor's weights (w+, w-).
     """
-
     # Check rasters type
     if factor.dtype != bool:
         raise WoeError("Factor raster must be binary in this mode of the method!")
@@ -88,7 +86,6 @@ def woe(factor, sites, unit_cell=1):
 
     @return masked array  Array of total weights of each factor.
     """
-
     # Get list of categories from the factor raster
     categories = get_gradations(factor.compressed())
 
@@ -127,5 +124,5 @@ def woe(factor, sites, unit_cell=1):
     return result
 
 def contrast(wPlus, wMinus):
-    "Weight contrast"
+    """Weight contrast"""
     return wPlus - wMinus

@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
@@ -15,12 +14,12 @@ from . import multinomial_logistic_regression as mlr
 
 class LRError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
 class LR(QObject):
-    """
-    Implements Logistic Regression model definition and calibration
+    """Implements Logistic Regression model definition and calibration
     (maximum liklihood parameter estimation).
     """
 
@@ -100,8 +99,7 @@ class LR(QObject):
         return self.transitionPotentials
 
     def _outputConfidence(self, input_data):
-        """
-        Return confidence (difference between 2 biggest probabilities) of the LR output.
+        """Return confidence (difference between 2 biggest probabilities) of the LR output.
         1 = the maximum confidence, 0 = the least confidence
         """
         out_scl = self.logreg.predict_proba(input_data)[0]
@@ -110,8 +108,7 @@ class LR(QObject):
         return int(100 * (out_scl[-1] - out_scl[-2]) )
 
     def outputTransitions(self, input_data):
-        """
-        Return transition potential of the outputs
+        """Return transition potential of the outputs
         """
         out_scl = self.logreg.predict_proba(input_data)[0]
         out_scl = [int(100 * x) for x in out_scl]
@@ -122,8 +119,7 @@ class LR(QObject):
         return result
 
     def _predict(self, state, factors, calcTransitions=False):
-        """
-        Calculate output and confidence rasters using LR model and input rasters
+        """Calculate output and confidence rasters using LR model and input rasters
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         """

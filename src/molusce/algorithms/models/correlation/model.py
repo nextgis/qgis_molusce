@@ -1,5 +1,4 @@
 ﻿#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import math
 
@@ -13,6 +12,7 @@ from molusce.algorithms.utils import masks_identity
 
 class CoeffError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
@@ -25,12 +25,10 @@ class DependenceCoef(QObject):
     errorReport = pyqtSignal(str)
 
     def __init__(self, X, Y, expand=False):
-        """
-        @param band1    First band (numpy masked array)
+        """@param band1    First band (numpy masked array)
         @param band2    Second band (numpy masked array)
         @param expand   If the param is True, use union of categories of the bands and compute NxN crosstable
         """
-
         QObject.__init__(self)
 
         self.X = X
@@ -62,8 +60,7 @@ class DependenceCoef(QObject):
             self.processFinished.emit()
 
     def correlation(self):
-        """
-        Define correlation coefficient of the rasters.
+        """Define correlation coefficient of the rasters.
         """
         x, y = masks_identity(self.X.flatten(), self.Y.flatten())
         x, y = np.ma.compressed(x), np.ma.compressed(y)
@@ -77,8 +74,7 @@ class DependenceCoef(QObject):
         return R[0][1]
 
     def correctness(self, percent = True):
-        """
-        % (or count) of correct results
+        """% (or count) of correct results
         """
         table = self.getCrosstable()
         crosstable = table.getCrosstable()
@@ -95,8 +91,7 @@ class DependenceCoef(QObject):
         return s/n
 
     def cramer(self):
-        """
-        Define Cramer's relationship coefficient of the rasters for discrete values
+        """Define Cramer's relationship coefficient of the rasters for discrete values
         Coefficient change between [0, 1]
         0 - no dependence
         1 - full connection
@@ -119,8 +114,7 @@ class DependenceCoef(QObject):
         return Cramer
 
     def jiu(self):
-        """
-        Define Joint Information Uncertainty coef., based on entropy., for discrete values
+        """Define Joint Information Uncertainty coef., based on entropy., for discrete values
         Coefficient change between [0, 1]
         0 - no connection
         1 - full connection
@@ -150,8 +144,7 @@ class DependenceCoef(QObject):
         return U
 
     def kappa(self, mode=None):
-        """
-        Kappa statistic
+        """Kappa statistic
         @param X    Raster array.
         @param Y    Raster array.
         @param mode Kappa sttistic to compute:

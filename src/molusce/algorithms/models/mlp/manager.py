@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 
 # TODO: make abstract class for all models/managers
@@ -17,6 +16,7 @@ from molusce.algorithms.models.sampler.sampler import Sampler
 
 class MlpManagerError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
@@ -105,13 +105,11 @@ class MlpManager(QObject):
         return copy.deepcopy(self.MLP.weights)
 
     def createMlp(self, state, factors, output, hidden_layers):
-        """
-        @param state            Raster of the current state (categories) values.
+        """@param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param hidden_layers    List of neuron counts in hidden layers.
         @param ns               Neighbourhood size.
         """
-
         if output.getBandsCount() != 1:
             raise MlpManagerError("Output layer must have one band!")
 
@@ -194,8 +192,7 @@ class MlpManager(QObject):
         return res
 
     def outputConfidence(self, output, scale=True):
-        """
-        Return confidence (difference between 2 biggest values) of the MLP output.
+        """Return confidence (difference between 2 biggest values) of the MLP output.
         @param output: The confidence
         @param scale: If True, then scale the confidence to int [0, 1, ..., 100] percent
         """
@@ -204,8 +201,7 @@ class MlpManager(QObject):
         return out_scl[-1] - out_scl[-2]
 
     def outputTransitions(self, output, scale=True):
-        """
-        Return transition potencial of the outputs scaled to [0,1] or 1-100
+        """Return transition potencial of the outputs scaled to [0,1] or 1-100
         @param output: The output of MLP
         @param scale: If True, then scale the transitions to int ([0, 1, ..., 100]) percent
         """
@@ -217,8 +213,7 @@ class MlpManager(QObject):
         return result
 
     def scaleOutput(self, output, percent=True):
-        """
-        Scale the output to range [0,1] or 1-100
+        """Scale the output to range [0,1] or 1-100
         @param output: Output of a MLP
         @param percent: If True, then scale the output to int [0, 1, ..., 100] percent
         """
@@ -227,9 +222,8 @@ class MlpManager(QObject):
             res = [ int(100 * x) for x in res]
         return res
 
-    def _predict(self, state, factors, calcTransitions=False): 
-        """
-        Calculate output and confidence rasters using MLP model and input rasters
+    def _predict(self, state, factors, calcTransitions=False):
+        """Calculate output and confidence rasters using MLP model and input rasters
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         """
@@ -322,8 +316,7 @@ class MlpManager(QObject):
         self.MLP.weights = w
 
     def setTrainingData(self, state, factors, output, shuffle=True, mode="All", samples=None):
-        """
-        @param state            Raster of the current state (categories) values.
+        """@param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param output           Raster that contains categories to predict.
         @param shuffle          Perform random shuffle.
@@ -399,7 +392,7 @@ class MlpManager(QObject):
             train_indexes = (0, train_sampl_count)
             val_indexes = (train_sampl_count, samples_count) if apply_validation else None
 
-            if not continue_train: 
+            if not continue_train:
                 self.resetMlp()
             self.minValError = self.getValError()  # The minimum error that is achieved on the validation set
             last_train_err = self.getTrainError()

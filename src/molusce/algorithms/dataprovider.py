@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 import numpy as np
 from numpy import ma as ma
@@ -11,11 +10,13 @@ MAX_CATEGORIES = 99
 
 class ProviderError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
 class FormatConverter:
     """Tarnslates formats between GDAL and numpy data formats"""
+
     def __init__(self):
         self.dtypes = bool, int, np.int8, np.int16, np.int32, np.int64, np.uint8, np.uint16, np.uint32, np.uint64, float, np.float32, np.float64 #np.float16
         self.GDT = gdal.GDT_Byte, gdal.GDT_UInt16, gdal.GDT_Int16, gdal.GDT_UInt32, gdal.GDT_Int32, gdal.GDT_Float32, gdal.GDT_Float64
@@ -37,7 +38,7 @@ class FormatConverter:
         }
 
 class Raster:
-    # TODO use dtypes for raster inutialization
+    # TODO: use dtypes for raster inutialization
     def __init__(self, filename=None, maskVals=None):
         if filename == "":
             raise ProviderError("File name can't be empty string!")
@@ -49,7 +50,7 @@ class Raster:
         self.stat     = None     # Initial (before normalizing) statistic (means and stds) of the bands
         self.isNormalazed = None # Is the bands of the raster normalized? It contains the mode of normalization.
         self.bandgradation = dict() # Dict for store lists of bands categories
-        if self.filename: 
+        if self.filename:
             self._read()
 
     def binaryzation(self, trueVals, bandNum):
@@ -66,10 +67,8 @@ class Raster:
         self.geodata = geodata
 
     def denormalize(self):
+        """Denormalisation (see self.normalize)
         """
-        Denormalisation (see self.normalize)
-        """
-
         if self.isNormalazed:
             mode = self.isNormalazed
             bandcount = self.getBandsCount()
@@ -86,14 +85,13 @@ class Raster:
 
     def geoDataMatch(self, raster, geodata=None):
         """Return true if RasterSize, Projection and GetGeoTransform of the rasters are matched"""
-
         if (geodata is not None) and (raster is not None):
             raise ProviderError("Use raster or geodata, not both!")
 
         if geodata is None:
             geodata = raster.geodata
 
-        # TODO check proj also.
+        # TODO: check proj also.
         for key in ["xSize", "ySize"]:
             if self.geodata[key] != geodata[key]:
                 return False
@@ -109,7 +107,6 @@ class Raster:
             (difference of the pixel sizes) * (pixel count) < (pixel size),
         4) rotations are equal.
         """
-
         if (geodata is not None) and (raster is not None):
             raise ProviderError("Use raster or geodata, not both!")
 
@@ -142,8 +139,7 @@ class Raster:
         return self.bandcount
 
     def getBandGradation(self, bandNo):
-        """
-        Return list of categories of raster's band
+        """Return list of categories of raster's band
         """
         if bandNo < len(self.bandgradation):
             res = self.bandgradation[bandNo]
@@ -154,8 +150,7 @@ class Raster:
         return res
 
     def getBandStat(self, bandNo):
-        """
-        Return mean and std of the raster's band
+        """Return mean and std of the raster's band
         """
         band = self.getBand(bandNo)
         result = {}
@@ -209,9 +204,9 @@ class Raster:
 
     def getPixelCoords(self, px,py):
         """Pixel to Coords transform
-            @param  px        Input x pixel coordinate
-            @param  py        Input y pixel coordinate
-            @return outx,outy Output coordinates (two doubles)
+        @param  px        Input x pixel coordinate
+        @param  py        Input y pixel coordinate
+        @return outx,outy Output coordinates (two doubles)
         """
         gt = self.geodata["transform"]
         outx = gt[0] + px*gt[1] + py*gt[2]
@@ -228,26 +223,22 @@ class Raster:
         return self.geodata["ySize"]
 
     def isCountinues(self, bandNo):
-        """
-        Return true, if the band contains continues value.
+        """Return true, if the band contains continues value.
         """
         return len(self.getBandGradation(bandNo)) > MAX_CATEGORIES
 
     def isMetricProj(self):
-        """
-        Return true if projection of the raster uses metric units
+        """Return true if projection of the raster uses metric units
         """
         return self.getProjUnits() in ("metre", "Meter")
 
     def normalize(self, mode="mean"):
-        """
-        Linear normalization of the bands: new = (old-mean(old)/std(old))
+        """Linear normalization of the bands: new = (old-mean(old)/std(old))
 
         @param mode     Type of normalization:
                 mean    new = (old-mean(old)/std(old))
                 maxmin  new = (old-min(old)/(max(old)-min(old))
         """
-
         if self.isNormalazed != mode:
             self.denormalize()          # Reset raster values to initail
             bandcount = self.getBandsCount()
@@ -268,9 +259,9 @@ class Raster:
         try:
             data = gdal.Open( self.filename )
         except RuntimeError as exc:
-            raise ProviderError("Can't read the file '%s'" % self.filename) from exc
+            raise ProviderError(f"Can't read the file '{self.filename}'") from exc
         if data is None:
-            raise ProviderError("Can't read the file '%s'" % self.filename)
+            raise ProviderError(f"Can't read the file '{self.filename}'")
 
         self.geodata = {}
         self.geodata["xSize"] = data.RasterXSize
@@ -286,7 +277,7 @@ class Raster:
         self.bands = np.ma.zeros((data.RasterCount,self.geodata["ySize"], self.geodata["xSize"]), dtype=float)
         self.bandcount = data.RasterCount
         if self.maskVals is not None and len(self.maskVals) != self.bandcount:
-            raise ProviderError("Band count of the file '%s' does't match nodata values count" % self.filename)
+            raise ProviderError(f"Band count of the file '{self.filename}' does't match nodata values count")
 
         for i in range(1, data.RasterCount+1):
             r = data.GetRasterBand(i)
@@ -311,8 +302,7 @@ class Raster:
         self.isNormalazed = False
 
     def resetMask(self, maskVals = None):
-        """
-        Set mask of _ALL_ bands.  maskVals is a list of masked values.
+        """Set mask of _ALL_ bands.  maskVals is a list of masked values.
         """
         for i in range(self.getBandsCount()):
             r = self.getBand(i)
@@ -321,8 +311,7 @@ class Raster:
             self.setBand(r, i)
 
     def roundBands(self, decimals=0):
-        """
-        Round the bands to the given number of decimals.
+        """Round the bands to the given number of decimals.
         """
         self.bands = np.around(self.bands, decimals)
 
@@ -348,7 +337,7 @@ class Raster:
                 outRaster.GetRasterBand( i + 1 ).SetNoDataValue(nodata)
             outRaster = None
         else:
-          raise ProviderError("Driver %s does not support Create() method!" % driver_name)
+          raise ProviderError(f"Driver {driver_name} does not support Create() method!")
 
     def setBand(self, raster, bandNum=1):
         self.bands[bandNum-1] = raster

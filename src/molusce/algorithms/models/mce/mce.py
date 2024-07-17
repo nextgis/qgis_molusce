@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 
 # TODO: make abstract class for all models/managers
@@ -13,6 +12,7 @@ from molusce.algorithms.utils import binaryzation
 
 class MCEError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
@@ -62,14 +62,12 @@ class MCE(QObject):
         39: 1.70
     }
     def __init__(self, factors, wMatr, initStateNum, finalStateNum, areaAnalyst):
-        """
-        Multicriteria evaluation based on Saaty method. It defines transition probability of two categories (initStateNum, finalStateNum).
+        """Multicriteria evaluation based on Saaty method. It defines transition probability of two categories (initStateNum, finalStateNum).
         @param factors          List of the factor rasters used for prediction.
         @param wMatr            List of lists -- NxN comparison matrix.
         @param initStateNum     Number of initial state (the state before transition).
         @param finalStateNum    Number of final state (the state after transition).
         """
-
         QObject.__init__(self)
 
         self.factors = factors
@@ -123,8 +121,7 @@ class MCE(QObject):
         return self.transitionPotentials
 
     def getPrediction(self, state, calcTransitions=False):
-        """
-        Most of the models use factors for prediction, but MCE takes list of factors only once (during the initialization).
+        """Most of the models use factors for prediction, but MCE takes list of factors only once (during the initialization).
         """
         self._predict(state, calcTransitions)
         return self.prediction
@@ -135,8 +132,7 @@ class MCE(QObject):
         return self.weights
 
     def _predict(self, state):
-        """
-        Predict the changes.
+        """Predict the changes.
         """
         try:
             geodata = state.getGeodata()
@@ -195,8 +191,7 @@ class MCE(QObject):
             raise
 
     def setWeights(self):
-        """
-        Calculate the weigths and consistency ratio.
+        """Calculate the weigths and consistency ratio.
         """
         # Weights
         w, v = np.linalg.eig(self.wMatr)

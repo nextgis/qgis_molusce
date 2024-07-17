@@ -12,19 +12,18 @@ import numpy as np
 
 
 def sigmoid(x):
-    """ Sigmoid like function using tanh """
+    """Sigmoid like function using tanh"""
     return np.tanh(x)
 
 def dsigmoid(x):
-    """ Derivative of sigmoid above """
+    """Derivative of sigmoid above"""
     return 1.0-x**2
 
 class MLP:
-    """ Multi-layer perceptron class. """
+    """Multi-layer perceptron class."""
 
     def __init__(self, *args):
-        """ Initialization of the perceptron with given sizes.  """
-
+        """Initialization of the perceptron with given sizes."""
         self.shape = args
         n = len(args)
 
@@ -49,15 +48,13 @@ class MLP:
         self.reset()
 
     def reset(self):
-        """ Reset weights """
-
+        """Reset weights"""
         for i in range(len(self.weights)):
             Z = np.random.random((self.layers[i].size,self.layers[i+1].size))
             self.weights[i][...] = (2*Z-1)*0.25
 
     def propagate_forward(self, data):
-        """ Propagate data from input layer to output layer. """
-
+        """Propagate data from input layer to output layer."""
         # Set input layer
         self.layers[0][0:-1] = data
 
@@ -71,8 +68,7 @@ class MLP:
 
 
     def propagate_backward(self, target, lrate=0.1, momentum=0.1):
-        """ Back propagate error related to target using lrate. """
-
+        """Back propagate error related to target using lrate."""
         deltas = []
 
         # Compute error on output layer
@@ -84,7 +80,7 @@ class MLP:
         for i in range(len(self.shape)-2,0,-1):
             delta = np.dot(deltas[0],self.weights[i].T)*dsigmoid(self.layers[i])
             deltas.insert(0,delta)
-            
+
         # Update weights
         for i in range(len(self.weights)):
             layer = np.atleast_2d(self.layers[i])
@@ -102,7 +98,7 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     def learn(network,samples, epochs=2500, lrate=.1, momentum=0.1):
-        # Train 
+        # Train
         for _i in range(epochs):
             n = np.random.randint(samples.size)
             network.propagate_forward( samples["input"][n] )
@@ -110,8 +106,8 @@ if __name__ == "__main__":
         # Test
         for i in range(samples.size):
             o = network.propagate_forward( samples["input"][i] )
-            print(i, samples["input"][i], "%.2f" % o[0], end=" ")
-            print("(expected %.2f)" % samples["output"][i])
+            print(i, samples["input"][i], f"{o[0]:.2f}", end=" ")
+            print(f"(expected {samples["output"][i]:.2f})")
         print()
 
     network = MLP(2,2,1)

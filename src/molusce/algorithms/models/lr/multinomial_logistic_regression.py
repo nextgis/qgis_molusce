@@ -1,5 +1,4 @@
-"""
-Multinomial Logistic Regression (MLR)
+"""Multinomial Logistic Regression (MLR)
 =====================================
 
 Multiclass-classification with the MLR classifier
@@ -15,7 +14,7 @@ from scipy.stats import norm
 
 
 def mlr_nll_and_gradient(X, Y, W, sigma2, weighted):
-    """ Compute the MLR negative log-likelihood and its gradient
+    """Compute the MLR negative log-likelihood and its gradient
 
     Parameters
     ----------
@@ -45,6 +44,7 @@ def mlr_nll_and_gradient(X, Y, W, sigma2, weighted):
 
     grad: numpy array, shape [n_features, n_classes]
           the gradient of the negative log-likelihood of the MLR objective
+
     """
     n_samples, n_features = X.shape
     _n, n_classes = Y.shape
@@ -85,8 +85,9 @@ def mlr_nll_and_gradient(X, Y, W, sigma2, weighted):
 
 
 class FuncGradComputer:
-    """ Convenience class to pass func and grad separately to optimize
+    """Convenience class to pass func and grad separately to optimize
     """
+
     def __init__(self, X, Y, ss, weighted):
         self.X = X
         self.Y = Y
@@ -97,7 +98,7 @@ class FuncGradComputer:
         self.grad_ = None
 
     def _compute_func_grad(self, w):
-        """ Simultaneously compute objective function and gradient at w
+        """Simultaneously compute objective function and gradient at w
         """
         # reshape  input flattened by scipy
         W = w.reshape((self.X.shape[1], self.Y.shape[1]))
@@ -120,7 +121,7 @@ class FuncGradComputer:
 
 
 class MLR:
-    """ Multinomial Logistic Regression classifier
+    """Multinomial Logistic Regression classifier
 
     Parameters
     ----------
@@ -139,7 +140,9 @@ class MLR:
 
     infos_ : dict,
              various output infos about the optimization
+
     """
+
     def __init__(self, ss=None, weighted=False, seed=None):
         assert ss is None or ss > 0, "ss must be None or > 0"
         self.ss = ss
@@ -153,13 +156,13 @@ class MLR:
         self.pVal_ = None       # p-values
 
     def calcSTD(self, X):
-        """
-        Calculate std errors for the estimated coefficients.
+        """Calculate std errors for the estimated coefficients.
 
         Attributes
         ----------
         stdErr_ : numpy array, shape [n_features+1, n_classes],
              the coefficient estimates
+
         """
         n_samples, n_features = X.shape
         _d, n_classes = self.W_.shape
@@ -212,7 +215,7 @@ class MLR:
         return self.W_[1:, :]
 
     def fit(self, X, y, maxiter=None):
-        """ Fit the model
+        """Fit the model
 
         Parameters
         ----------
@@ -225,6 +228,7 @@ class MLR:
         Returns
         -------
         self : returns an instance of self.
+
         """
         n_samples, n_features = X.shape
 
@@ -265,7 +269,7 @@ class MLR:
 
 
     def predict_proba(self, X):
-        """ Probability estimates.
+        """Probability estimates.
 
         The returned estimates for all classes, ordered by label.
 
@@ -279,6 +283,7 @@ class MLR:
         Yhat : array-like, shape = [n_samples, n_classes]
                Probability of the sample for each class in the model,
                where classes are ordered by arithmetical order.
+
         """
         # add column of ones to X
         n_samples, n_features = X.shape
@@ -294,7 +299,7 @@ class MLR:
 
 
     def predict(self, X):
-        """ Predict most likely label
+        """Predict most likely label
 
         The returned estimates for all classes, ordered by label.
 
@@ -307,6 +312,7 @@ class MLR:
         -------
         yhat : array-like, shape = [n_samples]
                The most likely label for each sample.
+
         """
         Yhat = self.predict_proba(X)
         yhat = self.classes[np.argmax(Yhat, axis=1).squeeze()]

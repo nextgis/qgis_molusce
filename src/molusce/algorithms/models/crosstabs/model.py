@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import numpy as np
 from qgis.PyQt.QtCore import *
@@ -13,6 +12,7 @@ from molusce.algorithms.utils import (
 
 class CrossTabError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
@@ -27,8 +27,7 @@ class CrossTable(QObject):
     errorReport = pyqtSignal(str)
 
     def __init__(self, band1, band2, expand = False):
-        """
-        @param band1    First band (numpy masked array)
+        """@param band1    First band (numpy masked array)
         @param band2    Second band (numpy masked array)
         @param expand   If the param is True, use union of categories of the bands and compute NxN crosstable
         """
@@ -92,15 +91,13 @@ class CrossTable(QObject):
         return self._T
 
     def getExpectedProbtable(self):
-        """
-        Return expected probabilities table. (if dependencies between X, Y are not present).
+        """Return expected probabilities table. (if dependencies between X, Y are not present).
         """
         t = self.getExpectedTable()
         return t/self.n
 
     def getExpectedTable(self):
-        """
-        Return expected crosstable. (if dependencies between X, Y are not present).
+        """Return expected crosstable. (if dependencies between X, Y are not present).
         """
         #compute expected table T*
         #creation array : T*ij = (sum_r[i] * sum_s[j])/ total
@@ -119,8 +116,7 @@ class CrossTable(QObject):
         return 1.0*self.getSumRows() / self.n
 
     def getProbtable(self):
-        """
-        Return probability table of transitions
+        """Return probability table of transitions
         """
         return 1.0*self.getCrosstable() / self.n
 
@@ -135,9 +131,8 @@ class CrossTable(QObject):
         return crosstable.sum(axis=0)
 
     def getTransition(self, fromClass, toClass):
-        '''
-        Return number of transitions from "fromClass" to "toClass"
-        '''
+        """Return number of transitions from "fromClass" to "toClass"
+        """
         i = self.graduation_x.index(fromClass)
         j = self.graduation_y.index(toClass)
         crosstable = self.getCrosstable()

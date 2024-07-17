@@ -11,9 +11,9 @@ from numpy.testing import assert_array_equal
 
 
 class Model:
+    """Simple predicting model for Simulator tests
     """
-    Simple predicting model for Simulator tests
-    """
+
     def __init__(self, state):
         self._predict(state)
 
@@ -85,7 +85,7 @@ class TestSimulator(unittest.TestCase):
         #  [[ 3.  1.  0.]
         #   [ 0.  1.  0.]
         #   [ 1.  0.  2.]]
-        
+
         # print prediction.getBand(1)
         # prediction = [[1.0 1.0 6.0]
                      #  [6.0 5.0 1.0]

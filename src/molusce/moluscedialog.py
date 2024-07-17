@@ -204,7 +204,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("Initial raster is not selected. Please specify input data and try again")
                          )
       return
-    rx = QRegExp("(19|2\d)\d\d")
+    rx = QRegExp(r"(19|2\d)\d\d")
     year = rx.cap()
     self.leInitYear.setText(year)
 
@@ -241,7 +241,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                           self.tr("Final raster is not selected. Please specify input data and try again")
                          )
       return
-    rx = QRegExp("(19|2\d)\d\d")
+    rx = QRegExp(r"(19|2\d)\d\d")
     year = rx.cap()
     self.leFinalYear.setText(year)
 
@@ -372,7 +372,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       if not initRaster.geoDataMatch(v):
         QMessageBox.warning(self,
                           self.tr("Different geometry"),
-                          self.tr("Geometries of the initial raster and raster '%s' are different!" % (v.getFileName(),))
+                          self.tr(f"Geometries of the initial raster and raster '{(v.getFileName(),)}' are different!")
                          )
         return
     if not initRaster.geoDataMatch(self.inputs["final"]):
@@ -630,7 +630,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % str(self.leReferenceMapPath.text()))
+                          self.tr(f"Can't read file: '{str(self.leReferenceMapPath.text())}'")
                          )
       return
     try:
@@ -638,7 +638,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % str(self.leSimulatedMapPath.text()))
+                          self.tr(f"Can't read file: '{str(self.leSimulatedMapPath.text())}'")
                          )
       return
 
@@ -696,7 +696,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % str(self.leReferenceMapPath.text()))
+                          self.tr(f"Can't read file: '{str(self.leReferenceMapPath.text())}'")
                          )
       return
     try:
@@ -704,14 +704,14 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % str(self.leSimulatedMapPath.text()))
+                          self.tr(f"Can't read file: '{str(self.leSimulatedMapPath.text())}'")
                          )
       return
     for raster in [reference, simulated]:
       if raster.isCountinues(bandNo=1):
         QMessageBox.warning(self,
                             self.tr("Kappa is not applicable"),
-                            self.tr("Kappa is not applicable to the file: '%s' because it's contains continues value" % str(raster.getFileName()))
+                            self.tr(f"Kappa is not applicable to the file: '{str(raster.getFileName())}' because it's contains continues value")
                            )
         return
 
@@ -755,7 +755,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % str(self.leReferenceMapPath.text()))
+                          self.tr(f"Can't read file: '{str(self.leReferenceMapPath.text())}'")
                          )
       return
     try:
@@ -764,7 +764,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr("Can't read file: '%s'" % str(self.leSimulatedMapPath.text()))
+                          self.tr(f"Can't read file: '{str(self.leSimulatedMapPath.text())}'")
                          )
       return
 
@@ -840,7 +840,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         item.setText(layer[1])
         item.setData(Qt.UserRole, layer[0])
       else:
-        item.setText("%s - %s" % (layer[1], groupName))
+        item.setText(f"{layer[1]} - {groupName}")
         item.setData(Qt.UserRole, layer[0])
 
       self.lstLayers.addItem(item)
@@ -940,9 +940,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
       mapping[k] = {}
       for b in range(v.getBandsCount()):
         if v.getBandsCount()>1:
-          name = "%s (band %s)" % (utils.getLayerById(k).name(), str(b + 1))
+          name = (f"{utils.getLayerById(k).name()} (band {str(b + 1)})")
         else:
-          name = "%s" % (utils.getLayerById(k).name())
+          name = (f"{(utils.getLayerById(k).name())}")
         mapping[k][b] = labNo
         labNo = labNo + 1
         labels.append(name)
@@ -964,7 +964,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
               if labNo2 < labNo1:
                 continue
               if labNo2==labNo1:
-                item = QTableWidgetItem(str("--"))
+                item = QTableWidgetItem("--")
               # Check if method is applicable to the bands
               elif (fact1.isCountinues(b1+1) or fact2.isCountinues(b2+1)) and  method in discreteMethods:
                 item = QTableWidgetItem(str(self.tr("Not applicable")))
@@ -1000,18 +1000,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
     for i in range(dimensions[0]):
       raster = first["Raster"]
       if raster.getBandsCount()>1:
-        name = "%s (band %s)" % (first["Name"], str(i+1))
+        name = (f"{first["Name"]} (band {str(i+1)}")
       else:
-        name = "%s" % (first["Name"], )
+        name = (f"{(first["Name"],)}")
       labels.append(name)
     self.tblCorrelation.setVerticalHeaderLabels(labels)
     labels = []
     for i in range(dimensions[1]):
       raster = second["Raster"]
       if raster.getBandsCount()>1:
-        name = "%s (band %s)" % (second["Name"], str(i+1))
+        name = (f"{second["Name"]} (band {str(i+1)})")
       else:
-        name = "%s" % (second["Name"], )
+        name = (f"{(second["Name"],)}")
       labels.append(name)
     self.tblCorrelation.setHorizontalHeaderLabels(labels)
 
@@ -1220,7 +1220,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except SamplerError:
       QMessageBox.warning(self,
                           self.tr("Can't save file"),
-                          self.tr("Can't save file: '%s'" % str(fileName))
+                          self.tr(f"Can't save file: '{str(fileName)}'")
                          )
       return
 
@@ -1298,7 +1298,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       raise
 
   def logMessage(self, message):
-    self.txtMessages.append("[%s] %s" % (datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S".encode("utf-8").decode("utf-8")), message))
+    self.txtMessages.append(f"[{datetime.datetime.now().strftime(b"%a %b %d %Y %H:%M:%S".decode("utf-8"))}] {message}")
 
   def logErrorReport(self, message):
     self.logMessage("ERROR: "+message)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 #******************************************************************************
 #
@@ -53,7 +52,7 @@ def getRasterLayers():
 def getLayerMask(layer):
   if layer is None:
     return None
-  
+
   provider = layer.dataProvider()
   maskVals = dict()
   bCount = layer.bandCount()
@@ -192,7 +191,7 @@ def copySymbology(src, dst):
   dt = di.createDocumentType("qgis", "http://mrcc.com/qgis.dtd", "SYSTEM")
   doc = QDomDocument(dt)
   root = doc.createElement("qgis")
-  root.setAttribute("version", "%s" % str(Qgis.QGIS_VERSION))
+  root.setAttribute("version", f"{str(Qgis.QGIS_VERSION)}")
   doc.appendChild(root)
   errMsg = ""
   if not src.writeSymbology(root, doc, errMsg, QgsReadWriteContext(), QgsMapLayer.AllStyleCategories):

@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 import os.path
 
@@ -12,6 +11,7 @@ from molusce.algorithms.dataprovider import ProviderError
 
 class SamplerError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
@@ -52,8 +52,7 @@ class Sampler(QObject):
     errorReport = pyqtSignal(str)
 
     def __init__(self, state, factors, output=None, ns=0):
-        """
-        @param state            Raster of the current state (categories) values.
+        """@param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param output           Raster that contains states (categories) to predict.
         @param ns               Neighbourhood size.
@@ -90,8 +89,7 @@ class Sampler(QObject):
         self.data = None                # Sample data
 
     def __calcCatVector(self):
-        """
-        Split state category value into set of dummy variables and save them in a dictionary.
+        """Split state category value into set of dummy variables and save them in a dictionary.
         self.stateCategories[-1] is base category.
         For example:
             if self.stateCategories = [1,2,3] then dummy vars are [V1, V2]: cat1 = [1, 0], cat2 = [0, 1], cat3 = [0 ,0]
@@ -104,8 +102,7 @@ class Sampler(QObject):
         self.catCodes[self.stateCategories[-1]] = vect = np.zeros(self.categoriesCount-1)
 
     def cat2vect(self, category):
-        """
-        Return dummy variables for the category.
+        """Return dummy variables for the category.
         @param category     The category number.
         """
         return self.catCodes[category]
@@ -114,8 +111,7 @@ class Sampler(QObject):
         return self.data
 
     def get_inputs(self, state, row, col):
-        """
-        @param state            Raster of the current state (categories) values.
+        """@param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         """
         try:
@@ -130,8 +126,7 @@ class Sampler(QObject):
         return np.hstack( (state_data, factors_data) )
 
     def get_factors(self, row, col):
-        """
-        Get input sample at (row, col) pixel and return it as array. Return None if the sample is incomplete.
+        """Get input sample at (row, col) pixel and return it as array. Return None if the sample is incomplete.
         """
         neighbours = self.factors[:, row-self.ns:(row+self.ns+1), col-self.ns:(col+self.ns+1)].flatten()
 
@@ -144,8 +139,7 @@ class Sampler(QObject):
         return neighbours
 
     def get_state(self, state, row, col):
-        """
-        Get current state at (row, col) pixel and return it as array. Return None if the sample is incomplete.
+        """Get current state at (row, col) pixel and return it as array. Return None if the sample is incomplete.
         The result is [Dummy_var1_for_pix1, ... Dummy_varK_for_pix1, ..., Dummy_var1_for_pixS, ... Dummy_varK_for_pixS],
             where K is count of dummy variables, S is count of pixels in the neighbours of the pixel.
         """
@@ -164,27 +158,26 @@ class Sampler(QObject):
         return result
 
     def _getSample(self, state, output, row, col):
-        """
-        Get one sample from (row,col) pixel. See params in setTrainingData.
+        """Get one sample from (row,col) pixel. See params in setTrainingData.
         """
         data = np.zeros(1, dtype=[("coords", float, 2), ("state", float, self.stateVecLen),("factors",  float, self.factorVectLen), ("output", float, self.outputVecLen)])
         try:
             out_data = output.getPixelFromBand(row, col, band=1)  # Get the pixel
             if out_data is None:                                 # Eliminate masked samples
                 return None
-            
+
             data["output"] = out_data
 
             state_data = self.get_state(state, row,col)
             if state_data is None: # Eliminate incomplete samples
                 return None
-            
+
             data["state"] = state_data
 
             factors_data = self.get_factors(row,col)
             if factors_data is None: # Eliminate incomplete samples
                 return None
-            
+
             data["factors"] = factors_data
         except ProviderError:
             return None
@@ -254,9 +247,8 @@ class Sampler(QObject):
                 feat.Destroy()
         ds = None
 
-    def setTrainingData(self, state, output, shuffle=True, mode="All", samples=None): 
-        """
-        @param state            Raster of the current state (categories) values.
+    def setTrainingData(self, state, output, shuffle=True, mode="All", samples=None):
+        """@param state            Raster of the current state (categories) values.
         @param output           Raster of the output (target) data
         @param shuffle          Perform random shuffle.
         @param mode             Type of sampling method:

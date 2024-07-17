@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 
 #   The module implements multiple resolution comparison
@@ -24,13 +23,13 @@ from molusce.algorithms.utils import binaryzation, masks_identity
 
 class EBError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
 
 def weightedSum(arr, weights):
-    """
-    Returns weighted sum of the array's pixels.
+    """Returns weighted sum of the array's pixels.
     @param arr      The array.
     @param weights  The weights of the array.
     """
@@ -51,11 +50,9 @@ class EBudget(QObject):
     errorReport = pyqtSignal(str)
 
     def __init__ (self, referenceMap, simulatedMap):
-        """
-        @param referenceMap     Reference raster
+        """@param referenceMap     Reference raster
         @param simulatedMap     Simulated raster
         """
-
         QObject.__init__(self)
 
         if referenceMap.getBandsCount() + simulatedMap.getBandsCount() != 2:
@@ -135,8 +132,7 @@ class EBudget(QObject):
         self.shape = (newRows, newCols)
 
     def getStat(self, nIter, scale=2):
-        """
-        Perform nIter iterations of error budget calculation and rescaling to coarse scale.
+        """Perform nIter iterations of error budget calculation and rescaling to coarse scale.
         """
         try:
             result = {}
@@ -160,8 +156,7 @@ class EBudget(QObject):
     # various levels of information of quantity and/or location.
 
     def NoNo(self):
-        """
-        No information about quantity, no information about location
+        """No information about quantity, no information about location
         """
         arr = np.ma.zeros(self.shape)
         size = len(self.categories)
@@ -171,8 +166,7 @@ class EBudget(QObject):
         return np.sum(arr)/np.sum(self.W)
 
     def NoMed(self):
-        """
-        No information about quantity, medium information about location
+        """No information about quantity, medium information about location
         """
         arr = np.ma.zeros(self.shape)
         for j in self.categories:
@@ -182,8 +176,7 @@ class EBudget(QObject):
         return np.sum(arr)/np.sum(self.W)
 
     def MedMed(self):
-        """
-        Medium information about quantity, medium information about location
+        """Medium information about quantity, medium information about location
         """
         arr = np.ma.zeros(self.shape)
         for j in self.categories:
@@ -192,8 +185,7 @@ class EBudget(QObject):
         return np.sum(arr)/np.sum(self.W)
 
     def MedPer(self):
-        """
-        Medium information about quantity, perfect information about location
+        """Medium information about quantity, perfect information about location
         """
         arr = 0
         for j in self.categories:
@@ -203,7 +195,6 @@ class EBudget(QObject):
         return arr
 
     def PerPer(self):
-        """
-        Perfect information about quantity, perfect information about location
+        """Perfect information about quantity, perfect information about location
         """
         return 1.0

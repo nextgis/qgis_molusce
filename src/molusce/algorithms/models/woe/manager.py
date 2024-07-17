@@ -1,4 +1,3 @@
-# encoding: utf-8
 
 import gc
 from os.path import basename
@@ -17,6 +16,7 @@ def sigmoid(x):
 
 class WoeManagerError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
@@ -32,8 +32,7 @@ class WoeManager(QObject):
     errorReport = pyqtSignal(str)
 
     def __init__(self, factors, areaAnalyst, unit_cell=1, bins = None):
-        """
-        @param factors      List of the pattern rasters used for prediction of point objects (sites).
+        """@param factors      List of the pattern rasters used for prediction of point objects (sites).
         @param areaAnalyst  AreaAnalyst that contains map of the changes, encodes and decodes category numbers.
         @param unit_cell    Method parameter, pixelsize of resampled rasters.
         @param bins         Dictionary of bins. Bins are binning boundaries that used for reduce count of categories.
@@ -41,7 +40,6 @@ class WoeManager(QObject):
                                 List of list used because a factor can be a multiband raster, we need get a list of bins for every band. For example:
                                 factors = [f0, 2-band-factor], bins= {0: [[10, 100, 250]], 1:[[0.2, 1, 1.5, 4], [3, 4, 7]] }
         """
-
         QObject.__init__(self)
 
         self.factors = factors
@@ -87,8 +85,7 @@ class WoeManager(QObject):
         self.transitionPotentials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
     def checkBins(self):
-        """
-        Check if bins are applicable to the factors
+        """Check if bins are applicable to the factors
         """
         if self.bins is not None:
             for i, factor in enumerate(self.factors):
@@ -111,8 +108,7 @@ class WoeManager(QObject):
         return self.confidence
 
     def getPrediction(self, state, calcTransitions=False):
-        """
-        Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
+        """Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
         """
         self._predict(state, calcTransitions)
         return self.prediction
@@ -124,8 +120,7 @@ class WoeManager(QObject):
         return self.woe
 
     def _predict(self, state):
-        """
-        Predict the changes.
+        """Predict the changes.
         """
         try:
             self.rangeChanged.emit(self.tr("Initialize model %p%"), 1)
@@ -180,8 +175,7 @@ class WoeManager(QObject):
             self.processFinished.emit()
 
     def train(self):
-        """
-        Train the model
+        """Train the model
         """
         self.transitionPotentials = {}
         try:
@@ -233,25 +227,24 @@ class WoeManager(QObject):
             self.processFinished.emit()
 
     def weightsToText(self):
-        """
-        Format self.weights as text report.
+        """Format self.weights as text report.
         """
         if self.weights == {}:
             return ""
         text = ""
         for code in self.codes:
             (initClass, finalClass) = self.analyst.decode(code)
-            text = text + self.tr("Transition %s -> %s\n" % (int(initClass), int(finalClass)))
+            text = text + self.tr(f"Transition {int(initClass)} -> {int(finalClass)}\n")
             try:
                 factorW = self.weights[code]
                 for factNum, factDict in factorW.items():
                     name = self.factors[factNum].getFileName()
                     name = basename(name)
-                    text = text + self.tr("\t factor: %s \n" % (name,) )
+                    text = text + self.tr(f"\t factor: {(name,)} \n")
                     for bandNum, bandWeights in factDict.items():
-                        weights = ["%f" % (w,) for w in bandWeights]
-                        text = text + self.tr("\t\t Weights of band %s: %s \n" % (bandNum, ", ".join(weights)) )
+                        weights = [f"{(w,)}" for w in bandWeights]
+                        text = text + self.tr(f"\t\t Weights of band {bandNum}: {", ".join(weights)} \n")
             except:
-                text = text + self.tr("W for code % s (%s -> %s) causes error" % (code, initClass, finalClass))
+                text = text + self.tr(f"W for code {code} ({initClass} -> {finalClass}) causes error")
                 raise
         return text

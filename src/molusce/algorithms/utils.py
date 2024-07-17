@@ -1,7 +1,5 @@
-# encoding: utf-8
 
-"""
-Some array utilites
+"""Some array utilites
 """
 
 import numpy as np
@@ -9,6 +7,7 @@ import numpy as np
 
 class UtilsError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
@@ -46,8 +45,7 @@ def get_gradations(band):
 
 
 def masks_identity(X, Y, dtype=None):
-    """
-    A raster has a mask. This function verifies the identity of the raster's masks.
+    """A raster has a mask. This function verifies the identity of the raster's masks.
     If the masks are not equal, we have to do both raster mask identical
     by combining masks. Function return updated arrays
     @param X    First raster array
@@ -92,11 +90,9 @@ def reclass(X, bins):
         return f(X)
 
 def sizes_equal(X, Y):
-    """
-    Define equality dimensions of the two rasters
+    """Define equality dimensions of the two rasters
     @param X    First raster
     @param Y    Second raster
     """
-
     return (np.shape(X) == np.shape(Y))
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 #******************************************************************************
 #
@@ -146,7 +145,7 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
         if v.getBandsCount()>1:
           name = self.tr("%s (band %s)") % (utils.getLayerById(k).name(), str(b+1))
         else:
-          name = "%s" % (utils.getLayerById(k).name(), )
+          name = (f"{(utils.getLayerById(k).name(),)}")
         labels.append(name)
 
     self.tblMatrix.setVerticalHeaderLabels(labels)

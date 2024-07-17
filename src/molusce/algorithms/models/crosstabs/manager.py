@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import numpy as np
 from qgis.PyQt.QtCore import *
@@ -9,12 +8,12 @@ from molusce.algorithms.models.crosstabs.model import CrossTable
 
 class CrossTabManagerError(Exception):
     """Base class for exceptions in this module."""
+
     def __init__(self, msg):
         self.msg = msg
 
 class CrossTableManager(QObject):
-    """
-    Provides statistic information about transitions InitState->FinalState.
+    """Provides statistic information about transitions InitState->FinalState.
     """
 
     rangeChanged = pyqtSignal(str, int)
