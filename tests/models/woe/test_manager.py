@@ -2,12 +2,13 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from numpy import ma as ma
+from numpy.testing import assert_array_equal
+
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 from molusce.algorithms.models.woe.manager import WoeManager
 from molusce.algorithms.models.woe.model import woe
-from numpy import ma as ma
-from numpy.testing import assert_array_equal
 
 
 class TestWoEManager (unittest.TestCase):
@@ -150,7 +151,7 @@ class TestWoEManager (unittest.TestCase):
         geodata = initState.getGeodata()
         sites = {"11": r11, "12": r12, "13": r13, "21": r21, "22": r22, "23": r23, "31": r31, "32": r32, "33": r33}
         woeDict = {}    # WoE of transitions
-        for k in list(sites.keys()): #
+        for k in sites:
             if k !="21" : # !!! r21 is zero
                 x = Raster()
                 x.create([np.ma.array(data=sites[k])], geodata)

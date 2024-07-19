@@ -35,7 +35,7 @@ class SpinBoxDelegate(QItemDelegate):
     self.minRange = minRange
     self.maxRange = maxRange
 
-  def createEditor(self, parent):
+  def createEditor(self, parent, options, index) -> QSpinBox:
     editor = QSpinBox(parent)
     editor.setRange(self.minRange, self.maxRange)
     return editor

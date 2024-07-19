@@ -95,9 +95,7 @@ class Raster:
         for key in ["xSize", "ySize"]:
             if self.geodata[key] != geodata[key]:
                 return False
-        if not self.geoTransformMatch(raster=None, geodata = geodata):
-            return False
-        return True
+        return self.geoTransformMatch(raster=None, geodata=geodata)
 
     def geoTransformMatch(self, raster, geodata=None):
         """Return True if GetGeoTransform of the rasters are matched:
@@ -127,10 +125,7 @@ class Raster:
         if dw * self.geodata["xSize"] > 1.5* min(abs(s_width), abs(r_width)):
             return False
         dh = abs(s_height - r_height)
-        if dh * self.geodata["ySize"] > 1.5* min(abs(s_height), abs(r_height)):
-            return False
-
-        return True
+        return not dh * self.geodata["ySize"] > 1.5 * min(abs(s_height), abs(r_height))
 
     def getBand(self, bandNo):
         return self.bands[bandNo-1]

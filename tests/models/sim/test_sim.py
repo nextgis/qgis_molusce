@@ -2,12 +2,13 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from numpy import ma as ma
+from numpy.testing import assert_array_equal
+
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 from molusce.algorithms.models.crosstabs.manager import CrossTableManager
 from molusce.algorithms.models.simulator.sim import Simulator
-from numpy import ma as ma
-from numpy.testing import assert_array_equal
 
 
 class Model:
@@ -20,7 +21,7 @@ class Model:
     def getConfidence(self):
         return self.confidence
 
-    def getPrediction(self, state, factors=None):
+    def getPrediction(self, state, factors=None, calcTransitions=False):
         self._predict(state, factors)
         return self.prediction
 
@@ -85,7 +86,7 @@ class TestSimulator(unittest.TestCase):
         #  [[ 3.  1.  0.]
         #   [ 0.  1.  0.]
         #   [ 1.  0.  2.]]
-
+        # prediction = self.model.getPrediction(self.raster1)
         # print prediction.getBand(1)
         # prediction = [[1.0 1.0 6.0]
                      #  [6.0 5.0 1.0]

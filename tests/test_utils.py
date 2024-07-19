@@ -1,13 +1,14 @@
 import unittest
 
 import numpy as np
+from numpy.testing import assert_array_equal
+
 from molusce.algorithms.utils import (
     binaryzation,
     masks_identity,
     reclass,
     sizes_equal,
 )
-from numpy.testing import assert_array_equal
 
 
 class TestRaster (unittest.TestCase):

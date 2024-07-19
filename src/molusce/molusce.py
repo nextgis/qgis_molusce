@@ -31,7 +31,7 @@ from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import *
 
-from . import aboutdialog, moluscedialog
+from . import aboutdialog, moluscedialog, resources_rc  # noqa: F401
 from .molusceutils import getLocaleShortName
 
 

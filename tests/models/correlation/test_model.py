@@ -2,8 +2,9 @@ import math
 import unittest
 
 import numpy as np
-from molusce.algorithms.models.correlation.model import DependenceCoef
 from numpy import ma as ma
+
+from molusce.algorithms.models.correlation.model import DependenceCoef
 
 
 class TestModel (unittest.TestCase):
@@ -73,11 +74,11 @@ class TestModel (unittest.TestCase):
         self.assertTrue(np.isclose(dc.correlation(), self.R),"correlation failed")
 
         dc = DependenceCoef(self.X, self.X)
-        self.assertEqual(dc.correlation(), 1.0,"correlation failed")
+        self.assertTrue(np.isclose(dc.correlation(), 1.0),"correlation failed")
 
     def test_correctness(self):
         dc = DependenceCoef(self.X, self.X)
-        self.assertEqual(dc.correctness(), 100.0, "correctness % failed")
+        self.assertTrue(np.isclose(dc.correctness(), 100.0), "correctness % failed")
 
     def test_cramer(self):
         dc = DependenceCoef(self.X, self.Y)

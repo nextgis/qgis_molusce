@@ -172,32 +172,23 @@ def openDirectoryDialog(parent, settings, title):
   return  destDir
 
 def checkInputRasters(userData):
-  if ("initial" in userData) and ("final" in userData):
-    return True
-  return False
+  return bool("initial" in userData and "final" in userData)
 
 def checkFactors(userData):
-  if "factors" in userData:
-    return True
-  return False
+  return "factors" in userData
 
 def checkChangeMap(userData):
-  if "changeMap" in userData:
-    return True
-  return False
+  return "changeMap" in userData
 
 def copySymbology(src, dst):
   di = QDomImplementation()
   dt = di.createDocumentType("qgis", "http://mrcc.com/qgis.dtd", "SYSTEM")
   doc = QDomDocument(dt)
   root = doc.createElement("qgis")
-  root.setAttribute("version", f"{str(Qgis.QGIS_VERSION)}")
+  root.setAttribute("version", str(Qgis.QGIS_VERSION))
   doc.appendChild(root)
   errMsg = ""
   if not src.writeSymbology(root, doc, errMsg, QgsReadWriteContext(), QgsMapLayer.AllStyleCategories):
     return False
 
-  if not dst.readSymbology(root, errMsg, QgsReadWriteContext(), QgsMapLayer.AllStyleCategories):
-    return False
-
-  return True
+  return dst.readSymbology(root, errMsg, QgsReadWriteContext(), QgsMapLayer.AllStyleCategories)

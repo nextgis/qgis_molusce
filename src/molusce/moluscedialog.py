@@ -372,7 +372,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       if not initRaster.geoDataMatch(v):
         QMessageBox.warning(self,
                           self.tr("Different geometry"),
-                          self.tr(f"Geometries of the initial raster and raster '{(v.getFileName(),)}' are different!")
+                          self.tr("Geometries of the initial raster and raster '{}' are different!").format(v.getFileName())
                          )
         return
     if not initRaster.geoDataMatch(self.inputs["final"]):
@@ -630,7 +630,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr(f"Can't read file: '{str(self.leReferenceMapPath.text())}'")
+                          self.tr("Can't read file: '{}'").format(self.leReferenceMapPath.text())
                          )
       return
     try:
@@ -638,7 +638,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr(f"Can't read file: '{str(self.leSimulatedMapPath.text())}'")
+                          self.tr("Can't read file: '{}'").format(self.leSimulatedMapPath.text())
                          )
       return
 
@@ -696,7 +696,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr(f"Can't read file: '{str(self.leReferenceMapPath.text())}'")
+                          self.tr("Can't read file: '{}'").format(self.leReferenceMapPath.text())
                          )
       return
     try:
@@ -704,14 +704,14 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr(f"Can't read file: '{str(self.leSimulatedMapPath.text())}'")
+                          self.tr("Can't read file: '{}'").format(self.leSimulatedMapPath.text())
                          )
       return
     for raster in [reference, simulated]:
       if raster.isCountinues(bandNo=1):
         QMessageBox.warning(self,
                             self.tr("Kappa is not applicable"),
-                            self.tr(f"Kappa is not applicable to the file: '{str(raster.getFileName())}' because it's contains continues value")
+                            self.tr("Kappa is not applicable to the file: '{}' because it's contains continues value").format(raster.getFileName())
                            )
         return
 
@@ -755,7 +755,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr(f"Can't read file: '{str(self.leReferenceMapPath.text())}'")
+                          self.tr("Can't read file: '{}'").format(self.leReferenceMapPath.text())
                          )
       return
     try:
@@ -764,7 +764,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except ProviderError:
       QMessageBox.warning(self,
                           self.tr("Can't read file"),
-                          self.tr(f"Can't read file: '{str(self.leSimulatedMapPath.text())}'")
+                          self.tr("Can't read file: '{}'").format(self.leSimulatedMapPath.text())
                          )
       return
 
@@ -940,9 +940,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
       mapping[k] = {}
       for b in range(v.getBandsCount()):
         if v.getBandsCount()>1:
-          name = (f"{utils.getLayerById(k).name()} (band {str(b + 1)})")
+          name = f"{utils.getLayerById(k).name()} (band {str(b + 1)})"
         else:
-          name = (f"{(utils.getLayerById(k).name())}")
+          name = utils.getLayerById(k).name()
         mapping[k][b] = labNo
         labNo = labNo + 1
         labels.append(name)
@@ -967,7 +967,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
                 item = QTableWidgetItem("--")
               # Check if method is applicable to the bands
               elif (fact1.isCountinues(b1+1) or fact2.isCountinues(b2+1)) and  method in discreteMethods:
-                item = QTableWidgetItem(str(self.tr("Not applicable")))
+                item = QTableWidgetItem(self.tr("Not applicable"))
               else:
                 depCoef = DependenceCoef(fact1.getBand(b1+1), fact2.getBand(b2+1))
                 if method == self.tr("Pearson's Correlation"):
@@ -1000,18 +1000,18 @@ class MolusceDialog(QDialog, Ui_Dialog):
     for i in range(dimensions[0]):
       raster = first["Raster"]
       if raster.getBandsCount()>1:
-        name = (f"{first["Name"]} (band {str(i+1)}")
+        name = f"{first["Name"]} (band {str(i+1)}"
       else:
-        name = (f"{(first["Name"],)}")
+        name = str(first["Name"])
       labels.append(name)
     self.tblCorrelation.setVerticalHeaderLabels(labels)
     labels = []
     for i in range(dimensions[1]):
       raster = second["Raster"]
       if raster.getBandsCount()>1:
-        name = (f"{second["Name"]} (band {str(i+1)})")
+        name = f"{second["Name"]} (band {str(i+1)})"
       else:
-        name = (f"{(second["Name"],)}")
+        name = str(second["Name"])
       labels.append(name)
     self.tblCorrelation.setHorizontalHeaderLabels(labels)
 
@@ -1135,7 +1135,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     for row in range(dimensions):
       for col in range(dimensions):
-        item = QTableWidgetItem("%f" % (transition[row, col],))
+        item = QTableWidgetItem(str(transition[row, col]))
         self.tblTransMatrix.setItem(row, col, item)
 
     self.tblTransMatrix.resizeRowsToContents()
@@ -1220,7 +1220,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     except SamplerError:
       QMessageBox.warning(self,
                           self.tr("Can't save file"),
-                          self.tr(f"Can't save file: '{str(fileName)}'")
+                          self.tr("Can't save file: '{}'").format(fileName)
                          )
       return
 
@@ -1232,7 +1232,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       else:
         QMessageBox.warning(self,
                             self.tr("Can't open file"),
-                            self.tr("Error loading output shapefile:\n%s") % (str(fileName))
+                            self.tr("Error loading output shapefile:\n{}").format(fileName)
                            )
 
   def __selectSimulationOutput(self):
@@ -1399,8 +1399,8 @@ class MolusceDialog(QDialog, Ui_Dialog):
     return colorRampItems
 
   def calcChangeMapColorRamp(self, layer, analyst, validationMode, usePercistentClass):
-    L = utils.getLayerByName(self.leInitRasterName.text())
-    if "singlebandpseudocolor" not in L.renderer().type().lower():
+    l = utils.getLayerByName(self.leInitRasterName.text())  # noqa: E741
+    if "singlebandpseudocolor" not in l.renderer().type().lower():
       self.logMessage(self.tr("Init raster should be in PseudoColor mode. Style not applied."))
       return None
 
@@ -1425,7 +1425,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
       currentValue += intervalDiff
       entryColors.append(colorRamp.color(float(i) / float(numberOfEntries)))
 
-    cr = L.renderer().shader().rasterShaderFunction().colorRampItemList()
+    cr = l.renderer().shader().rasterShaderFunction().colorRampItemList()
 
     colorRampItems = []
     for i in range(len(entryValues)):
@@ -1453,7 +1453,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
     colorRampShader = QgsColorRampShader()
 
     colorRampShader.setColorRampItemList(colorRampItems)
-    colorRampShader.setColorRampType(QgsColorRampShader.Interpolated)
+    colorRampShader.setColorRampType(QgsColorRampShader.Type.Linear)
     rasterShader.setRasterShaderFunction(colorRampShader)
 
     renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, rasterShader)
@@ -1461,7 +1461,9 @@ class MolusceDialog(QDialog, Ui_Dialog):
     maxVal = colorRampItems[-1].value
     renderer.setClassificationMin(minVal)
     renderer.setClassificationMax(maxVal)
-    renderer.setMinMaxOrigin(QgsRasterRenderer.minMaxOrigin(renderer))
+    min_max_origin = renderer.minMaxOrigin()
+    min_max_origin.setExtent(QgsRasterMinMaxOrigin.Extent.WholeRaster)
+    renderer.setMinMaxOrigin(min_max_origin)
 
     layer.setRenderer(renderer)
     # layer.setCacheImage(None)

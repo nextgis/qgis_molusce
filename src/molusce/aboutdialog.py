@@ -23,7 +23,7 @@
 #
 #******************************************************************************
 
-import configparser
+import configparser  # noqa: I001
 import os
 
 from qgis.PyQt.QtCore import *
@@ -33,6 +33,7 @@ from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from .molusceutils import getLocaleShortName
 from .ui.ui_aboutdialogbase import Ui_Dialog
 
+from . import resources_rc  # noqa: F401
 
 class AboutDialog(QDialog, Ui_Dialog):
   def __init__(self):
@@ -71,4 +72,3 @@ ANN, LR, WoE, MCE. There is also validation using kappa statistics.</p>
 <p><strong>Homepage</strong>: <a href="http://hub.qgis.org/projects/molusce">http://hub.qgis.org/projects/molusce</a></p>
 <p>Please report bugs at <a href="http://hub.qgis.org/projects/molusce/issues">bugtracker</a></p>
 """)
-

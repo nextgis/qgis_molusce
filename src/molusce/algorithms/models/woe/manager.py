@@ -51,7 +51,7 @@ class WoeManager(QObject):
         self.prediction = None      # Raster of the prediction results
         self.confidence = None      # Raster of the results confidence(1 = the maximum confidence, 0 = the least confidence)
 
-        if (bins is not None) and (len(self.factors) != len(list(bins.keys()))):
+        if (bins is not None) and (len(self.factors) != len(bins)):
             raise WoeManagerError("Lengths of bins and factors are different!")
 
         for r in self.factors:
@@ -107,7 +107,7 @@ class WoeManager(QObject):
     def getConfidence(self):
         return self.confidence
 
-    def getPrediction(self, state, calcTransitions=False):
+    def getPrediction(self, state, factors=None, calcTransitions=False):
         """Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization).
         """
         self._predict(state, calcTransitions)
@@ -119,7 +119,7 @@ class WoeManager(QObject):
     def getWoe(self):
         return self.woe
 
-    def _predict(self, state):
+    def _predict(self, state, calcTransitions=False):
         """Predict the changes.
         """
         try:
@@ -234,17 +234,17 @@ class WoeManager(QObject):
         text = ""
         for code in self.codes:
             (initClass, finalClass) = self.analyst.decode(code)
-            text = text + self.tr(f"Transition {int(initClass)} -> {int(finalClass)}\n")
+            text = text + self.tr("Transition {} -> {}\n").format(int(initClass), int(finalClass))
             try:
                 factorW = self.weights[code]
                 for factNum, factDict in factorW.items():
                     name = self.factors[factNum].getFileName()
                     name = basename(name)
-                    text = text + self.tr(f"\t factor: {(name,)} \n")
+                    text = text + self.tr("\t factor: {} \n").format(name)
                     for bandNum, bandWeights in factDict.items():
-                        weights = [f"{(w,)}" for w in bandWeights]
-                        text = text + self.tr(f"\t\t Weights of band {bandNum}: {", ".join(weights)} \n")
+                        weights = [str(w) for w in bandWeights]
+                        text = text + self.tr("\t\t Weights of band {}: {} \n").format(bandNum, ", ".join(weights))
             except:
-                text = text + self.tr(f"W for code {code} ({initClass} -> {finalClass}) causes error")
+                text = text + self.tr("W for code {} ({} -> {}) causes error").format(code,initClass,finalClass)
                 raise
         return text

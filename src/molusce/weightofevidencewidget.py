@@ -77,11 +77,11 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
         if v.isCountinues(b):
           self.tblReclass.insertRow(row)
           if v.getBandsCount()>1:
-            name = (f"{utils.getLayerById(k).name()} (band {str(b)})")
+            name = f"{utils.getLayerById(k).name()} (band {str(b+1)})"
           else:
-            name = (f"{(utils.getLayerById(k).name(),)}")
+            name = utils.getLayerById(k).name()
           stat = v.getBandStat(b)
-          for n, item_data in enumerate([name, ("%f" % (stat["min"], )), ("%f" % (stat["max"])), "" , "" ]):
+          for n, item_data in enumerate([name, str(stat["min"]), str(stat["max"]), "" , "" ]):
             item = QTableWidgetItem(item_data)
             if n < 3:
               item.setFlags(item.flags() ^ Qt.ItemIsEditable)
@@ -157,16 +157,15 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
 
   def __getBins(self):
     bins = dict()
-    n = 0
-    for k, v in self.inputs["factors"].items():
+    for n, (k, v) in enumerate(self.inputs["factors"].items()):
       lst = []
       for b in range(v.getBandsCount()):
         lst.append(None)
         if v.isCountinues(b+1):
           if v.getBandsCount()>1:
-            name = (f"{utils.getLayerById(k).name()} (band {str(b+1)})")
+            name = f"{utils.getLayerById(k).name()} (band {str(b+1)})"
           else:
-            name = (f"{(utils.getLayerById(k).name(),)}")
+            name = utils.getLayerById(k).name()
           items = self.tblReclass.findItems(name, Qt.MatchExactly)
           idx = self.tblReclass.indexFromItem(items[0])
           reclassList = self.tblReclass.item(idx.row(), 4).text()
@@ -179,7 +178,6 @@ class WeightOfEvidenceWidget(QWidget, Ui_Widget):
                          )
             return {}
       bins[n] = lst
-      n += 1
 
     return bins
 

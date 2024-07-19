@@ -105,7 +105,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     # Transition labels for the coef. tables
     analyst = self.plugin.analyst
     self.labels = list(model.labelCodes)
-    self.labels = ["%s → %s" % analyst.decode(int(c)) for c in self.labels]
+    self.labels = ["{} → {}".format(*analyst.decode(int(c))) for c in self.labels]
 
     # populate table
     self.showCoefficients()
@@ -147,7 +147,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblCoefficients.resizeRowsToContents()
     self.tblCoefficients.resizeColumnsToContents()
 
-    self.lePseudoR.setText(f"{(accuracy):.5f}")
+    self.lePseudoR.setText(f"{accuracy:6.5f}")
 
   def showStdDeviations(self):
     model = self.inputs["model"]
@@ -172,10 +172,10 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblStdDev.setHorizontalHeaderLabels(self.labels)
 
     for i in range(len(stdErrI)):
-      item = QTableWidgetItem(f"{(stdErrI[i]):.5f}")
+      item = QTableWidgetItem(f"{stdErrI[i]:6.5f}")
       self.tblStdDev.setItem(0, i, item)
       for j in range(len(stdErrW[i])):
-        item = QTableWidgetItem(f"{(stdErrW[i][j]):.5f}")
+        item = QTableWidgetItem(f"{stdErrW[i][j]:6.5f}")
         self.tblStdDev.setItem(j + 1, i, item)
 
     self.tblStdDev.resizeRowsToContents()
@@ -211,11 +211,11 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
     self.tblPValues.setHorizontalHeaderLabels(self.labels)
 
     for i in range(len(fm)):
-      s = (f"{fm[i]} {significance(fm[i])}")
+      s = f"{fm[i]} {significance(fm[i])}"
       item = QTableWidgetItem(str(s))
       self.tblPValues.setItem(0, i, item)
       for j in range(len(coef[i])):
-        s = (f"{coef[i][j]} {significance(coef[i][j])}")
+        s = f"{coef[i][j]} {significance(coef[i][j])}"
         item = QTableWidgetItem(str(s))
         self.tblPValues.setItem(j + 1, i, item)
 

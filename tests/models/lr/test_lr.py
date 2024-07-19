@@ -2,9 +2,10 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from numpy.testing import assert_array_equal
+
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.lr.lr import LR
-from numpy.testing import assert_array_equal
 
 
 class TestLRManager (unittest.TestCase):
@@ -68,6 +69,7 @@ class TestLRManager (unittest.TestCase):
 
         # Transition Potentials
         potentials = lr.getTransitionPotentials()
+        # cats = self.output.getBandGradation(1)
         for cat in [1.0, 2.0]:
             potential_map = potentials[cat]
             self.assertEqual(potential_map.getBand(1).dtype, np.uint8)

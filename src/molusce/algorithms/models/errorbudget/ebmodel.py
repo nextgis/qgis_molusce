@@ -106,16 +106,16 @@ class EBudget(QObject):
             newRj[cat] = np.zeros((newRows, newCols))
         self.rangeChanged.emit(self.tr("An interation of validation %p%"), newRows)
         r = 0
-        while r/scale < newRows:
+        while r//scale < newRows:
             c = 0
-            while c/scale < newCols:
+            while c//scale < newCols:
                 w = self.W[r: r+scale, c: c+scale]
                 sum_w = 1.0*np.sum(w)
                 newW[r//scale, c//scale] = 1.0*sum_w/scale2
                 for cat in self.categories:
                     if sum_w == 0:
                         newSj[cat][r//scale, c//scale] = 0
-                        newRj[cat][r/scale, c/scale] = 0
+                        newRj[cat][r//scale, c//scale] = 0
                     else:
                         S = self.Sj[cat]
                         R = self.Rj[cat]
