@@ -1,4 +1,4 @@
-#******************************************************************************
+# ******************************************************************************
 #
 # MOLUSCE
 # ---------------------------------------------------------
@@ -21,7 +21,7 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 import configparser  # noqa: I001
 import os
@@ -35,37 +35,42 @@ from .ui.ui_aboutdialogbase import Ui_Dialog
 
 from . import resources_rc  # noqa: F401
 
+
 class AboutDialog(QDialog, Ui_Dialog):
-  def __init__(self):
-    QDialog.__init__(self)
-    self.setupUi(self)
+    def __init__(self):
+        QDialog.__init__(self)
+        self.setupUi(self)
 
-    self.btnHelp = self.buttonBox.button(QDialogButtonBox.Help)
+        self.btnHelp = self.buttonBox.button(QDialogButtonBox.Help)
 
-    cfg = configparser.ConfigParser()
-    cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
-    version = cfg.get("general", "version")
+        cfg = configparser.ConfigParser()
+        cfg.read(os.path.join(os.path.dirname(__file__), "metadata.txt"))
+        version = cfg.get("general", "version")
 
-    self.lblLogo.setPixmap(QPixmap(":/icons/molusce.png"))
-    self.lblVersion.setText(self.tr("Version: %s") % (version))
-    doc = QTextDocument()
-    doc.setHtml(self.getAboutText())
-    self.textBrowser.setDocument(doc)
+        self.lblLogo.setPixmap(QPixmap(":/icons/molusce.png"))
+        self.lblVersion.setText(self.tr("Version: %s") % (version))
+        doc = QTextDocument()
+        doc.setHtml(self.getAboutText())
+        self.textBrowser.setDocument(doc)
 
-    self.buttonBox.helpRequested.connect(self.openHelp)
+        self.buttonBox.helpRequested.connect(self.openHelp)
 
-  def reject(self):
-    QDialog.reject(self)
+    def reject(self):
+        QDialog.reject(self)
 
-  def openHelp(self):
-    localeShortName = getLocaleShortName()
-    if localeShortName in [ "ru", "uk" ]:
-      QDesktopServices.openUrl(QUrl("http://hub.qgis.org/projects/molusce/wiki"))
-    else:
-      QDesktopServices.openUrl(QUrl("http://hub.qgis.org/projects/molusce/wiki"))
+    def openHelp(self):
+        localeShortName = getLocaleShortName()
+        if localeShortName in ["ru", "uk"]:
+            QDesktopServices.openUrl(
+                QUrl("http://hub.qgis.org/projects/molusce/wiki")
+            )
+        else:
+            QDesktopServices.openUrl(
+                QUrl("http://hub.qgis.org/projects/molusce/wiki")
+            )
 
-  def getAboutText(self):
-    return self.tr("""<p>Modules for Land Use Change Simulations.</p>
+    def getAboutText(self):
+        return self.tr("""<p>Modules for Land Use Change Simulations.</p>
 <p>Plugin provides a set of algorithms for land use change simulations such as
 ANN, LR, WoE, MCE. There is also validation using kappa statistics.</p>
 <p>Developed by <a href="http://www.asiaairsurvey.com/">Asia Air Survey</a> and <a href="http://nextgis.org">NextGIS</a>.</p>

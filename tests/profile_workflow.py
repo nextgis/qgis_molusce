@@ -23,7 +23,9 @@ def main(initRaster, finalRaster, factors):
     # Create and Train LR Model
     model = LR(ns=1)
     print("Start Setting LR Trainig Data...", clock())
-    model.setTrainingData(initRaster, factors, finalRaster, mode="Stratified", samples=1000)
+    model.setTrainingData(
+        initRaster, factors, finalRaster, mode="Stratified", samples=1000
+    )
     print("Finish Setting Trainig Data", clock(), "\n")
     print("Start LR Training...", clock())
     model.train()
@@ -43,13 +45,12 @@ def main(initRaster, finalRaster, factors):
     simulator = Simulator(initRaster, factors, model, crosstab)
     # Make 1 cycle of simulation:
     simulator.simN(1)
-    monteCarloSim   = simulator.getState()              # Result of MonteCarlo simulation
-    errors          = simulator.errorMap(finalRaster)   # Risk class validation
-    riskFunct       = simulator.getConfidence()         # Risk function
+    monteCarloSim = simulator.getState()  # Result of MonteCarlo simulation
+    errors = simulator.errorMap(finalRaster)  # Risk class validation
+    riskFunct = simulator.getConfidence()  # Risk function
 
     # Make K cycles of simulation:
     # simulator.simN(K)
-
 
     try:
         monteCarloSim.save("simulation_result.tiff")
@@ -64,5 +65,9 @@ def main(initRaster, finalRaster, factors):
     print("Done", clock())
 
 
-if __name__=="__main__":
-    main("examples/init.tif", "examples/final.tif", ["examples/dist_river.tif", "examples/dist_roads.tif"])
+if __name__ == "__main__":
+    main(
+        "examples/init.tif",
+        "examples/final.tif",
+        ["examples/dist_river.tif", "examples/dist_roads.tif"],
+    )

@@ -1,4 +1,3 @@
-
 import math
 from collections import namedtuple
 
@@ -7,7 +6,7 @@ from numpy import ma as ma
 
 from molusce.algorithms.utils import binaryzation, get_gradations
 
-EPSILON = 4*np.finfo(float).eps # Small number > 0
+EPSILON = 4 * np.finfo(float).eps  # Small number > 0
 
 Weights = namedtuple("Weights", ["wPlus", "wMinus"])
 
@@ -17,6 +16,7 @@ class WoeError(Exception):
 
     def __init__(self, msg):
         self.msg = msg
+
 
 def _binary_woe(factor, sites, unitcell=1):
     """Weight of evidence method (binary form).
@@ -28,27 +28,40 @@ def _binary_woe(factor, sites, unitcell=1):
     """
     # Check rasters type
     if factor.dtype != bool:
-        raise WoeError("Factor raster must be binary in this mode of the method!")
+        raise WoeError(
+            "Factor raster must be binary in this mode of the method!"
+        )
     if sites.dtype != bool:
-        raise WoeError("Site raster must be binary in this mode of the method!")
+        raise WoeError(
+            "Site raster must be binary in this mode of the method!"
+        )
     # Check rasters dimentions
     if factor.shape != sites.shape:
         raise WoeError("Factor and sites rasters have different shapes!")
     # Check masked areas of sites and factors are the same
-    if (factor.mask.shape != () and sites.mask.shape !=() ) and not np.array_equal( factor.mask, sites.mask ): # if mask = False ,then mask.shape==()
-        raise WoeError("Masked areas of factor and sites rasters are different!")
+    if (
+        factor.mask.shape != () and sites.mask.shape != ()
+    ) and not np.array_equal(
+        factor.mask, sites.mask
+    ):  # if mask = False ,then mask.shape==()
+        raise WoeError(
+            "Masked areas of factor and sites rasters are different!"
+        )
 
+    fm = factor.compressed()  # masked factor
+    sm = sites.compressed()  # masked sites
 
-    fm = factor.compressed( )  # masked factor
-    sm = sites.compressed ( )  # masked sites
-
-    A  = 1.0 * len(fm)/unitcell               # Total map area in unit cells
-    B  = 1.0 * len(fm[fm==True])/unitcell     # Total factor area in unit cells  # noqa: E712
-    N  = 1.0 * len(sm[sm==True])              # Count of sites  # noqa: E712
+    A = 1.0 * len(fm) / unitcell  # Total map area in unit cells
+    B = (
+        1.0 * len(fm[fm == True]) / unitcell
+    )  # Total factor area in unit cells  # noqa: E712
+    N = 1.0 * len(sm[sm == True])  # Count of sites  # noqa: E712
 
     # Count of sites inside area where the factor occurs:
-    siteAndPatten = fm&sm       # Sites inside area where the factor occurs
-    Nb = 1.0 * len(siteAndPatten[siteAndPatten==True]) # Count of sites inside factor area  # noqa: E712
+    siteAndPatten = fm & sm  # Sites inside area where the factor occurs
+    Nb = 1.0 * len(
+        siteAndPatten[siteAndPatten == True]
+    )  # Count of sites inside factor area  # noqa: E712
 
     # Check areas size
     if A == 0:
@@ -60,10 +73,10 @@ def _binary_woe(factor, sites, unitcell=1):
     if (Nb > N) or (N >= A):
         raise WoeError("Unit cell size is too big for your data!")
 
-    pSiteFactor = Nb/N
-    pNonSiteFactor = (B - Nb)/(A - N)
-    pSiteNonFactor = (N - Nb)/N
-    pNonSiteNonFactor = (A - B - N +Nb)/(A - N)
+    pSiteFactor = Nb / N
+    pNonSiteFactor = (B - Nb) / (A - N)
+    pSiteNonFactor = (N - Nb) / N
+    pNonSiteNonFactor = (A - B - N + Nb) / (A - N)
 
     # Add a small number to prevent devision by zero or log(0):
     pSiteFactor = pSiteFactor + EPSILON
@@ -72,10 +85,11 @@ def _binary_woe(factor, sites, unitcell=1):
     pNonSiteNonFactor = pNonSiteNonFactor + EPSILON
 
     # Weights
-    wPlus  = math.log(pSiteFactor/pNonSiteFactor)
-    wMinus = math.log(pSiteNonFactor/pNonSiteNonFactor)
+    wPlus = math.log(pSiteFactor / pNonSiteFactor)
+    wMinus = math.log(pSiteNonFactor / pNonSiteNonFactor)
 
     return Weights(wPlus, wMinus)
+
 
 def woe(factor, sites, unit_cell=1):
     """Weight of evidence method (multiclass form).
@@ -113,15 +127,16 @@ def woe(factor, sites, unit_cell=1):
     # If len(categories) = 2, then [w[0] + wTotalMin - w[1] for w in weights] increases the answer.
     # In this case:
     if len(categories) == 2:
-        wMap = [w/2 for w in wMap]
+        wMap = [w / 2 for w in wMap]
 
-    resultMap =np.zeros(ma.shape(factor))
-    for i,cat in enumerate(categories):
-        resultMap[factor==cat] = wMap[i]
+    resultMap = np.zeros(ma.shape(factor))
+    for i, cat in enumerate(categories):
+        resultMap[factor == cat] = wMap[i]
 
     resultMap = ma.array(data=resultMap, mask=factor.mask)
     result = {"map": resultMap, "categories": categories, "weights": wMap}
     return result
+
 
 def contrast(wPlus, wMinus):
     """Weight contrast"""

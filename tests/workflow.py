@@ -18,7 +18,7 @@ def main(initRaster, finalRaster, factors):
 
     print("Start Making CrossTable...", clock())
     crosstab = CrossTableManager(initRaster, finalRaster)
-    #print crosstab.getTransitionStat()
+    # print crosstab.getTransitionStat()
     print("Finish Making CrossTable", clock(), "\n")
 
     # Create and Train Analyst
@@ -27,16 +27,17 @@ def main(initRaster, finalRaster, factors):
     print("Finish creating AreaAnalyst ...", clock(), "\n")
 
     print("Start Making Change Map...", clock())
-    analyst = AreaAnalyst(initRaster,finalRaster)
+    analyst = AreaAnalyst(initRaster, finalRaster)
     changeMap = analyst.getChangeMap()
     print("Finish Making Change Map", clock(), "\n")
 
-
-    #~ # Create and Train ANN Model
+    # ~ # Create and Train ANN Model
     model = MlpManager(ns=1)
     model.createMlp(initRaster, factors, changeMap, [10])
     print("Start Setting MLP Trainig Data...", clock())
-    model.setTrainingData(initRaster, factors, changeMap, mode="Stratified", samples=1000)
+    model.setTrainingData(
+        initRaster, factors, changeMap, mode="Stratified", samples=1000
+    )
     print("Finish Setting Trainig Data", clock(), "\n")
     print("Start MLP Training...", clock())
     model.train(20, valPercent=20)
@@ -47,23 +48,23 @@ def main(initRaster, finalRaster, factors):
     # confidence = model.getConfidence()
     # potentials = model.getTransitionPotentials()
 
-    #~ # Create and Train LR Model
-    #~ model = LR(ns=0)
-    #~ print 'Start Setting LR Trainig Data...', clock()
-    #~ model.setState(initRaster)
-    #~ model.setFactors(factors)
-    #~ model.setOutput(changeMap)
-    #~ model.setMode('Stratified')
-    #~ model.setSamples(100)
-    #~ model.setTrainingData()
-    #~ print 'Finish Setting Trainig Data', clock(), '\n'
-    #~ print 'Start LR Training...', clock()
-    #~ model.train()
-    #~ print 'Finish Trainig', clock(), '\n'
-    #~
-    #~ print 'Start LR Prediction...', clock()
-    #~ predict = model.getPrediction(initRaster, factors, calcTransitions=True)
-    #~ print 'Finish LR Prediction...', clock(), '\n'
+    # ~ # Create and Train LR Model
+    # ~ model = LR(ns=0)
+    # ~ print 'Start Setting LR Trainig Data...', clock()
+    # ~ model.setState(initRaster)
+    # ~ model.setFactors(factors)
+    # ~ model.setOutput(changeMap)
+    # ~ model.setMode('Stratified')
+    # ~ model.setSamples(100)
+    # ~ model.setTrainingData()
+    # ~ print 'Finish Setting Trainig Data', clock(), '\n'
+    # ~ print 'Start LR Training...', clock()
+    # ~ model.train()
+    # ~ print 'Finish Trainig', clock(), '\n'
+    # ~
+    # ~ print 'Start LR Prediction...', clock()
+    # ~ predict = model.getPrediction(initRaster, factors, calcTransitions=True)
+    # ~ print 'Finish LR Prediction...', clock(), '\n'
 
     # Create and Train WoE Model
     # print 'Start creating AreaAnalyst...', clock()
@@ -75,14 +76,14 @@ def main(initRaster, finalRaster, factors):
     # model.train()
     # print 'Finish creating WoE model...', clock(), '\n'
 
-    #~ # Create and Train MCE Model
-    #~ print 'Start creating MCE model...', clock()
-    #~ matrix = [
-        #~ [1,     6],
-        #~ [1.0/6,   1]
-    #~ ]
-    #~ model = MCE(factors, matrix, 2, 3, analyst)
-    #~ print 'Finish creating MCE model...', clock(), '\n'
+    # ~ # Create and Train MCE Model
+    # ~ print 'Start creating MCE model...', clock()
+    # ~ matrix = [
+    # ~ [1,     6],
+    # ~ [1.0/6,   1]
+    # ~ ]
+    # ~ model = MCE(factors, matrix, 2, 3, analyst)
+    # ~ print 'Finish creating MCE model...', clock(), '\n'
 
     # predict = model.getPrediction(initRaster, factors, calcTransitions=True)
     # confidence = model.getConfidence()
@@ -107,9 +108,9 @@ def main(initRaster, finalRaster, factors):
     # Make 1 cycle of simulation:
     simulator.setIterationCount(1)
     simulator.simN()
-    monteCarloSim   = simulator.getState()              # Result of MonteCarlo simulation
-    errors          = simulator.errorMap(finalRaster)   # Risk class validation
-    riskFunct       = simulator.getConfidence()         # Risk function
+    monteCarloSim = simulator.getState()  # Result of MonteCarlo simulation
+    errors = simulator.errorMap(finalRaster)  # Risk class validation
+    riskFunct = simulator.getConfidence()  # Risk function
 
     try:
         monteCarloSim.save("simulation_result.tiff")
@@ -125,6 +126,14 @@ def main(initRaster, finalRaster, factors):
     print("Done", clock())
 
 
-if __name__=="__main__":
-    #main('examples/init.tif', 'examples/final.tif', ['examples/dist_river.tif', 'examples/dist_roads.tif'])
-    main("Original/Pak_lucc00.tif", "Original/Pak_lucc07.tif", ["Original/dist_main_roads1.tif", "Original/dist_rivers1.tif", "Original/LPB_dem_res1.tif"])
+if __name__ == "__main__":
+    # main('examples/init.tif', 'examples/final.tif', ['examples/dist_river.tif', 'examples/dist_roads.tif'])
+    main(
+        "Original/Pak_lucc00.tif",
+        "Original/Pak_lucc07.tif",
+        [
+            "Original/dist_main_roads1.tif",
+            "Original/dist_rivers1.tif",
+            "Original/LPB_dem_res1.tif",
+        ],
+    )

@@ -8,34 +8,37 @@ from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.lr.lr import LR
 
 
-class TestLRManager (unittest.TestCase):
+class TestLRManager(unittest.TestCase):
     def setUp(self):
         self.examples_path = Path(__file__).parents[2] / "examples"
-        self.output  = Raster(self.examples_path / "multifact.tif")
-            #~ [1,1,3]
-            #~ [3,2,1]
-            #~ [0,3,1]
+        self.output = Raster(self.examples_path / "multifact.tif")
+        # ~ [1,1,3]
+        # ~ [3,2,1]
+        # ~ [0,3,1]
 
         self.output.resetMask([0])
-        self.state   = self.output
-        self.factors = [Raster(self.examples_path / "sites.tif"), Raster(self.examples_path / "sites.tif")]
-            #~ [1,2,1],
-            #~ [1,2,1],
-            #~ [0,1,2]
+        self.state = self.output
+        self.factors = [
+            Raster(self.examples_path / "sites.tif"),
+            Raster(self.examples_path / "sites.tif"),
+        ]
+        # ~ [1,2,1],
+        # ~ [1,2,1],
+        # ~ [0,1,2]
 
-        self.output1  = Raster(self.examples_path / "data.tif")
-        self.state1   = self.output1
+        self.output1 = Raster(self.examples_path / "data.tif")
+        self.state1 = self.output1
         self.factors1 = [Raster(self.examples_path / "fact16.tif")]
 
     def test_LR(self):
-        #~ data = [
-            #~ [3.0, 1.0, 3.0],
-            #~ [3.0, 1.0, 3.0],
-            #~ [0,   3.0, 1.0]
-        #~ ]
-        #~ result = np.ma.array(data = data, mask = (data==0))
+        # ~ data = [
+        # ~ [3.0, 1.0, 3.0],
+        # ~ [3.0, 1.0, 3.0],
+        # ~ [0,   3.0, 1.0]
+        # ~ ]
+        # ~ result = np.ma.array(data = data, mask = (data==0))
 
-        lr = LR(ns=0)   # 3-class problem
+        lr = LR(ns=0)  # 3-class problem
         lr.setState(self.state)
         lr.setFactors(self.factors)
         lr.setOutput(self.output)
@@ -45,13 +48,15 @@ class TestLRManager (unittest.TestCase):
         predict = predict.getBand(1)
         assert_array_equal(predict, self.output.getBand(1))
 
-        lr = LR(ns=1) # Two-class problem (it's because of boundary effect)
+        lr = LR(ns=1)  # Two-class problem (it's because of boundary effect)
         lr.setState(self.state1)
         lr.setFactors(self.factors1)
         lr.setOutput(self.output1)
         lr.setTrainingData()
         lr.train()
-        predict = lr.getPrediction(self.state1, self.factors1, calcTransitions=True)
+        predict = lr.getPrediction(
+            self.state1, self.factors1, calcTransitions=True
+        )
         predict = predict.getBand(1)
         self.assertEqual(predict.dtype, np.uint8)
         data = [
@@ -60,7 +65,7 @@ class TestLRManager (unittest.TestCase):
             [0.0, 2.0, 2.0, 0.0],
             [0.0, 0.0, 0.0, 0.0],
         ]
-        result = np.ma.array(data = data, mask = (data==0))
+        result = np.ma.array(data=data, mask=(data == 0))
         assert_array_equal(predict, result)
 
         # Confidence is zero

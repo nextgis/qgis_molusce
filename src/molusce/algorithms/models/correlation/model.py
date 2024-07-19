@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 
 import math
 
@@ -16,8 +16,8 @@ class CoeffError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
-class DependenceCoef(QObject):
 
+class DependenceCoef(QObject):
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
     processFinished = pyqtSignal()
@@ -51,17 +51,24 @@ class DependenceCoef(QObject):
             self.__propagateCrossTableSignals()
             self.crosstable.computeCrosstable()
         except MemoryError:
-            self.errorReport.emit(self.tr("The system out of memory during cross table calculation"))
+            self.errorReport.emit(
+                self.tr(
+                    "The system out of memory during cross table calculation"
+                )
+            )
             raise
         except:
-            self.errorReport.emit(self.tr("An unknown error occurs during cross table calculation"))
+            self.errorReport.emit(
+                self.tr(
+                    "An unknown error occurs during cross table calculation"
+                )
+            )
             raise
         finally:
             self.processFinished.emit()
 
     def correlation(self):
-        """Define correlation coefficient of the rasters.
-        """
+        """Define correlation coefficient of the rasters."""
         x, y = masks_identity(self.X.flatten(), self.Y.flatten())
         x, y = np.ma.compressed(x), np.ma.compressed(y)
         R = np.corrcoef(x, y)
@@ -73,22 +80,23 @@ class DependenceCoef(QObject):
 
         return R[0][1]
 
-    def correctness(self, percent = True):
-        """% (or count) of correct results
-        """
+    def correctness(self, percent=True):
+        """% (or count) of correct results"""
         table = self.getCrosstable()
         crosstable = table.getCrosstable()
         rows, cols = table.shape
         if rows != cols:
-            raise CoeffError("The method is applicable for NxN crosstable only!")
+            raise CoeffError(
+                "The method is applicable for NxN crosstable only!"
+            )
         n = table.n
         s = 0.0
         for i in range(rows):
             s = s + crosstable[i][i]
 
         if percent:
-            return 100.0*s/n
-        return s/n
+            return 100.0 * s / n
+        return s / n
 
     def cramer(self):
         """Define Cramer's relationship coefficient of the rasters for discrete values
@@ -101,15 +109,15 @@ class DependenceCoef(QObject):
         table = self.getCrosstable()
         crosstable = table.getCrosstable()
         rows, cols = table.shape
-        t_expect =  table.getExpectedTable()
+        t_expect = table.getExpectedTable()
 
         # Mask T* to prevent division by zero
         t_expect = np.ma.array(t_expect, mask=(t_expect == 0))
         # chi-square coeff = sum((T-T*)^2/T*)
-        x2 = np.sum(np.square(crosstable - t_expect)/t_expect)
+        x2 = np.sum(np.square(crosstable - t_expect) / t_expect)
         # CRAMER CONTINGENCY COEF. = sqrt(chi-square / (total * min(s-1,r-1)))
         # s, r - raster grauations
-        Cramer = math.sqrt(x2/(table.n*min(cols-1, rows-1)))
+        Cramer = math.sqrt(x2 / (table.n * min(cols - 1, rows - 1)))
 
         return Cramer
 
@@ -121,25 +129,25 @@ class DependenceCoef(QObject):
         @param X    First raster's array
         @param Y    Second raster's array
         """
-        #T, sum_r, sum_s, total, r, s = compute_table(X, Y)
+        # T, sum_r, sum_s, total, r, s = compute_table(X, Y)
         table = self.getCrosstable()
-        T = table.getProbtable()             #Pij = Tij / total
-        sum_rows = table.getProbRows()       #Pi. = Ti. / total  i=[0,(r-1)]
-        sum_cols = table.getProbCols()       #P.j = T.j / total  j=[0,(s-1)]
+        T = table.getProbtable()  # Pij = Tij / total
+        sum_rows = table.getProbRows()  # Pi. = Ti. / total  i=[0,(r-1)]
+        sum_cols = table.getProbCols()  # P.j = T.j / total  j=[0,(s-1)]
 
-        #to calculate the entropy we take the logarithm,
-        #logarithm of zero does not exist, so we must mask zero values
+        # to calculate the entropy we take the logarithm,
+        # logarithm of zero does not exist, so we must mask zero values
         sum_rows = np.compress(sum_rows != 0, sum_rows)
         sum_cols = np.compress(sum_cols != 0, sum_cols)
-        #Compute the entropy coeff. of two raster
+        # Compute the entropy coeff. of two raster
         H_x = -np.sum(sum_rows * np.log(sum_rows))
         H_y = -np.sum(sum_cols * np.log(sum_cols))
-        #Compute the joint entropy coeff.
+        # Compute the joint entropy coeff.
         T = np.ma.array(T, mask=(T == 0))
         T = np.ma.compressed(T)
         H_xy = -np.sum(T * np.log(T))
         # Compute the Joint Information Uncertainty
-        U = 2.0 * ((H_x + H_y - H_xy)/(H_x + H_y))
+        U = 2.0 * ((H_x + H_y - H_xy) / (H_x + H_y))
 
         return U
 
@@ -156,38 +164,52 @@ class DependenceCoef(QObject):
         rows, cols = table.shape
         if rows != cols:
             raise CoeffError("Kappa is applicable for NxN crosstable only!")
-        t_expect =  table.getProbtable()
+        t_expect = table.getProbtable()
         pa = 0
         for i in range(rows):
-            pa = pa + t_expect[i,i]
+            pa = pa + t_expect[i, i]
         prows = table.getProbRows()
         pcols = table.getProbCols()
         pexpect = sum(prows * pcols)
         pmax = sum(np.min([prows, pcols], axis=0))
 
         if mode is None:
-            result = (pa - pexpect)/(1-pexpect)
+            result = (pa - pexpect) / (1 - pexpect)
         elif mode == "loc":
-            result = (pa - pexpect)/(pmax - pexpect)
+            result = (pa - pexpect) / (pmax - pexpect)
         elif mode == "histo":
-            result = (pmax - pexpect)/(1 - pexpect)
+            result = (pmax - pexpect) / (1 - pexpect)
         elif mode == "all":
-            result = {"loc": (pa - pexpect)/(pmax - pexpect), "histo": (pmax - pexpect)/(1 - pexpect), "overal": (pa - pexpect)/(1-pexpect)}
+            result = {
+                "loc": (pa - pexpect) / (pmax - pexpect),
+                "histo": (pmax - pexpect) / (1 - pexpect),
+                "overal": (pa - pexpect) / (1 - pexpect),
+            }
         else:
             raise CoeffError("Unknown mode of kappa statistics!")
 
         return result
 
     def __propagateCrossTableSignals(self):
-        self.crosstable.rangeChanged.connect(self.__crosstableProgressRangeChanged)
-        self.crosstable.updateProgress.connect(self.__crosstableProgressChanged)
+        self.crosstable.rangeChanged.connect(
+            self.__crosstableProgressRangeChanged
+        )
+        self.crosstable.updateProgress.connect(
+            self.__crosstableProgressChanged
+        )
         self.crosstable.crossTableFinished.connect(self.__crosstableFinished)
         self.crosstable.errorReport.connect(self.__crosstableError)
 
     def __crosstableFinished(self):
-        self.crosstable.rangeChanged.disconnect(self.__crosstableProgressRangeChanged)
-        self.crosstable.updateProgress.disconnect(self.__crosstableProgressChanged)
-        self.crosstable.crossTableFinished.disconnect(self.__crosstableFinished)
+        self.crosstable.rangeChanged.disconnect(
+            self.__crosstableProgressRangeChanged
+        )
+        self.crosstable.updateProgress.disconnect(
+            self.__crosstableProgressChanged
+        )
+        self.crosstable.crossTableFinished.disconnect(
+            self.__crosstableFinished
+        )
 
     def __crosstableProgressChanged(self):
         QCoreApplication.processEvents()

@@ -7,7 +7,6 @@ The code based on https://gist.github.com/daien/1989208 written by  Adrien Gaido
 
 """
 
-
 import numpy as np
 from scipy.optimize import fmin_bfgs
 from scipy.stats import norm
@@ -61,7 +60,7 @@ def mlr_nll_and_gradient(X, Y, W, sigma2, weighted):
     Yhat /= Yhat.sum(axis=1)[:, np.newaxis]
 
     if weighted:
-        nll = np.sum(np.log((1. + 1e-15) * Yhat) * Y)
+        nll = np.sum(np.log((1.0 + 1e-15) * Yhat) * Y)
         Yhat *= Y.sum(axis=1)[:, np.newaxis]
         Yhat -= Y
     else:
@@ -74,8 +73,8 @@ def mlr_nll_and_gradient(X, Y, W, sigma2, weighted):
     grad = np.dot(X.T, Yhat)
 
     if sigma2 is not None:
-        nll -= np.sum(W * W) / (2. * sigma2)
-        nll -= n_features * n_classes * np.log(sigma2) / 2.
+        nll -= np.sum(W * W) / (2.0 * sigma2)
+        nll -= n_features * n_classes * np.log(sigma2) / 2.0
         grad -= W / float(sigma2)
 
     nll /= -float(n_samples)
@@ -85,8 +84,7 @@ def mlr_nll_and_gradient(X, Y, W, sigma2, weighted):
 
 
 class FuncGradComputer:
-    """Convenience class to pass func and grad separately to optimize
-    """
+    """Convenience class to pass func and grad separately to optimize"""
 
     def __init__(self, X, Y, ss, weighted):
         self.X = X
@@ -98,12 +96,12 @@ class FuncGradComputer:
         self.grad_ = None
 
     def _compute_func_grad(self, w):
-        """Simultaneously compute objective function and gradient at w
-        """
+        """Simultaneously compute objective function and gradient at w"""
         # reshape  input flattened by scipy
         W = w.reshape((self.X.shape[1], self.Y.shape[1]))
         self.nll_, self.grad_ = mlr_nll_and_gradient(
-            self.X, self.Y, W, self.ss, self.weighted)
+            self.X, self.Y, W, self.ss, self.weighted
+        )
 
     def compute_fun(self, w):
         if self.nll_ is None:
@@ -151,9 +149,9 @@ class MLR:
         self.W_ = None
         self.nll_ = None
         self.grad_ = None
-        self.invHess = None     # Inverted Hessian
-        self.stdErr_ = None     # Standard errors
-        self.pVal_ = None       # p-values
+        self.invHess = None  # Inverted Hessian
+        self.stdErr_ = None  # Standard errors
+        self.pVal_ = None  # p-values
 
     def calcSTD(self, X):
         """Calculate std errors for the estimated coefficients.
@@ -167,22 +165,21 @@ class MLR:
         n_samples, n_features = X.shape
         _d, n_classes = self.W_.shape
         # check dimensions
-        assert n_features +1 == _d, "Shape mismatch between X and W"
+        assert n_features + 1 == _d, "Shape mismatch between X and W"
 
         self.stdErr_ = np.sqrt(np.diagonal(self.invHess))
-        self.stdErr_.shape = (n_features+1, n_classes)
+        self.stdErr_.shape = (n_features + 1, n_classes)
 
     def calcPvalues(self, X):
         if self.stdErr_ is None:
             self.calcSTD(X)
         stderr = self.stdErr_
-        stderr = stderr + 0.000000001 # to prevent devision by zero
+        stderr = stderr + 0.000000001  # to prevent devision by zero
         z = self.W_**2 / stderr**2
-        self.pVal_ =  2*(1 - norm.cdf(z))
+        self.pVal_ = 2 * (1 - norm.cdf(z))
 
     def get_intercept(self):
-        """Return array of the intercept estimates (numpy array, shape [1, n_classes])
-        """
+        """Return array of the intercept estimates (numpy array, shape [1, n_classes])"""
         if self.W_ is None:
             return None
         return self.W_[0, :]
@@ -208,8 +205,7 @@ class MLR:
         return self.stdErr_[1:, :]
 
     def get_weights(self):
-        """Return array of the coefficient estimates (numpy array, shape [n_features, n_classes])
-        """
+        """Return array of the coefficient estimates (numpy array, shape [n_features, n_classes])"""
         if self.W_ is None:
             return None
         return self.W_[1:, :]
@@ -248,12 +244,12 @@ class MLR:
             Y = y
 
         # add column of ones to X
-        ones = np.ones( (n_samples,) )
+        ones = np.ones((n_samples,))
         X = np.column_stack((ones, X))
 
         # initialize the weight matrix
         np.random.seed(self.seed)
-        w0 = np.random.random(( (n_features+1) * n_classes, ))
+        w0 = np.random.random(((n_features + 1) * n_classes,))
 
         # initialize the functions to compute the cost function and gradient
         fgcomp = FuncGradComputer(X, Y, self.ss, self.weighted)
@@ -261,12 +257,13 @@ class MLR:
         grad = fgcomp.compute_grad
 
         # minimize with BFGS
-        xopt, foptm, gopt, Bopt, func_calls, grad_calls, warnflag = fmin_bfgs(fun, w0, fprime=grad, full_output=True, maxiter=maxiter, disp=False)
-        self.W_ = xopt.reshape((n_features+1, n_classes))
+        xopt, foptm, gopt, Bopt, func_calls, grad_calls, warnflag = fmin_bfgs(
+            fun, w0, fprime=grad, full_output=True, maxiter=maxiter, disp=False
+        )
+        self.W_ = xopt.reshape((n_features + 1, n_classes))
         self.invHess = Bopt
 
         return self
-
 
     def predict_proba(self, X):
         """Probability estimates.
@@ -287,7 +284,7 @@ class MLR:
         """
         # add column of ones to X
         n_samples, n_features = X.shape
-        ones = np.ones( (n_samples,) )
+        ones = np.ones((n_samples,))
         X = np.column_stack((ones, X))
 
         Yhat = np.dot(X, self.W_)
@@ -296,7 +293,6 @@ class MLR:
         # l1-normalize
         Yhat /= Yhat.sum(axis=1)[:, np.newaxis]
         return Yhat
-
 
     def predict(self, X):
         """Predict most likely label

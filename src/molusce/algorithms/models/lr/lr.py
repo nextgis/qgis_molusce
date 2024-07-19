@@ -1,4 +1,3 @@
-
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
@@ -18,6 +17,7 @@ class LRError(Exception):
     def __init__(self, msg):
         self.msg = msg
 
+
 class LR(QObject):
     """Implements Logistic Regression model definition and calibration
     (maximum liklihood parameter estimation).
@@ -32,7 +32,6 @@ class LR(QObject):
     errorReport = pyqtSignal(str)
 
     def __init__(self, ns=0, logreg=None):
-
         QObject.__init__(self)
 
         if logreg:
@@ -47,18 +46,18 @@ class LR(QObject):
         self.samples = None
         self.catlist = None
 
-        self.ns = ns            # Neighbourhood size of training rasters.
-        self.data = None        # Training data
-        self.maxiter = 100      # Maximum of fitting iterations
+        self.ns = ns  # Neighbourhood size of training rasters.
+        self.data = None  # Training data
+        self.maxiter = 100  # Maximum of fitting iterations
 
-        self.sampler = None     # Sampler
+        self.sampler = None  # Sampler
 
         # Results of the LR prediction
         self.prediction = None  # Raster of the LR prediction results
         self.confidence = None  # Raster of the LR results confidence (1 = the maximum confidence, 0 = the least confidence)
-        self.Kappa      = 0     # Kappa value
-        self.pseudoR    = 0     # Pseudo R-squared (Count) (http://www.ats.ucla.edu/stat/mult_pkg/faq/general/Psuedo_RSquareds.htm)
-        self.transitionPotentials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
+        self.Kappa = 0  # Kappa value
+        self.pseudoR = 0  # Pseudo R-squared (Count) (http://www.ats.ucla.edu/stat/mult_pkg/faq/general/Psuedo_RSquareds.htm)
+        self.transitionPotentials = None  # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
     def getCoef(self):
         return self.logreg.get_weights().T
@@ -73,19 +72,19 @@ class LR(QObject):
         return self.Kappa
 
     def getStdErrIntercept(self):
-        X = np.column_stack( (self.data["state"], self.data["factors"]) )
+        X = np.column_stack((self.data["state"], self.data["factors"]))
         return self.logreg.get_stderr_intercept(X)
 
     def getStdErrWeights(self):
-        X = np.column_stack( (self.data["state"], self.data["factors"]) )
+        X = np.column_stack((self.data["state"], self.data["factors"]))
         return self.logreg.get_stderr_weights(X).T
 
     def get_PvalIntercept(self):
-        X = np.column_stack( (self.data["state"], self.data["factors"]) )
+        X = np.column_stack((self.data["state"], self.data["factors"]))
         return self.logreg.get_pval_intercept(X)
 
     def get_PvalWeights(self):
-        X = np.column_stack( (self.data["state"], self.data["factors"]) )
+        X = np.column_stack((self.data["state"], self.data["factors"]))
         return self.logreg.get_pval_weights(X).T
 
     def getPrediction(self, state, factors, calcTransitions=False):
@@ -105,11 +104,10 @@ class LR(QObject):
         out_scl = self.logreg.predict_proba(input_data)[0]
         # Calculate the confidence:
         out_scl.sort()
-        return int(100 * (out_scl[-1] - out_scl[-2]) )
+        return int(100 * (out_scl[-1] - out_scl[-2]))
 
     def outputTransitions(self, input_data):
-        """Return transition potential of the outputs
-        """
+        """Return transition potential of the outputs"""
         out_scl = self.logreg.predict_proba(input_data)[0]
         out_scl = [int(100 * x) for x in out_scl]
         result = {}
@@ -129,20 +127,26 @@ class LR(QObject):
             rows, cols = geodata["ySize"], geodata["xSize"]
             for r in factors:
                 if not state.geoDataMatch(r):
-                    raise LRError("Geometries of the input rasters are different!")
+                    raise LRError(
+                        "Geometries of the input rasters are different!"
+                    )
 
-            self.transitionPotentials = None    # Reset tr.potentials if they exist
+            self.transitionPotentials = (
+                None  # Reset tr.potentials if they exist
+            )
 
             # Normalize factors before prediction:
             for f in factors:
-                f.normalize(mode = "mean")
+                f.normalize(mode="mean")
 
-            predicted_band  = np.zeros([rows, cols], dtype=np.uint8)
+            predicted_band = np.zeros([rows, cols], dtype=np.uint8)
             confidence_band = np.zeros([rows, cols], dtype=np.uint8)
             if calcTransitions:
                 self.transitionPotentials = {}
                 for cat in self.catlist:
-                    self.transitionPotentials[cat] = np.zeros([rows, cols], dtype=np.uint8)
+                    self.transitionPotentials[cat] = np.zeros(
+                        [rows, cols], dtype=np.uint8
+                    )
 
             self.sampler = Sampler(state, factors, ns=self.ns)
             mask = state.getBand(1).mask.copy()
@@ -152,25 +156,31 @@ class LR(QObject):
             self.rangeChanged.emit(self.tr("Prediction %p%"), rows)
             for i in range(rows):
                 for j in range(cols):
-                    if not mask[i,j]:
-                        input_data = self.sampler.get_inputs(state, i,j)
+                    if not mask[i, j]:
+                        input_data = self.sampler.get_inputs(state, i, j)
                         if input_data is not None:
                             input_data = np.array([input_data])
                             out = self.logreg.predict(input_data)
-                            predicted_band[i,j] = out
+                            predicted_band[i, j] = out
                             confidence = self._outputConfidence(input_data)
                             confidence_band[i, j] = confidence
 
                             if calcTransitions:
                                 potentials = self.outputTransitions(input_data)
                                 for cat in self.catlist:
-                                    potential_map = self.transitionPotentials[cat]
+                                    potential_map = self.transitionPotentials[
+                                        cat
+                                    ]
                                     potential_map[i, j] = potentials[cat]
-                        else: # Input sample is incomplete => mask this pixel
+                        else:  # Input sample is incomplete => mask this pixel
                             mask[i, j] = True
                 self.updateProgress.emit()
-            predicted_bands  = [np.ma.array(data = predicted_band,  mask = mask, dtype=np.uint8)]
-            confidence_bands = [np.ma.array(data = confidence_band, mask = mask, dtype=np.uint8)]
+            predicted_bands = [
+                np.ma.array(data=predicted_band, mask=mask, dtype=np.uint8)
+            ]
+            confidence_bands = [
+                np.ma.array(data=confidence_band, mask=mask, dtype=np.uint8)
+            ]
 
             self.prediction = Raster()
             self.prediction.create(predicted_bands, geodata)
@@ -179,14 +189,24 @@ class LR(QObject):
 
             if calcTransitions:
                 for cat in self.catlist:
-                    band = [np.ma.array(data=self.transitionPotentials[cat], mask=mask, dtype=np.uint8)]
+                    band = [
+                        np.ma.array(
+                            data=self.transitionPotentials[cat],
+                            mask=mask,
+                            dtype=np.uint8,
+                        )
+                    ]
                     self.transitionPotentials[cat] = Raster()
                     self.transitionPotentials[cat].create(band, geodata)
         except MemoryError:
-            self.errorReport.emit(self.tr("The system out of memory during LR prediction"))
+            self.errorReport.emit(
+                self.tr("The system out of memory during LR prediction")
+            )
             raise
         except:
-            self.errorReport.emit(self.tr("An unknown error occurs during LR prediction"))
+            self.errorReport.emit(
+                self.tr("An unknown error occurs during LR prediction")
+            )
             raise
         finally:
             self.processFinished.emit()
@@ -197,7 +217,9 @@ class LR(QObject):
         self.sampler.samplingFinished.connect(self.__samplerFinished)
 
     def __samplerFinished(self):
-        self.sampler.rangeChanged.disconnect(self.__samplerProgressRangeChanged)
+        self.sampler.rangeChanged.disconnect(
+            self.__samplerProgressRangeChanged
+        )
         self.sampler.updateProgress.disconnect(self.__samplerProgressChanged)
         self.sampler.samplingFinished.disconnect(self.__samplerFinished)
         self.samplingFinished.emit()
@@ -218,30 +240,40 @@ class LR(QObject):
         self.maxiter = maxiter
 
     def setTrainingData(self):
-        state, factors, output, mode, samples = self.state, self.factors, self.output, self.mode, self.samples
+        state, factors, output, mode, samples = (
+            self.state,
+            self.factors,
+            self.output,
+            self.mode,
+            self.samples,
+        )
         if not self.logreg:
-            raise LRError("You must create a Logistic Regression model before!")
+            raise LRError(
+                "You must create a Logistic Regression model before!"
+            )
 
         # Normalize factors before sampling:
         for f in factors:
-            f.normalize(mode = "mean")
+            f.normalize(mode="mean")
 
         self.sampler = Sampler(state, factors, output, ns=self.ns)
         self.__propagateSamplerSignals()
-        self.sampler.setTrainingData(state, output, shuffle=False, mode=mode, samples=samples)
+        self.sampler.setTrainingData(
+            state, output, shuffle=False, mode=mode, samples=samples
+        )
 
         self.data = self.sampler.data
         self.catlist = np.unique(self.data["output"])
 
     def train(self):
-        X = np.column_stack( (self.data["state"], self.data["factors"]) )
+        X = np.column_stack((self.data["state"], self.data["factors"]))
         Y = self.data["output"]
         self.labelCodes = np.unique(Y)
         self.logreg.fit(X, Y, maxiter=self.maxiter)
         out = self.logreg.predict(X)
         depCoef = DependenceCoef(np.ma.array(out), np.ma.array(Y), expand=True)
         self.Kappa = depCoef.kappa(mode=None)
-        self.pseudoR = depCoef.correctness(percent = False)
+        self.pseudoR = depCoef.correctness(percent=False)
 
     def setState(self, state):
         self.state = state
@@ -263,10 +295,14 @@ class LR(QObject):
             self.setTrainingData()
             self.train()
         except MemoryError:
-            self.errorReport.emit(self.tr("The system out of memory during LR training"))
+            self.errorReport.emit(
+                self.tr("The system out of memory during LR training")
+            )
             raise
         except:
-            self.errorReport.emit(self.tr("An unknown error occurs during LR trainig"))
+            self.errorReport.emit(
+                self.tr("An unknown error occurs during LR trainig")
+            )
             raise
         finally:
             self.finished.emit()

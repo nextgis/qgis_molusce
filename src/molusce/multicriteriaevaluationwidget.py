@@ -1,5 +1,4 @@
-
-#******************************************************************************
+# ******************************************************************************
 #
 # MOLUSCE
 # ---------------------------------------------------------
@@ -22,7 +21,7 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 from qgis.core import *
 from qgis.PyQt.QtCore import *
@@ -37,162 +36,191 @@ from .ui.ui_multicriteriaevaluationwidgetbase import Ui_Widget
 
 
 class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
-  def __init__(self, plugin, parent=None):
-    QWidget.__init__(self, parent)
-    self.setupUi(self)
+    def __init__(self, plugin, parent=None):
+        QWidget.__init__(self, parent)
+        self.setupUi(self)
 
-    self.plugin = plugin
-    self.inputs = plugin.inputs
+        self.plugin = plugin
+        self.inputs = plugin.inputs
 
-    self.settings = QSettings("NextGIS", "MOLUSCE")
+        self.settings = QSettings("NextGIS", "MOLUSCE")
 
-    self.manageGui()
+        self.manageGui()
 
-    self.btnTrainModel.clicked.connect(self.trainModel)
-    self.tblMatrix.cellChanged.connect(self.__checkValue)
+        self.btnTrainModel.clicked.connect(self.trainModel)
+        self.tblMatrix.cellChanged.connect(self.__checkValue)
 
-  def manageGui(self):
-    if not utils.checkInputRasters(self.inputs):
-      QMessageBox.warning(self.plugin,
-                          self.tr("Missed input data"),
-                          self.tr("Initial or final raster is not set. Please specify input data and try again")
-                         )
-      return
-    if not utils.checkFactors(self.inputs):
-      QMessageBox.warning(self.plugin,
-                          self.tr("Missed input data"),
-                          self.tr("Factors rasters is not set. Please specify them and try again")
-                         )
-      return
+    def manageGui(self):
+        if not utils.checkInputRasters(self.inputs):
+            QMessageBox.warning(
+                self.plugin,
+                self.tr("Missed input data"),
+                self.tr(
+                    "Initial or final raster is not set. Please specify input data and try again"
+                ),
+            )
+            return
+        if not utils.checkFactors(self.inputs):
+            QMessageBox.warning(
+                self.plugin,
+                self.tr("Missed input data"),
+                self.tr(
+                    "Factors rasters is not set. Please specify them and try again"
+                ),
+            )
+            return
 
-    self.spnInitialClass.setValue(int(self.settings.value("ui/MCE/initialClass", 0)))
-    self.spnFinalClass.setValue(int(self.settings.value("ui/MCE/finalClass", 0)))
+        self.spnInitialClass.setValue(
+            int(self.settings.value("ui/MCE/initialClass", 0))
+        )
+        self.spnFinalClass.setValue(
+            int(self.settings.value("ui/MCE/finalClass", 0))
+        )
 
-    gradations = self.inputs["initial"].getBandGradation(1)
-    self.spnInitialClass.setRange(int(min(gradations)), int(max(gradations)))
-    gradations = self.inputs["final"].getBandGradation(1)
-    self.spnFinalClass.setRange(int(min(gradations)), int(max(gradations)))
+        gradations = self.inputs["initial"].getBandGradation(1)
+        self.spnInitialClass.setRange(
+            int(min(gradations)), int(max(gradations))
+        )
+        gradations = self.inputs["final"].getBandGradation(1)
+        self.spnFinalClass.setRange(int(min(gradations)), int(max(gradations)))
 
-    self.__prepareTable()
+        self.__prepareTable()
 
-  def trainModel(self):
-    if not utils.checkFactors(self.inputs):
-      QMessageBox.warning(self.plugin,
-                          self.tr("Missed input data"),
-                          self.tr("Factors rasters is not set. Please specify them and try again")
-                         )
-      return
+    def trainModel(self):
+        if not utils.checkFactors(self.inputs):
+            QMessageBox.warning(
+                self.plugin,
+                self.tr("Missed input data"),
+                self.tr(
+                    "Factors rasters is not set. Please specify them and try again"
+                ),
+            )
+            return
 
-    matrix = self.__checkMatrix()
-    if len(matrix) == 0:
-      QMessageBox.warning(self.plugin,
-                          self.tr("Incorrect matrix"),
-                          self.tr("Please fill the matrix with values")
-                         )
-      return
+        matrix = self.__checkMatrix()
+        if len(matrix) == 0:
+            QMessageBox.warning(
+                self.plugin,
+                self.tr("Incorrect matrix"),
+                self.tr("Please fill the matrix with values"),
+            )
+            return
 
-    self.settings.setValue("ui/MCE/initialClass", self.spnInitialClass.value())
-    self.settings.setValue("ui/MCE/finalClass", self.spnFinalClass.value())
+        self.settings.setValue(
+            "ui/MCE/initialClass", self.spnInitialClass.value()
+        )
+        self.settings.setValue("ui/MCE/finalClass", self.spnFinalClass.value())
 
-    areaAnalyst = AreaAnalyst(self.inputs["initial"], second=None)
+        areaAnalyst = AreaAnalyst(self.inputs["initial"], second=None)
 
-    self.plugin.logMessage(self.tr("Init MCE model"))
+        self.plugin.logMessage(self.tr("Init MCE model"))
 
-    model = MCE(list(self.inputs["factors"].values()),
-                     matrix,
-                     self.spnInitialClass.value(),
-                     self.spnFinalClass.value(),
-                     areaAnalyst
-                    )
+        model = MCE(
+            list(self.inputs["factors"].values()),
+            matrix,
+            self.spnInitialClass.value(),
+            self.spnFinalClass.value(),
+            areaAnalyst,
+        )
 
-    self.inputs["model"] = model
+        self.inputs["model"] = model
 
-    self.plugin.logMessage(self.tr("MCE model trained"))
+        self.plugin.logMessage(self.tr("MCE model trained"))
 
-    weights = model.getWeights()
-    for i, w in enumerate(weights):
-        item = QTableWidgetItem(str(w))
-        self.tblWeights.setItem(0, i, item)
-    self.tblWeights.resizeRowsToContents()
-    self.tblWeights.resizeColumnsToContents()
+        weights = model.getWeights()
+        for i, w in enumerate(weights):
+            item = QTableWidgetItem(str(w))
+            self.tblWeights.setItem(0, i, item)
+        self.tblWeights.resizeRowsToContents()
+        self.tblWeights.resizeColumnsToContents()
 
-    # Check consistency of the matrix
-    c = model.getConsistency()
-    if c < 0.1:
-      QMessageBox.warning(self.plugin,
-                          self.tr("Consistent matrix"),
-                          self.tr("Matrix filled correctly. Consistency value is: %f. The model can be used.") % (c)
-                         )
-    else:
-      QMessageBox.warning(self.plugin,
-                          self.tr("Inconsistent matrix"),
-                          self.tr("Please adjust matrix before starting simulation. Consistency value is: %f") % (c)
-                         )
-
-  def __prepareTable(self):
-    bandCount = self.inputs["bandCount"]
-    self.tblMatrix.clear()
-    self.tblMatrix.setRowCount(bandCount)
-    self.tblMatrix.setColumnCount(bandCount)
-
-    self.tblWeights.clear()
-    self.tblWeights.setRowCount(1)
-    self.tblWeights.setColumnCount(bandCount)
-
-    labels = []
-    for k, v in self.inputs["factors"].items():
-      for b in range(v.getBandsCount()):
-        if v.getBandsCount()>1:
-          name = self.tr("{} (band {)").format(utils.getLayerById(k).name(), str(b+1))
+        # Check consistency of the matrix
+        c = model.getConsistency()
+        if c < 0.1:
+            QMessageBox.warning(
+                self.plugin,
+                self.tr("Consistent matrix"),
+                self.tr(
+                    "Matrix filled correctly. Consistency value is: %f. The model can be used."
+                )
+                % (c),
+            )
         else:
-          name = utils.getLayerById(k).name()
-        labels.append(name)
+            QMessageBox.warning(
+                self.plugin,
+                self.tr("Inconsistent matrix"),
+                self.tr(
+                    "Please adjust matrix before starting simulation. Consistency value is: %f"
+                )
+                % (c),
+            )
 
-    self.tblMatrix.setVerticalHeaderLabels(labels)
-    self.tblMatrix.setHorizontalHeaderLabels(labels)
-    self.tblWeights.setHorizontalHeaderLabels(labels)
-    self.tblWeights.setVerticalHeaderLabels([self.tr("Weights")])
+    def __prepareTable(self):
+        bandCount = self.inputs["bandCount"]
+        self.tblMatrix.clear()
+        self.tblMatrix.setRowCount(bandCount)
+        self.tblMatrix.setColumnCount(bandCount)
 
-    self.delegate = spinboxdelegate.SpinBoxDelegate(self.tblMatrix.model())
-    for row in range(bandCount):
-      for col in range(bandCount):
-        item = QTableWidgetItem()
-        if row == col:
-          item.setText("1")
-          item.setFlags(item.flags() ^ Qt.ItemIsEditable)
+        self.tblWeights.clear()
+        self.tblWeights.setRowCount(1)
+        self.tblWeights.setColumnCount(bandCount)
 
-        self.tblMatrix.setItem(row, col, item)
-      self.tblMatrix.setItemDelegateForRow(row, self.delegate)
+        labels = []
+        for k, v in self.inputs["factors"].items():
+            for b in range(v.getBandsCount()):
+                if v.getBandsCount() > 1:
+                    name = self.tr("{} (band {)").format(
+                        utils.getLayerById(k).name(), str(b + 1)
+                    )
+                else:
+                    name = utils.getLayerById(k).name()
+                labels.append(name)
 
-    self.tblMatrix.resizeRowsToContents()
-    self.tblMatrix.resizeColumnsToContents()
+        self.tblMatrix.setVerticalHeaderLabels(labels)
+        self.tblMatrix.setHorizontalHeaderLabels(labels)
+        self.tblWeights.setHorizontalHeaderLabels(labels)
+        self.tblWeights.setVerticalHeaderLabels([self.tr("Weights")])
 
-    self.tblWeights.resizeRowsToContents()
+        self.delegate = spinboxdelegate.SpinBoxDelegate(self.tblMatrix.model())
+        for row in range(bandCount):
+            for col in range(bandCount):
+                item = QTableWidgetItem()
+                if row == col:
+                    item.setText("1")
+                    item.setFlags(item.flags() ^ Qt.ItemIsEditable)
 
-  def __checkValue(self, row, col):
-    item = self.tblMatrix.item(row, col)
-    value = float(item.text())
+                self.tblMatrix.setItem(row, col, item)
+            self.tblMatrix.setItemDelegateForRow(row, self.delegate)
 
-    self.tblMatrix.blockSignals(True)
-    self.tblMatrix.item(col, row).setText(str(1.0/value))
-    self.tblMatrix.blockSignals(False)
+        self.tblMatrix.resizeRowsToContents()
+        self.tblMatrix.resizeColumnsToContents()
 
-    self.tblMatrix.resizeRowsToContents()
-    self.tblMatrix.resizeColumnsToContents()
-    self.tblWeights.resizeRowsToContents()
-    self.tblWeights.resizeColumnsToContents()
+        self.tblWeights.resizeRowsToContents()
 
-  def __checkMatrix(self):
-    bandCount = self.inputs["bandCount"]
-    matrix = []
-    for row in range(bandCount):
-      mrow = []
-      for col in range(bandCount):
-        if self.tblMatrix.item(row, col).text() == "":
-          return []
+    def __checkValue(self, row, col):
+        item = self.tblMatrix.item(row, col)
+        value = float(item.text())
 
-        mrow.append(float(self.tblMatrix.item(row, col).text()))
+        self.tblMatrix.blockSignals(True)
+        self.tblMatrix.item(col, row).setText(str(1.0 / value))
+        self.tblMatrix.blockSignals(False)
 
-      matrix.append(mrow)
+        self.tblMatrix.resizeRowsToContents()
+        self.tblMatrix.resizeColumnsToContents()
+        self.tblWeights.resizeRowsToContents()
+        self.tblWeights.resizeColumnsToContents()
 
-    return matrix
+    def __checkMatrix(self):
+        bandCount = self.inputs["bandCount"]
+        matrix = []
+        for row in range(bandCount):
+            mrow = []
+            for col in range(bandCount):
+                if self.tblMatrix.item(row, col).text() == "":
+                    return []
+
+                mrow.append(float(self.tblMatrix.item(row, col).text()))
+
+            matrix.append(mrow)
+
+        return matrix

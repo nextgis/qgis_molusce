@@ -1,5 +1,4 @@
-
-#******************************************************************************
+# ******************************************************************************
 #
 # MOLUSCE
 # ---------------------------------------------------------
@@ -22,7 +21,7 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
@@ -30,28 +29,31 @@ from qgis.PyQt.QtWidgets import QTableWidget
 
 
 class MolusceTableWidget(QTableWidget):
-  def __init__(self, parent=None):
-    QTableWidget.__init__(self, parent)
+    def __init__(self, parent=None):
+        QTableWidget.__init__(self, parent)
 
-  def keyPressEvent(self, e):
-    if (e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier) and e.key() == Qt.Key_C:
-      data = ""
+    def keyPressEvent(self, e):
+        if (
+            e.modifiers() == Qt.ControlModifier
+            or e.modifiers() == Qt.MetaModifier
+        ) and e.key() == Qt.Key_C:
+            data = ""
 
-      # table header
-      data += "\t"
-      for i in range(self.columnCount()):
-        data += self.horizontalHeaderItem(i).text() + "\t"
-      data += "\n"
+            # table header
+            data += "\t"
+            for i in range(self.columnCount()):
+                data += self.horizontalHeaderItem(i).text() + "\t"
+            data += "\n"
 
-      # table contents
-      for r in range(self.rowCount()):
-        data += self.verticalHeaderItem(r).text() + "\t"
-        for c in range(self.columnCount()):
-          data += self.item(r, c).text() + "\t"
-        data += "\n"
+            # table contents
+            for r in range(self.rowCount()):
+                data += self.verticalHeaderItem(r).text() + "\t"
+                for c in range(self.columnCount()):
+                    data += self.item(r, c).text() + "\t"
+                data += "\n"
 
-      if data != "":
-        clipBoard = QApplication.clipboard()
-        clipBoard.setText(data)
-    else:
-      QTableWidget.keyPressEvent(self, e)
+            if data != "":
+                clipBoard = QApplication.clipboard()
+                clipBoard.setText(data)
+        else:
+            QTableWidget.keyPressEvent(self, e)

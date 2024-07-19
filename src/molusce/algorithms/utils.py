@@ -1,6 +1,4 @@
-
-"""Some array utilites
-"""
+"""Some array utilites"""
 
 import numpy as np
 
@@ -16,11 +14,11 @@ def in1d(ar1, ar2):
     # The code was taken from numpy v.1.7
     mask = np.zeros(len(ar1), dtype=bool)
     for a in ar2:
-        mask |= (ar1 == a)
+        mask |= ar1 == a
     return mask
 
 
-def binaryzation( raster, trueList ):
+def binaryzation(raster, trueList):
     """Raster binarization.
 
     @param trueList     List of raster values converted into true
@@ -56,43 +54,45 @@ def masks_identity(X, Y, dtype=None):
     mask = np.ma.mask_or(maskX, maskY)
 
     if dtype is None:
-        X = np.ma.array(X, mask = mask)
-        Y = np.ma.array(Y, mask = mask)
+        X = np.ma.array(X, mask=mask)
+        Y = np.ma.array(Y, mask=mask)
     else:
-        X = np.ma.array(X, mask = mask, dtype=dtype)
-        Y = np.ma.array(Y, mask = mask, dtype=dtype)
+        X = np.ma.array(X, mask=mask, dtype=dtype)
+        Y = np.ma.array(Y, mask=mask, dtype=dtype)
     return X, Y
 
-def reclass(X, bins):
-        """Reclass X to new categories.
-        @param bins     List of bins (category bounds):
-                Interval         ->   New Class Number
-                (-Inf,   bin[0]) ->     1
-                [bin[0], bin[1]) ->     2
-                [bin[1], bin[2]) ->     3
-                ...
-                [bin[n-1], bin[n]) ->   n
-                [bin[n],      Inf) ->   n+1
-        """
-        def findClass(x):
-            try:
-                m = max([t for t in bins if t<=x])
-                result = bins.index(m) + 2
-            except ValueError:
-                return 1
-            return result
 
-        tmp = bins[:]
-        tmp.sort()
-        if bins!=tmp:
-            raise UtilsError("Reclassification error: bins must be sorted!")
-        f = np.vectorize(findClass)
-        return f(X)
+def reclass(X, bins):
+    """Reclass X to new categories.
+    @param bins     List of bins (category bounds):
+            Interval         ->   New Class Number
+            (-Inf,   bin[0]) ->     1
+            [bin[0], bin[1]) ->     2
+            [bin[1], bin[2]) ->     3
+            ...
+            [bin[n-1], bin[n]) ->   n
+            [bin[n],      Inf) ->   n+1
+    """
+
+    def findClass(x):
+        try:
+            m = max([t for t in bins if t <= x])
+            result = bins.index(m) + 2
+        except ValueError:
+            return 1
+        return result
+
+    tmp = bins[:]
+    tmp.sort()
+    if bins != tmp:
+        raise UtilsError("Reclassification error: bins must be sorted!")
+    f = np.vectorize(findClass)
+    return f(X)
+
 
 def sizes_equal(X, Y):
     """Define equality dimensions of the two rasters
     @param X    First raster
     @param Y    Second raster
     """
-    return (np.shape(X) == np.shape(Y))
-
+    return np.shape(X) == np.shape(Y)

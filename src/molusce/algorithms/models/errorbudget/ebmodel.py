@@ -35,9 +35,7 @@ def weightedSum(arr, weights):
     """
     s1 = np.sum(weights * arr)
     s2 = np.sum(weights)
-    return s1/s2
-
-
+    return s1 / s2
 
 
 class EBudget(QObject):
@@ -49,26 +47,32 @@ class EBudget(QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    def __init__ (self, referenceMap, simulatedMap):
+    def __init__(self, referenceMap, simulatedMap):
         """@param referenceMap     Reference raster
         @param simulatedMap     Simulated raster
         """
         QObject.__init__(self)
 
         if referenceMap.getBandsCount() + simulatedMap.getBandsCount() != 2:
-            raise EBError("The reference and simulated rasters must be 1-band rasters!")
+            raise EBError(
+                "The reference and simulated rasters must be 1-band rasters!"
+            )
         if not referenceMap.geoDataMatch(simulatedMap):
-            raise EBError("Geometries of the reference and simulated rasters are different!")
+            raise EBError(
+                "Geometries of the reference and simulated rasters are different!"
+            )
 
         self.categories = referenceMap.getBandGradation(1)
         for s in simulatedMap.getBandGradation(1):
             if s not in self.categories:
-                raise EBError("Categories in the reference and simulated rasters are different!")
+                raise EBError(
+                    "Categories in the reference and simulated rasters are different!"
+                )
 
         R = referenceMap.getBand(1)
         S = simulatedMap.getBand(1)
         self.shape = R.shape
-        R, S = masks_identity(R,S, dtype=np.uint8)
+        R, S = masks_identity(R, S, dtype=np.uint8)
 
         # Array for weight
         self.W = np.ones(self.shape)
@@ -80,12 +84,11 @@ class EBudget(QObject):
         # Proportion of category j in pixel n at the beginning resolution of the reference map
         self.Rj = {}
         for j in self.categories:
-            self.Rj[j] = 1.0*binaryzation(R, [j])
+            self.Rj[j] = 1.0 * binaryzation(R, [j])
         # Proportion of category j in pixel n at the beginning resolution of the simulated map
         self.Sj = {}
         for j in self.categories:
-            self.Sj[j] = 1.0*binaryzation(S, [j])
-
+            self.Sj[j] = 1.0 * binaryzation(S, [j])
 
     def coarse(self, scale):
         """Coarsen the scale of Rj and Sj.
@@ -93,34 +96,44 @@ class EBudget(QObject):
         @param scale    An integer number is the number of merged raster cells.
         """
         rows, cols = self.shape
-        if (rows < scale) or (cols< scale): # Nothing to do
+        if (rows < scale) or (cols < scale):  # Nothing to do
             return
 
-        newRows, newCols = rows//scale, cols//scale
-        scale2 = scale*scale
+        newRows, newCols = rows // scale, cols // scale
+        scale2 = scale * scale
 
         newW = np.zeros((newRows, newCols))
         newSj, newRj = {}, {}
         for cat in self.categories:
             newSj[cat] = np.zeros((newRows, newCols))
             newRj[cat] = np.zeros((newRows, newCols))
-        self.rangeChanged.emit(self.tr("An interation of validation %p%"), newRows)
+        self.rangeChanged.emit(
+            self.tr("An interation of validation %p%"), newRows
+        )
         r = 0
-        while r//scale < newRows:
+        while r // scale < newRows:
             c = 0
-            while c//scale < newCols:
-                w = self.W[r: r+scale, c: c+scale]
-                sum_w = 1.0*np.sum(w)
-                newW[r//scale, c//scale] = 1.0*sum_w/scale2
+            while c // scale < newCols:
+                w = self.W[r : r + scale, c : c + scale]
+                sum_w = 1.0 * np.sum(w)
+                newW[r // scale, c // scale] = 1.0 * sum_w / scale2
                 for cat in self.categories:
                     if sum_w == 0:
-                        newSj[cat][r//scale, c//scale] = 0
-                        newRj[cat][r//scale, c//scale] = 0
+                        newSj[cat][r // scale, c // scale] = 0
+                        newRj[cat][r // scale, c // scale] = 0
                     else:
                         S = self.Sj[cat]
                         R = self.Rj[cat]
-                        newSj[cat][r//scale, c//scale] = 1.0*np.sum(S[r: r+scale, c: c+scale]*w)/sum_w
-                        newRj[cat][r//scale, c//scale] = 1.0*np.sum(R[r: r+scale, c: c+scale]*w)/sum_w
+                        newSj[cat][r // scale, c // scale] = (
+                            1.0
+                            * np.sum(S[r : r + scale, c : c + scale] * w)
+                            / sum_w
+                        )
+                        newRj[cat][r // scale, c // scale] = (
+                            1.0
+                            * np.sum(R[r : r + scale, c : c + scale] * w)
+                            / sum_w
+                        )
                 c = c + scale
             r = r + scale
             QCoreApplication.processEvents()
@@ -132,61 +145,65 @@ class EBudget(QObject):
         self.shape = (newRows, newCols)
 
     def getStat(self, nIter, scale=2):
-        """Perform nIter iterations of error budget calculation and rescaling to coarse scale.
-        """
+        """Perform nIter iterations of error budget calculation and rescaling to coarse scale."""
         try:
             result = {}
             for i in range(nIter):
-                result[i] = {"NoNo": self.NoNo(), "NoMed": self.NoMed(), "MedMed": self.MedMed(), "MedPer": self.MedPer(), "PerPer": self.PerPer()}
+                result[i] = {
+                    "NoNo": self.NoNo(),
+                    "NoMed": self.NoMed(),
+                    "MedMed": self.MedMed(),
+                    "MedPer": self.MedPer(),
+                    "PerPer": self.PerPer(),
+                }
                 self.coarse(scale)
 
         except MemoryError:
-            self.errorReport.emit(self.tr("The system out of memory during validation"))
+            self.errorReport.emit(
+                self.tr("The system out of memory during validation")
+            )
             raise
         except:
-            self.errorReport.emit(self.tr("An unknown error occurs during validation"))
+            self.errorReport.emit(
+                self.tr("An unknown error occurs during validation")
+            )
             raise
         finally:
             self.validationFinished.emit(result)
         return result
-
 
     # Proportion correct between the two
     # maps after the predicted map has been adjusted for
     # various levels of information of quantity and/or location.
 
     def NoNo(self):
-        """No information about quantity, no information about location
-        """
+        """No information about quantity, no information about location"""
         arr = np.ma.zeros(self.shape)
         size = len(self.categories)
         for j in self.categories:
-            arr = arr + np.minimum(self.Rj[j], 1.0/size)
+            arr = arr + np.minimum(self.Rj[j], 1.0 / size)
         arr = self.W * arr
-        return np.sum(arr)/np.sum(self.W)
+        return np.sum(arr) / np.sum(self.W)
 
     def NoMed(self):
-        """No information about quantity, medium information about location
-        """
+        """No information about quantity, medium information about location"""
         arr = np.ma.zeros(self.shape)
         for j in self.categories:
             S = weightedSum(self.Sj[j], self.W)
             arr = arr + np.minimum(self.Rj[j], S)
         arr = self.W * arr
-        return np.sum(arr)/np.sum(self.W)
+        return np.sum(arr) / np.sum(self.W)
 
     def MedMed(self):
-        """Medium information about quantity, medium information about location
-        """
+        """Medium information about quantity, medium information about location"""
         arr = np.ma.zeros(self.shape)
         for j in self.categories:
             arr = arr + np.minimum(self.Rj[j], self.Sj[j])
         arr = self.W * arr
-        return np.sum(arr)/np.sum(self.W)
+        return np.sum(arr) / np.sum(self.W)
 
     def MedPer(self):
-        """Medium information about quantity, perfect information about location
-        """
+        """Medium information about quantity, perfect information about location"""
         arr = 0
         for j in self.categories:
             S = weightedSum(self.Sj[j], self.W)
@@ -195,6 +212,5 @@ class EBudget(QObject):
         return arr
 
     def PerPer(self):
-        """Perfect information about quantity, perfect information about location
-        """
+        """Perfect information about quantity, perfect information about location"""
         return 1.0

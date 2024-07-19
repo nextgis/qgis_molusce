@@ -1,5 +1,3 @@
-
-
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
@@ -22,14 +20,14 @@ class MCE(QObject):
     errorReport = pyqtSignal(str)
 
     randomConsistencyIndex = {
-        2:  0,
-        3:  0.58,
-        4:  0.90,
-        5:  1.12,
-        6:  1.24,
-        7:  1.32,
-        8:  1.41,
-        9:  1.45,
+        2: 0,
+        3: 0.58,
+        4: 0.90,
+        5: 1.12,
+        6: 1.24,
+        7: 1.32,
+        8: 1.41,
+        9: 1.45,
         10: 1.49,
         11: 1.51,
         12: 1.48,
@@ -59,9 +57,12 @@ class MCE(QObject):
         36: 1.70,
         37: 1.70,
         38: 1.70,
-        39: 1.70
+        39: 1.70,
     }
-    def __init__(self, factors, wMatr, initStateNum, finalStateNum, areaAnalyst):
+
+    def __init__(
+        self, factors, wMatr, initStateNum, finalStateNum, areaAnalyst
+    ):
         """Multicriteria evaluation based on Saaty method. It defines transition probability of two categories (initStateNum, finalStateNum).
         @param factors          List of the factor rasters used for prediction.
         @param wMatr            List of lists -- NxN comparison matrix.
@@ -71,43 +72,44 @@ class MCE(QObject):
         QObject.__init__(self)
 
         self.factors = factors
-        self.initStateNum  = initStateNum
+        self.initStateNum = initStateNum
         self.finalStateNum = finalStateNum
-        self.areaAnalyst   = areaAnalyst
+        self.areaAnalyst = areaAnalyst
 
         # Check matrix dimension and factor count, apply normalization
         self.dim = 0
         for f in factors:
             self.dim = self.dim + f.getBandsCount()
-            f.normalize(mode = "maxmin")
+            f.normalize(mode="maxmin")
         if self.dim != len(wMatr):
-            raise MCEError("Matrix size is different from the number of variables!")
+            raise MCEError(
+                "Matrix size is different from the number of variables!"
+            )
 
         # Check if the matrix is valid
         for i in range(self.dim):
             if len(wMatr[i]) != self.dim:
                 raise MCEError("The weight matrix is not NxN!")
-        EPSILON = 0.000001      # A small number
+        EPSILON = 0.000001  # A small number
         for i in range(self.dim):
             if wMatr[i][i] != 1:
                 raise MCEError("w[i,i] not equal 1 !")
-            for j in range(i+1, self.dim):
+            for j in range(i + 1, self.dim):
                 if abs(wMatr[i][j] * wMatr[j][i] - 1) > EPSILON:
                     raise MCEError("w[i,j] * w[j,i] not equal 1 !")
 
         self.wMatr = np.array(wMatr)
 
-        self.weights = None     # Weights of the factors, calculated using wMatr
-                                # It's a list, the length is self.dim
-                                # first element is the weight of first band of the first factor and so on:
-                                # [W_f1, ... weights of 1-st factors ... , W_f2, ... weights of 2-nd factors..., W_fn, ...]
+        self.weights = None  # Weights of the factors, calculated using wMatr
+        # It's a list, the length is self.dim
+        # first element is the weight of first band of the first factor and so on:
+        # [W_f1, ... weights of 1-st factors ... , W_f2, ... weights of 2-nd factors..., W_fn, ...]
 
-        self.consistency =None  # Consistency ratio of the comparison matrix.
+        self.consistency = None  # Consistency ratio of the comparison matrix.
 
-        self.prediction = None      # Raster of the prediction results
-        self.confidence = None      # Raster of the results confidence(1 = the maximum confidence, 0 = the least confidence)
-        self.transitionPotentials = None # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
-
+        self.prediction = None  # Raster of the prediction results
+        self.confidence = None  # Raster of the results confidence(1 = the maximum confidence, 0 = the least confidence)
+        self.transitionPotentials = None  # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
     def getConsistency(self):
         if self.consistency is None:
@@ -121,8 +123,7 @@ class MCE(QObject):
         return self.transitionPotentials
 
     def getPrediction(self, state, factors=None, calcTransitions=False):
-        """Most of the models use factors for prediction, but MCE takes list of factors only once (during the initialization).
-        """
+        """Most of the models use factors for prediction, but MCE takes list of factors only once (during the initialization)."""
         self._predict(state, calcTransitions)
         return self.prediction
 
@@ -132,13 +133,14 @@ class MCE(QObject):
         return self.weights
 
     def _predict(self, state, calcTransitions=False):
-        """Predict the changes.
-        """
+        """Predict the changes."""
         try:
             geodata = state.getGeodata()
             rows, cols = geodata["ySize"], geodata["xSize"]
 
-            self.transitionPotentials = None    # Reset tr.potentials if they exist
+            self.transitionPotentials = (
+                None  # Reset tr.potentials if they exist
+            )
 
             # Get locations where self.initStateNum is occurs
             band = state.getBand(1)
@@ -154,60 +156,77 @@ class MCE(QObject):
             # Prediction:
             #   predicted value is a constant = areaAnalyst.encode(initStateNum, finalStateNum), if current state = self.initState
             #   predicted value is the transition code current_state -> current_state, if current state != self.initState
-            confidence = np.zeros((rows,cols), dtype=np.uint8)
+            confidence = np.zeros((rows, cols), dtype=np.uint8)
             weights = self.getWeights()
-            weightNum = 0               # Number of processed weights
+            weightNum = 0  # Number of processed weights
             for f in self.factors:
                 if not f.geoDataMatch(state):
-                    raise MCEError("Geometries of the state and factor rasters are different!")
-                f.normalize(mode = "maxmin")
+                    raise MCEError(
+                        "Geometries of the state and factor rasters are different!"
+                    )
+                f.normalize(mode="maxmin")
                 for i in range(f.getBandsCount()):
-                    band = f.getBand(i+1)
-                    confidence = confidence + (band*weights[weightNum]*100).astype(np.uint8)
+                    band = f.getBand(i + 1)
+                    confidence = confidence + (
+                        band * weights[weightNum] * 100
+                    ).astype(np.uint8)
                     mask = np.ma.mask_or(mask, band.mask)
                     weightNum = weightNum + 1
-            confidence = confidence*initStateMask
+            confidence = confidence * initStateMask
             prediction = np.copy(state.getBand(1))
             for code in self.areaAnalyst.categories:
                 if code != self.initStateNum:
-                    prediction[prediction==code] = self.areaAnalyst.encode(code, code)
+                    prediction[prediction == code] = self.areaAnalyst.encode(
+                        code, code
+                    )
                 else:
-                    prediction[prediction==code] = self.areaAnalyst.encode(self.initStateNum, self.finalStateNum)
+                    prediction[prediction == code] = self.areaAnalyst.encode(
+                        self.initStateNum, self.finalStateNum
+                    )
 
-            predicted_band = np.ma.array(data=prediction, mask=mask, dtype=np.uint8)
+            predicted_band = np.ma.array(
+                data=prediction, mask=mask, dtype=np.uint8
+            )
             self.prediction = Raster()
             self.prediction.create([predicted_band], geodata)
-            confidence_band = np.ma.array(data=confidence, mask=mask, dtype=np.uint8)
+            confidence_band = np.ma.array(
+                data=confidence, mask=mask, dtype=np.uint8
+            )
             self.confidence = Raster()
             self.confidence.create([confidence_band], geodata)
 
-            code = self.areaAnalyst.encode(self.initStateNum, self.finalStateNum)
+            code = self.areaAnalyst.encode(
+                self.initStateNum, self.finalStateNum
+            )
             self.transitionPotentials = {code: self.confidence}
         except MemoryError:
-            self.errorReport.emit(self.tr("The system out of memory during MCE prediction"))
+            self.errorReport.emit(
+                self.tr("The system out of memory during MCE prediction")
+            )
             raise
         except:
-            self.errorReport.emit(self.tr("An unknown error occurs during MCE prediction"))
+            self.errorReport.emit(
+                self.tr("An unknown error occurs during MCE prediction")
+            )
             raise
 
     def setWeights(self):
-        """Calculate the weigths and consistency ratio.
-        """
+        """Calculate the weigths and consistency ratio."""
         # Weights
         w, v = np.linalg.eig(self.wMatr)
         maxW = np.max(w)
-        maxInd = list(w).index(maxW)    # Index of the biggest eigenvalue
+        maxInd = list(w).index(maxW)  # Index of the biggest eigenvalue
         maxW = maxW.real
-        v = v[:,maxInd]       # The eigen vector
+        v = v[:, maxInd]  # The eigen vector
         self.weights = [x.real for x in v]  # Maxtix v can be complex
-        self.weights = self.weights/sum(self.weights)
+        self.weights = self.weights / sum(self.weights)
 
         # Consistency ratio
         if self.dim > 2:
-            ci = (maxW - self.dim)/(self.dim - 1)
+            ci = (maxW - self.dim) / (self.dim - 1)
             try:
                 ri = self.randomConsistencyIndex[self.dim]
-                self.consistency = ci/ri
+                self.consistency = ci / ri
             except KeyError:
                 self.consistency = -1
         else:

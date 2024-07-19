@@ -1,5 +1,4 @@
-
-#******************************************************************************
+# ******************************************************************************
 #
 # MOLUSCE
 # ---------------------------------------------------------
@@ -22,7 +21,7 @@
 # to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
 # MA 02110-1335 USA.
 #
-#******************************************************************************
+# ******************************************************************************
 
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
@@ -30,22 +29,22 @@ from qgis.PyQt.QtWidgets import *
 
 
 class SpinBoxDelegate(QItemDelegate):
-  def __init__(self, parent=None, minRange=1, maxRange=9):
-    QItemDelegate.__init__(self, parent)
-    self.minRange = minRange
-    self.maxRange = maxRange
+    def __init__(self, parent=None, minRange=1, maxRange=9):
+        QItemDelegate.__init__(self, parent)
+        self.minRange = minRange
+        self.maxRange = maxRange
 
-  def createEditor(self, parent, options, index) -> QSpinBox:
-    editor = QSpinBox(parent)
-    editor.setRange(self.minRange, self.maxRange)
-    return editor
+    def createEditor(self, parent, options, index) -> QSpinBox:
+        editor = QSpinBox(parent)
+        editor.setRange(self.minRange, self.maxRange)
+        return editor
 
-  def setEditorData(self, editor, index):
-    value = index.model().data(index, Qt.EditRole)
-    try:
-        editor.setValue(value)
-    except TypeError:   # Check None-value, ""-value, etc.
-        value = self.minRange
+    def setEditorData(self, editor, index):
+        value = index.model().data(index, Qt.EditRole)
+        try:
+            editor.setValue(value)
+        except TypeError:  # Check None-value, ""-value, etc.
+            value = self.minRange
 
-  def setModelData(self, editor, model, index):
-    model.setData(index, editor.value(), Qt.EditRole)
+    def setModelData(self, editor, model, index):
+        model.setData(index, editor.value(), Qt.EditRole)
