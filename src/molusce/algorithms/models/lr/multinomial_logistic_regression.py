@@ -238,7 +238,7 @@ class MLR:
             for i, cls in enumerate(self.classes):
                 Y[y == cls, i] = 1
         else:
-            _n, n_classes = Y.shape
+            _n, n_classes = y.shape
             assert _n == n_samples, "Invalid number of rows in Y"
             self.classes = np.arange(n_classes)
             Y = y
