@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 from numpy import ma as ma
 from osgeo import gdal, osr
@@ -66,6 +68,8 @@ class Raster:
     def __init__(self, filename=None, maskVals=None):
         if filename == "":
             raise ProviderError("File name can't be empty string!")
+        if isinstance(filename, Path):
+            filename = str(filename)
         self.filename = filename
         self.maskVals = maskVals  # List of the "transparent" pixel values
         self.bands = None  # Array of the bands (stored as numpy mask array)

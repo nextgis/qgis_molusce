@@ -45,11 +45,11 @@ select = [
     # "UP",  # pyupgrade
     "W",   # pycodesytle warnings
     # "ANN",  # flake8-annotations
-    "CPY",  # flake8-copyright
+    # "CPY",  # flake8-copyright
     # "D",  # pydocstyle
     # "FIX",  # flake8-fixme
 ]
-ignore = ["ANN101", "ANN102", "TD003", "FBT003", "ISC001", "COM812", "E501", 
+ignore = ["ANN101", "ANN102", "TD003", "FBT003", "ISC001", "COM812", "E501",
           "C901", "F403", "F405", "PERF102", "PYI024", "RET504", "SIM105",
           "TD002", "TRY003"]
 

@@ -53,15 +53,15 @@ def _binary_woe(factor, sites, unitcell=1):
 
     A = 1.0 * len(fm) / unitcell  # Total map area in unit cells
     B = (
-        1.0 * len(fm[fm == True]) / unitcell
-    )  # Total factor area in unit cells  # noqa: E712
+        1.0 * len(fm[fm == True]) / unitcell  # noqa: E712
+    )  # Total factor area in unit cells
     N = 1.0 * len(sm[sm == True])  # Count of sites  # noqa: E712
 
     # Count of sites inside area where the factor occurs:
     siteAndPatten = fm & sm  # Sites inside area where the factor occurs
     Nb = 1.0 * len(
-        siteAndPatten[siteAndPatten == True]
-    )  # Count of sites inside factor area  # noqa: E712
+        siteAndPatten[siteAndPatten == True]  # noqa: E712
+    )  # Count of sites inside factor area
 
     # Check areas size
     if A == 0:
