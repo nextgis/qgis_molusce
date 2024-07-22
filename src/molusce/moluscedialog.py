@@ -72,6 +72,8 @@ if find_spec("scipy") is not None:
 else:
     scipyMissed = True
 
+QGIS_3_38 = 33800
+
 
 class MolusceDialog(QDialog, Ui_Dialog):
     def __init__(self, iface):
@@ -1806,7 +1808,14 @@ class MolusceDialog(QDialog, Ui_Dialog):
         colorRampShader = QgsColorRampShader()
 
         colorRampShader.setColorRampItemList(colorRampItems)
-        colorRampShader.setColorRampType(QgsColorRampShader.Type.Linear)
+        if Qgis.versionInt() >= QGIS_3_38:
+            colorRampShader.setColorRampType(
+                Qgis.ShaderInterpolationMethod.Linear
+            )
+        else:
+            colorRampShader.setColorRampType(
+                QgsColorRampShader.Type.Interpolated
+            )
         rasterShader.setRasterShaderFunction(colorRampShader)
 
         renderer = QgsSingleBandPseudoColorRenderer(
