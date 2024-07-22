@@ -115,7 +115,7 @@ if __name__ == "__main__":
         for i in range(samples.size):
             o = network.propagate_forward(samples["input"][i])
             print(i, samples["input"][i], f"{o[0]:.2f}", end=" ")
-            print(f"(expected {samples["output"][i]:.2f})")
+            print(f"(expected {samples['output'][i]:.2f})")
         print()
 
     network = MLP(2, 2, 1)
