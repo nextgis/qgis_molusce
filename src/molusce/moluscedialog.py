@@ -1256,7 +1256,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         for i in range(dimensions[0]):
             raster = first["Raster"]
             if raster.getBandsCount() > 1:
-                name = f"{first["Name"]} (band {str(i+1)}"
+                name = f"{first['Name']} (band {str(i+1)}"
             else:
                 name = str(first["Name"])
             labels.append(name)
@@ -1265,7 +1265,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
         for i in range(dimensions[1]):
             raster = second["Raster"]
             if raster.getBandsCount() > 1:
-                name = f"{second["Name"]} (band {str(i+1)})"
+                name = f"{second['Name']} (band {str(i+1)})"
             else:
                 name = str(second["Name"])
             labels.append(name)
@@ -1609,7 +1609,7 @@ class MolusceDialog(QDialog, Ui_Dialog):
 
     def logMessage(self, message):
         self.txtMessages.append(
-            f"[{datetime.datetime.now().strftime(b"%a %b %d %Y %H:%M:%S".decode("utf-8"))}] {message}"
+            f"[{datetime.datetime.now().strftime(b'%a %b %d %Y %H:%M:%S'.decode('utf-8'))}] {message}"
         )
 
     def logErrorReport(self, message):
