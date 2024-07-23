@@ -190,9 +190,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
             linewidth=1,
             color="red",
         )[0]
-        leg = self.axes.legend(
-            ("Train", "Validation"), "upper right", shadow=False
-        )
+        leg = self.axes.legend(["Train", "Validation"])
         for t in leg.get_texts():
             t.set_fontsize("small")
         model.moveToThread(self.plugin.workThread)
