@@ -11,6 +11,16 @@ from .model import woe
 
 
 def sigmoid(x):
+    """Sigmoid function."""
+
+    # Large absolute value of x causes overflows in Exp function.
+    # To prevent in we truncate x: the result is almost the same (0 or 1),
+    # This is simple approach, but it works ))
+    # Numericaly stable implementation of sigmoid see:
+    # https://stackoverflow.com/a/64717799
+    limit_val = 100
+    
+    x = np.maximum(-limit_val, np.minimum(x, limit_val))
     return 1 / (1 + np.exp(-x))
 
 
