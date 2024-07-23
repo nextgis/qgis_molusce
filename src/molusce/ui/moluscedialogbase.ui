@@ -149,7 +149,16 @@
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout_6">
-         <property name="margin">
+         <property name="leftMargin">
+          <number>9</number>
+         </property>
+         <property name="topMargin">
+          <number>9</number>
+         </property>
+         <property name="rightMargin">
+          <number>9</number>
+         </property>
+         <property name="bottomMargin">
           <number>9</number>
          </property>
          <item row="3" column="0">
@@ -277,13 +286,13 @@
          <property name="checked">
           <bool>false</bool>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>true</bool>
          </property>
-         <property name="saveCollapsedState" stdset="0">
+         <property name="saveCollapsedState">
           <bool>true</bool>
          </property>
-         <property name="saveCheckedState" stdset="0">
+         <property name="saveCheckedState">
           <bool>false</bool>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
@@ -395,7 +404,7 @@
          <item row="1" column="0">
           <widget class="QCheckBox" name="chkRiskFunction">
            <property name="text">
-            <string>Certancy function</string>
+            <string>Certainty function</string>
            </property>
           </widget>
          </item>
@@ -761,10 +770,16 @@
      </widget>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="1" column="0" colspan="2">
     <widget class="QProgressBar" name="progressBar">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="value">
       <number>0</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -772,15 +787,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>MolusceTableWidget</class>
    <extends>QTableWidget</extends>
    <header>molusce.moluscetablewidget</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgis.gui</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
