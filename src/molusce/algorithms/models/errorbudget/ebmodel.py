@@ -136,7 +136,6 @@ class EBudget(QObject):
                         )
                 c = c + scale
             r = r + scale
-            QCoreApplication.processEvents()
             self.updateProgress.emit()
 
         self.W = newW
