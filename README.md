@@ -10,7 +10,7 @@ Homepage: https://github.com/nextgis/molusce
 
 Quickhelp (PDF):
 
-* English: https://github.com/nextgis/molusce/tree/master/doc/en
+* English: https://github.com/nextgis/qgis_molusce/tree/master/src/molusce/doc/en
 * Portuguese: http://ecojustus.com.br/molusce-guia-rapido/
 * Russian: http://gis-lab.info/qa/molusce-intro-ru.html
 
