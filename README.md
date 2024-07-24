@@ -11,8 +11,8 @@ Homepage: https://github.com/nextgis/molusce
 Quickhelp (PDF):
 
 * English: https://github.com/nextgis/qgis_molusce/tree/master/src/molusce/doc/en
-* Portuguese: [http://ecojustus.com.br](https://drive.google.com/file/d/0BzSbT3sqlulvaGYxekFRZU9CM28/view?usp=sharing&resourcekey=0-NEw-NNPyaQjqhgQb4dBuUA)
-* Russian: http://gis-lab.info/qa/molusce-intro-ru.html
+* Portuguese: [ecojustus.com.br](https://drive.google.com/file/d/0BzSbT3sqlulvaGYxekFRZU9CM28/view?usp=sharing&resourcekey=0-NEw-NNPyaQjqhgQb4dBuUA)
+* Russian: https://gis-lab.info/qa/molusce-intro-ru.html
 
 License
 -------------
