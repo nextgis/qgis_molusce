@@ -489,7 +489,6 @@ class MlpManager(QObject):
                 )
                 self.updateKappa.emit(self.getKappa())
 
-                QCoreApplication.processEvents()
                 if self.interrupted:
                     self.processInterrupted.emit()
                     break

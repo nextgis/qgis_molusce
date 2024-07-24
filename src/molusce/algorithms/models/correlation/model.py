@@ -212,7 +212,6 @@ class DependenceCoef(QObject):
         )
 
     def __crosstableProgressChanged(self):
-        QCoreApplication.processEvents()
         self.updateProgress.emit()
 
     def __crosstableProgressRangeChanged(self, message, maxValue):
