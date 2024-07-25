@@ -6,7 +6,7 @@ description=Plugin provides a set of algorithms
 	such as ANN, LR, WoE, MCE. 
 	There is also validation using kappa statistics.
 category=Raster
-version=3.0.13
+version=4.0.0
 qgisMinimumVersion=3.22
 
 author=NextGIS
