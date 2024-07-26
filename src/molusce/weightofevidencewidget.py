@@ -32,10 +32,10 @@ from . import molusceutils as utils
 from . import spinboxdelegate
 from .algorithms import dataprovider
 from .algorithms.models.woe.manager import WoeManager, WoeManagerError
-from .ui.ui_weightofevidencewidgetbase import Ui_Widget
+from .ui.ui_weightofevidencewidgetbase import Ui_WeightOfEvidenceWidgetBase
 
 
-class WeightOfEvidenceWidget(QWidget, Ui_Widget):
+class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
     def __init__(self, plugin, parent=None):
         QWidget.__init__(self, parent)
         self.setupUi(self)

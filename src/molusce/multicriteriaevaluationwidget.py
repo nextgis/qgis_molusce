@@ -32,10 +32,14 @@ from . import molusceutils as utils
 from . import spinboxdelegate
 from .algorithms.models.area_analysis.manager import AreaAnalyst
 from .algorithms.models.mce.mce import MCE
-from .ui.ui_multicriteriaevaluationwidgetbase import Ui_Widget
+from .ui.ui_multicriteriaevaluationwidgetbase import (
+    Ui_MultiCriteriaEvaluationWidgetBase,
+)
 
 
-class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
+class MultiCriteriaEvaluationWidget(
+    QWidget, Ui_MultiCriteriaEvaluationWidgetBase
+):
     def __init__(self, plugin, parent=None):
         QWidget.__init__(self, parent)
         self.setupUi(self)

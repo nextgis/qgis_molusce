@@ -46,10 +46,10 @@ from matplotlib.figure import Figure
 
 from . import molusceutils as utils
 from .algorithms.models.mlp.manager import MlpManager
-from .ui.ui_neuralnetworkwidgetbase import Ui_Widget
+from .ui.ui_neuralnetworkwidgetbase import Ui_NeuralNetworkWidgetBase
 
 
-class NeuralNetworkWidget(QWidget, Ui_Widget):
+class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
     def __init__(self, plugin, parent=None):
         QWidget.__init__(self, parent)
         self.setupUi(self)
