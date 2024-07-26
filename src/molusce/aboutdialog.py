@@ -31,12 +31,12 @@ from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 
 from .molusceutils import getLocaleShortName
-from .ui.ui_aboutdialogbase import Ui_Dialog
+from .ui.ui_aboutdialogbase import Ui_AboutDialogBase
 
 from . import resources_rc  # noqa: F401
 
 
-class AboutDialog(QDialog, Ui_Dialog):
+class AboutDialog(QDialog, Ui_AboutDialogBase):
     def __init__(self):
         QDialog.__init__(self)
         self.setupUi(self)

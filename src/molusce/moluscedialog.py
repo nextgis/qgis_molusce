@@ -64,7 +64,7 @@ from .algorithms.models.crosstabs.manager import CrossTableManager
 from .algorithms.models.errorbudget.ebmodel import EBudget
 from .algorithms.models.sampler.sampler import SamplerError
 from .algorithms.models.simulator.sim import Simulator
-from .ui.ui_moluscedialogbase import Ui_Dialog
+from .ui.ui_moluscedialogbase import Ui_MolusceDialogBase
 
 scipyMissed = False
 if find_spec("scipy") is not None:
@@ -75,7 +75,7 @@ else:
 QGIS_3_38 = 33800
 
 
-class MolusceDialog(QDialog, Ui_Dialog):
+class MolusceDialog(QDialog, Ui_MolusceDialogBase):
     def __init__(self, iface):
         QDialog.__init__(self)
         self.setupUi(self)

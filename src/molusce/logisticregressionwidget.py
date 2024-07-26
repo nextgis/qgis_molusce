@@ -30,10 +30,10 @@ from qgis.PyQt.QtWidgets import *
 
 from . import molusceutils as utils
 from .algorithms.models.lr.lr import LR
-from .ui.ui_logisticregressionwidgetbase import Ui_Widget
+from .ui.ui_logisticregressionwidgetbase import Ui_LogisticRegressionWidgetBase
 
 
-class LogisticRegressionWidget(QWidget, Ui_Widget):
+class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
     def __init__(self, plugin, parent=None):
         QWidget.__init__(self, parent)
         self.setupUi(self)
