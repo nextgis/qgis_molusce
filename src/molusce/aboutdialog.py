@@ -52,6 +52,8 @@ class AboutDialog(QDialog, Ui_AboutDialogBase):
         doc = QTextDocument()
         doc.setHtml(self.getAboutText())
         self.textBrowser.setDocument(doc)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
 
         self.buttonBox.helpRequested.connect(self.openHelp)
 

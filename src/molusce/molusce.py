@@ -68,9 +68,9 @@ class MoluscePlugin:
             )
 
         self.localePath = translationPath
-        if QFileInfo(self.localePath).exists():
-            self.translator = QTranslator()
-            self.translator.load(self.localePath)
+        translator = QTranslator()
+        if translator.load(self.localePath):
+            self.translator = translator
             QCoreApplication.installTranslator(self.translator)
 
     def initGui(self):
