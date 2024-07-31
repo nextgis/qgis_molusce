@@ -377,11 +377,6 @@ p, li { white-space: pre-wrap; }
         <translation>Не задан растр начальных состояний. Пожалуйста, укажите входные данные и повторите попытку</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="236"/>
-        <source>Set intial layer to %s</source>
-        <translation>Установлен растр начальных состояний - %s</translation>
-    </message>
-    <message>
         <location filename="../moluscedialog.py" line="355"/>
         <source>Memory Error occurred (loading raster %s). Perhaps the system is low on memory.</source>
         <translation>Произошла ошибка памяти (загрузка растра %s). Возможно, в системе недостаточно памяти.</translation>
@@ -857,6 +852,11 @@ medium quantity inform.</source>
 medium quantity inform.</source>
         <translation>Идеальный уровень информации о положении,
 средний уровень информации о количестве</translation>
+    </message>
+    <message>
+        <location filename="../moluscedialog.py" line="236"/>
+        <source>Set initial layer to %s</source>
+        <translation>Установлен растр начальных состояний - %s</translation>
     </message>
 </context>
 <context>
