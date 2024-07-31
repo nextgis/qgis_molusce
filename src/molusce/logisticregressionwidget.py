@@ -126,7 +126,7 @@ class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
         self.showStdDeviations()
         self.showPValues()
 
-        self.plugin.logMessage(self.tr("LR model trained"))
+        self.plugin.logMessage(self.tr("LR model is trained"))
 
     def showCoefficients(self):
         model = self.inputs["model"]
@@ -213,7 +213,7 @@ class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
             QMessageBox.warning(
                 self.plugin,
                 self.tr("Model is not initialised"),
-                self.tr("To get p-values you need to train model first"),
+                self.tr("To get P-values you need to train model first"),
             )
             return
 

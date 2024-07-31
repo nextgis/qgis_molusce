@@ -108,7 +108,7 @@ class EBudget(QObject):
             newSj[cat] = np.zeros((newRows, newCols))
             newRj[cat] = np.zeros((newRows, newCols))
         self.rangeChanged.emit(
-            self.tr("An interation of validation %p%"), newRows
+            self.tr("An iteration of validation %p%"), newRows
         )
         r = 0
         while r // scale < newRows:
@@ -159,7 +159,7 @@ class EBudget(QObject):
 
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during validation")
+                self.tr("The system is out of memory during validation")
             )
             raise
         except:

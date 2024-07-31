@@ -201,7 +201,7 @@ class MCE(QObject):
             self.transitionPotentials = {code: self.confidence}
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during MCE prediction")
+                self.tr("The system is out of memory during MCE prediction")
             )
             raise
         except:

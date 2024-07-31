@@ -85,13 +85,11 @@ class MoluscePlugin:
             QMessageBox.warning(
                 self.iface.mainWindow(),
                 QCoreApplication.translate("MOLUSCE", "Error"),
-                QCoreApplication.translate(
-                    "MOLUSCE", "Quantum GIS %s detected.\n"
-                )
-                % s(qgisVersion)
+                QCoreApplication.translate("MOLUSCE", "QGIS %s detected.\n")
+                % (qgisVersion)
                 + QCoreApplication.translate(
                     "MOLUSCE",
-                    "This version of MOLUSCE requires at least QGIS version 1.9.0\nPlugin will not be enabled.",
+                    "This version of MOLUSCE requires at least QGIS version 3.22.0\nPlugin will not be enabled.",
                 ),
             )
             return

@@ -379,7 +379,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 self,
                 self.tr("Missed selected row"),
                 self.tr(
-                    "Factor raster is not selected. Please specify input data and try again"
+                    "Factor raster is not selected. Please specify it and try again"
                 ),
             )
             return
@@ -631,7 +631,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             QMessageBox.warning(
                 self,
                 self.tr("Missed model"),
-                self.tr("Model not selected please select and train model."),
+                self.tr("Model not selected. Please select and train model."),
             )
             return
 
@@ -886,7 +886,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     self,
                     self.tr("Kappa is not applicable"),
                     self.tr(
-                        "Kappa is not applicable to the file: '{}' because it's contains continues value"
+                        "Kappa is not applicable to the file: '{}' because it contains continuous value"
                     ).format(raster.getFileName()),
                 )
                 return
@@ -1148,19 +1148,27 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.valAxes.set_position(
             [box.x0, box.y0 + box.height * 0.2, box.width, box.height * 0.8]
         )
+        legend_translations = {
+            "c1": self.tr("No location,\nno quantity inform."),
+            "c2": self.tr("No location,\nmedium quantity inform."),
+            "c3": self.tr("Medium location,\nmedium quantity inform."),
+            "c4": self.tr("Perfect location,\nmedium quantity inform."),
+            "c5": self.tr("Perfect location,\nperfect quantity inform."),
+        }
         leg = self.valAxes.legend(
             (
-                "No location, no quantity inform.",
-                "No location, medium quantity inform.",
-                "Medium location, medium quantity inform.",
-                "Perfect location, medium quantity inform.",
-                "Perfect location, perfect quantity inform.",
+                legend_translations.get("c1"),
+                legend_translations.get("c2"),
+                legend_translations.get("c3"),
+                legend_translations.get("c4"),
+                legend_translations.get("c5"),
             ),
             loc="upper center",
-            bbox_to_anchor=(0.5, -0.05),
+            bbox_to_anchor=(0.5, -0.09),
             fancybox=True,
             ncol=3,
             shadow=False,
+            fontsize=8,
         )
         for t in leg.get_texts():
             t.set_fontsize("small")
@@ -1326,6 +1334,13 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         stat = self.inputs["crosstab"].getTransitionStat()
         dimensions = len(stat["init"])
 
+        units_translations = {
+            "metre": self.tr("metre"),
+            "meter": self.tr("meter"),
+            "meters": self.tr("meters"),
+            "metres": self.tr("metres"),
+            "unknown": self.tr("unknown"),
+        }
         units = stat["unit"].lower()
         displayUnits = self.cmbUnits.currentText()
         if displayUnits == self.tr("sq. km."):
@@ -1334,7 +1349,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             denominator = 10000
         else:
             denominator = 1.0
-            displayUnits = self.tr("sq. ") + units
+            displayUnits = self.tr("sq. ") + units_translations.get(units)
 
         if units not in ["metre", "meter", "meters", "metres"]:
             denominator = 1.0
@@ -1501,7 +1516,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             QMessageBox.warning(
                 self,
                 self.tr("Missed samples"),
-                self.tr("Selected model does't use samples"),
+                self.tr("Selected model doesn't use samples"),
             )
             return
 
@@ -1600,7 +1615,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.eb.getStat(nIter)
         except MemoryError:
             self.logErrorReport(
-                self.tr("The system out of memory during validation procedure")
+                self.tr(
+                    "The system is out of memory during validation procedure"
+                )
             )
             raise
         except:

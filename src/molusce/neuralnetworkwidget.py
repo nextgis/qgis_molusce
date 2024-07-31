@@ -190,7 +190,16 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
             linewidth=1,
             color="red",
         )[0]
-        leg = self.axes.legend(["Train", "Validation"])
+        legend_translations = {
+            "Train": self.tr("Train"),
+            "Validation": self.tr("Validation"),
+        }
+        leg = self.axes.legend(
+            (
+                legend_translations.get("Train"),
+                legend_translations.get("Validation"),
+            )
+        )
         for t in leg.get_texts():
             t.set_fontsize("small")
         model.moveToThread(self.plugin.workThread)
@@ -220,7 +229,7 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         self.plugin.restoreProgressState()
         self.btnStop.setEnabled(False)
         self.btnTrainNetwork.setEnabled(True)
-        self.plugin.logMessage(self.tr("ANN model trained"))
+        self.plugin.logMessage(self.tr("ANN model is trained"))
 
     def __trainInterrupted(self):
         self.plugin.workThread.quit()

@@ -395,7 +395,7 @@ class Sampler(QObject):
                 np.random.shuffle(self.data)
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during sampling")
+                self.tr("The system is out of memory during sampling")
             )
             raise
         except:
