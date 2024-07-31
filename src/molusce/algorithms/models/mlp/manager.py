@@ -326,7 +326,7 @@ class MlpManager(QObject):
                     self.transitionPotentials[cat].create(band, geodata)
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during ANN prediction")
+                self.tr("The system is out of memory during ANN prediction")
             )
             raise
         except:
@@ -506,7 +506,7 @@ class MlpManager(QObject):
             self.setMlpWeights(best_weights)
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during ANN training")
+                self.tr("The system is out of memory during ANN training")
             )
             raise
         except:

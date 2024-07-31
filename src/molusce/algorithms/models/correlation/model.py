@@ -53,7 +53,7 @@ class DependenceCoef(QObject):
         except MemoryError:
             self.errorReport.emit(
                 self.tr(
-                    "The system out of memory during cross table calculation"
+                    "The system is out of memory during cross table calculation"
                 )
             )
             raise

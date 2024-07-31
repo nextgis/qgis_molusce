@@ -77,7 +77,7 @@ class CrossTableManager(QObject):
         except MemoryError:
             self.errorReport.emit(
                 self.tr(
-                    "The system out of memory during calculation of cross table"
+                    "The system is out of memory during calculation of cross table"
                 )
             )
             raise

@@ -19,7 +19,7 @@ class Simulator(QObject):
     def __init__(self, state, factors, model, crosstable):
         """@param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
-        @param model            Model that is used for predict. The model mast implement next methods:
+        @param model            Model that is used for predict. The model must implement next methods:
                                     getConfidence(),
                                     getPrediction(state, factors,calcTransitions=False),
                                     getTransitionPotentials()
@@ -191,7 +191,7 @@ class Simulator(QObject):
                 self.__sim()
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during simulation")
+                self.tr("The system is out of memory during simulation")
             )
             raise
         except:

@@ -129,7 +129,7 @@ class MultiCriteriaEvaluationWidget(
 
         self.inputs["model"] = model
 
-        self.plugin.logMessage(self.tr("MCE model trained"))
+        self.plugin.logMessage(self.tr("MCE model is trained"))
 
         weights = model.getWeights()
         for i, w in enumerate(weights):
@@ -173,7 +173,7 @@ class MultiCriteriaEvaluationWidget(
         for k, v in self.inputs["factors"].items():
             for b in range(v.getBandsCount()):
                 if v.getBandsCount() > 1:
-                    name = self.tr("{} (band {)").format(
+                    name = self.tr("{} (band {})").format(
                         utils.getLayerById(k).name(), str(b + 1)
                     )
                 else:
