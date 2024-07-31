@@ -233,7 +233,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 str(layer.source()),
                 maskVals=utils.getLayerMaskById(self.initRasterId),
             )
-            self.logMessage(self.tr("Set intial layer to %s") % (layerName))
+            self.logMessage(self.tr("Set initial layer to %s") % (layerName))
         except MemoryError:
             self.logErrorReport(
                 self.tr(
