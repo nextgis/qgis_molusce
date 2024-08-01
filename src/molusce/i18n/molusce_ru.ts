@@ -1344,7 +1344,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../algorithms/models/sampler/sampler.py" line="402"/>
         <source>An unknown error occurs during sampling</source>
-        <translation>Во время процесса выборки  возникла неизвестная ошибка</translation>
+        <translation>Во время процесса выборки возникла неизвестная ошибка</translation>
     </message>
     <message>
         <location filename="../algorithms/models/sampler/sampler.py" line="397"/>
@@ -1377,7 +1377,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../algorithms/models/simulator/sim.py" line="193"/>
         <source>The system is out of memory during simulation</source>
-        <translation>Во время процесса симуляции  возникла неизвестная ошибка</translation>
+        <translation>Во время процесса симуляции возникла неизвестная ошибка</translation>
     </message>
 </context>
 <context>

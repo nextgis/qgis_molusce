@@ -312,7 +312,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../molusce.py" line="104"/>
         <source>Quick Help...</source>
-        <translation>manual del usuario...</translation>
+        <translation>Manual del usuario...</translation>
     </message>
     <message>
         <location filename="../molusce.py" line="85"/>
