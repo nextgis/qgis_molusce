@@ -1020,7 +1020,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         gc.collect()
         self.restoreProgressState()
         self.logMessage(
-            self.tr("Process of Validation Map creating is finised")
+            self.tr("Process of Validation Map creating is finished")
         )
 
     def tabChanged(self, index):
