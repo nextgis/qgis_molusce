@@ -414,7 +414,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="405"/>
         <source>Removed factor layer %s</source>
-        <translation>Удалена карта карта влияния фактора - %s</translation>
+        <translation>Удалена карта влияния фактора - %s</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="419"/>
@@ -459,7 +459,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="485"/>
         <source>Memory Error occurred (correlation checking). Perhaps the system is low on memory.</source>
-        <translation>Произошла ошибка памяти (проверка корреляции). Возможно, в системе недостаточно памяти.</translation>
+        <translation>Произошла ошибка памяти (расчет корреляции). Возможно, в системе недостаточно памяти.</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="534"/>
@@ -580,11 +580,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../moluscedialog.py" line="994"/>
         <source>Process of Validation Map creating is started</source>
         <translation>Запущен процесс расчета карты ошибок</translation>
-    </message>
-    <message>
-        <location filename="../moluscedialog.py" line="1022"/>
-        <source>Process of Validation Map creating is finised</source>
-        <translation>Завершен процесс расчета карты ошибок</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1285"/>
@@ -857,6 +852,11 @@ medium quantity inform.</source>
         <location filename="../moluscedialog.py" line="236"/>
         <source>Set initial layer to %s</source>
         <translation>Установлен растр начальных состояний - %s</translation>
+    </message>
+    <message>
+        <location filename="../moluscedialog.py" line="1022"/>
+        <source>Process of Validation Map creating is finished</source>
+        <translation>Завершен процесс расчета карты ошибок</translation>
     </message>
 </context>
 <context>
@@ -1367,7 +1367,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../algorithms/models/simulator/sim.py" line="144"/>
         <source>There are more transitions in the transition matrix, then the model have found</source>
-        <translation>Модель обнаружила большее количесвто значений переходов, чем в матрице переходов</translation>
+        <translation>Модель обнаружила большее количество значений переходов, чем в матрице переходов</translation>
     </message>
     <message>
         <location filename="../algorithms/models/simulator/sim.py" line="198"/>
