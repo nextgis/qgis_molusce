@@ -92,7 +92,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../algorithms/models/crosstabs/model.py" line="72"/>
         <source>Computing Crosstable %p%</source>
-        <translation>Расчет таблицы статистики по классам</translation>
+        <translation>Расчет таблицы статистики по классам %p%</translation>
     </message>
     <message>
         <location filename="../algorithms/models/crosstabs/model.py" line="90"/>
@@ -1372,7 +1372,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../algorithms/models/simulator/sim.py" line="198"/>
         <source>An unknown error occurs during simulation</source>
-        <translation>В процессе симуляции  возникла неизвестная ошибка</translation>
+        <translation>В процессе симуляции возникла неизвестная ошибка</translation>
     </message>
     <message>
         <location filename="../algorithms/models/simulator/sim.py" line="193"/>

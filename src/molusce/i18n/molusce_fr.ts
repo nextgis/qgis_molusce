@@ -92,7 +92,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../algorithms/models/crosstabs/model.py" line="72"/>
         <source>Computing Crosstable %p%</source>
-        <translation>Calcul du tableau des statistiques par les classes</translation>
+        <translation>Calcul du tableau des statistiques par les classes %p%</translation>
     </message>
     <message>
         <location filename="../algorithms/models/crosstabs/model.py" line="90"/>
@@ -969,7 +969,7 @@ niveau moyen d'information sur la quantité</translation>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="457"/>
         <source>Transition Potential Modelling</source>
-        <translation>Modélisation du potentiel de transition</translation>
+        <translation>Modélisation du Potentiel de Transition</translation>
     </message>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="452"/>
@@ -999,7 +999,7 @@ niveau moyen d'information sur la quantité</translation>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="467"/>
         <source>Cellular Automata Simulation</source>
-        <translation>Simulation d'automates cellulaires</translation>
+        <translation>Simulation d'Automates Cellulaires</translation>
     </message>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="473"/>

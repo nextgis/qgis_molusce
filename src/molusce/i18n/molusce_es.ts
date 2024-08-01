@@ -875,12 +875,12 @@ nivel medio de información sobre la cantidad</translation>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="431"/>
         <source>Initial &gt;&gt;</source>
-        <translation>Raster de estados iniciales &gt;&gt;</translation>
+        <translation>Inicial &gt;&gt;</translation>
     </message>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="432"/>
         <source>Final &gt;&gt;</source>
-        <translation>Raster de estados finales &gt;&gt;</translation>
+        <translation>Final &gt;&gt;</translation>
     </message>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="433"/>
@@ -910,7 +910,7 @@ nivel medio de información sobre la cantidad</translation>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="445"/>
         <source>Evaluating correlation</source>
-        <translation>Correlaciones</translation>
+        <translation>Evaluación de la correlación</translation>
     </message>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="451"/>
@@ -945,7 +945,7 @@ nivel medio de información sobre la cantidad</translation>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="450"/>
         <source>Area Changes</source>
-        <translation>Cambio de territorios</translation>
+        <translation>Cambio de Territorios</translation>
     </message>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="446"/>
@@ -970,7 +970,7 @@ nivel medio de información sobre la cantidad</translation>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="457"/>
         <source>Transition Potential Modelling</source>
-        <translation>Modelización</translation>
+        <translation>Modelización del Potencial de Transición</translation>
     </message>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="452"/>
@@ -1000,7 +1000,7 @@ nivel medio de información sobre la cantidad</translation>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="467"/>
         <source>Cellular Automata Simulation</source>
-        <translation>Simulación</translation>
+        <translation>Simulación de Autómatas Celulares</translation>
     </message>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="473"/>

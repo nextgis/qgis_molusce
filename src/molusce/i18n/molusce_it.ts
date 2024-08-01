@@ -699,7 +699,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="1352"/>
         <source>sq. </source>
-        <translation>quadri</translation>
+        <translation>quadri </translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1535"/>
@@ -969,7 +969,7 @@ livello medio di informazioni sulla quantità</translation>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="457"/>
         <source>Transition Potential Modelling</source>
-        <translation>Modellizzazione della transizione potenziale</translation>
+        <translation>Modellizzazione della Transizione Potenziale</translation>
     </message>
     <message>
         <location filename="../ui/ui_moluscedialogbase.py" line="452"/>
