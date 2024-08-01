@@ -1377,7 +1377,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../algorithms/models/simulator/sim.py" line="193"/>
         <source>The system is out of memory during simulation</source>
-        <translation>Во время процесса симуляции возникла неизвестная ошибка</translation>
+        <translation>Выполнение процесса симуляции привело к переполнению выделенной памяти</translation>
     </message>
 </context>
 <context>

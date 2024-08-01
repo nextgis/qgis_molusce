@@ -1377,7 +1377,7 @@ niveau moyen d'information sur la quantité</translation>
     <message>
         <location filename="../algorithms/models/simulator/sim.py" line="193"/>
         <source>The system is out of memory during simulation</source>
-        <translation>Une erreur inconnue s'est produite pendant le processus de simulation</translation>
+        <translation>L'exécution du processus de simulation a provoqué un débordement de la mémoire allouée</translation>
     </message>
 </context>
 <context>
