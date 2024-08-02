@@ -511,7 +511,7 @@ class MlpManager(QObject):
             raise
         except:
             self.errorReport.emit(
-                self.tr("An unknown error occurs during ANN trainig")
+                self.tr("An unknown error occurs during ANN training")
             )
             raise
         finally:

@@ -162,11 +162,6 @@ p, li { white-space: pre-wrap; }
         <translation>No processo de construção da previsão pelo método de regressão logística, ocorreu um erro desconhecido</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="303"/>
-        <source>An unknown error occurs during LR trainig</source>
-        <translation>No processo de treino do modelo de regressão logística, ocorreu um erro desconhecido</translation>
-    </message>
-    <message>
         <location filename="../algorithms/models/lr/lr.py" line="202"/>
         <source>The system is out of memory during LR prediction</source>
         <translation>O algoritmo para fazer uma previsão utilizando o método de regressão logística resultou num estouro da memória atribuída</translation>
@@ -175,6 +170,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../algorithms/models/lr/lr.py" line="298"/>
         <source>The system is out of memory during LR training</source>
         <translation>O algoritmo de treino do modelo de regressão logística resultou num excesso de memória atribuída</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/lr/lr.py" line="303"/>
+        <source>An unknown error occurs during LR training</source>
+        <translation>Ocorreu um erro desconhecido durante o treinamento do modelo de regressão logística</translation>
     </message>
 </context>
 <context>
@@ -344,11 +344,6 @@ p, li { white-space: pre-wrap; }
         <translation>Treinar o modelo %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="513"/>
-        <source>An unknown error occurs during ANN trainig</source>
-        <translation>No processo de formação do modelo pelo método da rede neural, ocorreu um erro desconhecido</translation>
-    </message>
-    <message>
         <location filename="../algorithms/models/mlp/manager.py" line="328"/>
         <source>The system is out of memory during ANN prediction</source>
         <translation>O algoritmo de previsão que utiliza o método da rede neural resultou num excesso da memória atribuída</translation>
@@ -357,6 +352,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../algorithms/models/mlp/manager.py" line="508"/>
         <source>The system is out of memory during ANN training</source>
         <translation>O algoritmo da rede neural para treinar o modelo resultou num estouro da memória atribuída</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mlp/manager.py" line="513"/>
+        <source>An unknown error occurs during ANN training</source>
+        <translation>Ocorreu um erro desconhecido durante o treinamento do modelo de rede neural</translation>
     </message>
 </context>
 <context>
@@ -1251,11 +1251,6 @@ nível médio de informação sobre a quantidade</translation>
         <translation>Os dados de formação foram estabelecidos</translation>
     </message>
     <message>
-        <location filename="../neuralnetworkwidget.py" line="220"/>
-        <source>Start trainig ANN model</source>
-        <translation>O processo de treinamento do modelo de rede neural é iniciado</translation>
-    </message>
-    <message>
         <location filename="../neuralnetworkwidget.py" line="238"/>
         <source>ANN model training interrupted</source>
         <translation>Treinamento do modelo de rede neural é interrompido</translation>
@@ -1274,6 +1269,11 @@ nível médio de informação sobre a quantidade</translation>
         <location filename="../neuralnetworkwidget.py" line="195"/>
         <source>Validation</source>
         <translation>Curva de erro</translation>
+    </message>
+    <message>
+        <location filename="../neuralnetworkwidget.py" line="220"/>
+        <source>Start training ANN model</source>
+        <translation>O processo de treinamento do modelo de rede neural é iniciado</translation>
     </message>
 </context>
 <context>
@@ -1499,11 +1499,6 @@ nível médio de informação sobre a quantidade</translation>
         <translation>Treinar um modelo de significância de características... %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="271"/>
-        <source>An unknown error occurs during WoE trainig</source>
-        <translation>No processo de formação do modelo de significância das características, ocorreu um erro desconhecido</translation>
-    </message>
-    <message>
         <location filename="../algorithms/models/woe/manager.py" line="285"/>
         <source>Transition {} -&gt; {}
 </source>
@@ -1533,6 +1528,11 @@ nível médio de informação sobre a quantidade</translation>
         <location filename="../algorithms/models/woe/manager.py" line="197"/>
         <source>The system is out of memory during WOE prediction</source>
         <translation>O algoritmo de previsão que utiliza o método da significância das características resultou num estouro da memória atribuída</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/manager.py" line="271"/>
+        <source>An unknown error occurs during WoE training</source>
+        <translation>No processo de formação do modelo de significância das características, ocorreu um erro desconhecido</translation>
     </message>
 </context>
 </TS>

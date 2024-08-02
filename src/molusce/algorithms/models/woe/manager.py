@@ -264,12 +264,12 @@ class WoeManager(QObject):
                 gc.collect()
         except MemoryError:
             self.errorReport.emit(
-                "The system is out of memory during WoE trainig"
+                "The system is out of memory during WoE training"
             )
             raise
         except:
             self.errorReport.emit(
-                self.tr("An unknown error occurs during WoE trainig")
+                self.tr("An unknown error occurs during WoE training")
             )
             raise
         finally:

@@ -301,7 +301,7 @@ class LR(QObject):
             raise
         except:
             self.errorReport.emit(
-                self.tr("An unknown error occurs during LR trainig")
+                self.tr("An unknown error occurs during LR training")
             )
             raise
         finally:
