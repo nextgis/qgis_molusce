@@ -217,7 +217,7 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         model.processFinished.connect(self.__trainFinished)
         model.processFinished.connect(self.plugin.workThread.quit)
 
-        self.plugin.logMessage(self.tr("Start trainig ANN model"))
+        self.plugin.logMessage(self.tr("Start training ANN model"))
         self.plugin.workThread.start()
 
     def __trainFinished(self):

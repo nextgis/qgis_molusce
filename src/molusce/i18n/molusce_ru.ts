@@ -162,11 +162,6 @@ p, li { white-space: pre-wrap; }
         <translation>В процессе построения прогноза методом логистической регрессии возникла неизвестная ошибка</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="303"/>
-        <source>An unknown error occurs during LR trainig</source>
-        <translation>В процессе обучения модели логистической регрессии возникла неизвестная ошибка</translation>
-    </message>
-    <message>
         <location filename="../algorithms/models/lr/lr.py" line="202"/>
         <source>The system is out of memory during LR prediction</source>
         <translation>Алгоритм построения прогноза методом логистической регрессии привел к переполнению выделенной памяти</translation>
@@ -175,6 +170,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../algorithms/models/lr/lr.py" line="298"/>
         <source>The system is out of memory during LR training</source>
         <translation>Алгоритм обучения модели логистической регрессии привел к переполнению выделенной памяти</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/lr/lr.py" line="303"/>
+        <source>An unknown error occurs during LR training</source>
+        <translation>В процессе обучения модели логистической регрессии возникла неизвестная ошибка</translation>
     </message>
 </context>
 <context>
@@ -344,11 +344,6 @@ p, li { white-space: pre-wrap; }
         <translation>Обучение модели %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="513"/>
-        <source>An unknown error occurs during ANN trainig</source>
-        <translation>В процессе обучения модели методом нейронных сетей возникла неизвестная ошибка</translation>
-    </message>
-    <message>
         <location filename="../algorithms/models/mlp/manager.py" line="328"/>
         <source>The system is out of memory during ANN prediction</source>
         <translation>Алгоритм построения прогноза методом нейронных сетей привел к переполнению выделенной памяти</translation>
@@ -357,6 +352,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../algorithms/models/mlp/manager.py" line="508"/>
         <source>The system is out of memory during ANN training</source>
         <translation>Алгоритм обучения модели методом нейронных сетей привел к переполнению выделенной памяти</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mlp/manager.py" line="513"/>
+        <source>An unknown error occurs during ANN training</source>
+        <translation>В процессе обучения модели нейронных сетей возникла неизвестная ошибка</translation>
     </message>
 </context>
 <context>
@@ -1251,11 +1251,6 @@ medium quantity inform.</source>
         <translation>Установлены обучающие данные</translation>
     </message>
     <message>
-        <location filename="../neuralnetworkwidget.py" line="220"/>
-        <source>Start trainig ANN model</source>
-        <translation>Запущен процесс обучения модели нейронной сети</translation>
-    </message>
-    <message>
         <location filename="../neuralnetworkwidget.py" line="238"/>
         <source>ANN model training interrupted</source>
         <translation>Обучение модели нейронной сети остановлено</translation>
@@ -1274,6 +1269,11 @@ medium quantity inform.</source>
         <location filename="../neuralnetworkwidget.py" line="195"/>
         <source>Validation</source>
         <translation>Кривая ошибок</translation>
+    </message>
+    <message>
+        <location filename="../neuralnetworkwidget.py" line="220"/>
+        <source>Start training ANN model</source>
+        <translation>Запущен процесс обучения модели нейронной сети</translation>
     </message>
 </context>
 <context>
@@ -1499,11 +1499,6 @@ medium quantity inform.</source>
         <translation>Обучение модели значимости признака... %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="271"/>
-        <source>An unknown error occurs during WoE trainig</source>
-        <translation>В процессе обучения модели значимости признака возникла неизвестная ошибка</translation>
-    </message>
-    <message>
         <location filename="../algorithms/models/woe/manager.py" line="285"/>
         <source>Transition {} -&gt; {}
 </source>
@@ -1533,6 +1528,11 @@ medium quantity inform.</source>
         <location filename="../algorithms/models/woe/manager.py" line="197"/>
         <source>The system is out of memory during WOE prediction</source>
         <translation>Алгоритм построения прогноза методом значимости признака привел к переполнению выделенной памяти</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/manager.py" line="271"/>
+        <source>An unknown error occurs during WoE training</source>
+        <translation>В процессе обучения модели значимости признака возникла неизвестная ошибка</translation>
     </message>
 </context>
 </TS>
