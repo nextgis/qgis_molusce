@@ -24,6 +24,7 @@
 # ******************************************************************************
 
 import os
+from pathlib import Path
 
 from qgis.core import *
 from qgis.PyQt.QtCore import *
@@ -151,7 +152,8 @@ class MoluscePlugin:
         d.exec_()
 
     def about(self):
-        d = aboutdialog.AboutDialog()
+        package_name = str(Path(__file__).parent.name)
+        d = aboutdialog.AboutDialog(package_name)
         d.exec_()
 
     def showQuickHelp(self):

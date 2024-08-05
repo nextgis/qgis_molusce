@@ -4,65 +4,62 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../aboutdialog.py" line="51"/>
-        <source>Version: %s</source>
-        <translation>Versión: %s</translation>
+        <location filename="../aboutdialog.py" line="81"/>
+        <source>REPORT_END</source>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="75"/>
-        <source>&lt;p&gt;Modules for Land Use Change Simulations.&lt;/p&gt;
-&lt;p&gt;Plugin provides a set of algorithms for land use change simulations such as
-ANN, LR, WoE, MCE. There is also validation using kappa statistics.&lt;/p&gt;
-&lt;p&gt;Developed by &lt;a href=&quot;http://www.asiaairsurvey.com/&quot;&gt;Asia Air Survey&lt;/a&gt; and &lt;a href=&quot;http://nextgis.org&quot;&gt;NextGIS&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Homepage&lt;/strong&gt;: &lt;a href=&quot;http://hub.qgis.org/projects/molusce&quot;&gt;http://hub.qgis.org/projects/molusce&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Please report bugs at &lt;a href=&quot;http://hub.qgis.org/projects/molusce/issues&quot;&gt;bugtracker&lt;/a&gt;&lt;/p&gt;
-</source>
-        <translation>&lt;p&gt;Modules for Land Use Change Simulations.&lt;/p&gt;
-&lt;p&gt;El plug-in contiene un conjunto de métodos y algoritmos para analizar los cambios territoriales, como redes neuronales (perceptrón multicapa),
-regresión logística, método de ponderación de las pruebas, método de evaluación multicriterio basado en el método Saaty. El módulo también proporciona procedimientos para evaluar la calidad de la previsión obtenida.&lt;/p&gt;
-&lt;p&gt;Desarrollado por &lt;a href=&quot;http://www.asiaairsurvey.com/&quot;&gt;Asia Air Survey&lt;/a&gt; y &lt;a href=&quot;http://nextgis.org&quot;&gt;NextGIS&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Página de inicio&lt;/strong&gt;: &lt;a href=&quot;http://hub.qgis.org/projects/molusce&quot;&gt;http://hub.qgis.org/projects/molusce&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Por favor, informe de errores en el &lt;a href=&quot;http://hub.qgis.org/projects/molusce/issues&quot;&gt;rastreador de errores&lt;/a&gt;&lt;/p&gt;
-</translation>
+        <location filename="../aboutdialog.py" line="86"/>
+        <source>Developers</source>
+        <translation>Desarrolladores</translation>
+    </message>
+    <message>
+        <location filename="../aboutdialog.py" line="87"/>
+        <source>Homepage</source>
+        <translation>Página de inicio</translation>
+    </message>
+    <message>
+        <location filename="../aboutdialog.py" line="88"/>
+        <source>Please report bugs at</source>
+        <translation>Por favor, informe de errores en</translation>
+    </message>
+    <message>
+        <location filename="../aboutdialog.py" line="90"/>
+        <source>bugtracker</source>
+        <translation>bugtracker</translation>
+    </message>
+    <message>
+        <location filename="../aboutdialog.py" line="91"/>
+        <source>Video with an overview of the plugin</source>
+        <translation>Vídeo con una visión general del plugin</translation>
+    </message>
+    <message>
+        <location filename="../aboutdialog.py" line="92"/>
+        <source>Other helpful services by NextGIS</source>
+        <translation>Otros servicios útiles de NextGIS</translation>
+    </message>
+    <message>
+        <location filename="../aboutdialog.py" line="93"/>
+        <source>Convenient up-to-date data extracts for any place in the world</source>
+        <translation>Extractos de datos actualizados convenientes para cualquier lugar del mundo</translation>
+    </message>
+    <message>
+        <location filename="../aboutdialog.py" line="96"/>
+        <source>Fully featured Web GIS service</source>
+        <translation>Servicio Web GIS con todas las funciones</translation>
     </message>
 </context>
 <context>
     <name>AboutDialogBase</name>
     <message>
-        <location filename="../ui/ui_aboutdialogbase.py" line="56"/>
-        <source>About MOLUSCE</source>
-        <translation>Acerca de MOLUSCE</translation>
+        <location filename="../ui/ui_aboutdialogbase.py" line="49"/>
+        <source>About {plugin_name}</source>
+        <translation>Acerca de {plugin_name}</translation>
     </message>
     <message>
-        <location filename="../ui/ui_aboutdialogbase.py" line="58"/>
-        <source>TextLabel</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../ui/ui_aboutdialogbase.py" line="59"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;MOLUSCE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:16pt; font-weight:600;&quot;&gt;MOLUSCE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location filename="../ui/ui_aboutdialogbase.py" line="64"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <location filename="../ui/ui_aboutdialogbase.py" line="50"/>
+        <source>&lt;p align=&quot;center&quot;&gt;{plugin_name}&lt;/p&gt;</source>
+        <translation>&lt;p align=&quot;center&quot;&gt;{plugin_name}&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -295,27 +292,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MOLUSCE</name>
     <message>
-        <location filename="../molusce.py" line="85"/>
+        <location filename="../molusce.py" line="86"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="144"/>
+        <location filename="../molusce.py" line="145"/>
         <source>MOLUSCE</source>
         <translation>MOLUSCE</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="110"/>
+        <location filename="../molusce.py" line="111"/>
         <source>About MOLUSCE...</source>
         <translation>Acerca de MOLUSCE...</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="104"/>
+        <location filename="../molusce.py" line="105"/>
         <source>Quick Help...</source>
         <translation>Manual del usuario...</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="85"/>
+        <location filename="../molusce.py" line="86"/>
         <source>QGIS %s detected.
 </source>
         <translation>Detectada la versión %s de QGIS.
