@@ -2,13 +2,12 @@ import unittest
 from pathlib import Path
 
 import numpy as np
-from numpy import ma as ma
-from numpy.testing import assert_array_equal
-
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 from molusce.algorithms.models.crosstabs.manager import CrossTableManager
 from molusce.algorithms.models.simulator.sim import Simulator
+from numpy import ma as ma
+from numpy.testing import assert_array_equal
 
 
 class Model:

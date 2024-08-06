@@ -3,10 +3,9 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from molusce.algorithms.dataprovider import ProviderError, Raster
 from numpy import ma as ma
 from numpy.testing import assert_array_equal
-
-from molusce.algorithms.dataprovider import ProviderError, Raster
 
 
 class TestRaster(unittest.TestCase):
