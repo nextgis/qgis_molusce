@@ -34,7 +34,7 @@ select = [
     "RET", # flake8-return
     "RSE", # flake8-raise
     # "RUF",
-    "SIM", # flake8-simplify
+    # "SIM", # flake8-simplify
     # "SLF", # flake8-self
     "T10", # flake8-debugger
     # "T20", # flake8-print

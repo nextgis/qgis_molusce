@@ -26,8 +26,10 @@
 import datetime
 import functools
 import gc
+import glob
 import locale
 import os.path
+from pathlib import Path
 
 import numpy
 from matplotlib.backends.backend_qt5agg import (
@@ -557,6 +559,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.logMessage(self.tr("No file selected"))
             return
 
+        if Path(fileName).exists():
+            if utils.is_file_used_by_project(Path(fileName)):
+                QMessageBox.warning(
+                    self,
+                    self.tr("Can't rewrite"),
+                    self.tr(
+                        "File with the name '{}' is already used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                    ).format(fileName),
+                )
+                return
+            Path(fileName).unlink()
+
         self.inputs["changeMapName"] = fileName
 
         self.analyst = AreaAnalyst(
@@ -607,15 +621,181 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             if self.leTransitionPotentialPrefix.text() == "":
                 QMessageBox.warning(
                     self,
-                    self.tr("Missed input data"),
+                    self.tr("Can't save"),
                     self.tr(
                         "Prefix of transition potential maps is not set. Please specify it and try again"
                     ),
                 )
                 return
+
+            if self.leTransitionPotentialDirectory.text() == "":
+                QMessageBox.warning(
+                    self,
+                    self.tr("Can't save"),
+                    self.tr(
+                        "Directory of transition potential maps is not set. Please specify it and try again"
+                    ),
+                )
+                return
+
+            paths_list = glob.glob(
+                self.leTransitionPotentialDirectory.text()
+                + "/"
+                + self.leTransitionPotentialPrefix.text()
+                + "*"
+            )
+            if paths_list != []:
+                reply = QMessageBox.question(
+                    self,
+                    self.tr("Overwrite file"),
+                    self.tr(
+                        "Files with the specified prefix already exist in this directory. This may cause the files to be overwritten. Are you sure you want to continue?"
+                    ),
+                    QMessageBox.Yes,
+                    QMessageBox.No,
+                )
+
+                if reply == QMessageBox.No:
+                    return
+
             calcTransitions = True
         else:
             calcTransitions = False
+
+        if self.chkRiskFunction.isChecked():
+            if self.leRiskFunctionPath.text() != "":
+                if Path(
+                    QgsFileUtils.ensureFileNameHasExtension(
+                        self.leRiskFunctionPath.text(), ["tif"]
+                    )
+                ).exists():
+                    if utils.is_file_used_by_project(
+                        Path(
+                            QgsFileUtils.ensureFileNameHasExtension(
+                                self.leRiskFunctionPath.text(), ["tif"]
+                            )
+                        )
+                    ):
+                        self.leRiskFunctionPath.setText(
+                            QgsFileUtils.ensureFileNameHasExtension(
+                                self.leRiskFunctionPath.text(), ["tif"]
+                            )
+                        )
+                        QMessageBox.warning(
+                            self,
+                            self.tr("Can't rewrite"),
+                            self.tr(
+                                "File with the name '{}' is already used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                            ).format(
+                                QgsFileUtils.ensureFileNameHasExtension(
+                                    self.leRiskFunctionPath.text(), ["tif"]
+                                )
+                            ),
+                        )
+                        return
+                    Path(
+                        QgsFileUtils.ensureFileNameHasExtension(
+                            self.leRiskFunctionPath.text(), ["tif"]
+                        )
+                    ).unlink()
+
+                parent_path = Path(self.leRiskFunctionPath.text()).parents[0]
+                if not Path(parent_path).exists() or str(parent_path) == ".":
+                    self.leRiskFunctionPath.setText(
+                        QgsFileUtils.ensureFileNameHasExtension(
+                            self.leRiskFunctionPath.text(), ["tif"]
+                        )
+                    )
+                    QMessageBox.warning(
+                        self,
+                        self.tr("Can't save"),
+                        self.tr(
+                            "Can't save file in the specified path '{}'. Please specify output path correctly and try again"
+                        ).format(
+                            QgsFileUtils.ensureFileNameHasExtension(
+                                self.leRiskFunctionPath.text(), ["tif"]
+                            )
+                        ),
+                    )
+                    return
+        self.leRiskFunctionPath.setText(
+            QgsFileUtils.ensureFileNameHasExtension(
+                self.leRiskFunctionPath.text(), ["tif"]
+            )
+        )
+
+        if self.chkMonteCarlo.isChecked():
+            if self.leMonteCarloPath.text() != "":
+                if Path(
+                    QgsFileUtils.ensureFileNameHasExtension(
+                        self.leMonteCarloPath.text(), ["tif"]
+                    )
+                ).exists():
+                    if utils.is_file_used_by_project(
+                        Path(
+                            QgsFileUtils.ensureFileNameHasExtension(
+                                self.leMonteCarloPath.text(), ["tif"]
+                            )
+                        )
+                    ):
+                        self.leMonteCarloPath.setText(
+                            QgsFileUtils.ensureFileNameHasExtension(
+                                self.leMonteCarloPath.text(), ["tif"]
+                            )
+                        )
+                        QMessageBox.warning(
+                            self,
+                            self.tr("Can't rewrite"),
+                            self.tr(
+                                "File with the name '{}' is already used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                            ).format(
+                                QgsFileUtils.ensureFileNameHasExtension(
+                                    self.leMonteCarloPath.text(), ["tif"]
+                                )
+                            ),
+                        )
+                        return
+                    Path(
+                        QgsFileUtils.ensureFileNameHasExtension(
+                            self.leMonteCarloPath.text(), ["tif"]
+                        )
+                    ).unlink()
+
+                parent_path = Path(self.leMonteCarloPath.text()).parents[0]
+                if not Path(parent_path).exists() or str(parent_path) == ".":
+                    self.leMonteCarloPath.setText(
+                        QgsFileUtils.ensureFileNameHasExtension(
+                            self.leMonteCarloPath.text(), ["tif"]
+                        )
+                    )
+                    QMessageBox.warning(
+                        self,
+                        self.tr("Can't save"),
+                        self.tr(
+                            "Can't save file in the specified path '{}'. Please specify output path correctly and try again"
+                        ).format(
+                            QgsFileUtils.ensureFileNameHasExtension(
+                                self.leMonteCarloPath.text(), ["tif"]
+                            )
+                        ),
+                    )
+                    return
+        self.leMonteCarloPath.setText(
+            QgsFileUtils.ensureFileNameHasExtension(
+                self.leMonteCarloPath.text(), ["tif"]
+            )
+        )
+
+        if self.chkRiskFunction.isChecked() and self.chkMonteCarlo.isChecked():
+            if self.leRiskFunctionPath.text() == self.leMonteCarloPath.text():
+                QMessageBox.warning(
+                    self,
+                    self.tr("Can't save"),
+                    self.tr(
+                        "Can't save two files with the same output path '{}'. Please specify different output paths and try again"
+                    ).format(self.leMonteCarloPath.text()),
+                )
+                return
 
         if not utils.checkFactors(self.inputs):
             QMessageBox.warning(
@@ -676,13 +856,19 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 for noData in [0, maxVal]:
                     if noData not in grad:
                         res.save(
-                            str(self.leRiskFunctionPath.text()), nodata=noData
+                            QgsFileUtils.ensureFileNameHasExtension(
+                                self.leRiskFunctionPath.text(), ["tif"]
+                            ),
+                            nodata=noData,
                         )
                         saved = True
                         break
                 if not saved:
                     res.save(
-                        str(self.leRiskFunctionPath.text()), nodata=maxVal - 1
+                        QgsFileUtils.ensureFileNameHasExtension(
+                            self.leRiskFunctionPath.text(), ["tif"]
+                        ),
+                        nodata=maxVal - 1,
                     )
                 del res
                 self.__addRasterToCanvas(self.leRiskFunctionPath.text())
@@ -700,6 +886,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         if self.chkMonteCarlo.isChecked():
             if self.leMonteCarloPath.text() != "":
+                self.leSimulatedMapPath.setText(self.leMonteCarloPath.text())
                 res = self.simulator.getState()
                 grad = res.getBandGradation(1)
                 saved = False
@@ -708,13 +895,19 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 for noData in [0, maxVal]:
                     if noData not in grad:
                         res.save(
-                            str(self.leMonteCarloPath.text()), nodata=noData
+                            QgsFileUtils.ensureFileNameHasExtension(
+                                self.leMonteCarloPath.text(), ["tif"]
+                            ),
+                            nodata=noData,
                         )
                         saved = True
                         break
                 if not saved:
                     res.save(
-                        str(self.leRiskFunctionPath.text()), nodata=maxVal - 1
+                        QgsFileUtils.ensureFileNameHasExtension(
+                            self.leMonteCarloPath.text(), ["tif"]
+                        ),
+                        nodata=maxVal - 1,
                     )
                 del res
                 self.__addRasterToCanvas(self.leMonteCarloPath.text())
@@ -743,6 +936,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         if self.chkTransitionPotentials.isChecked():
             potentials = self.simulator.getTransitionPotentials()
+            directory_path = self.leTransitionPotentialDirectory.text()
             trans_prefix = self.leTransitionPotentialPrefix.text()
             if not hasattr(self, "analyst"):
                 self.analyst = AreaAnalyst(
@@ -752,11 +946,13 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 for k, v in potentials.items():
                     initcat, finalcat = self.analyst.decode(int(k))
                     _potential_map = v.save(
-                        trans_prefix
+                        directory_path
+                        + "/"
+                        + trans_prefix
                         + "_from_"
-                        + str(initcat)
+                        + str(initcat).replace(".", "_")
                         + "_to_"
-                        + str(finalcat)
+                        + str(finalcat).replace(".", "_")
                         + ".tif"
                     )
             else:
@@ -966,6 +1162,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         if fileName == "":
             self.logMessage(self.tr("No file selected"))
             return
+
+        if Path(fileName).exists():
+            if utils.is_file_used_by_project(Path(fileName)):
+                QMessageBox.warning(
+                    self,
+                    self.tr("Can't rewrite"),
+                    self.tr(
+                        "File with the name '{}' is already used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                    ).format(fileName),
+                )
+                return
+            Path(fileName).unlink()
 
         self.inputs["valMapName"] = str(fileName)
 
@@ -1361,7 +1569,10 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         labels = []
         colors = []
         layer = utils.getLayerById(self.initRasterId)
-        if "singlebandpseudocolor" in layer.renderer().type().lower():
+        if (
+            "singlebandpseudocolor"
+            or "paletted" in layer.renderer().type().lower()
+        ):
             legend = layer.legendSymbologyItems()
             for i in legend:
                 labels.append(str(i[0]))
@@ -1499,6 +1710,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.spnIterations.setEnabled(checked)
         elif senderName == "chkTransitionPotentials":
             self.leTransitionPotentialPrefix.setEnabled(checked)
+            self.leTransitionPotentialDirectory.setEnabled(checked)
             self.btnSelectTransitionPrefix.setEnabled(checked)
 
     def __selectSamplesOutput(self):
@@ -1528,6 +1740,21 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         )
         if fileName == "":
             return
+
+        if Path(fileName).exists():
+            if utils.is_file_used_by_project(Path(fileName)):
+                QMessageBox.warning(
+                    self,
+                    self.tr("Can't rewrite"),
+                    self.tr(
+                        "File with the name '{}' is already used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                    ).format(fileName),
+                )
+                return
+            Path(fileName).unlink()
+            Path(fileName.replace(".shp", ".shx")).unlink()
+            Path(fileName.replace(".shp", ".prj")).unlink()
+            Path(fileName.replace(".shp", ".dbf")).unlink()
 
         try:
             model.saveSamples(str(fileName))
@@ -1562,10 +1789,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             dirname = utils.openDirectoryDialog(
                 self, self.settings, self.tr("Select Directory name")
             )
-            oldprefix = os.path.basename(
-                self.leTransitionPotentialPrefix.text()
-            )
-            self.leTransitionPotentialPrefix.setText(dirname + "/" + oldprefix)
+            self.leTransitionPotentialDirectory.setText(dirname)
             return
 
         fileName = utils.saveRasterDialog(
@@ -1582,7 +1806,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.leRiskFunctionPath.setText(fileName)
         elif senderName == "btnSelectMonteCarlo":
             self.leMonteCarloPath.setText(fileName)
-            self.leSimulatedMapPath.setText(fileName)
 
     def __toggleCorrLayers(self, state):
         if state == Qt.Checked:
@@ -1797,7 +2020,15 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 colorRamp.color(float(i) / float(numberOfEntries))
             )
 
-        cr = l.renderer().shader().rasterShaderFunction().colorRampItemList()
+        if "singlebandpseudocolor" in l.renderer().type().lower():
+            cr = (
+                l.renderer()
+                .shader()
+                .rasterShaderFunction()
+                .colorRampItemList()
+            )
+        if "paletted" in l.renderer().type().lower():
+            cr = l.renderer().classes()
 
         colorRampItems = []
         for i in range(len(entryValues)):
@@ -1824,20 +2055,39 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         rasterShader = QgsRasterShader()
         colorRampShader = QgsColorRampShader()
 
-        colorRampShader.setColorRampItemList(colorRampItems)
-        if Qgis.versionInt() >= QGIS_3_38:
-            colorRampShader.setColorRampType(
-                Qgis.ShaderInterpolationMethod.Linear
-            )
-        else:
-            colorRampShader.setColorRampType(
-                QgsColorRampShader.Type.Interpolated
-            )
-        rasterShader.setRasterShaderFunction(colorRampShader)
+        # if "singlebandpseudocolor" in layer.renderer().type().lower():
+        if True:
+            colorRampShader.setColorRampItemList(colorRampItems)
+            if Qgis.versionInt() >= QGIS_3_38:
+                colorRampShader.setColorRampType(
+                    Qgis.ShaderInterpolationMethod.Linear
+                )
+            else:
+                colorRampShader.setColorRampType(
+                    QgsColorRampShader.Type.Interpolated
+                )
+            rasterShader.setRasterShaderFunction(colorRampShader)
 
-        renderer = QgsSingleBandPseudoColorRenderer(
-            layer.dataProvider(), 1, rasterShader
-        )
+            renderer = QgsSingleBandPseudoColorRenderer(
+                layer.dataProvider(), 1, rasterShader
+            )
+
+        # if "paletted" in layer.renderer().type().lower():
+        #     colorRampShader.setColorRampItemList(colorRampItems)
+        #     if Qgis.versionInt() >= QGIS_3_38:
+        #         colorRampShader.setColorRampType(
+        #             Qgis.ShaderInterpolationMethod.Discrete
+        #         )
+        #     else:
+        #         colorRampShader.setColorRampType(
+        #             QgsColorRampShader.Type.Discrete
+        #         )
+        #     multi_value_class_data = layer.renderer().multiValueClasses()
+
+        #     renderer = QgsPalettedRasterRenderer(
+        #         layer.dataProvider(), 1, multi_value_class_data
+        #     )
+
         minVal = colorRampItems[0].value
         maxVal = colorRampItems[-1].value
         renderer.setClassificationMin(minVal)

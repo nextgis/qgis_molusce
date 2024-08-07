@@ -23,6 +23,8 @@
 #
 # ******************************************************************************
 
+from pathlib import Path
+
 from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
@@ -222,3 +224,14 @@ def copySymbology(src, dst):
     return dst.readSymbology(
         root, errMsg, QgsReadWriteContext(), QgsMapLayer.AllStyleCategories
     )
+
+
+def is_file_used_by_project(destination_path: Path) -> bool:
+    layers = [
+        layer
+        for layer in QgsProject().instance().mapLayers().values()
+        if layer.providerType() in ("ogr", "gdal")
+    ]
+    layers_paths = [Path(layer.source().split("|")[0]) for layer in layers]
+
+    return any(path == destination_path for path in layers_paths)
