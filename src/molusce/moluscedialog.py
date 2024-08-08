@@ -1633,7 +1633,10 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         labels = []
         layer = utils.getLayerById(self.initRasterId)
-        if "singlebandpseudocolor" in layer.renderer().type().lower():
+        if (
+            "singlebandpseudocolor"
+            or "paletted" in layer.renderer().type().lower()
+        ):
             legend = layer.legendSymbologyItems()
             for i in legend:
                 labels.append(str(i[0]))
@@ -1989,13 +1992,15 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self, layer, analyst, validationMode, usePercistentClass
     ):
         l = utils.getLayerByName(self.leInitRasterName.text())  # noqa: E741
-        if "singlebandpseudocolor" not in l.renderer().type().lower():
-            self.logMessage(
-                self.tr(
-                    "Init raster should be in PseudoColor mode. Style not applied."
+        mode = l.renderer().type().lower()
+        if mode != "singlebandpseudocolor":
+            if mode != "paletted":
+                self.logMessage(
+                    self.tr(
+                        "Init raster should be in PseudoColor or Paletted mode. Style not applied."
+                    )
                 )
-            )
-            return None
+                return None
 
         r = Raster(str(layer.source()))
         stat = r.getBandStat(1)
@@ -2055,8 +2060,12 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         rasterShader = QgsRasterShader()
         colorRampShader = QgsColorRampShader()
 
-        # if "singlebandpseudocolor" in layer.renderer().type().lower():
-        if True:
+        initial_layer = utils.getLayerByName(self.leInitRasterName.text())
+
+        if (
+            "singlebandpseudocolor" in initial_layer.renderer().type().lower()
+            or layer.source() == self.leRiskFunctionPath.text()
+        ):
             colorRampShader.setColorRampItemList(colorRampItems)
             if Qgis.versionInt() >= QGIS_3_38:
                 colorRampShader.setColorRampType(
@@ -2072,29 +2081,35 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 layer.dataProvider(), 1, rasterShader
             )
 
-        # if "paletted" in layer.renderer().type().lower():
-        #     colorRampShader.setColorRampItemList(colorRampItems)
-        #     if Qgis.versionInt() >= QGIS_3_38:
-        #         colorRampShader.setColorRampType(
-        #             Qgis.ShaderInterpolationMethod.Discrete
-        #         )
-        #     else:
-        #         colorRampShader.setColorRampType(
-        #             QgsColorRampShader.Type.Discrete
-        #         )
-        #     multi_value_class_data = layer.renderer().multiValueClasses()
+            minVal = colorRampItems[0].value
+            maxVal = colorRampItems[-1].value
+            renderer.setClassificationMin(minVal)
+            renderer.setClassificationMax(maxVal)
+            min_max_origin = renderer.minMaxOrigin()
+            min_max_origin.setExtent(QgsRasterMinMaxOrigin.Extent.WholeRaster)
+            renderer.setMinMaxOrigin(min_max_origin)
 
-        #     renderer = QgsPalettedRasterRenderer(
-        #         layer.dataProvider(), 1, multi_value_class_data
-        #     )
+        if (
+            "paletted" in initial_layer.renderer().type().lower()
+            and layer.source() != self.leRiskFunctionPath.text()
+        ):
+            colorRampShader.setColorRampItemList(colorRampItems)
+            if Qgis.versionInt() >= QGIS_3_38:
+                colorRampShader.setColorRampType(
+                    Qgis.ShaderInterpolationMethod.Discrete
+                )
+            else:
+                colorRampShader.setColorRampType(
+                    QgsColorRampShader.Type.Discrete
+                )
 
-        minVal = colorRampItems[0].value
-        maxVal = colorRampItems[-1].value
-        renderer.setClassificationMin(minVal)
-        renderer.setClassificationMax(maxVal)
-        min_max_origin = renderer.minMaxOrigin()
-        min_max_origin.setExtent(QgsRasterMinMaxOrigin.Extent.WholeRaster)
-        renderer.setMinMaxOrigin(min_max_origin)
+            renderer = QgsPalettedRasterRenderer(
+                layer.dataProvider(),
+                1,
+                QgsPalettedRasterRenderer.colorTableToClassData(
+                    colorRampItems
+                ),
+            )
 
         layer.setRenderer(renderer)
         # layer.setCacheImage(None)
