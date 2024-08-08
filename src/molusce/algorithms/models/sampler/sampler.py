@@ -217,6 +217,10 @@ class Sampler(QObject):
         return data  # (coords, state_data, factors_data, out_data)
 
     def saveSamples(self, fileName):
+        data = self.getData()
+        if data is None:
+            raise SamplerError("Samples cannot be created!")
+
         workdir = os.path.dirname(fileName)
         fileName = os.path.splitext(os.path.basename(fileName))[0]
 
@@ -242,7 +246,6 @@ class Sampler(QObject):
             if lyr.CreateField(field_defn) != 0:
                 raise SamplerError("Creating Name field failed!")
 
-        data = self.getData()
         for row in data:
             x, y = row["coords"]
             if x and y:
@@ -395,7 +398,7 @@ class Sampler(QObject):
                 np.random.shuffle(self.data)
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during sampling")
+                self.tr("The system is out of memory during sampling")
             )
             raise
         except:

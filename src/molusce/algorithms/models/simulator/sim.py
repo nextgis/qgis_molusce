@@ -19,7 +19,7 @@ class Simulator(QObject):
     def __init__(self, state, factors, model, crosstable):
         """@param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
-        @param model            Model that is used for predict. The model mast implement next methods:
+        @param model            Model that is used for predict. The model must implement next methods:
                                     getConfidence(),
                                     getPrediction(state, factors,calcTransitions=False),
                                     getTransitionPotentials()
@@ -77,15 +77,12 @@ class Simulator(QObject):
 
     def __modelProgressRangeChanged(self, message, maxValue):
         self.rangeChanged.emit(message, maxValue)
-        QCoreApplication.processEvents()
 
     def __modelProgressChanged(self):
         self.updateProgress.emit()
-        QCoreApplication.processEvents()
 
     def __modelErrorReport(self, message):
         self.errorReport.emit(message)
-        QCoreApplication.processEvents()
 
     def setCalcTransitions(self, calcTransitions):
         self.calcTransitions = calcTransitions
@@ -110,10 +107,8 @@ class Simulator(QObject):
 
         self.rangeChanged.emit(self.tr("Area Change Analysis %p%"), 2)
         self.updateProgress.emit()
-        QCoreApplication.processEvents()
         analyst = AreaAnalyst(state, second=None)
         self.updateProgress.emit()
-        QCoreApplication.processEvents()
 
         categories = state.getBandGradation(1)
 
@@ -123,7 +118,6 @@ class Simulator(QObject):
             self.tr("Simulation process %p%"),
             len(categories) ** 2 - len(categories),
         )
-        QCoreApplication.processEvents()
         for initClass in categories:
             for finalClass in categories:
                 if initClass == finalClass:
@@ -154,7 +148,6 @@ class Simulator(QObject):
                     )
                     # print "There are more transitions in the transition matrix, then the model have found"
                     # print "cat_code, placesCount, n", cat_code, placesCount, n
-                    QCoreApplication.processEvents()
                     n = placesCount
                 if n > 0:
                     confidence = self.getConfidence().getBand(1)
@@ -186,7 +179,6 @@ class Simulator(QObject):
                         new_state[index] = finalClass
 
                 self.updateProgress.emit()
-                QCoreApplication.processEvents()
 
         result = Raster()
         result.create([new_state], state.getGeodata())
@@ -199,7 +191,7 @@ class Simulator(QObject):
                 self.__sim()
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during simulation")
+                self.tr("The system is out of memory during simulation")
             )
             raise
         except:
@@ -221,7 +213,6 @@ class Simulator(QObject):
                 )
 
             self.simFinished.emit()
-            QCoreApplication.processEvents()
 
     def updatePrediction(self, state):
         """Update prediction using new categories (raster "state")"""

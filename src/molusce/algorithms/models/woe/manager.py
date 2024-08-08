@@ -19,7 +19,7 @@ def sigmoid(x):
     # Numericaly stable implementation of sigmoid see:
     # https://stackoverflow.com/a/64717799
     limit_val = 100
-    
+
     x = np.maximum(-limit_val, np.minimum(x, limit_val))
     return 1 / (1 + np.exp(-x))
 
@@ -195,7 +195,7 @@ class WoeManager(QObject):
             self.confidence.create([confidence_band], self.geodata)
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during WOE prediction")
+                self.tr("The system is out of memory during WOE prediction")
             )
             raise
         except:
@@ -264,12 +264,12 @@ class WoeManager(QObject):
                 gc.collect()
         except MemoryError:
             self.errorReport.emit(
-                "The system out of memory during WoE trainig"
+                "The system is out of memory during WoE training"
             )
             raise
         except:
             self.errorReport.emit(
-                self.tr("An unknown error occurs during WoE trainig")
+                self.tr("An unknown error occurs during WoE training")
             )
             raise
         finally:
