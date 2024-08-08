@@ -206,7 +206,8 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
 
         self.plugin.workThread.started.connect(model.startTrain)
         self.btnStop.clicked.connect(model.stopTrain)
-        model.updateGraph.connect(self.__updateGraph)
+        model.updateGraphValues.connect(self.__updateGraphValues)
+        model.updateGraph.connect(self.__update_graph)
         model.updateDeltaRMS.connect(self.__updateRMS)
         model.updateMinValErr.connect(self.__updateValidationError)
         model.updateKappa.connect(self.__updateKappa)
@@ -230,6 +231,7 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         self.btnStop.setEnabled(False)
         self.btnTrainNetwork.setEnabled(True)
         self.plugin.logMessage(self.tr("ANN model is trained"))
+        self.__update_graph()
 
     def __trainInterrupted(self):
         self.plugin.workThread.quit()
@@ -237,19 +239,25 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         self.btnTrainNetwork.setEnabled(True)
         self.plugin.logMessage(self.tr("ANN model training interrupted"))
 
+    @pyqtSlot(float)
     def __updateRMS(self, dRMS):
         self.leDeltaRMS.setText("%6.5f" % (dRMS))
 
+    @pyqtSlot(float)
     def __updateValidationError(self, error):
         self.leValidationError.setText("%6.5f" % (error))
 
+    @pyqtSlot(float)
     def __updateKappa(self, kappa):
         self.leKappa.setText("%6.5f" % (kappa))
 
-    def __updateGraph(self, errTrain, errVal):
+    @pyqtSlot(float, float)
+    def __updateGraphValues(self, errTrain: float, errVal: float):
         self.dataTrain.append(errTrain)
         self.dataVal.append(errVal)
 
+    @pyqtSlot()
+    def __update_graph(self):
         ymin = min([min(self.dataTrain), min(self.dataVal)])
         ymax = max([max(self.dataTrain), max(self.dataVal)])
 

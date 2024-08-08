@@ -226,6 +226,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
         rx = QRegExp(r"(19|2\d)\d\d")
+        rx.indexIn(layerName)
         year = rx.cap()
         self.leInitYear.setText(year)
 
@@ -279,6 +280,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
         rx = QRegExp(r"(19|2\d)\d\d")
+        rx.indexIn(layerName)
         year = rx.cap()
         self.leFinalYear.setText(year)
 
