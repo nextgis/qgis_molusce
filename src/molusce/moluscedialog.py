@@ -569,7 +569,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             if utils.is_file_used_by_project(Path(fileName)):
                 QMessageBox.warning(
                     self,
-                    self.tr("Can't rewrite"),
+                    self.tr("Can't rewrite file"),
                     self.tr(
                         "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
                     ).format(fileName),
@@ -627,7 +627,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             if self.leTransitionPotentialPrefix.text() == "":
                 QMessageBox.warning(
                     self,
-                    self.tr("Can't save"),
+                    self.tr("Can't save file"),
                     self.tr(
                         "Prefix of transition potential maps is not set. Please specify it and try again"
                     ),
@@ -637,7 +637,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             if self.leTransitionPotentialDirectory.text() == "":
                 QMessageBox.warning(
                     self,
-                    self.tr("Can't save"),
+                    self.tr("Can't save file"),
                     self.tr(
                         "Directory of transition potential maps is not set. Please specify it and try again"
                     ),
@@ -689,7 +689,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                         )
                         QMessageBox.warning(
                             self,
-                            self.tr("Can't rewrite"),
+                            self.tr("Can't rewrite file"),
                             self.tr(
                                 "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
                             ).format(
@@ -714,7 +714,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     )
                     QMessageBox.warning(
                         self,
-                        self.tr("Can't save"),
+                        self.tr("Can't save file"),
                         self.tr(
                             "Can't save file in the specified path '{}'. Please specify output path correctly and try again"
                         ).format(
@@ -751,7 +751,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                         )
                         QMessageBox.warning(
                             self,
-                            self.tr("Can't rewrite"),
+                            self.tr("Can't rewrite file"),
                             self.tr(
                                 "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
                             ).format(
@@ -776,7 +776,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     )
                     QMessageBox.warning(
                         self,
-                        self.tr("Can't save"),
+                        self.tr("Can't save file"),
                         self.tr(
                             "Can't save file in the specified path '{}'. Please specify output path correctly and try again"
                         ).format(
@@ -796,9 +796,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             if self.leRiskFunctionPath.text() == self.leMonteCarloPath.text():
                 QMessageBox.warning(
                     self,
-                    self.tr("Can't save"),
+                    self.tr("Can't save file"),
                     self.tr(
-                        "Can't save two files with the same output path '{}'. Please specify different output paths and try again"
+                        "Can't save files with the same output path '{}'. Please specify different output paths and try again"
                     ).format(self.leMonteCarloPath.text()),
                 )
                 return
@@ -1195,7 +1195,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             if utils.is_file_used_by_project(Path(fileName)):
                 QMessageBox.warning(
                     self,
-                    self.tr("Can't rewrite"),
+                    self.tr("Can't rewrite file"),
                     self.tr(
                         "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
                     ).format(fileName),
@@ -1811,7 +1811,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             if utils.is_file_used_by_project(Path(fileName)):
                 QMessageBox.warning(
                     self,
-                    self.tr("Can't rewrite"),
+                    self.tr("Can't rewrite file"),
                     self.tr(
                         "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
                     ).format(fileName),
