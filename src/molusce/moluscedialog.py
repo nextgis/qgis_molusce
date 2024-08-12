@@ -60,10 +60,14 @@ from . import (
     weightofevidencewidget,
 )
 from .algorithms.dataprovider import ProviderError, Raster
-from .algorithms.models.area_analysis.manager import AreaAnalyst
+from .algorithms.models.area_analysis.manager import (
+    AreaAnalizerError,
+    AreaAnalyst,
+)
 from .algorithms.models.correlation.model import DependenceCoef
 from .algorithms.models.crosstabs.manager import CrossTableManager
-from .algorithms.models.errorbudget.ebmodel import EBudget
+from .algorithms.models.crosstabs.model import CrossTabError
+from .algorithms.models.errorbudget.ebmodel import EBError, EBudget
 from .algorithms.models.sampler.sampler import SamplerError
 from .algorithms.models.simulator.sim import Simulator
 from .ui.ui_moluscedialogbase import Ui_MolusceDialogBase
@@ -567,7 +571,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     self,
                     self.tr("Can't rewrite"),
                     self.tr(
-                        "File with the name '{}' is already used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                        "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
                     ).format(fileName),
                 )
                 return
@@ -687,7 +691,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                             self,
                             self.tr("Can't rewrite"),
                             self.tr(
-                                "File with the name '{}' is already used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                                "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
                             ).format(
                                 QgsFileUtils.ensureFileNameHasExtension(
                                     self.leRiskFunctionPath.text(), ["tif"]
@@ -749,7 +753,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                             self,
                             self.tr("Can't rewrite"),
                             self.tr(
-                                "File with the name '{}' is already used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                                "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
                             ).format(
                                 QgsFileUtils.ensureFileNameHasExtension(
                                     self.leMonteCarloPath.text(), ["tif"]
@@ -1001,7 +1005,17 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        self.eb = EBudget(reference, simulated)
+        try:
+            self.eb = EBudget(reference, simulated)
+        except EBError:
+            QMessageBox.warning(
+                self,
+                self.tr("Different characteristics of rasters"),
+                self.tr(
+                    "Characteristics of the reference and simulated rasters are different!"
+                ),
+            )
+            return
 
         self.eb.moveToThread(self.workThread)
 
@@ -1094,6 +1108,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             reference.getBand(1), simulated.getBand(1), expand=True
         )
 
+        try:
+            self.depCoef.calculateCrosstable()
+        except CrossTabError:
+            QMessageBox.warning(
+                self,
+                self.tr("Different geometry"),
+                self.tr(
+                    "Geometries of the reference and simulated rasters are different!"
+                ),
+            )
+            return
+
         self.depCoef.moveToThread(self.workThread)
 
         self.workThread.started.connect(self.depCoef.calculateCrosstable)
@@ -1171,7 +1197,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     self,
                     self.tr("Can't rewrite"),
                     self.tr(
-                        "File with the name '{}' is already used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                        "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
                     ).format(fileName),
                 )
                 return
@@ -1179,7 +1205,17 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         self.inputs["valMapName"] = str(fileName)
 
-        self.analystVM = AreaAnalyst(reference, simulated)
+        try:
+            self.analystVM = AreaAnalyst(reference, simulated)
+        except AreaAnalizerError:
+            QMessageBox.warning(
+                self,
+                self.tr("Different characteristics of rasters"),
+                self.tr(
+                    "Characteristics of the reference and simulated rasters are different!"
+                ),
+            )
+            return
 
         if self.chkCheckPersistentClasses.isChecked():
             if not utils.checkInputRasters(self.inputs):
@@ -1571,14 +1607,30 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         labels = []
         colors = []
         layer = utils.getLayerById(self.initRasterId)
-        if (
-            "singlebandpseudocolor"
-            or "paletted" in layer.renderer().type().lower()
+        rows = layer.height()
+        cols = layer.width()
+        data_provider = layer.dataProvider()
+        block = data_provider.block(1, data_provider.extent(), cols, rows)
+        unique_values = list(
+            set([block.value(r, c) for r in range(rows) for c in range(cols)])
+        )
+        if layer.renderer().type().lower() in (
+            "singlebandpseudocolor",
+            "paletted",
         ):
-            legend = layer.legendSymbologyItems()
+            if "paletted" in layer.renderer().type().lower():
+                legend = layer.renderer().classes()
+            if "singlebandpseudocolor" in layer.renderer().type().lower():
+                legend = (
+                    layer.renderer()
+                    .shader()
+                    .rasterShaderFunction()
+                    .colorRampItemList()
+                )
             for i in legend:
-                labels.append(str(i[0]))
-                colors.append(i[1])
+                if i.value in unique_values:
+                    labels.append(i.label)
+                    colors.append(i.color)
         else:
             labels = [str(i) for i in range(1, 7)]
 
@@ -1635,13 +1687,22 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         labels = []
         layer = utils.getLayerById(self.initRasterId)
-        if (
-            "singlebandpseudocolor"
-            or "paletted" in layer.renderer().type().lower()
+        if layer.renderer().type().lower() in (
+            "singlebandpseudocolor",
+            "paletted",
         ):
-            legend = layer.legendSymbologyItems()
+            if "paletted" in layer.renderer().type().lower():
+                legend = layer.renderer().classes()
+            if "singlebandpseudocolor" in layer.renderer().type().lower():
+                legend = (
+                    layer.renderer()
+                    .shader()
+                    .rasterShaderFunction()
+                    .colorRampItemList()
+                )
             for i in legend:
-                labels.append(str(i[0]))
+                if i.value in unique_values:
+                    labels.append(i.label)
         else:
             labels = [str(i) for i in range(1, dimensions + 1)]
 
@@ -1752,7 +1813,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     self,
                     self.tr("Can't rewrite"),
                     self.tr(
-                        "File with the name '{}' is already used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                        "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
                     ).format(fileName),
                 )
                 return
