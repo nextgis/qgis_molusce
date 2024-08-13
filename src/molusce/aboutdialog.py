@@ -69,7 +69,7 @@ class AboutDialog(QDialog, FORM_CLASS):
             "about": about,
             "authors": metadata_value("author"),
             "video_url": metadata_value("video"),
-            "homepage_url": metadata_value("repository"),
+            "homepage_url": metadata_value("homepage"),
             "tracker_url": metadata_value("tracker"),
             "main_url": url,
             "data_url": url.replace("://", "://data."),

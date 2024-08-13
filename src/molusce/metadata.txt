@@ -20,9 +20,11 @@ icon = icons/molusce.png
 
 tags = raster, land use planning
 
-homepage = http://hub.qgis.org/projects/molusce
+homepage = https://nextgis.com/molusce/
 tracker = https://github.com/nextgis/molusce/issues
 repository = https://github.com/nextgis/molusce
+
+video = https://www.youtube.com/watch?v=F4j1fTyCuy4
 
 experimental = False
 deprecated = False
