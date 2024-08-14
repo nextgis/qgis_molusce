@@ -29,9 +29,9 @@ video = https://www.youtube.com/watch?v=F4j1fTyCuy4
 experimental = False
 deprecated = False
 
-changelog= 
+changelog=
         4.0.0:
-                * Configure MOLUSCE for QGIS 3.x
+                * MOLUSCE updated for use in QGIS 3
         3.0.13:
                 * BugFixing: disable analisys if rasterss are not matched
         3.0.12:
