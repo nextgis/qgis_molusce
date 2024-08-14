@@ -140,7 +140,9 @@ class AreaAnalyst(QObject):
             self.changeMap = raster
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during change map creating")
+                self.tr(
+                    "The system is out of memory during change map creating"
+                )
             )
             raise
         except:
@@ -158,6 +160,6 @@ class AreaAnalyst(QObject):
         if not initR.geoDataMatch(raster=None, geodata=self.geodata):
             raise AreaAnalizerError("Geometries of the rasters are different!")
         if initR.getBandsCount() != 1:
-            raise AreaAnalizerError("The raster mast have 1 band!")
+            raise AreaAnalizerError("The raster must have 1 band!")
 
         self.initRaster = initR

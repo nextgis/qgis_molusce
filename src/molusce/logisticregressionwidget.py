@@ -30,10 +30,10 @@ from qgis.PyQt.QtWidgets import *
 
 from . import molusceutils as utils
 from .algorithms.models.lr.lr import LR
-from .ui.ui_logisticregressionwidgetbase import Ui_Widget
+from .ui.ui_logisticregressionwidgetbase import Ui_LogisticRegressionWidgetBase
 
 
-class LogisticRegressionWidget(QWidget, Ui_Widget):
+class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
     def __init__(self, plugin, parent=None):
         QWidget.__init__(self, parent)
         self.setupUi(self)
@@ -126,7 +126,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
         self.showStdDeviations()
         self.showPValues()
 
-        self.plugin.logMessage(self.tr("LR model trained"))
+        self.plugin.logMessage(self.tr("LR model is trained"))
 
     def showCoefficients(self):
         model = self.inputs["model"]
@@ -213,7 +213,7 @@ class LogisticRegressionWidget(QWidget, Ui_Widget):
             QMessageBox.warning(
                 self.plugin,
                 self.tr("Model is not initialised"),
-                self.tr("To get p-values you need to train model first"),
+                self.tr("To get P-values you need to train model first"),
             )
             return
 

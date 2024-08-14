@@ -32,10 +32,14 @@ from . import molusceutils as utils
 from . import spinboxdelegate
 from .algorithms.models.area_analysis.manager import AreaAnalyst
 from .algorithms.models.mce.mce import MCE
-from .ui.ui_multicriteriaevaluationwidgetbase import Ui_Widget
+from .ui.ui_multicriteriaevaluationwidgetbase import (
+    Ui_MultiCriteriaEvaluationWidgetBase,
+)
 
 
-class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
+class MultiCriteriaEvaluationWidget(
+    QWidget, Ui_MultiCriteriaEvaluationWidgetBase
+):
     def __init__(self, plugin, parent=None):
         QWidget.__init__(self, parent)
         self.setupUi(self)
@@ -125,7 +129,7 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
 
         self.inputs["model"] = model
 
-        self.plugin.logMessage(self.tr("MCE model trained"))
+        self.plugin.logMessage(self.tr("MCE model is trained"))
 
         weights = model.getWeights()
         for i, w in enumerate(weights):
@@ -169,7 +173,7 @@ class MultiCriteriaEvaluationWidget(QWidget, Ui_Widget):
         for k, v in self.inputs["factors"].items():
             for b in range(v.getBandsCount()):
                 if v.getBandsCount() > 1:
-                    name = self.tr("{} (band {)").format(
+                    name = self.tr("{} (band {})").format(
                         utils.getLayerById(k).name(), str(b + 1)
                     )
                 else:

@@ -1,11 +1,10 @@
 import unittest
 from pathlib import Path
 
-from numpy import ma as ma
-from numpy.testing import assert_array_equal
-
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
+from numpy import ma as ma
+from numpy.testing import assert_array_equal
 
 
 class TestAreaAnalysisManager(unittest.TestCase):

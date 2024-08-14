@@ -105,7 +105,7 @@ class MLP:
 
 # if __name__ == "__main__":
 #     import matplotlib.pyplot as plt
-# 
+#
 #     def learn(network, samples, epochs=2500, lrate=0.1, momentum=0.1):
 #         # Train
 #         for _i in range(epochs):
@@ -118,10 +118,10 @@ class MLP:
 #             print(i, samples["input"][i], f"{o[0]:.2f}", end=" ")
 #             print(f"(expected {samples["output"][i]:.2f})")
 #         print()
-# 
+#
 #     network = MLP(2, 2, 1)
 #     samples = np.zeros(4, dtype=[("input", float, 2), ("output", float, 1)])
-# 
+#
 #     # Example 1 : OR logical function
 #     # -------------------------------------------------------------------------
 #     print("Learning the OR logical function")
@@ -131,7 +131,7 @@ class MLP:
 #     samples[2] = (0, 1), 1
 #     samples[3] = (1, 1), 1
 #     learn(network, samples)
-# 
+#
 #     # Example 2 : AND logical function
 #     # -------------------------------------------------------------------------
 #     print("Learning the AND logical function")
@@ -141,7 +141,7 @@ class MLP:
 #     samples[2] = (0, 1), 0
 #     samples[3] = (1, 1), 1
 #     learn(network, samples)
-# 
+#
 #     # Example 3 : XOR logical function
 #     # -------------------------------------------------------------------------
 #     print("Learning the XOR logical function")
@@ -151,7 +151,7 @@ class MLP:
 #     samples[2] = (0, 1), 1
 #     samples[3] = (1, 1), 0
 #     learn(network, samples)
-# 
+#
 #     # Example 4 : Learning sin(x)
 #     # -------------------------------------------------------------------------
 #     print("Learning the sin function")
@@ -159,12 +159,12 @@ class MLP:
 #     samples = np.zeros(500, dtype=[("x", float, 1), ("y", float, 1)])
 #     samples["x"] = np.linspace(0, 1, 500)
 #     samples["y"] = np.sin(samples["x"] * np.pi)
-# 
+#
 #     for _i in range(10000):
 #         n = np.random.randint(samples.size)
 #         network.propagate_forward(samples["x"][n])
 #         network.propagate_backward(samples["y"][n])
-# 
+#
 #     plt.figure(figsize=(10, 5))
 #     # Draw real function
 #     x, y = samples["x"], samples["y"]
@@ -175,4 +175,4 @@ class MLP:
 #     plt.plot(x, y, color="r", lw=3)
 #     plt.axis([0, 1, 0, 1])
 #     plt.show()
-# 
+#

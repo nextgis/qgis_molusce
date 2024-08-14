@@ -46,10 +46,10 @@ from matplotlib.figure import Figure
 
 from . import molusceutils as utils
 from .algorithms.models.mlp.manager import MlpManager
-from .ui.ui_neuralnetworkwidgetbase import Ui_Widget
+from .ui.ui_neuralnetworkwidgetbase import Ui_NeuralNetworkWidgetBase
 
 
-class NeuralNetworkWidget(QWidget, Ui_Widget):
+class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
     def __init__(self, plugin, parent=None):
         QWidget.__init__(self, parent)
         self.setupUi(self)
@@ -190,16 +190,15 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
             linewidth=1,
             color="red",
         )[0]
-        leg = self.axes.legend(
-            ("Train", "Validation"), "upper right", shadow=False
-        )
+        leg = self.axes.legend((self.tr("Train"), self.tr("Validation")))
         for t in leg.get_texts():
             t.set_fontsize("small")
         model.moveToThread(self.plugin.workThread)
 
         self.plugin.workThread.started.connect(model.startTrain)
         self.btnStop.clicked.connect(model.stopTrain)
-        model.updateGraph.connect(self.__updateGraph)
+        model.updateGraphValues.connect(self.__updateGraphValues)
+        model.updateGraph.connect(self.__update_graph)
         model.updateDeltaRMS.connect(self.__updateRMS)
         model.updateMinValErr.connect(self.__updateValidationError)
         model.updateKappa.connect(self.__updateKappa)
@@ -210,7 +209,7 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
         model.processFinished.connect(self.__trainFinished)
         model.processFinished.connect(self.plugin.workThread.quit)
 
-        self.plugin.logMessage(self.tr("Start trainig ANN model"))
+        self.plugin.logMessage(self.tr("Start training ANN model"))
         self.plugin.workThread.start()
 
     def __trainFinished(self):
@@ -222,7 +221,8 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
         self.plugin.restoreProgressState()
         self.btnStop.setEnabled(False)
         self.btnTrainNetwork.setEnabled(True)
-        self.plugin.logMessage(self.tr("ANN model trained"))
+        self.plugin.logMessage(self.tr("ANN model is trained"))
+        self.__update_graph()
 
     def __trainInterrupted(self):
         self.plugin.workThread.quit()
@@ -230,19 +230,25 @@ class NeuralNetworkWidget(QWidget, Ui_Widget):
         self.btnTrainNetwork.setEnabled(True)
         self.plugin.logMessage(self.tr("ANN model training interrupted"))
 
+    @pyqtSlot(float)
     def __updateRMS(self, dRMS):
         self.leDeltaRMS.setText("%6.5f" % (dRMS))
 
+    @pyqtSlot(float)
     def __updateValidationError(self, error):
         self.leValidationError.setText("%6.5f" % (error))
 
+    @pyqtSlot(float)
     def __updateKappa(self, kappa):
         self.leKappa.setText("%6.5f" % (kappa))
 
-    def __updateGraph(self, errTrain, errVal):
+    @pyqtSlot(float, float)
+    def __updateGraphValues(self, errTrain: float, errVal: float):
         self.dataTrain.append(errTrain)
         self.dataVal.append(errVal)
 
+    @pyqtSlot()
+    def __update_graph(self):
         ymin = min([min(self.dataTrain), min(self.dataVal)])
         ymax = max([max(self.dataTrain), max(self.dataVal)])
 

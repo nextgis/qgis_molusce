@@ -1,29 +1,37 @@
 [general]
-name=MOLUSCE
-about=Modules for Land Use Change Simulations
-description=Plugin provides a set of algorithms 
-	for land use change simulations 
-	such as ANN, LR, WoE, MCE. 
-	There is also validation using kappa statistics.
-category=Raster
-version=3.0.13
-qgisMinimumVersion=3.22
+name = MOLUSCE
+about = Plugin provides a set of algorithms for land use change simulations such as ANN, LR, WoE, MCE. There is also validation using kappa statistics. Developed by Asia Air Survey and NextGIS. Any feedback is welcome at https://nextgis.com/contact
+about[ru] = Плагин предоставляет набор алгоритмов для моделирования изменений в землепользовании, таких как нейронные сети (многослойный перцептрон), логистическая регрессия, метод значимости признака, метод многокритериальной оценки. Также имеется проверка с использованием статистики каппа. Разработан Asia Air Survey и NextGIS. Любые отзывы приветствуются на https://nextgis.com/contact
+about[es] = El plugin proporciona un conjunto de algoritmos para simulaciones de cambios en el uso del suelo como ANN, LR, WoE, MCE. También dispone de validación mediante estadísticas kappa. Desarrollado por Asia Air Survey y NextGIS. Cualquier comentario será bienvenido en https://nextgis.com/contact
+about[fr] = Plugin fournit un ensemble d`algorithmes pour les simulations de changement d`affectation des sols tels que ANN, LR, WoE, MCE. Il y a aussi une validation à l`aide des statistiques kappa. Développé par Asia Air Survey et NextGIS. Tout commentaire est le bienvenu à https://nextgis.com/contact
+about[it] = Plugin fornisce una serie di algoritmi per le simulazioni di cambiamento di uso del suolo come ANN, LR, WoE, MCE. C`è anche la convalida utilizzando le statistiche kappa. Sviluppato da Asia Air Survey e NextGIS. Qualsiasi feedback è benvenuto a https://nextgis.com/contact
+about[ja] = プラグインは、ANN、LR、WoE、MCEなどの土地利用変化シミュレーションのための一連のアルゴリズムを提供します。カッパ統計による検証もあります。Asia Air SurveyとNextGISによって開発されました。フィードバックは https://nextgis.com/contact まで
+about[pt] = O Plugin fornece um conjunto de algoritmos para simulações de mudança de uso da terra, como ANN, LR, WoE, MCE. Há também validação utilizando estatísticas kappa. Desenvolvido por Asia Air Survey e NextGIS. Qualquer feedback é bem-vindo em https://nextgis.com/contact
+description = Modules for Land Use Change Simulations
+category = Raster
+version = 4.0.0
+qgisMinimumVersion = 3.22
+qgisMaximumVersion = 3.99
 
-author=NextGIS
-email=info@nextgis.org
+author = NextGIS
+email = info@nextgis.org
 
-icon=icons/molusce.png
+icon = icons/molusce.png
 
-tags=raster,land use planning
+tags = raster, land use planning
 
-homepage=http://hub.qgis.org/projects/molusce
-tracker=https://github.com/nextgis/molusce/issues
-repository=https://github.com/nextgis/molusce
+homepage = https://nextgis.com/molusce/
+tracker = https://github.com/nextgis/molusce/issues
+repository = https://github.com/nextgis/molusce
 
-experimental=False
-deprecated=False
+video = https://www.youtube.com/watch?v=F4j1fTyCuy4
 
-changelog= 
+experimental = False
+deprecated = False
+
+changelog=
+        4.0.0:
+                * MOLUSCE updated for use in QGIS 3
         3.0.13:
                 * BugFixing: disable analisys if rasterss are not matched
         3.0.12:

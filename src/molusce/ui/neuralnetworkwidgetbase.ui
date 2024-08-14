@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Widget</class>
- <widget class="QWidget" name="Widget">
+ <class>NeuralNetworkWidgetBase</class>
+ <widget class="QWidget" name="NeuralNetworkWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -46,7 +46,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Learning rate</string>
+        <string>Learning Rate</string>
        </property>
       </widget>
      </item>
@@ -122,7 +122,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Maximum iterations</string>
+        <string>Maximum Iterations</string>
        </property>
       </widget>
      </item>
@@ -155,13 +155,6 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
-      <widget class="QLineEdit" name="leKappa">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item row="7" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
@@ -176,17 +169,24 @@
        </property>
       </widget>
      </item>
-     <item row="10" column="1">
+     <item row="10" column="0">
+      <widget class="QPushButton" name="btnTrainNetwork">
+       <property name="text">
+        <string>Train neural network</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1" colspan="2">
       <widget class="QPushButton" name="btnStop">
        <property name="text">
         <string>Stop</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="0">
-      <widget class="QPushButton" name="btnTrainNetwork">
-       <property name="text">
-        <string>Train neural network</string>
+     <item row="7" column="1" colspan="2">
+      <widget class="QLineEdit" name="leKappa">
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

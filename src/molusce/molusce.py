@@ -24,6 +24,7 @@
 # ******************************************************************************
 
 import os
+from pathlib import Path
 
 from qgis.core import *
 from qgis.PyQt.QtCore import *
@@ -68,9 +69,9 @@ class MoluscePlugin:
             )
 
         self.localePath = translationPath
-        if QFileInfo(self.localePath).exists():
-            self.translator = QTranslator()
-            self.translator.load(self.localePath)
+        translator = QTranslator()
+        if translator.load(self.localePath):
+            self.translator = translator
             QCoreApplication.installTranslator(self.translator)
 
     def initGui(self):
@@ -85,13 +86,11 @@ class MoluscePlugin:
             QMessageBox.warning(
                 self.iface.mainWindow(),
                 QCoreApplication.translate("MOLUSCE", "Error"),
-                QCoreApplication.translate(
-                    "MOLUSCE", "Quantum GIS %s detected.\n"
-                )
-                % s(qgisVersion)
+                QCoreApplication.translate("MOLUSCE", "QGIS %s detected.\n")
+                % (qgisVersion)
                 + QCoreApplication.translate(
                     "MOLUSCE",
-                    "This version of MOLUSCE requires at least QGIS version 1.9.0\nPlugin will not be enabled.",
+                    "This version of MOLUSCE requires at least QGIS version 3.22.0\nPlugin will not be enabled.",
                 ),
             )
             return
@@ -153,7 +152,8 @@ class MoluscePlugin:
         d.exec_()
 
     def about(self):
-        d = aboutdialog.AboutDialog()
+        package_name = str(Path(__file__).parent.name)
+        d = aboutdialog.AboutDialog(package_name)
         d.exec_()
 
     def showQuickHelp(self):

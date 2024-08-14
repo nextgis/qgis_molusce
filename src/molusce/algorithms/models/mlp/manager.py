@@ -24,7 +24,8 @@ class MlpManager(QObject):
     pass it to multi-layer perceptron, then gets and stores the result.
     """
 
-    updateGraph = pyqtSignal(float, float)  # Train error, val. error
+    updateGraph = pyqtSignal()
+    updateGraphValues = pyqtSignal(float, float)  # Train error, val. error
     updateMinValErr = pyqtSignal(float)  # Min validation error
     updateDeltaRMS = pyqtSignal(
         float
@@ -326,7 +327,7 @@ class MlpManager(QObject):
                     self.transitionPotentials[cat].create(band, geodata)
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during ANN prediction")
+                self.tr("The system is out of memory during ANN prediction")
             )
             raise
         except:
@@ -428,6 +429,7 @@ class MlpManager(QObject):
     def setContinueTrain(self, value=False):
         self.continueTrain = value
 
+    @pyqtSlot()
     def startTrain(self):
         self.train(
             self.epochs,
@@ -437,6 +439,7 @@ class MlpManager(QObject):
             self.continueTrain,
         )
 
+    @pyqtSlot()
     def stopTrain(self):
         self.interrupted = True
 
@@ -479,11 +482,21 @@ class MlpManager(QObject):
             last_train_err = self.getTrainError()
             best_weights = self.copyWeights()  # The MLP weights when minimum error that is achieved on the validation set
 
+            update_graph_count = 10
+            update_graph_step = (
+                epochs // update_graph_count
+                if epochs >= update_graph_count
+                else 1
+            )
             self.rangeChanged.emit(self.tr("Train model %p%"), epochs)
             for _epoch in range(epochs):
                 self.trainEpoch(train_indexes, lrate, momentum)
                 self.computePerformance(train_indexes, val_indexes)
-                self.updateGraph.emit(self.getTrainError(), self.getValError())
+                self.updateGraphValues.emit(
+                    self.getTrainError(), self.getValError()
+                )
+                if _epoch % update_graph_step == 0:
+                    self.updateGraph.emit()
                 self.updateDeltaRMS.emit(
                     self.getMinValError() - self.getValError()
                 )
@@ -507,12 +520,12 @@ class MlpManager(QObject):
             self.setMlpWeights(best_weights)
         except MemoryError:
             self.errorReport.emit(
-                self.tr("The system out of memory during ANN training")
+                self.tr("The system is out of memory during ANN training")
             )
             raise
         except:
             self.errorReport.emit(
-                self.tr("An unknown error occurs during ANN trainig")
+                self.tr("An unknown error occurs during ANN training")
             )
             raise
         finally:

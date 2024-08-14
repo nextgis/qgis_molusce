@@ -1,12 +1,11 @@
 import os
 from time import clock
 
-from numpy import ma as ma
-
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.crosstabs.manager import CrossTableManager
 from molusce.algorithms.models.lr.lr import LR
 from molusce.algorithms.models.simulator.sim import Simulator
+from numpy import ma as ma
 
 
 def main(initRaster, finalRaster, factors):
