@@ -1564,13 +1564,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         labels = []
         colors = []
         layer = utils.getLayerById(self.initRasterId)
-        rows = layer.height()
-        cols = layer.width()
-        data_provider = layer.dataProvider()
-        block = data_provider.block(1, data_provider.extent(), cols, rows)
-        unique_values = list(
-            set([block.value(r, c) for r in range(rows) for c in range(cols)])
-        )
         if layer.renderer().type().lower() in (
             "singlebandpseudocolor",
             "paletted",
@@ -1584,6 +1577,17 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     .rasterShaderFunction()
                     .colorRampItemList()
                 )
+            unique_values = self.inputs.get("initial").bandgradation.get(1)
+            if self.inputs.get("initial").bandgradation.get(
+                1
+            ) != self.inputs.get("final").bandgradation.get(1):
+                unique_values = list(
+                    set(
+                        self.inputs.get("initial").bandgradation.get(1)
+                        + self.inputs.get("final").bandgradation.get(1)
+                    )
+                )
+                unique_values.sort()
             for i in legend:
                 if i.value in unique_values:
                     labels.append(i.label)
