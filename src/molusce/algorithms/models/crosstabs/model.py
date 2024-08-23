@@ -48,6 +48,7 @@ class CrossTable(QObject):
             self.graduation_x = list(
                 set(self.graduation_x + self.graduation_y)
             )
+            self.graduation_x.sort()
             self.graduation_y = self.graduation_x
 
         rows, cols = len(self.graduation_x), len(self.graduation_y)

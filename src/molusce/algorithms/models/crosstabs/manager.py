@@ -37,8 +37,12 @@ class CrossTableManager(QObject):
 
         self.pixelArea = initRaster.getPixelArea()
 
+        expand = False
+        if initRaster.bandgradation.get(1) != finalRaster.bandgradation.get(1):
+            expand = True
+
         self.crosstable = CrossTable(
-            initRaster.getBand(1), finalRaster.getBand(1)
+            initRaster.getBand(1), finalRaster.getBand(1), expand
         )
 
         self.crosstable.rangeChanged.connect(
@@ -93,9 +97,18 @@ class CrossTableManager(QObject):
         return self.crosstable
 
     def getTransitionMatrix(self):
-        tab = self.getCrosstable().getCrosstable()
-        s = 1.0 / np.sum(tab, axis=1)
-        return tab * s[:, None]
+        table = self.getCrosstable().getCrosstable()
+        s = 1.0 / np.sum(table, axis=1)
+        inf_indices = []
+        for index, item in enumerate(s):
+            if not np.isposinf(item):
+                continue
+            s[index] = 0.0
+            inf_indices.append(index)
+        transition_matrix = table * s[:, None]
+        for inf_index in inf_indices:
+            transition_matrix[inf_index, inf_index] = 1.0
+        return transition_matrix
 
     def getTransitionStat(self):
         pixelArea = self.pixelArea["area"]
