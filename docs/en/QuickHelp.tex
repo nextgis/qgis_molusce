@@ -318,7 +318,7 @@ We can see that the training and validation errors are close. Overfitting is not
 
 \subsection{Multi Criteria Evaluation (MCE)}
 
-The MCE model takes into account the expert point of view regarding the importance of the predictors. 
+The MCE model \cite{eastman1999multi} takes into account the expert point of view regarding the importance of the predictors. 
 The user makes pairwise comparisons of the factors and describes their importance for the transition potentials. 
 The comparisons are made using Saaty's scale (see~Table~\ref{tab:saaty_scale}).
 
@@ -361,7 +361,7 @@ The weights of the spatial variable will then appear in the \verb+weights matrix
 
 
 \subsection{Weights of Evidence (WoE)}
-The WoE method proposes two ways of defining the range breaks. 
+The WoE \cite{bonham1989weights} method proposes two ways of defining the range breaks. 
 The user can define a \verb+number of intervals+ or specify the 
 \verb+range breaks+ values.
 
@@ -465,7 +465,7 @@ In order to perform a three way map comparison, the user can check the \verb+ris
 check-box. Although it is not shown explicitly, the three-way map comparison uses the initial land
 use/cover map ($T_1$), the reference land use/cover map ($T_3$) and the simulated land use/cover map.
 
-The \verb+multiple-resolution budget+ method is also used in MOLUSCE. The user can decide the 
+The \verb+multiple-resolution budget+ method~\cite[Chapter~17]{pontius2004maps_aggreament} is also used in MOLUSCE. The user can decide the 
 \verb+number of validation iterations+ and can start the process by pressing the \verb+start validation button+.
 The graph can be edited and saved as image.
 
@@ -480,7 +480,48 @@ executed by clicking the \verb+calculate Kappa+ button.
 \end{figure}
 
 An example of validation tab is shown in Figure~\ref{fig:validation_tab}.
+We discuss here some parts of the graph, see full details in~\cite[Chapter~17]{pontius2004maps_aggreament}.
+The chapter propose 15 types of statistic, but MOLUSCE calculates and plots 5 of the most important of them:
+\begin{itemize}
+  \item No location information, no quantity information;
+  \item No location information, medium quantity information;
+  \item Medium location information, medium quantity information;
+  \item Perfect location information, medium quantity information;
+  \item Perfect location information, perfect quantity information.
+\end{itemize}
 
+These lines aggreement metrics. They are measured for maps at different scales. 
+The zero point on the abscissa axis corresponds to
+the original scale of the maps, the point one corresponds the maps scaled down by half ($2^1$), the point
+two corresponds the maps scaled down by quarter ($2^2$), etc.
+
+Medium location information, medium quantity information is "the main" line.
+It represents sequence of measures of agreement between the reference map and the simulated map.
+Higher values of tne line show higer aggreement.
+
+Other lines show  measures of agreement between the reference map and thouse that describe different hypothetical situations.
+For example the line "No location information, no quantity information"  is the agreement due to chance.
+Usually it lies below the "Medium-Medium" line, in this case the simulated map has better aggreement with the reference 
+then random generated map.
+
+The upper line, "Perfect-Perfect," represents the highest possible agreement.
+It corresponds to the case when we have complete information about the reference map in advance 
+and can place all changes in their correct locations during the simulation.
+Thus, this line shows the case when no errors are committed.
+Usually the "Medium-Medium" line lies below this line.
+
+Other lines represents other hypothetical situations when we know more or less information
+about the reference map. This information consists of two parts: infomation about the quantity of pixels (quantity of changes in our case)
+and information about the locations of changes.
+
+
+
+
+
+
+
+\bibliographystyle{plain}
+\bibliography{references}
 
 \end{document}
 
