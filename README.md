@@ -1,12 +1,11 @@
-MOLUSCE
--------
 MOLUSCE (Modules for Land Use Change Simulations)
+-------------------------------------------------
 
-Plugin provides a set of algorithms for land use change simulations such as ANN, LR, WoE, MCE as well as validation using kappa statistics.
+QGIS 3 plugin that provides a set of algorithms for land use change simulations such as ANN, LR, WoE, MCE as well as validation using kappa statistics.
 
-Developed by Asia Air Survey (http://www.asiaairsurvey.com) and NextGIS (http://nextgis.com).
+Developed by NextGIS (https://nextgis.com) with the help of Asia Air Survey (http://www.asiaairsurvey.com).
 
-Homepage: https://github.com/nextgis/molusce
+Homepage: https://nextgis.com/molusce/
 
 Quickhelp (PDF):
 
@@ -15,11 +14,11 @@ Quickhelp (PDF):
 * Russian: https://gis-lab.info/qa/molusce-intro-ru.html
 
 License
--------------
+-------
 This program is licensed under GNU GPL v2 or any later version
 
 Commercial support
-----------
+------------------
 Need to fix a bug or add a feature to MOLUSCE? 
 
 We provide custom development and support for this software. [Contact us](https://nextgis.com/contact/) to discuss options!
