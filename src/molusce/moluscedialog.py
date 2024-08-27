@@ -176,7 +176,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.logMessage(self.tr("Start logging"))
 
     @property
-    def geometry_matched(self):
+    def geometry_matched(self) -> bool:
         return self._geometry_matched
 
     @geometry_matched.setter
