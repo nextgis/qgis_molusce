@@ -56,27 +56,25 @@ class TestCrossTableManager(unittest.TestCase):
         )
 
         table = CrossTableManager(n_class_raster, n_plus_1_class_raster)
-        # table = CrossTableManager(n_plus_1_class_raster, n_class_raster)
 
-        temp_table = table.getCrosstable().getCrosstable()
-        support_table = 1.0 / np.sum(temp_table, axis=1)
-        inf_indices = []
-        for index, item in enumerate(support_table):
-            if not np.isposinf(item):
-                continue
-            inf_indices.append(index)
+        def get_inf_indices():
+            temp_table = table.getCrosstable().getCrosstable()
+            support_table = 1.0 / np.sum(temp_table, axis=1)
+            inf_indices = []
+            for index, item in enumerate(support_table):
+                if not np.isposinf(item):
+                    continue
+                inf_indices.append(index)
+            return inf_indices
 
         transition_matrix = table.getTransitionMatrix()
-        print(transition_matrix)
 
-        for inf_index in inf_indices:
-            value = 1.0
-            self.assertAlmostEqual(
-                transition_matrix[inf_index, inf_index], value
-            )
-
-        transition_stat = table.getTransitionStat()
-        print(transition_stat)
+        for inf_index in get_inf_indices():
+            for column in range(transition_matrix.shape[1]):
+                value = 1.0 if column == inf_index else 0.0
+                self.assertAlmostEqual(
+                    transition_matrix[inf_index, column], value
+                )
 
 
 if __name__ == "__main__":
