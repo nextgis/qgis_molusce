@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List
 
 import numpy as np
 from numpy import ma as ma
@@ -171,7 +172,7 @@ class Raster:
     def getBandsCount(self):
         return self.bandcount
 
-    def getBandGradation(self, bandNo):
+    def getBandGradation(self, bandNo: int) -> List:
         """Return list of categories of raster's band"""
         if bandNo < len(self.bandgradation):
             res = self.bandgradation[bandNo]

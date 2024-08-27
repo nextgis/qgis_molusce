@@ -3,6 +3,7 @@
 import numpy as np
 from qgis.PyQt.QtCore import *
 
+from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.crosstabs.model import CrossTable
 
 
@@ -22,7 +23,7 @@ class CrossTableManager(QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    def __init__(self, initRaster, finalRaster):
+    def __init__(self, initRaster: Raster, finalRaster: Raster):
         QObject.__init__(self)
 
         if not initRaster.geoDataMatch(finalRaster):
@@ -37,9 +38,9 @@ class CrossTableManager(QObject):
 
         self.pixelArea = initRaster.getPixelArea()
 
-        expand = False
-        if initRaster.bandgradation.get(1) != finalRaster.bandgradation.get(1):
-            expand = True
+        expand = initRaster.getBandGradation(
+            1
+        ) != finalRaster.getBandGradation(1)
 
         self.crosstable = CrossTable(
             initRaster.getBand(1), finalRaster.getBand(1), expand
@@ -96,7 +97,7 @@ class CrossTableManager(QObject):
     def getCrosstable(self):
         return self.crosstable
 
-    def getTransitionMatrix(self):
+    def getTransitionMatrix(self) -> np.ndarray:
         table = self.getCrosstable().getCrosstable()
         s = 1.0 / np.sum(table, axis=1)
         inf_indices = []
