@@ -1577,14 +1577,14 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     .rasterShaderFunction()
                     .colorRampItemList()
                 )
-            unique_values = self.inputs.get("initial").bandgradation.get(1)
-            if self.inputs.get("initial").bandgradation.get(
+            unique_values = self.inputs.get("initial").getBandGradation(1)
+            if self.inputs.get("initial").getBandGradation(
                 1
-            ) != self.inputs.get("final").bandgradation.get(1):
+            ) != self.inputs.get("final").getBandGradation(1):
                 unique_values = list(
                     set(
-                        self.inputs.get("initial").bandgradation.get(1)
-                        + self.inputs.get("final").bandgradation.get(1)
+                        self.inputs.get("initial").getBandGradation(1)
+                        + self.inputs.get("final").getBandGradation(1)
                     )
                 )
                 unique_values.sort()
