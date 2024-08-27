@@ -78,7 +78,9 @@ class Raster:
         self.geodata = None  # Georeferensing information
         self.stat = None  # Initial (before normalizing) statistic (means and stds) of the bands
         self.isNormalazed = None  # Is the bands of the raster normalized? It contains the mode of normalization.
-        self.bandgradation = dict()  # Dict for store lists of bands categories
+        self.__bandgradation = (
+            dict()
+        )  # Dict for store lists of bands categories
         if self.filename:
             self._read()
 
@@ -92,7 +94,7 @@ class Raster:
         self.bands = np.ma.array(bands)
         self.bandcount = len(bands)
         # for i in range(1, self.bandcount+1):
-        #    self.bandgradation[i] = None
+        #    self.__bandgradation[i] = None
         self.geodata = geodata
 
     def denormalize(self):
@@ -174,12 +176,12 @@ class Raster:
 
     def getBandGradation(self, bandNo: int) -> List:
         """Return list of categories of raster's band"""
-        if bandNo < len(self.bandgradation):
-            res = self.bandgradation[bandNo]
+        if bandNo < len(self.__bandgradation):
+            res = self.__bandgradation[bandNo]
         else:
             band = self.getBand(bandNo)
             res = get_gradations(band.compressed())
-            self.bandgradation[bandNo] = res
+            self.__bandgradation[bandNo] = res
         return res
 
     def getBandStat(self, bandNo):
@@ -335,7 +337,7 @@ class Raster:
             nodataValue = r.GetNoDataValue()
             nodataValues = [nodataValue] if nodataValue is not None else []
             r = r.ReadAsArray()
-            # self.bandgradation[i] = None
+            # self.__bandgradation[i] = None
             if self.maskVals is None:
                 userNodataValues = []
             else:
