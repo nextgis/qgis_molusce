@@ -40,6 +40,7 @@ class LR(QObject):
             self.logreg = mlr.MLR()
 
         self.state = None
+        self.categories = None
         self.factors = None
         self.output = None
         self.mode = "All"
@@ -148,7 +149,9 @@ class LR(QObject):
                         [rows, cols], dtype=np.uint8
                     )
 
-            self.sampler = Sampler(state, factors, ns=self.ns)
+            self.sampler = Sampler(
+                state, factors, ns=self.ns, categories=self.categories
+            )
             mask = state.getBand(1).mask.copy()
             if mask.shape == ():
                 mask = np.zeros([rows, cols], dtype=bool)
@@ -240,10 +243,11 @@ class LR(QObject):
         self.maxiter = maxiter
 
     def setTrainingData(self):
-        state, factors, output, mode, samples = (
+        state, factors, output, categories_list, mode, samples = (
             self.state,
             self.factors,
             self.output,
+            self.categories,
             self.mode,
             self.samples,
         )
@@ -256,7 +260,9 @@ class LR(QObject):
         for f in factors:
             f.normalize(mode="mean")
 
-        self.sampler = Sampler(state, factors, output, ns=self.ns)
+        self.sampler = Sampler(
+            state, factors, output, ns=self.ns, categories=categories_list
+        )
         self.__propagateSamplerSignals()
         self.sampler.setTrainingData(
             state, output, shuffle=False, mode=mode, samples=samples
@@ -277,6 +283,9 @@ class LR(QObject):
 
     def setState(self, state):
         self.state = state
+
+    def setCategoriesList(self, categories):
+        self.categories = categories
 
     def setFactors(self, factors):
         self.factors = factors
