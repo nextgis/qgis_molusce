@@ -1,12 +1,12 @@
 import os.path
-from typing import Optional
+from typing import Optional, List
 
 import numpy as np
 from numpy import ma as ma
 from osgeo import ogr, osr
 from qgis.PyQt.QtCore import *
 
-from molusce.algorithms.dataprovider import ProviderError
+from molusce.algorithms.dataprovider import ProviderError, Raster
 
 
 class SamplerError(Exception):
@@ -51,17 +51,24 @@ class Sampler(QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    data: Optional[np.ndarray]
-
-    def __init__(self, state, factors, output=None, ns=0):
+    def __init__(
+        self,
+        state: Raster,
+        factors: List[Raster],
+        output: Raster = None,
+        ns=0,
+        categories: List[float] = None,
+    ):
         """@param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param output           Raster that contains states (categories) to predict.
         @param ns               Neighbourhood size.
+        @paran categories       Complete list of classes of both input rasters.
         """
         QObject.__init__(self)
 
-        self.ns = ns  # Neighbourhood size
+        # Neighbourhood size
+        self.ns = ns
 
         self.factorsGeoData = state.getGeodata()
         for _r in factors:
@@ -72,14 +79,19 @@ class Sampler(QObject):
                     "Geometries of the inputs and output rasters are different!"
                 )
 
-        self.stateCategories = state.getBandGradation(
-            1
-        )  # Categories of state raster
-        self.categoriesCount = len(
-            self.stateCategories
-        )  # Count of the categories
+        # Categories of state raster
+        self.stateCategories = state.getBandGradation(1)
+        if categories is not None:
+            self.stateCategories = list(
+                set(state.getBandGradation(1) + categories)
+            )
+            self.stateCategories.sort()
 
-        self.outputVecLen = 1  # Len of output vector
+        # Count of the categories
+        self.categoriesCount = len(self.stateCategories)
+
+        # Len of output vector
+        self.outputVecLen = 1
         # Len of the vector of input states:
         self.stateVecLen = (
             self.categoriesCount - 1
@@ -89,7 +101,8 @@ class Sampler(QObject):
         self.__calcCatVector()
 
         self.factorCount = len(factors)
-        self.factorVectLen = 0  # Length of vector of the factor's pixels
+        # Length of vector of the factor's pixels
+        self.factorVectLen = 0
         self.factors = []
         for raster in factors:
             self.factorVectLen = (
@@ -99,10 +112,10 @@ class Sampler(QObject):
                 self.factors.append(raster.getBand(bandNum + 1))
         self.factors = np.ma.array(self.factors, dtype=float)
 
-        self.proj = self.factorsGeoData[
-            "proj"
-        ]  # Projection of the data coordinates
-        self.data = None  # Sample data
+        # Projection of the data coordinates
+        self.proj = self.factorsGeoData["proj"]
+        # Sample data
+        self.data = None
 
     def __calcCatVector(self):
         """Split state category value into set of dummy variables and save them in a dictionary.
