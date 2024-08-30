@@ -794,11 +794,24 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
+        categories_list = None
+        if self.inputs["initial"].getBandGradation(1) != self.inputs[
+            "final"
+        ].getBandGradation(1):
+            categories_list = list(
+                set(
+                    self.inputs["initial"].getBandGradation(1)
+                    + self.inputs["final"].getBandGradation(1)
+                )
+            )
+            categories_list.sort()
+
         self.simulator = Simulator(
             self.inputs["final"],
             list(self.inputs["factors"].values()),
             self.inputs["model"],
             self.inputs["crosstab"],
+            categories=categories_list,
         )
 
         self.simulator.setIterationCount(self.spnIterations.value())

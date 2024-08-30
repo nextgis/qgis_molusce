@@ -78,9 +78,8 @@ class Raster:
         self.geodata = None  # Georeferensing information
         self.stat = None  # Initial (before normalizing) statistic (means and stds) of the bands
         self.isNormalazed = None  # Is the bands of the raster normalized? It contains the mode of normalization.
-        self.__bandgradation = (
-            dict()
-        )  # Dict for store lists of bands categories
+        # Dict for store lists of bands categories
+        self.__bandgradation = dict()
         if self.filename:
             self._read()
 
