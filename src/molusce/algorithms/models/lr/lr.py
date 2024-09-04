@@ -1,6 +1,8 @@
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
+from typing import Optional
+
 import numpy as np
 from qgis.PyQt.QtCore import *
 
@@ -31,7 +33,12 @@ class LR(QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    def __init__(self, ns=0, logreg=None):
+    logreg: mlr.MLR
+    sampler: Optional[Sampler]
+    data: Optional[np.ndarray]
+    maxiter: int
+
+    def __init__(self, ns=0, logreg: Optional[mlr.MLR] = None) -> None:
         QObject.__init__(self)
 
         if logreg:
@@ -239,7 +246,7 @@ class LR(QObject):
     def saveSamples(self, fileName):
         self.sampler.saveSamples(fileName)
 
-    def setMaxIter(self, maxiter):
+    def setMaxIter(self, maxiter: int) -> None:
         self.maxiter = maxiter
 
     def setTrainingData(self):
@@ -269,9 +276,11 @@ class LR(QObject):
         )
 
         self.data = self.sampler.data
+        assert self.data is not None
         self.catlist = np.unique(self.data["output"])
 
     def train(self):
+        assert self.data is not None
         X = np.column_stack((self.data["state"], self.data["factors"]))
         Y = self.data["output"]
         self.labelCodes = np.unique(Y)

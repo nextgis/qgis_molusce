@@ -403,13 +403,28 @@ class MlpManager(QObject):
         factorVectLen = self.sampler.factorVectLen
         size = len(self.sampler.data)
 
+        state_params = (
+            ("state", float, stateVecLen)
+            if stateVecLen > 1
+            else ("state", float)
+        )
+        factors_params = (
+            ("factors", float, factorVectLen)
+            if factorVectLen > 1
+            else ("factors", float)
+        )
+        output_params = (
+            ("output", float, outputVecLen)
+            if outputVecLen > 1
+            else ("output", float)
+        )
         self.data = np.zeros(
             size,
             dtype=[
                 ("coords", float, 2),
-                ("state", float, stateVecLen),
-                ("factors", float, factorVectLen),
-                ("output", float, outputVecLen),
+                state_params,
+                factors_params,
+                output_params,
             ],
         )
         self.data["coords"] = self.sampler.data["coords"]

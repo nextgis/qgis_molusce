@@ -1,8 +1,9 @@
 import unittest
 
 import numpy as np
-from molusce.algorithms.models.crosstabs.model import CrossTable
 from numpy import ma as ma
+
+from molusce.algorithms.models.crosstabs.model import CrossTable
 
 
 class TestCrossTable(unittest.TestCase):
