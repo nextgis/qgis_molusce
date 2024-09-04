@@ -90,7 +90,7 @@ def reclass(X, bins):
     return f(X)
 
 
-def sizes_equal(X, Y):
+def sizes_equal(X: np.ndarray, Y: np.ndarray) -> bool:
     """Define equality dimensions of the two rasters
     @param X    First raster
     @param Y    Second raster

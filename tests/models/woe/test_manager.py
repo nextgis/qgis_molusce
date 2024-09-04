@@ -2,12 +2,13 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from numpy import ma as ma
+from numpy.testing import assert_array_equal
+
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 from molusce.algorithms.models.woe.manager import WoeManager
 from molusce.algorithms.models.woe.model import woe
-from numpy import ma as ma
-from numpy.testing import assert_array_equal
 
 
 class TestWoEManager(unittest.TestCase):

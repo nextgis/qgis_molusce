@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import math
+from typing import Optional
 
 import numpy as np
 from numpy import ma as ma
@@ -24,7 +25,14 @@ class DependenceCoef(QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    def __init__(self, X, Y, expand=False):
+    X: np.ndarray
+    Y: np.ndarray
+    expand: bool
+    crosstable: Optional[CrossTable]
+
+    def __init__(
+        self, X: np.ndarray, Y: np.ndarray, expand: bool = False
+    ) -> None:
         """@param band1    First band (numpy masked array)
         @param band2    Second band (numpy masked array)
         @param expand   If the param is True, use union of categories of the bands and compute NxN crosstable
@@ -37,12 +45,12 @@ class DependenceCoef(QObject):
 
         self.crosstable = None
 
-    def getCrosstable(self):
+    def getCrosstable(self) -> Optional[CrossTable]:
         if self.crosstable is None:
             self.calculateCrosstable()
         return self.crosstable
 
-    def calculateCrosstable(self):
+    def calculateCrosstable(self) -> None:
         try:
             self.rangeChanged.emit("Initialization...", 2)
             self.updateProgress.emit()

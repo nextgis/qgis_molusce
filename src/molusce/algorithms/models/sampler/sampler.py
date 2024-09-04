@@ -1,4 +1,5 @@
 import os.path
+from typing import Optional
 
 import numpy as np
 from numpy import ma as ma
@@ -49,6 +50,8 @@ class Sampler(QObject):
     samplingFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
+
+    data: Optional[np.ndarray]
 
     def __init__(self, state, factors, output=None, ns=0):
         """@param state            Raster of the current state (categories) values.
@@ -181,13 +184,28 @@ class Sampler(QObject):
 
     def _getSample(self, state, output, row, col):
         """Get one sample from (row,col) pixel. See params in setTrainingData."""
+        state_params = (
+            ("state", float, self.stateVecLen)
+            if self.stateVecLen > 1
+            else ("state", float)
+        )
+        factors_params = (
+            ("factors", float, self.factorVectLen)
+            if self.factorVectLen > 1
+            else ("factors", float)
+        )
+        output_params = (
+            ("output", float, self.outputVecLen)
+            if self.outputVecLen > 1
+            else ("output", float)
+        )
         data = np.zeros(
             1,
             dtype=[
                 ("coords", float, 2),
-                ("state", float, self.stateVecLen),
-                ("factors", float, self.factorVectLen),
-                ("output", float, self.outputVecLen),
+                state_params,
+                factors_params,
+                output_params,
             ],
         )
         try:
@@ -322,13 +340,28 @@ class Sampler(QObject):
                 samples = rows * cols - nulls
 
             # Array for samples
+            state_params = (
+                ("state", float, self.stateVecLen)
+                if self.stateVecLen > 1
+                else ("state", float)
+            )
+            factors_params = (
+                ("factors", float, self.factorVectLen)
+                if self.factorVectLen > 1
+                else ("factors", float)
+            )
+            output_params = (
+                ("output", float, self.outputVecLen)
+                if self.outputVecLen > 1
+                else ("output", float)
+            )
             self.data = np.zeros(
                 samples,
                 dtype=[
                     ("coords", float, 2),
-                    ("state", float, self.stateVecLen),
-                    ("factors", float, self.factorVectLen),
-                    ("output", float, self.outputVecLen),
+                    state_params,
+                    factors_params,
+                    output_params,
                 ],
             )
 

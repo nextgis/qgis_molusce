@@ -2,9 +2,10 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from numpy import ma as ma
+
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.errorbudget.ebmodel import EBudget, weightedSum
-from numpy import ma as ma
 
 
 class TestModel(unittest.TestCase):

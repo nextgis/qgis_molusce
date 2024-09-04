@@ -2,8 +2,9 @@ import math
 import unittest
 
 import numpy as np
-from molusce.algorithms.models.correlation.model import DependenceCoef
 from numpy import ma as ma
+
+from molusce.algorithms.models.correlation.model import DependenceCoef
 
 
 class TestModel(unittest.TestCase):

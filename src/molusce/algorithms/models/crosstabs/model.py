@@ -26,7 +26,9 @@ class CrossTable(QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    def __init__(self, band1, band2, expand=False):
+    def __init__(
+        self, band1: np.ndarray, band2: np.ndarray, expand: bool = False
+    ) -> None:
         """@param band1    First band (numpy masked array)
         @param band2    Second band (numpy masked array)
         @param expand   If the param is True, use union of categories of the bands and compute NxN crosstable

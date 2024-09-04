@@ -2,13 +2,14 @@ import math
 import unittest
 
 import numpy as np
+from numpy import ma as ma
+
 from molusce.algorithms.models.woe.model import (
     EPSILON,
     WoeError,
     _binary_woe,
     woe,
 )
-from numpy import ma as ma
 
 
 class TestModel(unittest.TestCase):
