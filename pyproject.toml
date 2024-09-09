@@ -18,6 +18,7 @@ resource-files = ["src/molusce/resources.qrc"]
 [tool.qgspb.translation]
 noobsolete = true
 source-files = ["src/molusce/**/*.py", "src/molusce/**/*.ui"]
+exclude-files = ["src/molusce/ui/*.py"]
 ts-files = ["src/molusce/i18n/*.ts"]
 
 [tool.pyright]

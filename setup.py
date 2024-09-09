@@ -30,6 +30,13 @@ class QgisPluginBuilder:
         if ts_settings.get("noobsolete", False):
             command_args.append("-noobsolete")
 
+        exclude_patterns = ts_settings.get("exclude-files", [])
+        exclude_paths = [
+            exclude_path
+            for exclude_pattern in exclude_patterns
+            for exclude_path in Path(__file__).parent.glob(exclude_pattern)
+        ]
+
         if ts_settings.get("project-file") is not None:
             command_args.append(
                 str(Path(__file__).parent / ts_settings.get("project-file"))
@@ -44,6 +51,7 @@ class QgisPluginBuilder:
                 str(source_path)
                 for source_pattern in source_files
                 for source_path in Path(__file__).parent.glob(source_pattern)
+                if source_path not in exclude_paths
             )
             command_args.append("-ts")
             command_args.extend(
