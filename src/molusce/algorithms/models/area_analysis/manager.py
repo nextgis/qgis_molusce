@@ -60,9 +60,11 @@ class AreaAnalyst(QObject):
         if second is not None:
             for cat in self.categoriesSecond:
                 if cat not in self.categories:
-                    raise AreaAnalizerError(
-                        "List of categories of the first raster doesn't contains a category of the second raster!"
+                    self.categories = list(
+                        set(self.categories + self.categoriesSecond)
                     )
+                    self.categories.sort()
+                    self.categoriesSecond = self.categories
 
         self.changeMap = None
         self.initRaster = None
