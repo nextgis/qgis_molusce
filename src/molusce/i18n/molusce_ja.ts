@@ -52,12 +52,12 @@
 <context>
     <name>AboutDialogBase</name>
     <message>
-        <location filename="../ui/ui_aboutdialogbase.py" line="49"/>
+        <location filename="../ui/aboutdialogbase.ui" line="14"/>
         <source>About {plugin_name}</source>
         <translation>{plugin_name}について</translation>
     </message>
     <message>
-        <location filename="../ui/ui_aboutdialogbase.py" line="50"/>
+        <location filename="../ui/aboutdialogbase.ui" line="27"/>
         <source>&lt;p align=&quot;center&quot;&gt;{plugin_name}&lt;/p&gt;</source>
         <translation>&lt;p align=&quot;center&quot;&gt;{plugin_name}&lt;/p&gt;</translation>
     </message>
@@ -83,17 +83,17 @@
 <context>
     <name>CrossTable</name>
     <message>
-        <location filename="../algorithms/models/crosstabs/model.py" line="62"/>
+        <location filename="../algorithms/models/crosstabs/model.py" line="64"/>
         <source>Initializing Crosstable %p%</source>
         <translation>クラス別統計表の初期化 %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/crosstabs/model.py" line="72"/>
+        <location filename="../algorithms/models/crosstabs/model.py" line="74"/>
         <source>Computing Crosstable %p%</source>
         <translation>クラス別統計表の計算 %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/crosstabs/model.py" line="90"/>
+        <location filename="../algorithms/models/crosstabs/model.py" line="92"/>
         <source>An unknown error occurs during calculation of cross table</source>
         <translation>クラス統計テーブルの計算中に不明なエラーが発生しました</translation>
     </message>
@@ -114,12 +114,12 @@
 <context>
     <name>DependenceCoef</name>
     <message>
-        <location filename="../algorithms/models/correlation/model.py" line="61"/>
+        <location filename="../algorithms/models/correlation/model.py" line="69"/>
         <source>An unknown error occurs during cross table calculation</source>
         <translation>クラス統計テーブルの計算中に不明なエラーが発生しました</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/correlation/model.py" line="54"/>
+        <location filename="../algorithms/models/correlation/model.py" line="62"/>
         <source>The system is out of memory during cross table calculation</source>
         <translation>クラス別の統計テーブルを計算するアルゴリズムが、割り当てられたメモリのオーバーフローを引き起こした</translation>
     </message>
@@ -145,32 +145,32 @@
 <context>
     <name>LR</name>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="125"/>
+        <location filename="../algorithms/models/lr/lr.py" line="132"/>
         <source>Initialize model %p%</source>
         <translation>モデルの初期化l %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="156"/>
+        <location filename="../algorithms/models/lr/lr.py" line="163"/>
         <source>Prediction %p%</source>
         <translation>予測 %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="207"/>
+        <location filename="../algorithms/models/lr/lr.py" line="214"/>
         <source>An unknown error occurs during LR prediction</source>
         <translation>LR予測中に未知のエラーが発生</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="202"/>
+        <location filename="../algorithms/models/lr/lr.py" line="209"/>
         <source>The system is out of memory during LR prediction</source>
         <translation>LR予測中にシステムがメモリ不足になった</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="298"/>
+        <location filename="../algorithms/models/lr/lr.py" line="307"/>
         <source>The system is out of memory during LR training</source>
         <translation>LRトレーニング中にシステムがメモリ不足になる</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="303"/>
+        <location filename="../algorithms/models/lr/lr.py" line="312"/>
         <source>An unknown error occurs during LR training</source>
         <translation>LRトレーニング中に未知のエラーが発生</translation>
     </message>
@@ -337,7 +337,7 @@
         <translation>ANN予測中に未知のエラーが発生</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="491"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="506"/>
         <source>Train model %p%</source>
         <translation>鉄道模型 %p%</translation>
     </message>
@@ -347,12 +347,12 @@
         <translation>ANN予測中にシステムがメモリ不足になった</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="522"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="537"/>
         <source>The system is out of memory during ANN training</source>
         <translation>ANNのトレーニング中にシステムがメモリ不足になった</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="527"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="542"/>
         <source>An unknown error occurs during ANN training</source>
         <translation>ANN学習中に未知のエラーが発生</translation>
     </message>
@@ -737,17 +737,17 @@
     <message>
         <location filename="../moluscedialog.py" line="452"/>
         <source>Geometries of the initial raster and raster &apos;{}&apos; are different!</source>
-        <translation>初期ラスタとラスタ&apos;{}&apos;のジオメトリが異なる！</translation>
+        <translation>初期ラスタとラスタ'{}'のジオメトリが異なる！</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1135"/>
         <source>Can&apos;t read file: &apos;{}&apos;</source>
-        <translation>ファイルを読み込めません： &apos;{}&apos;</translation>
+        <translation>ファイルを読み込めません： '{}'</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1786"/>
         <source>Can&apos;t save file: &apos;{}&apos;</source>
-        <translation>ファイルを保存できません： &apos;{}&apos;</translation>
+        <translation>ファイルを保存できません： '{}'</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1801"/>
@@ -769,7 +769,7 @@
     <message>
         <location filename="../moluscedialog.py" line="1058"/>
         <source>Kappa is not applicable to the file: &apos;{}&apos; because it contains continuous value</source>
-        <translation>Kappaはファイルには適用されない： &apos;{}&apos; は連続的な値を含んでいるため適用できない</translation>
+        <translation>Kappaはファイルには適用されない： '{}' は連続的な値を含んでいるため適用できない</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1751"/>
@@ -854,7 +854,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="1770"/>
         <source>File &apos;{}&apos; is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again</source>
-        <translation>ファイル &apos;{}&apos; が QGIS プロジェクトで使用されています。ファイルを上書きすることはできませんので、別のファイル名を指定して再試行してください</translation>
+        <translation>ファイル '{}' が QGIS プロジェクトで使用されています。ファイルを上書きすることはできませんので、別のファイル名を指定して再試行してください</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="642"/>
@@ -874,7 +874,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="742"/>
         <source>Can&apos;t save file in the specified path &apos;{}&apos;. Please specify output path correctly and try again</source>
-        <translation>指定されたパス &apos;{}&apos; にファイルを保存できません。出力パスを正しく指定して再試行してください</translation>
+        <translation>指定されたパス '{}' にファイルを保存できません。出力パスを正しく指定して再試行してください</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1173"/>
@@ -904,268 +904,268 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="761"/>
         <source>Can&apos;t save files with the same output path &apos;{}&apos;. Please specify different output paths and try again</source>
-        <translation>同じ出力パス &apos;{}&apos; を持つファイルを保存できません。異なる出力パスを指定して再試行してください</translation>
+        <translation>同じ出力パス '{}' を持つファイルを保存できません。異なる出力パスを指定して再試行してください</translation>
     </message>
 </context>
 <context>
     <name>MolusceDialogBase</name>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="465"/>
+        <location filename="../ui/moluscedialogbase.ui" line="14"/>
         <source>MOLUSCE</source>
         <translation>MOLUSCE</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="473"/>
+        <location filename="../ui/moluscedialogbase.ui" line="27"/>
         <source>Inputs</source>
         <translation>インプット</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="466"/>
+        <location filename="../ui/moluscedialogbase.ui" line="53"/>
         <source>Initial &gt;&gt;</source>
         <translation>時期1 &gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="467"/>
+        <location filename="../ui/moluscedialogbase.ui" line="63"/>
         <source>Final &gt;&gt;</source>
         <translation>時期2 &gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="468"/>
+        <location filename="../ui/moluscedialogbase.ui" line="105"/>
         <source>&lt;&lt; Remove all</source>
         <translation>&lt;&lt; 全て削除</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="469"/>
+        <location filename="../ui/moluscedialogbase.ui" line="112"/>
         <source>&lt;&lt; Remove</source>
         <translation>&lt;&lt; 削除</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="470"/>
+        <location filename="../ui/moluscedialogbase.ui" line="119"/>
         <source>Add &gt;&gt;</source>
         <translation>追加 &gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="471"/>
+        <location filename="../ui/moluscedialogbase.ui" line="126"/>
         <source>Spatial variables</source>
         <translation>空間変数</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="472"/>
+        <location filename="../ui/moluscedialogbase.ui" line="135"/>
         <source>Check geometry</source>
         <translation>ジオメトリの確認</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="480"/>
+        <location filename="../ui/moluscedialogbase.ui" line="147"/>
         <source>Evaluating correlation</source>
         <translation>相関性の評価</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="486"/>
+        <location filename="../ui/moluscedialogbase.ui" line="274"/>
         <source>Method</source>
         <translation>方法</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="475"/>
+        <location filename="../ui/moluscedialogbase.ui" line="183"/>
         <source>First Raster</source>
         <translation>１次ラスタデータ</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="476"/>
+        <location filename="../ui/moluscedialogbase.ui" line="190"/>
         <source>Second Raster</source>
         <translation>２次ラスタデータ</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="477"/>
+        <location filename="../ui/moluscedialogbase.ui" line="197"/>
         <source>Result</source>
         <translation>結果</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="478"/>
+        <location filename="../ui/moluscedialogbase.ui" line="207"/>
         <source>Check</source>
         <translation>確認</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="479"/>
+        <location filename="../ui/moluscedialogbase.ui" line="214"/>
         <source>Check all rasters</source>
         <translation>全てのラスターデータの確認</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="485"/>
+        <location filename="../ui/moluscedialogbase.ui" line="224"/>
         <source>Area Changes</source>
         <translation>面積変化</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="481"/>
+        <location filename="../ui/moluscedialogbase.ui" line="230"/>
         <source>Class statistics</source>
         <translation>クラス統計</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="482"/>
+        <location filename="../ui/moluscedialogbase.ui" line="237"/>
         <source>Transition matrix</source>
         <translation>遷移行列</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="483"/>
+        <location filename="../ui/moluscedialogbase.ui" line="244"/>
         <source>Update tables</source>
         <translation>テーブルを更新</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="484"/>
+        <location filename="../ui/moluscedialogbase.ui" line="251"/>
         <source>Create changes map</source>
         <translation>変化図を作成</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="492"/>
+        <location filename="../ui/moluscedialogbase.ui" line="268"/>
         <source>Transition Potential Modelling</source>
         <translation>遷移ポテンシャルのモデリング</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="487"/>
+        <location filename="../ui/moluscedialogbase.ui" line="281"/>
         <source>Define Samples</source>
         <translation>サンプルの定義</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="488"/>
+        <location filename="../ui/moluscedialogbase.ui" line="302"/>
         <source>Mode</source>
         <translation>モード</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="489"/>
+        <location filename="../ui/moluscedialogbase.ui" line="312"/>
         <source>Number of samples</source>
         <translation>サンプル数</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="490"/>
+        <location filename="../ui/moluscedialogbase.ui" line="329"/>
         <source>Save Samples...</source>
         <translation>サンプルの保存...</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="491"/>
+        <location filename="../ui/moluscedialogbase.ui" line="336"/>
         <source>Add to canvas</source>
         <translation>背景へ追加します</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="504"/>
+        <location filename="../ui/moluscedialogbase.ui" line="389"/>
         <source>Cellular Automata Simulation</source>
         <translation>セルラーオートマタ・シミュレーション</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="510"/>
+        <location filename="../ui/moluscedialogbase.ui" line="708"/>
         <source>Browse...</source>
         <translation>開く...</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="502"/>
+        <location filename="../ui/moluscedialogbase.ui" line="557"/>
         <source>Certainty function</source>
         <translation>予報の信頼度マップ</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="500"/>
+        <location filename="../ui/moluscedialogbase.ui" line="537"/>
         <source>Simulation result</source>
         <translation>シミュレーション結果</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="499"/>
+        <location filename="../ui/moluscedialogbase.ui" line="523"/>
         <source>Number of simulation iterations</source>
         <translation>シミュレーションの反復回数</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="496"/>
+        <location filename="../ui/moluscedialogbase.ui" line="442"/>
         <source>potential_</source>
         <translation>potential_</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="503"/>
+        <location filename="../ui/moluscedialogbase.ui" line="603"/>
         <source>Start</source>
         <translation>スタート</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="519"/>
+        <location filename="../ui/moluscedialogbase.ui" line="626"/>
         <source>Validation</source>
         <translation>検証</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="505"/>
+        <location filename="../ui/moluscedialogbase.ui" line="666"/>
         <source>Create...</source>
         <translation>作成...</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="506"/>
+        <location filename="../ui/moluscedialogbase.ui" line="673"/>
         <source>Validation Map</source>
         <translation>検証図</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="507"/>
+        <location filename="../ui/moluscedialogbase.ui" line="680"/>
         <source>Simulated Map</source>
         <translation>シミュレーション図</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="509"/>
+        <location filename="../ui/moluscedialogbase.ui" line="694"/>
         <source>Reference Map</source>
         <translation>参照図</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="511"/>
+        <location filename="../ui/moluscedialogbase.ui" line="735"/>
         <source>Number of validation iterations</source>
         <translation>検証反復数</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="512"/>
+        <location filename="../ui/moluscedialogbase.ui" line="742"/>
         <source>Check persistent classes</source>
         <translation>持続的なクラスの確認</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="513"/>
+        <location filename="../ui/moluscedialogbase.ui" line="768"/>
         <source>% of Correctness</source>
         <translation>精度（%）</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="517"/>
+        <location filename="../ui/moluscedialogbase.ui" line="840"/>
         <source>Calculate kappa</source>
         <translation>Kappaを計算</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="518"/>
+        <location filename="../ui/moluscedialogbase.ui" line="847"/>
         <source>Start validation</source>
         <translation>検証する</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="520"/>
+        <location filename="../ui/moluscedialogbase.ui" line="857"/>
         <source>Messages</source>
         <translation>メッセージ</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="514"/>
+        <location filename="../ui/moluscedialogbase.ui" line="794"/>
         <source>Kappa (overall)</source>
         <translation>Kappa （総合）</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="515"/>
+        <location filename="../ui/moluscedialogbase.ui" line="820"/>
         <source>Kappa (histogram)</source>
         <translation>Kappa （ヒストグラム）</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="516"/>
+        <location filename="../ui/moluscedialogbase.ui" line="833"/>
         <source>Kappa (location)</source>
         <translation>Kappa （場所）</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="493"/>
+        <location filename="../ui/moluscedialogbase.ui" line="401"/>
         <source>Transition potential maps</source>
         <translation>遷移ポテンシャルマップ</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="494"/>
+        <location filename="../ui/moluscedialogbase.ui" line="428"/>
         <source>Directory path</source>
         <translation>ディレクトリパス</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="495"/>
+        <location filename="../ui/moluscedialogbase.ui" line="435"/>
         <source>Filename prefix</source>
         <translation>ファイル名のプレフィックス</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="497"/>
+        <location filename="../ui/moluscedialogbase.ui" line="467"/>
         <source>Select Directory...</source>
         <translation>ディレクトリを選択...</translation>
     </message>
@@ -1241,27 +1241,27 @@ medium quantity inform.</source>
 <context>
     <name>MultiCriteriaEvaluationWidgetBase</name>
     <message>
-        <location filename="../ui/ui_multicriteriaevaluationwidgetbase.py" line="58"/>
+        <location filename="../ui/multicriteriaevaluationwidgetbase.ui" line="26"/>
         <source>From class</source>
         <translation>クラスから</translation>
     </message>
     <message>
-        <location filename="../ui/ui_multicriteriaevaluationwidgetbase.py" line="59"/>
+        <location filename="../ui/multicriteriaevaluationwidgetbase.ui" line="36"/>
         <source>To class</source>
         <translation>クラスへ</translation>
     </message>
     <message>
-        <location filename="../ui/ui_multicriteriaevaluationwidgetbase.py" line="60"/>
+        <location filename="../ui/multicriteriaevaluationwidgetbase.ui" line="46"/>
         <source>Train model</source>
         <translation>モデルをトレーニング</translation>
     </message>
     <message>
-        <location filename="../ui/ui_multicriteriaevaluationwidgetbase.py" line="61"/>
+        <location filename="../ui/multicriteriaevaluationwidgetbase.ui" line="53"/>
         <source>Pairwise Comparison Matrix</source>
         <translation>一対比較行列</translation>
     </message>
     <message>
-        <location filename="../ui/ui_multicriteriaevaluationwidgetbase.py" line="62"/>
+        <location filename="../ui/multicriteriaevaluationwidgetbase.ui" line="60"/>
         <source>Weights Matrix</source>
         <translation>重み行列</translation>
     </message>
@@ -1342,57 +1342,57 @@ medium quantity inform.</source>
 <context>
     <name>NeuralNetworkWidgetBase</name>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="110"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="42"/>
         <source>Momentum</source>
         <translation>運動量</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="111"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="49"/>
         <source>Learning Rate</source>
         <translation>学習率</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="112"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="56"/>
         <source>Neighbourhood</source>
         <translation>近傍</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="113"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="63"/>
         <source>Min Validation Overall Error</source>
         <translation>全体エラーの最少検証</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="114"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="70"/>
         <source>Hidden Layers</source>
         <translation>非表示レイヤー</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="115"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="93"/>
         <source> px</source>
         <translation> ピクセル</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="116"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="125"/>
         <source>Maximum Iterations</source>
         <translation>最大反復回数</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="117"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="161"/>
         <source>Current Validation Kappa</source>
         <translation>現行のKappa検証</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="118"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="168"/>
         <source>Δ Overall Accuracy</source>
         <translation>Δ 全体精度</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="120"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="182"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="119"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="175"/>
         <source>Train neural network</source>
         <translation>ニューラルネットワークのトレーニング</translation>
     </message>
@@ -1400,17 +1400,17 @@ medium quantity inform.</source>
 <context>
     <name>Sampler</name>
     <message>
-        <location filename="../algorithms/models/sampler/sampler.py" line="374"/>
+        <location filename="../algorithms/models/sampler/sampler.py" line="407"/>
         <source>Sampling...</source>
         <translation>サンプリング...</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/sampler/sampler.py" line="405"/>
+        <location filename="../algorithms/models/sampler/sampler.py" line="438"/>
         <source>An unknown error occurs during sampling</source>
         <translation>サンプリング中に不明なエラーが発生</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/sampler/sampler.py" line="400"/>
+        <location filename="../algorithms/models/sampler/sampler.py" line="433"/>
         <source>The system is out of memory during sampling</source>
         <translation>サンプリング中にシステムがメモリ不足になった</translation>
     </message>
@@ -1570,14 +1570,14 @@ medium quantity inform.</source>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="293"/>
-        <source>	 factor: {} 
+        <source><byte value="x9"/> factor: {} 
 </source>
         <translation>	 因子: {} 
 </translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="296"/>
-        <source>		 Weights of band {}: {} 
+        <source><byte value="x9"/><byte value="x9"/> Weights of band {}: {} 
 </source>
         <translation>		 バンドの重さ {}: {} 
 </translation>
