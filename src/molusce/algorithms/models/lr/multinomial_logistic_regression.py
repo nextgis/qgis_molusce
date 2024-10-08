@@ -7,6 +7,8 @@ The code based on https://gist.github.com/daien/1989208 written by  Adrien Gaido
 
 """
 
+from typing import Optional
+
 import numpy as np
 from scipy.optimize import fmin_bfgs
 from scipy.stats import norm
@@ -210,7 +212,7 @@ class MLR:
             return None
         return self.W_[1:, :]
 
-    def fit(self, X, y, maxiter=None):
+    def fit(self, X: np.ndarray, y: np.ndarray, maxiter: Optional[int] = None):
         """Fit the model
 
         Parameters

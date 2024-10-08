@@ -52,12 +52,12 @@
 <context>
     <name>AboutDialogBase</name>
     <message>
-        <location filename="../ui/ui_aboutdialogbase.py" line="49"/>
+        <location filename="../ui/aboutdialogbase.ui" line="14"/>
         <source>About {plugin_name}</source>
         <translation>Riguardo {plugin_name}</translation>
     </message>
     <message>
-        <location filename="../ui/ui_aboutdialogbase.py" line="50"/>
+        <location filename="../ui/aboutdialogbase.ui" line="27"/>
         <source>&lt;p align=&quot;center&quot;&gt;{plugin_name}&lt;/p&gt;</source>
         <translation>&lt;p align=&quot;center&quot;&gt;{plugin_name}&lt;/p&gt;</translation>
     </message>
@@ -77,23 +77,23 @@
     <message>
         <location filename="../algorithms/models/area_analysis/manager.py" line="142"/>
         <source>The system is out of memory during change map creating</source>
-        <translation>L&apos;algoritmo per la creazione di una mappa delle modifiche ha causato l&apos;overflow della memoria allocata</translation>
+        <translation>L'algoritmo per la creazione di una mappa delle modifiche ha causato l'overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
     <name>CrossTable</name>
     <message>
-        <location filename="../algorithms/models/crosstabs/model.py" line="62"/>
+        <location filename="../algorithms/models/crosstabs/model.py" line="64"/>
         <source>Initializing Crosstable %p%</source>
         <translation>Inizializzazione della tabella delle statistiche per classe %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/crosstabs/model.py" line="72"/>
+        <location filename="../algorithms/models/crosstabs/model.py" line="74"/>
         <source>Computing Crosstable %p%</source>
         <translation>Calcolo della tabella delle statistiche per classe %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/crosstabs/model.py" line="90"/>
+        <location filename="../algorithms/models/crosstabs/model.py" line="92"/>
         <source>An unknown error occurs during calculation of cross table</source>
         <translation>Si è verificato un errore sconosciuto durante il calcolo della tabella delle statistiche per classe</translation>
     </message>
@@ -108,20 +108,20 @@
     <message>
         <location filename="../algorithms/models/crosstabs/manager.py" line="78"/>
         <source>The system is out of memory during calculation of cross table</source>
-        <translation>L&apos;algoritmo per calcolare la tabella delle statistiche per classe ha portato a un overflow della memoria allocata</translation>
+        <translation>L'algoritmo per calcolare la tabella delle statistiche per classe ha portato a un overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
     <name>DependenceCoef</name>
     <message>
-        <location filename="../algorithms/models/correlation/model.py" line="61"/>
+        <location filename="../algorithms/models/correlation/model.py" line="69"/>
         <source>An unknown error occurs during cross table calculation</source>
         <translation>Si è verificato un errore sconosciuto durante il calcolo della tabella delle statistiche per classe</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/correlation/model.py" line="54"/>
+        <location filename="../algorithms/models/correlation/model.py" line="62"/>
         <source>The system is out of memory during cross table calculation</source>
-        <translation>L&apos;algoritmo per calcolare la tabella delle statistiche per classe ha portato a un overflow della memoria allocata</translation>
+        <translation>L'algoritmo per calcolare la tabella delle statistiche per classe ha portato a un overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
@@ -139,38 +139,38 @@
     <message>
         <location filename="../algorithms/models/errorbudget/ebmodel.py" line="110"/>
         <source>An iteration of validation %p%</source>
-        <translation>Un&apos;iterazione della validazione %p%</translation>
+        <translation>Un'iterazione della validazione %p%</translation>
     </message>
 </context>
 <context>
     <name>LR</name>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="125"/>
+        <location filename="../algorithms/models/lr/lr.py" line="132"/>
         <source>Initialize model %p%</source>
         <translation>Inizializzazione del modello %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="156"/>
+        <location filename="../algorithms/models/lr/lr.py" line="163"/>
         <source>Prediction %p%</source>
         <translation>Previsione %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="207"/>
+        <location filename="../algorithms/models/lr/lr.py" line="214"/>
         <source>An unknown error occurs during LR prediction</source>
         <translation>Nel processo di costruzione della previsione con il metodo della regressione logistica, si è verificato un errore sconosciuto</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="202"/>
+        <location filename="../algorithms/models/lr/lr.py" line="209"/>
         <source>The system is out of memory during LR prediction</source>
-        <translation>L&apos;algoritmo di previsione della regressione logistica ha portato a un overflow della memoria allocata</translation>
+        <translation>L'algoritmo di previsione della regressione logistica ha portato a un overflow della memoria allocata</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="298"/>
+        <location filename="../algorithms/models/lr/lr.py" line="307"/>
         <source>The system is out of memory during LR training</source>
-        <translation>L&apos;algoritmo di addestramento per il modello di regressione logistica ha causato un overflow della memoria allocata</translation>
+        <translation>L'algoritmo di addestramento per il modello di regressione logistica ha causato un overflow della memoria allocata</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="303"/>
+        <location filename="../algorithms/models/lr/lr.py" line="312"/>
         <source>An unknown error occurs during LR training</source>
         <translation>Si è verificato un errore sconosciuto durante il processo di addestramento del modello di regressione logistica</translation>
     </message>
@@ -286,7 +286,7 @@
     <message>
         <location filename="../algorithms/models/mce/mce.py" line="203"/>
         <source>The system is out of memory during MCE prediction</source>
-        <translation>L&apos;algoritmo di costruzione della previsione con il metodo di valutazione multi-criterio ha portato all&apos;overflow della memoria allocata</translation>
+        <translation>L'algoritmo di costruzione della previsione con il metodo di valutazione multi-criterio ha portato all'overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
@@ -309,7 +309,7 @@
     <message>
         <location filename="../molusce.py" line="105"/>
         <source>Quick Help...</source>
-        <translation>Manuale dell&apos;utente...</translation>
+        <translation>Manuale dell'utente...</translation>
     </message>
     <message>
         <location filename="../molusce.py" line="86"/>
@@ -337,24 +337,24 @@
         <translation>Durante la costruzione della previsione con il metodo delle reti neurali, si è verificato un errore sconosciuto</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="491"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="506"/>
         <source>Train model %p%</source>
         <translation>Addestramento del modello %p%</translation>
     </message>
     <message>
         <location filename="../algorithms/models/mlp/manager.py" line="329"/>
         <source>The system is out of memory during ANN prediction</source>
-        <translation>L&apos;algoritmo di previsione con il metodo delle reti neurali ha portato all&apos;overflow della memoria allocata</translation>
+        <translation>L'algoritmo di previsione con il metodo delle reti neurali ha portato all'overflow della memoria allocata</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="522"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="537"/>
         <source>The system is out of memory during ANN training</source>
-        <translation>L&apos;algoritmo di addestramento del modello con il metodo delle reti neurali ha portato all&apos;overflow della memoria allocata</translation>
+        <translation>L'algoritmo di addestramento del modello con il metodo delle reti neurali ha portato all'overflow della memoria allocata</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="527"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="542"/>
         <source>An unknown error occurs during ANN training</source>
-        <translation>Si è verificato un errore sconosciuto durante l&apos;addestramento del modello di rete neurale</translation>
+        <translation>Si è verificato un errore sconosciuto durante l'addestramento del modello di rete neurale</translation>
     </message>
 </context>
 <context>
@@ -477,7 +477,7 @@
     <message>
         <location filename="../moluscedialog.py" line="1511"/>
         <source>Joint Information Uncertainty</source>
-        <translation>Incertezza dell&apos;Entropia Congiunta</translation>
+        <translation>Incertezza dell'Entropia Congiunta</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1705"/>
@@ -512,7 +512,7 @@
     <message>
         <location filename="../moluscedialog.py" line="1741"/>
         <source>Nothing to save, samples were not yet generated as the model was not trained. Train the model first.</source>
-        <translation>Non c&apos;è nulla da salvare, i campioni non sono ancora stati generati poiché il training del modello non è stato effettuato. Si prega di eseguire il training del modello.</translation>
+        <translation>Non c'è nulla da salvare, i campioni non sono ancora stati generati poiché il training del modello non è stato effettuato. Si prega di eseguire il training del modello.</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1751"/>
@@ -737,17 +737,17 @@
     <message>
         <location filename="../moluscedialog.py" line="452"/>
         <source>Geometries of the initial raster and raster &apos;{}&apos; are different!</source>
-        <translation>Le caratteristiche spaziali dei raster dello stato iniziale e finale &apos;{}&apos; non coincidono!</translation>
+        <translation>Le caratteristiche spaziali dei raster dello stato iniziale e finale '{}' non coincidono!</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1135"/>
         <source>Can&apos;t read file: &apos;{}&apos;</source>
-        <translation>Impossibile leggere il file: &apos;{}&apos;</translation>
+        <translation>Impossibile leggere il file: '{}'</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1786"/>
         <source>Can&apos;t save file: &apos;{}&apos;</source>
-        <translation>Impossibile salvare il file: &apos;{}&apos;</translation>
+        <translation>Impossibile salvare il file: '{}'</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1801"/>
@@ -769,7 +769,7 @@
     <message>
         <location filename="../moluscedialog.py" line="1058"/>
         <source>Kappa is not applicable to the file: &apos;{}&apos; because it contains continuous value</source>
-        <translation>Kappa non è applicabile al file: &apos;{}&apos; in quanto contiene un valore continuo</translation>
+        <translation>Kappa non è applicabile al file: '{}' in quanto contiene un valore continuo</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1751"/>
@@ -854,7 +854,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../moluscedialog.py" line="1770"/>
         <source>File &apos;{}&apos; is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again</source>
-        <translation>Il file &apos;{}&apos; è utilizzato nel progetto QGIS. Non è possibile sovrascrivere il file, specificare un nome di file diverso e riprovare</translation>
+        <translation>Il file '{}' è utilizzato nel progetto QGIS. Non è possibile sovrascrivere il file, specificare un nome di file diverso e riprovare</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="642"/>
@@ -874,7 +874,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../moluscedialog.py" line="742"/>
         <source>Can&apos;t save file in the specified path &apos;{}&apos;. Please specify output path correctly and try again</source>
-        <translation>Impossibile salvare il file nel percorso specificato &apos;{}&apos;. Specificare correttamente il percorso di output e riprovare</translation>
+        <translation>Impossibile salvare il file nel percorso specificato '{}'. Specificare correttamente il percorso di output e riprovare</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1173"/>
@@ -904,268 +904,268 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../moluscedialog.py" line="761"/>
         <source>Can&apos;t save files with the same output path &apos;{}&apos;. Please specify different output paths and try again</source>
-        <translation>Non è possibile salvare i file con lo stesso percorso di output &apos;{}&apos;. Specificare percorsi di output diversi e riprovare</translation>
+        <translation>Non è possibile salvare i file con lo stesso percorso di output '{}'. Specificare percorsi di output diversi e riprovare</translation>
     </message>
 </context>
 <context>
     <name>MolusceDialogBase</name>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="465"/>
+        <location filename="../ui/moluscedialogbase.ui" line="14"/>
         <source>MOLUSCE</source>
         <translation>MOLUSCE</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="473"/>
+        <location filename="../ui/moluscedialogbase.ui" line="27"/>
         <source>Inputs</source>
         <translation>Ingressi</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="466"/>
+        <location filename="../ui/moluscedialogbase.ui" line="53"/>
         <source>Initial &gt;&gt;</source>
         <translation>Iniziale &gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="467"/>
+        <location filename="../ui/moluscedialogbase.ui" line="63"/>
         <source>Final &gt;&gt;</source>
         <translation>Finale &gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="468"/>
+        <location filename="../ui/moluscedialogbase.ui" line="105"/>
         <source>&lt;&lt; Remove all</source>
         <translation>&lt;&lt; Rimuovi tutto</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="469"/>
+        <location filename="../ui/moluscedialogbase.ui" line="112"/>
         <source>&lt;&lt; Remove</source>
         <translation>&lt;&lt; Rimuovi</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="470"/>
+        <location filename="../ui/moluscedialogbase.ui" line="119"/>
         <source>Add &gt;&gt;</source>
         <translation>Aggiungi &gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="471"/>
+        <location filename="../ui/moluscedialogbase.ui" line="126"/>
         <source>Spatial variables</source>
         <translation>Variabili spaziali</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="472"/>
+        <location filename="../ui/moluscedialogbase.ui" line="135"/>
         <source>Check geometry</source>
         <translation>Controllo della geometria</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="480"/>
+        <location filename="../ui/moluscedialogbase.ui" line="147"/>
         <source>Evaluating correlation</source>
         <translation>Valutazione della correlazione</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="486"/>
+        <location filename="../ui/moluscedialogbase.ui" line="274"/>
         <source>Method</source>
         <translation>Metodo</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="475"/>
+        <location filename="../ui/moluscedialogbase.ui" line="183"/>
         <source>First Raster</source>
         <translation>Primo Raster</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="476"/>
+        <location filename="../ui/moluscedialogbase.ui" line="190"/>
         <source>Second Raster</source>
         <translation>Secondo Raster</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="477"/>
+        <location filename="../ui/moluscedialogbase.ui" line="197"/>
         <source>Result</source>
         <translation>Risultato</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="478"/>
+        <location filename="../ui/moluscedialogbase.ui" line="207"/>
         <source>Check</source>
         <translation>Controlla</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="479"/>
+        <location filename="../ui/moluscedialogbase.ui" line="214"/>
         <source>Check all rasters</source>
         <translation>Controlla tutti i rasters</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="485"/>
+        <location filename="../ui/moluscedialogbase.ui" line="224"/>
         <source>Area Changes</source>
         <translation>Cambiamenti Area</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="481"/>
+        <location filename="../ui/moluscedialogbase.ui" line="230"/>
         <source>Class statistics</source>
         <translation>Statistiche di classe</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="482"/>
+        <location filename="../ui/moluscedialogbase.ui" line="237"/>
         <source>Transition matrix</source>
         <translation>Matrice di transizione</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="483"/>
+        <location filename="../ui/moluscedialogbase.ui" line="244"/>
         <source>Update tables</source>
         <translation>Aggiorna le tabelle</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="484"/>
+        <location filename="../ui/moluscedialogbase.ui" line="251"/>
         <source>Create changes map</source>
         <translation>Crea la mappa dei cambiamenti</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="492"/>
+        <location filename="../ui/moluscedialogbase.ui" line="268"/>
         <source>Transition Potential Modelling</source>
         <translation>Modellizzazione della Transizione Potenziale</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="487"/>
+        <location filename="../ui/moluscedialogbase.ui" line="281"/>
         <source>Define Samples</source>
         <translation>Definisci i Campioni</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="488"/>
+        <location filename="../ui/moluscedialogbase.ui" line="302"/>
         <source>Mode</source>
         <translation>Tipo di campione</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="489"/>
+        <location filename="../ui/moluscedialogbase.ui" line="312"/>
         <source>Number of samples</source>
         <translation>Numero di campioni</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="490"/>
+        <location filename="../ui/moluscedialogbase.ui" line="329"/>
         <source>Save Samples...</source>
         <translation>Salva Campioni...</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="491"/>
+        <location filename="../ui/moluscedialogbase.ui" line="336"/>
         <source>Add to canvas</source>
         <translation>Aggiungi alla mappa</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="504"/>
+        <location filename="../ui/moluscedialogbase.ui" line="389"/>
         <source>Cellular Automata Simulation</source>
         <translation>Simulazione Cellular Automata</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="510"/>
+        <location filename="../ui/moluscedialogbase.ui" line="708"/>
         <source>Browse...</source>
         <translation>Sfoglia...</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="502"/>
+        <location filename="../ui/moluscedialogbase.ui" line="557"/>
         <source>Certainty function</source>
         <translation>Mappa della fiducia nelle previsioni</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="500"/>
+        <location filename="../ui/moluscedialogbase.ui" line="537"/>
         <source>Simulation result</source>
         <translation>Risultati della simulazione</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="499"/>
+        <location filename="../ui/moluscedialogbase.ui" line="523"/>
         <source>Number of simulation iterations</source>
         <translation>Numero di iterazioni durtante la simulazione</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="496"/>
+        <location filename="../ui/moluscedialogbase.ui" line="442"/>
         <source>potential_</source>
         <translation>potential_</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="503"/>
+        <location filename="../ui/moluscedialogbase.ui" line="603"/>
         <source>Start</source>
         <translation>Inizia</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="519"/>
+        <location filename="../ui/moluscedialogbase.ui" line="626"/>
         <source>Validation</source>
         <translation>Convalida</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="505"/>
+        <location filename="../ui/moluscedialogbase.ui" line="666"/>
         <source>Create...</source>
         <translation>Crea...</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="506"/>
+        <location filename="../ui/moluscedialogbase.ui" line="673"/>
         <source>Validation Map</source>
         <translation>Mappa di convalida</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="507"/>
+        <location filename="../ui/moluscedialogbase.ui" line="680"/>
         <source>Simulated Map</source>
         <translation>Mappa Simulata</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="509"/>
+        <location filename="../ui/moluscedialogbase.ui" line="694"/>
         <source>Reference Map</source>
         <translation>Mappa di Riferimento</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="511"/>
+        <location filename="../ui/moluscedialogbase.ui" line="735"/>
         <source>Number of validation iterations</source>
         <translation>Numero di iterazioni di convalida</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="512"/>
+        <location filename="../ui/moluscedialogbase.ui" line="742"/>
         <source>Check persistent classes</source>
         <translation>Controlla le classi persistenti</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="513"/>
+        <location filename="../ui/moluscedialogbase.ui" line="768"/>
         <source>% of Correctness</source>
         <translation>% di Correttezza</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="517"/>
+        <location filename="../ui/moluscedialogbase.ui" line="840"/>
         <source>Calculate kappa</source>
         <translation>Calcola il kappa</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="518"/>
+        <location filename="../ui/moluscedialogbase.ui" line="847"/>
         <source>Start validation</source>
         <translation>Inizia convalida</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="520"/>
+        <location filename="../ui/moluscedialogbase.ui" line="857"/>
         <source>Messages</source>
         <translation>Messaggi</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="514"/>
+        <location filename="../ui/moluscedialogbase.ui" line="794"/>
         <source>Kappa (overall)</source>
         <translation>Kappa (in generale)</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="515"/>
+        <location filename="../ui/moluscedialogbase.ui" line="820"/>
         <source>Kappa (histogram)</source>
         <translation>Kappa (istogramma)</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="516"/>
+        <location filename="../ui/moluscedialogbase.ui" line="833"/>
         <source>Kappa (location)</source>
         <translation>Kappa (posizione)</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="493"/>
+        <location filename="../ui/moluscedialogbase.ui" line="401"/>
         <source>Transition potential maps</source>
         <translation>Mappe del potenziale di transizione</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="494"/>
+        <location filename="../ui/moluscedialogbase.ui" line="428"/>
         <source>Directory path</source>
         <translation>Percorso della directory</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="495"/>
+        <location filename="../ui/moluscedialogbase.ui" line="435"/>
         <source>Filename prefix</source>
         <translation>Prefisso del nome del file</translation>
     </message>
     <message>
-        <location filename="../ui/ui_moluscedialogbase.py" line="497"/>
+        <location filename="../ui/moluscedialogbase.ui" line="467"/>
         <source>Select Directory...</source>
         <translation>Selezionare la directory...</translation>
     </message>
@@ -1241,27 +1241,27 @@ livello medio di informazioni sulla quantità.</translation>
 <context>
     <name>MultiCriteriaEvaluationWidgetBase</name>
     <message>
-        <location filename="../ui/ui_multicriteriaevaluationwidgetbase.py" line="58"/>
+        <location filename="../ui/multicriteriaevaluationwidgetbase.ui" line="26"/>
         <source>From class</source>
         <translation>Dalla classe</translation>
     </message>
     <message>
-        <location filename="../ui/ui_multicriteriaevaluationwidgetbase.py" line="59"/>
+        <location filename="../ui/multicriteriaevaluationwidgetbase.ui" line="36"/>
         <source>To class</source>
         <translation>Alla classe</translation>
     </message>
     <message>
-        <location filename="../ui/ui_multicriteriaevaluationwidgetbase.py" line="60"/>
+        <location filename="../ui/multicriteriaevaluationwidgetbase.ui" line="46"/>
         <source>Train model</source>
         <translation>Esegui il training del modello</translation>
     </message>
     <message>
-        <location filename="../ui/ui_multicriteriaevaluationwidgetbase.py" line="61"/>
+        <location filename="../ui/multicriteriaevaluationwidgetbase.ui" line="53"/>
         <source>Pairwise Comparison Matrix</source>
         <translation>Matrice di confronto a coppie</translation>
     </message>
     <message>
-        <location filename="../ui/ui_multicriteriaevaluationwidgetbase.py" line="62"/>
+        <location filename="../ui/multicriteriaevaluationwidgetbase.ui" line="60"/>
         <source>Weights Matrix</source>
         <translation>Matrice dei pesi</translation>
     </message>
@@ -1311,7 +1311,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../neuralnetworkwidget.py" line="231"/>
         <source>ANN model training interrupted</source>
-        <translation>L&apos;addestramento del modello di rete neurale viene interrotto</translation>
+        <translation>L'addestramento del modello di rete neurale viene interrotto</translation>
     </message>
     <message>
         <location filename="../neuralnetworkwidget.py" line="131"/>
@@ -1342,57 +1342,57 @@ livello medio di informazioni sulla quantità.</translation>
 <context>
     <name>NeuralNetworkWidgetBase</name>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="110"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="42"/>
         <source>Momentum</source>
         <translation>Momentum</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="111"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="49"/>
         <source>Learning Rate</source>
         <translation>Tasso di apprendimento</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="112"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="56"/>
         <source>Neighbourhood</source>
         <translation>Numero di pixel vicini</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="113"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="63"/>
         <source>Min Validation Overall Error</source>
-        <translation>Min convalida dell&apos;errore globale</translation>
+        <translation>Min convalida dell'errore globale</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="114"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="70"/>
         <source>Hidden Layers</source>
         <translation>Layers nascosti</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="115"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="93"/>
         <source> px</source>
         <translation> px</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="116"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="125"/>
         <source>Maximum Iterations</source>
         <translation>Iterazioni massime</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="117"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="161"/>
         <source>Current Validation Kappa</source>
         <translation>Convalida del Kappa attuale</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="118"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="168"/>
         <source>Δ Overall Accuracy</source>
         <translation>Δ precisione globale</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="120"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="182"/>
         <source>Stop</source>
         <translation>Ferma</translation>
     </message>
     <message>
-        <location filename="../ui/ui_neuralnetworkwidgetbase.py" line="119"/>
+        <location filename="../ui/neuralnetworkwidgetbase.ui" line="175"/>
         <source>Train neural network</source>
         <translation>Eseguire il training del neural network</translation>
     </message>
@@ -1400,19 +1400,19 @@ livello medio di informazioni sulla quantità.</translation>
 <context>
     <name>Sampler</name>
     <message>
-        <location filename="../algorithms/models/sampler/sampler.py" line="374"/>
+        <location filename="../algorithms/models/sampler/sampler.py" line="407"/>
         <source>Sampling...</source>
         <translation>Campionamento...</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/sampler/sampler.py" line="405"/>
+        <location filename="../algorithms/models/sampler/sampler.py" line="438"/>
         <source>An unknown error occurs during sampling</source>
         <translation>Si è verificato un errore sconosciuto durante il campionamento</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/sampler/sampler.py" line="400"/>
+        <location filename="../algorithms/models/sampler/sampler.py" line="433"/>
         <source>The system is out of memory during sampling</source>
-        <translation>L&apos;esecuzione del processo di recupero ha causato l&apos;overflow della memoria allocata</translation>
+        <translation>L'esecuzione del processo di recupero ha causato l'overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
@@ -1440,7 +1440,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../algorithms/models/simulator/sim.py" line="193"/>
         <source>The system is out of memory during simulation</source>
-        <translation>L&apos;esecuzione del processo di simulazione ha causato un overflow della memoria allocata</translation>
+        <translation>L'esecuzione del processo di simulazione ha causato un overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
@@ -1468,7 +1468,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../weightofevidencewidget.py" line="144"/>
         <source>Initialization error</source>
-        <translation>Errore nell&apos;inizializzazione</translation>
+        <translation>Errore nell'inizializzazione</translation>
     </message>
     <message>
         <location filename="../weightofevidencewidget.py" line="66"/>
@@ -1570,14 +1570,14 @@ livello medio di informazioni sulla quantità.</translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="293"/>
-        <source>	 factor: {} 
+        <source><byte value="x9"/> factor: {} 
 </source>
         <translation>	 fattore di influenza: {} 
 </translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="296"/>
-        <source>		 Weights of band {}: {} 
+        <source><byte value="x9"/><byte value="x9"/> Weights of band {}: {} 
 </source>
         <translation>		 Pesi della banda {}: {} 
 </translation>
@@ -1590,12 +1590,12 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="197"/>
         <source>The system is out of memory during WOE prediction</source>
-        <translation>L&apos;algoritmo di costruzione della previsione con il metodo di significatività del tratto ha portato a un overflow della memoria allocata</translation>
+        <translation>L'algoritmo di costruzione della previsione con il metodo di significatività del tratto ha portato a un overflow della memoria allocata</translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="271"/>
         <source>An unknown error occurs during WoE training</source>
-        <translation>Durante l&apos;addestramento del modello di significatività del tratto, si è verificato un errore sconosciuto</translation>
+        <translation>Durante l'addestramento del modello di significatività del tratto, si è verificato un errore sconosciuto</translation>
     </message>
 </context>
 </TS>

@@ -2,10 +2,11 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from numpy.testing import assert_almost_equal
+
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 from molusce.algorithms.models.mce.mce import MCE
-from numpy.testing import assert_almost_equal
 
 
 class TestMCE(unittest.TestCase):

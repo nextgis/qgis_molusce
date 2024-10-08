@@ -1,11 +1,12 @@
 from time import clock
 
+from numpy import ma as ma
+
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
 from molusce.algorithms.models.crosstabs.manager import CrossTableManager
 from molusce.algorithms.models.mlp.manager import MlpManager
 from molusce.algorithms.models.simulator.sim import Simulator
-from numpy import ma as ma
 
 
 def main(initRaster, finalRaster, factors):
