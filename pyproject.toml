@@ -1,28 +1,33 @@
 [project]
 name = "molusce"
 version = "4.0.0"
+readme = "README.md"
+license = { file = "LICENSE" }
+
+
+[tool.qgspb.package-data]
+"molusce.doc.en" = ["QuickHelp.pdf"]
+"molusce.icons" = ["molusce.png"]
+
+
+[tool.qgspb.forms]
+ui-files = ["src/molusce/ui/*.ui"]
+compile = false
+
+[tool.qgspb.resources]
+qrc-files = ["src/molusce/resources.qrc"]
+target-suffix = "_rc"
+
+[tool.qgspb.translations]
+ts-files = ["src/molusce/i18n/*.ts"]
+no-obsolete = true
+
 
 [project.optional-dependencies]
 dev = ["ruff", "pre-commit"]
 
-[tool.qgspb.ui]
-compile = true
-prefix = "ui_"
-ui-files = ["src/molusce/ui/*.ui"]
-
-[tool.qgspb.resources]
-compile = true
-suffix = "_rc"
-resource-files = ["src/molusce/resources.qrc"]
-
-[tool.qgspb.translation]
-noobsolete = true
-source-files = ["src/molusce/**/*.py", "src/molusce/**/*.ui"]
-exclude-files = ["src/molusce/ui/*.py"]
-ts-files = ["src/molusce/i18n/*.ts"]
-
 [tool.pyright]
-include = ["src"]
+include = ["src", "tests"]
 pythonVersion = "3.7"
 
 reportOptionalCall = false
@@ -47,7 +52,7 @@ select = [
     "ISC",  #  flake8-implicit-str-concat
     "LOG",  # flake8-logging
     # "N",    # pep8-naming
-    "PERF", # Perflint
+    # "PERF", # Perflint
     "PGH",  # pygrep-hooks
     "PIE", # flake8-pie
     # "PL",  # pylint
@@ -64,7 +69,7 @@ select = [
     "TCH", # flake8-type-checking
     "TD",  # flake8-todos
     "TID", # flake8-tidy-imports
-    "TRY", # tryceratops
+    # "TRY", # tryceratops
     # "UP",  # pyupgrade
     "W",   # pycodesytle warnings
     # "ANN",  # flake8-annotations
