@@ -188,7 +188,6 @@ moc_*.cpp
 moc_*.h
 qrc_*.cpp
 ui_*.h
-ui_*.py
 *.qmlc
 *.jsc
 Makefile*
@@ -216,6 +215,13 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+# PyQt
+ui_*.py
 resources_rc.py
 
+# QGIS
+*.db
+
+# VS Code
 /.vscode
