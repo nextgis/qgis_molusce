@@ -7,7 +7,7 @@ from osgeo import gdal, osr
 from .utils import binaryzation, get_gradations
 
 # If a raster band has more then MAX_CATEGORIES categories, we think that the band contains continues values
-MAX_CATEGORIES = 99
+MAX_CATEGORIES = 256
 
 
 class ProviderError(Exception):
