@@ -9,10 +9,10 @@ license = { file = "LICENSE" }
 "molusce.doc.en" = ["QuickHelp.pdf"]
 "molusce.icons" = ["molusce.png"]
 
-
 [tool.qgspb.forms]
 ui-files = ["src/molusce/ui/*.ui"]
-compile = false
+compile = true
+target-prefix = "ui_"
 
 [tool.qgspb.resources]
 qrc-files = ["src/molusce/resources.qrc"]
