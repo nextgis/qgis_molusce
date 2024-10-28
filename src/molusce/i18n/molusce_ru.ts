@@ -4,49 +4,54 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../aboutdialog.py" line="86"/>
+        <location filename="../aboutdialog.py" line="178"/>
         <source>Developers</source>
         <translation>Разработчики</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="87"/>
+        <location filename="../aboutdialog.py" line="179"/>
         <source>Homepage</source>
         <translation>Домашняя страница</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="88"/>
+        <location filename="../aboutdialog.py" line="180"/>
         <source>Please report bugs at</source>
         <translation>Пожалуйста, сообщайте о багах в</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="91"/>
+        <location filename="../aboutdialog.py" line="183"/>
         <source>Video with an overview of the plugin</source>
         <translation>Видео с обзором на плагин</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="92"/>
+        <location filename="../aboutdialog.py" line="184"/>
         <source>Other helpful services by NextGIS</source>
         <translation>Другие полезные сервисы от NextGIS</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="93"/>
+        <location filename="../aboutdialog.py" line="185"/>
         <source>Convenient up-to-date data extracts for any place in the world</source>
         <translation>Удобная выборка актуальных данных из любой точки мира</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="96"/>
+        <location filename="../aboutdialog.py" line="188"/>
         <source>Fully featured Web GIS service</source>
         <translation>Полнофункциональный Веб ГИС-сервис</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="81"/>
+        <location filename="../aboutdialog.py" line="173"/>
         <source>REPORT_END</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="90"/>
+        <location filename="../aboutdialog.py" line="182"/>
         <source>bugtracker</source>
         <translation>багтрекер</translation>
+    </message>
+    <message>
+        <location filename="../aboutdialog.py" line="55"/>
+        <source> by NextGIS</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -57,9 +62,48 @@
         <translation>О {plugin_name}</translation>
     </message>
     <message>
-        <location filename="../ui/aboutdialogbase.ui" line="27"/>
-        <source>&lt;p align=&quot;center&quot;&gt;{plugin_name}&lt;/p&gt;</source>
-        <translation>&lt;p align=&quot;center&quot;&gt;{plugin_name}&lt;/p&gt;</translation>
+        <location filename="../ui/aboutdialogbase.ui" line="33"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/aboutdialogbase.ui" line="54"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/aboutdialogbase.ui" line="72"/>
+        <source>License</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/aboutdialogbase.ui" line="94"/>
+        <source>Components</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/aboutdialogbase.ui" line="116"/>
+        <source>Contributors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/aboutdialogbase.ui" line="158"/>
+        <source>{plugin_name}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/aboutdialogbase.ui" line="168"/>
+        <source>Version {version}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/aboutdialogbase.ui" line="203"/>
+        <source>Support us</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

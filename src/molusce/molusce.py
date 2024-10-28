@@ -149,12 +149,12 @@ class MoluscePlugin:
     def run(self):
         d = moluscedialog.MolusceDialog(self.iface)
         d.show()
-        d.exec_()
+        d.exec()
 
     def about(self):
         package_name = str(Path(__file__).parent.name)
         d = aboutdialog.AboutDialog(package_name)
-        d.exec_()
+        d.exec()
 
     def showQuickHelp(self):
         dir_name = os.path.dirname(__file__)
