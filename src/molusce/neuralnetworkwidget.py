@@ -156,6 +156,18 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
 
         model = MlpManager(ns=self.spnNeigbourhood.value())
         self.inputs["model"] = model
+        if self.inputs["initial"].getBandGradation(1) != self.inputs[
+            "final"
+        ].getBandGradation(1):
+            categories = list(
+                set(
+                    self.inputs["initial"].getBandGradation(1)
+                    + self.inputs["final"].getBandGradation(1)
+                )
+            )
+            categories.sort()
+            model.setCategoriesList(categories)
+
         model.createMlp(
             self.inputs["initial"],
             list(self.inputs["factors"].values()),
