@@ -4,54 +4,54 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../aboutdialog.py" line="173"/>
+        <location filename="../aboutdialog.py" line="183"/>
         <source>REPORT_END</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="178"/>
+        <location filename="../aboutdialog.py" line="188"/>
         <source>Developers</source>
         <translation>Desarrolladores</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="179"/>
+        <location filename="../aboutdialog.py" line="189"/>
         <source>Homepage</source>
         <translation>Página de inicio</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="180"/>
+        <location filename="../aboutdialog.py" line="190"/>
         <source>Please report bugs at</source>
         <translation>Por favor, informe de errores en</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="182"/>
+        <location filename="../aboutdialog.py" line="192"/>
         <source>bugtracker</source>
         <translation>bugtracker</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="183"/>
+        <location filename="../aboutdialog.py" line="193"/>
         <source>Video with an overview of the plugin</source>
         <translation>Vídeo con una visión general del plugin</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="184"/>
+        <location filename="../aboutdialog.py" line="194"/>
         <source>Other helpful services by NextGIS</source>
         <translation>Otros servicios útiles de NextGIS</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="185"/>
+        <location filename="../aboutdialog.py" line="195"/>
         <source>Convenient up-to-date data extracts for any place in the world</source>
         <translation>Extractos de datos actualizados convenientes para cualquier lugar del mundo</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="188"/>
+        <location filename="../aboutdialog.py" line="198"/>
         <source>Fully featured Web GIS service</source>
         <translation>Servicio Web GIS con todas las funciones</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="55"/>
+        <location filename="../aboutdialog.py" line="45"/>
         <source> by NextGIS</source>
-        <translation type="unfinished"></translation>
+        <translation> por NextGIS</translation>
     </message>
 </context>
 <context>
@@ -64,7 +64,7 @@
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="33"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Información</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="54"/>
@@ -73,37 +73,37 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="72"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Licencia</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="94"/>
         <source>Components</source>
-        <translation type="unfinished"></translation>
+        <translation>Componentes</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="116"/>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colaboradores</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="158"/>
         <source>{plugin_name}</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="168"/>
         <source>Version {version}</source>
-        <translation type="unfinished"></translation>
+        <translation>Versión {version}</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="203"/>
-        <source>Support us</source>
-        <translation type="unfinished"></translation>
+        <source>Get involved</source>
+        <translation>Participe</translation>
     </message>
 </context>
 <context>
@@ -341,17 +341,17 @@ p, li { white-space: pre-wrap; }
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="145"/>
+        <location filename="../molusce.py" line="160"/>
         <source>MOLUSCE</source>
         <translation>MOLUSCE</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="111"/>
+        <location filename="../molusce.py" line="116"/>
         <source>About MOLUSCE...</source>
         <translation>Acerca de MOLUSCE...</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="105"/>
+        <location filename="../molusce.py" line="107"/>
         <source>Quick Help...</source>
         <translation>Manual del usuario...</translation>
     </message>
@@ -486,7 +486,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="461"/>
         <source>Geometries of the initial raster and final raster are different!</source>
-        <translation>Las características espaciales de los rásteres de estado inicial y final no coinciden.</translation>
+        <translation>Las características espaciales de los rásteres de estado inicial y final no coinciden!</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="469"/>
@@ -496,7 +496,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="469"/>
         <source>Geometries of the rasters are matched!</source>
-        <translation>Las características espaciales de los rásteres coinciden.</translation>
+        <translation>Las características espaciales de los rásteres coinciden!</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="493"/>
@@ -781,17 +781,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="452"/>
         <source>Geometries of the initial raster and raster &apos;{}&apos; are different!</source>
-        <translation>Las características espaciales de los rásters de estado inicial y final '{}' no coinciden</translation>
+        <translation>Las características espaciales de los rásters de estado inicial y final &apos;{}&apos; no coinciden!</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1135"/>
         <source>Can&apos;t read file: &apos;{}&apos;</source>
-        <translation>No se puede leer el fichero: '{}'</translation>
+        <translation>No se puede leer el fichero: &apos;{}&apos;</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1786"/>
         <source>Can&apos;t save file: &apos;{}&apos;</source>
-        <translation>No se puede guardar el fichero: '{}'</translation>
+        <translation>No se puede guardar el fichero: &apos;{}&apos;</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1801"/>
@@ -813,7 +813,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="1058"/>
         <source>Kappa is not applicable to the file: &apos;{}&apos; because it contains continuous value</source>
-        <translation>Kappa no es aplicable al fichero: '{}' porque contiene valor continuo</translation>
+        <translation>Kappa no es aplicable al fichero: &apos;{}&apos; porque contiene valor continuo</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1751"/>
@@ -898,7 +898,7 @@ nivel medio de información sobre la cantidad.</translation>
     <message>
         <location filename="../moluscedialog.py" line="1770"/>
         <source>File &apos;{}&apos; is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again</source>
-        <translation>El fichero '{}' se utiliza en el proyecto QGIS. No es posible sobrescribir el fichero, especifique un nombre de fichero diferente e inténtelo de nuevo</translation>
+        <translation>El fichero &apos;{}&apos; se utiliza en el proyecto QGIS. No es posible sobrescribir el fichero, especifique un nombre de fichero diferente e inténtelo de nuevo</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="642"/>
@@ -918,7 +918,7 @@ nivel medio de información sobre la cantidad.</translation>
     <message>
         <location filename="../moluscedialog.py" line="742"/>
         <source>Can&apos;t save file in the specified path &apos;{}&apos;. Please specify output path correctly and try again</source>
-        <translation>No se puede guardar el fichero en la ruta especificada '{}'. Por favor, especifique correctamente la ruta de salida e inténtelo de nuevo</translation>
+        <translation>No se puede guardar el fichero en la ruta especificada &apos;{}&apos;. Por favor, especifique correctamente la ruta de salida e inténtelo de nuevo</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1173"/>
@@ -948,7 +948,7 @@ nivel medio de información sobre la cantidad.</translation>
     <message>
         <location filename="../moluscedialog.py" line="761"/>
         <source>Can&apos;t save files with the same output path &apos;{}&apos;. Please specify different output paths and try again</source>
-        <translation>No se pueden guardar ficheros con la misma ruta de salida '{}'. Por favor, especifique diferentes rutas de salida e inténtelo de nuevo</translation>
+        <translation>No se pueden guardar ficheros con la misma ruta de salida &apos;{}&apos;. Por favor, especifique diferentes rutas de salida e inténtelo de nuevo</translation>
     </message>
 </context>
 <context>
@@ -1614,14 +1614,14 @@ nivel medio de información sobre la cantidad.</translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="293"/>
-        <source><byte value="x9"/> factor: {} 
+        <source>	 factor: {} 
 </source>
         <translation>	 factor de influencia: {} 
 </translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="296"/>
-        <source><byte value="x9"/><byte value="x9"/> Weights of band {}: {} 
+        <source>		 Weights of band {}: {} 
 </source>
         <translation>		 Pesas de banda {}: {} 
 </translation>

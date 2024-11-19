@@ -4,54 +4,54 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../aboutdialog.py" line="173"/>
+        <location filename="../aboutdialog.py" line="183"/>
         <source>REPORT_END</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="178"/>
+        <location filename="../aboutdialog.py" line="188"/>
         <source>Developers</source>
         <translation>Sviluppatori</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="179"/>
+        <location filename="../aboutdialog.py" line="189"/>
         <source>Homepage</source>
         <translation>Pagina iniziale</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="180"/>
+        <location filename="../aboutdialog.py" line="190"/>
         <source>Please report bugs at</source>
         <translation>Si prega di segnalare i bug a</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="182"/>
+        <location filename="../aboutdialog.py" line="192"/>
         <source>bugtracker</source>
         <translation>bugtracker</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="183"/>
+        <location filename="../aboutdialog.py" line="193"/>
         <source>Video with an overview of the plugin</source>
         <translation>Video con una panoramica del plugin</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="184"/>
+        <location filename="../aboutdialog.py" line="194"/>
         <source>Other helpful services by NextGIS</source>
         <translation>Altri servizi utili di NextGIS</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="185"/>
+        <location filename="../aboutdialog.py" line="195"/>
         <source>Convenient up-to-date data extracts for any place in the world</source>
         <translation>Comodi estratti di dati aggiornati per qualsiasi luogo del mondo</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="188"/>
+        <location filename="../aboutdialog.py" line="198"/>
         <source>Fully featured Web GIS service</source>
         <translation>Servizio Web GIS completo</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="55"/>
+        <location filename="../aboutdialog.py" line="45"/>
         <source> by NextGIS</source>
-        <translation type="unfinished"></translation>
+        <translation> di NextGIS</translation>
     </message>
 </context>
 <context>
@@ -64,7 +64,7 @@
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="33"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informazioni</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="54"/>
@@ -73,37 +73,37 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="72"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Licenza</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="94"/>
         <source>Components</source>
-        <translation type="unfinished"></translation>
+        <translation>Componenti</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="116"/>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>Collaboratori</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="158"/>
         <source>{plugin_name}</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="168"/>
         <source>Version {version}</source>
-        <translation type="unfinished"></translation>
+        <translation>Versione {version}</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="203"/>
-        <source>Support us</source>
-        <translation type="unfinished"></translation>
+        <source>Get involved</source>
+        <translation>Partecipare</translation>
     </message>
 </context>
 <context>
@@ -121,7 +121,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../algorithms/models/area_analysis/manager.py" line="142"/>
         <source>The system is out of memory during change map creating</source>
-        <translation>L'algoritmo per la creazione di una mappa delle modifiche ha causato l'overflow della memoria allocata</translation>
+        <translation>L&apos;algoritmo per la creazione di una mappa delle modifiche ha causato l&apos;overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
@@ -152,7 +152,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../algorithms/models/crosstabs/manager.py" line="78"/>
         <source>The system is out of memory during calculation of cross table</source>
-        <translation>L'algoritmo per calcolare la tabella delle statistiche per classe ha portato a un overflow della memoria allocata</translation>
+        <translation>L&apos;algoritmo per calcolare la tabella delle statistiche per classe ha portato a un overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
@@ -165,7 +165,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../algorithms/models/correlation/model.py" line="62"/>
         <source>The system is out of memory during cross table calculation</source>
-        <translation>L'algoritmo per calcolare la tabella delle statistiche per classe ha portato a un overflow della memoria allocata</translation>
+        <translation>L&apos;algoritmo per calcolare la tabella delle statistiche per classe ha portato a un overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
@@ -183,7 +183,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../algorithms/models/errorbudget/ebmodel.py" line="110"/>
         <source>An iteration of validation %p%</source>
-        <translation>Un'iterazione della validazione %p%</translation>
+        <translation>Un&apos;iterazione della validazione %p%</translation>
     </message>
 </context>
 <context>
@@ -206,12 +206,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../algorithms/models/lr/lr.py" line="209"/>
         <source>The system is out of memory during LR prediction</source>
-        <translation>L'algoritmo di previsione della regressione logistica ha portato a un overflow della memoria allocata</translation>
+        <translation>L&apos;algoritmo di previsione della regressione logistica ha portato a un overflow della memoria allocata</translation>
     </message>
     <message>
         <location filename="../algorithms/models/lr/lr.py" line="307"/>
         <source>The system is out of memory during LR training</source>
-        <translation>L'algoritmo di addestramento per il modello di regressione logistica ha causato un overflow della memoria allocata</translation>
+        <translation>L&apos;algoritmo di addestramento per il modello di regressione logistica ha causato un overflow della memoria allocata</translation>
     </message>
     <message>
         <location filename="../algorithms/models/lr/lr.py" line="312"/>
@@ -330,7 +330,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../algorithms/models/mce/mce.py" line="203"/>
         <source>The system is out of memory during MCE prediction</source>
-        <translation>L'algoritmo di costruzione della previsione con il metodo di valutazione multi-criterio ha portato all'overflow della memoria allocata</translation>
+        <translation>L&apos;algoritmo di costruzione della previsione con il metodo di valutazione multi-criterio ha portato all&apos;overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
@@ -341,19 +341,19 @@ p, li { white-space: pre-wrap; }
         <translation>Errore</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="145"/>
+        <location filename="../molusce.py" line="160"/>
         <source>MOLUSCE</source>
         <translation>MOLUSCE</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="111"/>
+        <location filename="../molusce.py" line="116"/>
         <source>About MOLUSCE...</source>
         <translation>Riguardo MOLUSCE...</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="105"/>
+        <location filename="../molusce.py" line="107"/>
         <source>Quick Help...</source>
-        <translation>Manuale dell'utente...</translation>
+        <translation>Manuale dell&apos;utente...</translation>
     </message>
     <message>
         <location filename="../molusce.py" line="86"/>
@@ -388,17 +388,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../algorithms/models/mlp/manager.py" line="329"/>
         <source>The system is out of memory during ANN prediction</source>
-        <translation>L'algoritmo di previsione con il metodo delle reti neurali ha portato all'overflow della memoria allocata</translation>
+        <translation>L&apos;algoritmo di previsione con il metodo delle reti neurali ha portato all&apos;overflow della memoria allocata</translation>
     </message>
     <message>
         <location filename="../algorithms/models/mlp/manager.py" line="537"/>
         <source>The system is out of memory during ANN training</source>
-        <translation>L'algoritmo di addestramento del modello con il metodo delle reti neurali ha portato all'overflow della memoria allocata</translation>
+        <translation>L&apos;algoritmo di addestramento del modello con il metodo delle reti neurali ha portato all&apos;overflow della memoria allocata</translation>
     </message>
     <message>
         <location filename="../algorithms/models/mlp/manager.py" line="542"/>
         <source>An unknown error occurs during ANN training</source>
-        <translation>Si è verificato un errore sconosciuto durante l'addestramento del modello di rete neurale</translation>
+        <translation>Si è verificato un errore sconosciuto durante l&apos;addestramento del modello di rete neurale</translation>
     </message>
 </context>
 <context>
@@ -521,7 +521,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="1511"/>
         <source>Joint Information Uncertainty</source>
-        <translation>Incertezza dell'Entropia Congiunta</translation>
+        <translation>Incertezza dell&apos;Entropia Congiunta</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1705"/>
@@ -556,7 +556,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="1741"/>
         <source>Nothing to save, samples were not yet generated as the model was not trained. Train the model first.</source>
-        <translation>Non c'è nulla da salvare, i campioni non sono ancora stati generati poiché il training del modello non è stato effettuato. Si prega di eseguire il training del modello.</translation>
+        <translation>Non c&apos;è nulla da salvare, i campioni non sono ancora stati generati poiché il training del modello non è stato effettuato. Si prega di eseguire il training del modello.</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1751"/>
@@ -781,17 +781,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="452"/>
         <source>Geometries of the initial raster and raster &apos;{}&apos; are different!</source>
-        <translation>Le caratteristiche spaziali dei raster dello stato iniziale e finale '{}' non coincidono!</translation>
+        <translation>Le caratteristiche spaziali dei raster dello stato iniziale e finale &apos;{}&apos; non coincidono!</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1135"/>
         <source>Can&apos;t read file: &apos;{}&apos;</source>
-        <translation>Impossibile leggere il file: '{}'</translation>
+        <translation>Impossibile leggere il file: &apos;{}&apos;</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1786"/>
         <source>Can&apos;t save file: &apos;{}&apos;</source>
-        <translation>Impossibile salvare il file: '{}'</translation>
+        <translation>Impossibile salvare il file: &apos;{}&apos;</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1801"/>
@@ -813,7 +813,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="1058"/>
         <source>Kappa is not applicable to the file: &apos;{}&apos; because it contains continuous value</source>
-        <translation>Kappa non è applicabile al file: '{}' in quanto contiene un valore continuo</translation>
+        <translation>Kappa non è applicabile al file: &apos;{}&apos; in quanto contiene un valore continuo</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1751"/>
@@ -898,7 +898,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../moluscedialog.py" line="1770"/>
         <source>File &apos;{}&apos; is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again</source>
-        <translation>Il file '{}' è utilizzato nel progetto QGIS. Non è possibile sovrascrivere il file, specificare un nome di file diverso e riprovare</translation>
+        <translation>Il file &apos;{}&apos; è utilizzato nel progetto QGIS. Non è possibile sovrascrivere il file, specificare un nome di file diverso e riprovare</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="642"/>
@@ -918,7 +918,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../moluscedialog.py" line="742"/>
         <source>Can&apos;t save file in the specified path &apos;{}&apos;. Please specify output path correctly and try again</source>
-        <translation>Impossibile salvare il file nel percorso specificato '{}'. Specificare correttamente il percorso di output e riprovare</translation>
+        <translation>Impossibile salvare il file nel percorso specificato &apos;{}&apos;. Specificare correttamente il percorso di output e riprovare</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1173"/>
@@ -948,7 +948,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../moluscedialog.py" line="761"/>
         <source>Can&apos;t save files with the same output path &apos;{}&apos;. Please specify different output paths and try again</source>
-        <translation>Non è possibile salvare i file con lo stesso percorso di output '{}'. Specificare percorsi di output diversi e riprovare</translation>
+        <translation>Non è possibile salvare i file con lo stesso percorso di output &apos;{}&apos;. Specificare percorsi di output diversi e riprovare</translation>
     </message>
 </context>
 <context>
@@ -1355,7 +1355,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../neuralnetworkwidget.py" line="231"/>
         <source>ANN model training interrupted</source>
-        <translation>L'addestramento del modello di rete neurale viene interrotto</translation>
+        <translation>L&apos;addestramento del modello di rete neurale viene interrotto</translation>
     </message>
     <message>
         <location filename="../neuralnetworkwidget.py" line="131"/>
@@ -1403,7 +1403,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../ui/neuralnetworkwidgetbase.ui" line="63"/>
         <source>Min Validation Overall Error</source>
-        <translation>Min convalida dell'errore globale</translation>
+        <translation>Min convalida dell&apos;errore globale</translation>
     </message>
     <message>
         <location filename="../ui/neuralnetworkwidgetbase.ui" line="70"/>
@@ -1456,7 +1456,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../algorithms/models/sampler/sampler.py" line="433"/>
         <source>The system is out of memory during sampling</source>
-        <translation>L'esecuzione del processo di recupero ha causato l'overflow della memoria allocata</translation>
+        <translation>L&apos;esecuzione del processo di recupero ha causato l&apos;overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
@@ -1484,7 +1484,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../algorithms/models/simulator/sim.py" line="193"/>
         <source>The system is out of memory during simulation</source>
-        <translation>L'esecuzione del processo di simulazione ha causato un overflow della memoria allocata</translation>
+        <translation>L&apos;esecuzione del processo di simulazione ha causato un overflow della memoria allocata</translation>
     </message>
 </context>
 <context>
@@ -1512,7 +1512,7 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../weightofevidencewidget.py" line="144"/>
         <source>Initialization error</source>
-        <translation>Errore nell'inizializzazione</translation>
+        <translation>Errore nell&apos;inizializzazione</translation>
     </message>
     <message>
         <location filename="../weightofevidencewidget.py" line="66"/>
@@ -1614,14 +1614,14 @@ livello medio di informazioni sulla quantità.</translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="293"/>
-        <source><byte value="x9"/> factor: {} 
+        <source>	 factor: {} 
 </source>
         <translation>	 fattore di influenza: {} 
 </translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="296"/>
-        <source><byte value="x9"/><byte value="x9"/> Weights of band {}: {} 
+        <source>		 Weights of band {}: {} 
 </source>
         <translation>		 Pesi della banda {}: {} 
 </translation>
@@ -1634,12 +1634,12 @@ livello medio di informazioni sulla quantità.</translation>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="197"/>
         <source>The system is out of memory during WOE prediction</source>
-        <translation>L'algoritmo di costruzione della previsione con il metodo di significatività del tratto ha portato a un overflow della memoria allocata</translation>
+        <translation>L&apos;algoritmo di costruzione della previsione con il metodo di significatività del tratto ha portato a un overflow della memoria allocata</translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="271"/>
         <source>An unknown error occurs during WoE training</source>
-        <translation>Durante l'addestramento del modello di significatività del tratto, si è verificato un errore sconosciuto</translation>
+        <translation>Durante l&apos;addestramento del modello di significatività del tratto, si è verificato un errore sconosciuto</translation>
     </message>
 </context>
 </TS>

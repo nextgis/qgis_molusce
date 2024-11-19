@@ -4,54 +4,54 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../aboutdialog.py" line="173"/>
+        <location filename="../aboutdialog.py" line="183"/>
         <source>REPORT_END</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="178"/>
+        <location filename="../aboutdialog.py" line="188"/>
         <source>Developers</source>
         <translation>開発者</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="179"/>
+        <location filename="../aboutdialog.py" line="189"/>
         <source>Homepage</source>
         <translation>ホームページ</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="180"/>
+        <location filename="../aboutdialog.py" line="190"/>
         <source>Please report bugs at</source>
         <translation>でバグを報告してください</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="182"/>
+        <location filename="../aboutdialog.py" line="192"/>
         <source>bugtracker</source>
         <translation>バグトラッカー</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="183"/>
+        <location filename="../aboutdialog.py" line="193"/>
         <source>Video with an overview of the plugin</source>
         <translation>プラグインの概要ビデオ</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="184"/>
+        <location filename="../aboutdialog.py" line="194"/>
         <source>Other helpful services by NextGIS</source>
         <translation>NextGISのその他の便利なサービス</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="185"/>
+        <location filename="../aboutdialog.py" line="195"/>
         <source>Convenient up-to-date data extracts for any place in the world</source>
         <translation>世界のあらゆる場所のための便利な最新のデータ抽出</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="188"/>
+        <location filename="../aboutdialog.py" line="198"/>
         <source>Fully featured Web GIS service</source>
         <translation>完全な機能を備えたWeb GISサービス</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="55"/>
+        <location filename="../aboutdialog.py" line="45"/>
         <source> by NextGIS</source>
-        <translation type="unfinished"></translation>
+        <translation> NextGIS によって作成</translation>
     </message>
 </context>
 <context>
@@ -64,7 +64,7 @@
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="33"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>情報</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="54"/>
@@ -73,37 +73,37 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="72"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>ライセンス</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="94"/>
         <source>Components</source>
-        <translation type="unfinished"></translation>
+        <translation>コンポーネント</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="116"/>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>寄稿者</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="158"/>
         <source>{plugin_name}</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="168"/>
         <source>Version {version}</source>
-        <translation type="unfinished"></translation>
+        <translation>バージョン {version}</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="203"/>
-        <source>Support us</source>
-        <translation type="unfinished"></translation>
+        <source>Get involved</source>
+        <translation>参加しよう</translation>
     </message>
 </context>
 <context>
@@ -341,17 +341,17 @@ p, li { white-space: pre-wrap; }
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="145"/>
+        <location filename="../molusce.py" line="160"/>
         <source>MOLUSCE</source>
         <translation>MOLUSCE</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="111"/>
+        <location filename="../molusce.py" line="116"/>
         <source>About MOLUSCE...</source>
         <translation>MOLUSCEについて...</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="105"/>
+        <location filename="../molusce.py" line="107"/>
         <source>Quick Help...</source>
         <translation>クイックヘルプ...</translation>
     </message>
@@ -781,17 +781,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="452"/>
         <source>Geometries of the initial raster and raster &apos;{}&apos; are different!</source>
-        <translation>初期ラスタとラスタ'{}'のジオメトリが異なる！</translation>
+        <translation>初期ラスタとラスタ&apos;{}&apos;のジオメトリが異なる！</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1135"/>
         <source>Can&apos;t read file: &apos;{}&apos;</source>
-        <translation>ファイルを読み込めません： '{}'</translation>
+        <translation>ファイルを読み込めません： &apos;{}&apos;</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1786"/>
         <source>Can&apos;t save file: &apos;{}&apos;</source>
-        <translation>ファイルを保存できません： '{}'</translation>
+        <translation>ファイルを保存できません： &apos;{}&apos;</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1801"/>
@@ -813,7 +813,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="1058"/>
         <source>Kappa is not applicable to the file: &apos;{}&apos; because it contains continuous value</source>
-        <translation>Kappaはファイルには適用されない： '{}' は連続的な値を含んでいるため適用できない</translation>
+        <translation>Kappaはファイルには適用されない： &apos;{}&apos; は連続的な値を含んでいるため適用できない</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1751"/>
@@ -898,7 +898,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="1770"/>
         <source>File &apos;{}&apos; is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again</source>
-        <translation>ファイル '{}' が QGIS プロジェクトで使用されています。ファイルを上書きすることはできませんので、別のファイル名を指定して再試行してください</translation>
+        <translation>ファイル &apos;{}&apos; が QGIS プロジェクトで使用されています。ファイルを上書きすることはできませんので、別のファイル名を指定して再試行してください</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="642"/>
@@ -918,7 +918,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="742"/>
         <source>Can&apos;t save file in the specified path &apos;{}&apos;. Please specify output path correctly and try again</source>
-        <translation>指定されたパス '{}' にファイルを保存できません。出力パスを正しく指定して再試行してください</translation>
+        <translation>指定されたパス &apos;{}&apos; にファイルを保存できません。出力パスを正しく指定して再試行してください</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1173"/>
@@ -948,7 +948,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="761"/>
         <source>Can&apos;t save files with the same output path &apos;{}&apos;. Please specify different output paths and try again</source>
-        <translation>同じ出力パス '{}' を持つファイルを保存できません。異なる出力パスを指定して再試行してください</translation>
+        <translation>同じ出力パス &apos;{}&apos; を持つファイルを保存できません。異なる出力パスを指定して再試行してください</translation>
     </message>
 </context>
 <context>
@@ -1614,14 +1614,14 @@ medium quantity inform.</source>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="293"/>
-        <source><byte value="x9"/> factor: {} 
+        <source>	 factor: {} 
 </source>
         <translation>	 因子: {} 
 </translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="296"/>
-        <source><byte value="x9"/><byte value="x9"/> Weights of band {}: {} 
+        <source>		 Weights of band {}: {} 
 </source>
         <translation>		 バンドの重さ {}: {} 
 </translation>

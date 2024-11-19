@@ -4,52 +4,52 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../aboutdialog.py" line="173"/>
+        <location filename="../aboutdialog.py" line="183"/>
         <source>REPORT_END</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="178"/>
+        <location filename="../aboutdialog.py" line="188"/>
         <source>Developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="179"/>
+        <location filename="../aboutdialog.py" line="189"/>
         <source>Homepage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="180"/>
+        <location filename="../aboutdialog.py" line="190"/>
         <source>Please report bugs at</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="182"/>
+        <location filename="../aboutdialog.py" line="192"/>
         <source>bugtracker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="183"/>
+        <location filename="../aboutdialog.py" line="193"/>
         <source>Video with an overview of the plugin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="184"/>
+        <location filename="../aboutdialog.py" line="194"/>
         <source>Other helpful services by NextGIS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="185"/>
+        <location filename="../aboutdialog.py" line="195"/>
         <source>Convenient up-to-date data extracts for any place in the world</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="188"/>
+        <location filename="../aboutdialog.py" line="198"/>
         <source>Fully featured Web GIS service</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="55"/>
+        <location filename="../aboutdialog.py" line="45"/>
         <source> by NextGIS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -102,7 +102,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="203"/>
-        <source>Support us</source>
+        <source>Get involved</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -341,17 +341,17 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="145"/>
+        <location filename="../molusce.py" line="160"/>
         <source>MOLUSCE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="111"/>
+        <location filename="../molusce.py" line="116"/>
         <source>About MOLUSCE...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="105"/>
+        <location filename="../molusce.py" line="107"/>
         <source>Quick Help...</source>
         <translation type="unfinished"></translation>
     </message>

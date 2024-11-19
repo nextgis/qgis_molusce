@@ -4,54 +4,54 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../aboutdialog.py" line="178"/>
+        <location filename="../aboutdialog.py" line="188"/>
         <source>Developers</source>
         <translation>Разработчики</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="179"/>
+        <location filename="../aboutdialog.py" line="189"/>
         <source>Homepage</source>
         <translation>Домашняя страница</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="180"/>
+        <location filename="../aboutdialog.py" line="190"/>
         <source>Please report bugs at</source>
         <translation>Пожалуйста, сообщайте о багах в</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="183"/>
+        <location filename="../aboutdialog.py" line="193"/>
         <source>Video with an overview of the plugin</source>
         <translation>Видео с обзором на плагин</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="184"/>
+        <location filename="../aboutdialog.py" line="194"/>
         <source>Other helpful services by NextGIS</source>
         <translation>Другие полезные сервисы от NextGIS</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="185"/>
+        <location filename="../aboutdialog.py" line="195"/>
         <source>Convenient up-to-date data extracts for any place in the world</source>
         <translation>Удобная выборка актуальных данных из любой точки мира</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="188"/>
+        <location filename="../aboutdialog.py" line="198"/>
         <source>Fully featured Web GIS service</source>
         <translation>Полнофункциональный Веб ГИС-сервис</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="173"/>
+        <location filename="../aboutdialog.py" line="183"/>
         <source>REPORT_END</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="182"/>
+        <location filename="../aboutdialog.py" line="192"/>
         <source>bugtracker</source>
         <translation>багтрекер</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="55"/>
+        <location filename="../aboutdialog.py" line="45"/>
         <source> by NextGIS</source>
-        <translation type="unfinished"></translation>
+        <translation> от NextGIS</translation>
     </message>
 </context>
 <context>
@@ -59,12 +59,12 @@
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="14"/>
         <source>About {plugin_name}</source>
-        <translation>О {plugin_name}</translation>
+        <translation>О модуле {plugin_name}</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="33"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="54"/>
@@ -73,37 +73,37 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="72"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Лицензия</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="94"/>
         <source>Components</source>
-        <translation type="unfinished"></translation>
+        <translation>Компоненты</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="116"/>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>Участники</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="158"/>
         <source>{plugin_name}</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="168"/>
         <source>Version {version}</source>
-        <translation type="unfinished"></translation>
+        <translation>Версия {version}</translation>
     </message>
     <message>
         <location filename="../ui/aboutdialogbase.ui" line="203"/>
-        <source>Support us</source>
-        <translation type="unfinished"></translation>
+        <source>Get involved</source>
+        <translation>Присоединяйтесь</translation>
     </message>
 </context>
 <context>
@@ -341,17 +341,17 @@ p, li { white-space: pre-wrap; }
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="145"/>
+        <location filename="../molusce.py" line="160"/>
         <source>MOLUSCE</source>
         <translation>MOLUSCE</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="111"/>
+        <location filename="../molusce.py" line="116"/>
         <source>About MOLUSCE...</source>
         <translation>О MOLUSCE...</translation>
     </message>
     <message>
-        <location filename="../molusce.py" line="105"/>
+        <location filename="../molusce.py" line="107"/>
         <source>Quick Help...</source>
         <translation>Справка...</translation>
     </message>
@@ -781,17 +781,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="452"/>
         <source>Geometries of the initial raster and raster &apos;{}&apos; are different!</source>
-        <translation>Пространственные характеристики растров начальных и конечных состояний '{}' не совпадают!</translation>
+        <translation>Пространственные характеристики растров начальных и конечных состояний &apos;{}&apos; не совпадают!</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1135"/>
         <source>Can&apos;t read file: &apos;{}&apos;</source>
-        <translation>Не удается прочитать файл: '{}'</translation>
+        <translation>Не удается прочитать файл: &apos;{}&apos;</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1786"/>
         <source>Can&apos;t save file: &apos;{}&apos;</source>
-        <translation>Не удается сохранить файл: '{}'</translation>
+        <translation>Не удается сохранить файл: &apos;{}&apos;</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1801"/>
@@ -813,7 +813,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="1058"/>
         <source>Kappa is not applicable to the file: &apos;{}&apos; because it contains continuous value</source>
-        <translation>Расчет каппа-статистики неприменим к файлу: '{}', поскольку он содержит непрерывное значение</translation>
+        <translation>Расчет каппа-статистики неприменим к файлу: &apos;{}&apos;, поскольку он содержит непрерывное значение</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1751"/>
@@ -898,7 +898,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="1770"/>
         <source>File &apos;{}&apos; is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again</source>
-        <translation>Файл '{}' используется в проекте QGIS. Невозможно перезаписать файл, укажите другое имя файла и повторите попытку</translation>
+        <translation>Файл &apos;{}&apos; используется в проекте QGIS. Невозможно перезаписать файл, укажите другое имя файла и повторите попытку</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="642"/>
@@ -918,7 +918,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="742"/>
         <source>Can&apos;t save file in the specified path &apos;{}&apos;. Please specify output path correctly and try again</source>
-        <translation>Не удается сохранить файл по указанному пути '{}'. Пожалуйста, укажите путь сохранения корректно и повторите попытку</translation>
+        <translation>Не удается сохранить файл по указанному пути &apos;{}&apos;. Пожалуйста, укажите путь сохранения корректно и повторите попытку</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1173"/>
@@ -948,7 +948,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="761"/>
         <source>Can&apos;t save files with the same output path &apos;{}&apos;. Please specify different output paths and try again</source>
-        <translation>Не удается сохранить файлы по одинаковому пути сохранения '{}'. Пожалуйста, укажите разные пути сохранения и повторите попытку</translation>
+        <translation>Не удается сохранить файлы по одинаковому пути сохранения &apos;{}&apos;. Пожалуйста, укажите разные пути сохранения и повторите попытку</translation>
     </message>
 </context>
 <context>
@@ -1614,14 +1614,14 @@ medium quantity inform.</source>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="293"/>
-        <source><byte value="x9"/> factor: {} 
+        <source>	 factor: {} 
 </source>
         <translation>	 фактор влияния: {} 
 </translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="296"/>
-        <source><byte value="x9"/><byte value="x9"/> Weights of band {}: {} 
+        <source>		 Weights of band {}: {} 
 </source>
         <translation>		 Веса канала {}: {} 
 </translation>
