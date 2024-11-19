@@ -1,13 +1,13 @@
 [project]
 name = "molusce"
-version = "4.0.0"
+version = "4.1.0"
 readme = "README.md"
 license = { file = "LICENSE" }
 
 
 [tool.qgspb.package-data]
 "molusce.doc.en" = ["QuickHelp.pdf"]
-"molusce.icons" = ["molusce.png"]
+"molusce.icons" = ["molusce_logo.svg"]
 
 [tool.qgspb.forms]
 ui-files = ["src/molusce/ui/*.ui"]
