@@ -1,6 +1,7 @@
 <RCC>
-  <qresource>
-    <file>icons/molusce.png</file>
+  <qresource prefix="/plugins/molusce/">
+    <file>icons/nextgis_logo.svg</file>
+    <file>icons/molusce_logo.svg</file>
     <file>icons/quickhelp.png</file>
     <file>icons/about.png</file>
   </qresource>

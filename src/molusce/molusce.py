@@ -100,20 +100,35 @@ class MoluscePlugin:
             self.iface.mainWindow(),
         )
         self.iface.registerMainWindowAction(self.actionRun, "Shift+M")
-        self.actionRun.setIcon(QIcon(":/icons/molusce.png"))
+        self.actionRun.setIcon(
+            QIcon(":/plugins/molusce/icons/molusce_logo.svg")
+        )
         self.actionRun.setWhatsThis("Start MOLUSCE plugin")
         self.actionQuickHelp = QAction(
             QCoreApplication.translate("MOLUSCE", "Quick Help..."),
             self.iface.mainWindow(),
         )
-        self.actionQuickHelp.setIcon(QIcon(":/icons/quickhelp.png"))
+        self.actionQuickHelp.setIcon(
+            QIcon(":/plugins/molusce/icons/quickhelp.png")
+        )
         self.actionQuickHelp.setWhatsThis("Show Quick Help")
+
         self.actionAbout = QAction(
             QCoreApplication.translate("MOLUSCE", "About MOLUSCE..."),
             self.iface.mainWindow(),
         )
-        self.actionAbout.setIcon(QIcon(":/icons/about.png"))
+        self.actionAbout.setIcon(QIcon(":/plugins/molusce/icons/about.png"))
         self.actionAbout.setWhatsThis("About MOLUSCE")
+
+        self.actionHelp = QAction(
+            QIcon(":/plugins/molusce/icons/molusce_logo.svg"), "MOLUSCE"
+        )
+
+        self.actionHelp.triggered.connect(self.about)
+
+        plugin_help_menu = self.iface.pluginHelpMenu()
+        assert plugin_help_menu is not None
+        plugin_help_menu.addAction(self.actionHelp)
 
         self.iface.addPluginToRasterMenu(
             QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionRun

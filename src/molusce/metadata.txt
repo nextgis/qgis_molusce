@@ -16,7 +16,7 @@ qgisMaximumVersion = 3.99
 author = NextGIS
 email = info@nextgis.org
 
-icon = icons/molusce.png
+icon = icons/molusce_logo.svg
 
 tags = raster, land use planning
 
