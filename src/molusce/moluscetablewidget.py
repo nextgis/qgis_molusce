@@ -47,7 +47,9 @@ class MolusceTableWidget(QTableWidget):
     def show_context_menu(self, pos: QPoint) -> None:
         context_menu = QMenu(self)
 
-        copy_selected_cells_action = QAction("Copy selected cells", self)
+        copy_selected_cells_action = QAction(
+            self.tr("Copy selected cells"), self
+        )
         copy_entire_table_action = QAction(self.tr("Copy entire table"), self)
 
         context_menu.addAction(copy_selected_cells_action)
