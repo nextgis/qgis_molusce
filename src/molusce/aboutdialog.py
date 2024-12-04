@@ -3,15 +3,45 @@ from pathlib import Path
 from typing import Dict, Optional
 
 from qgis.core import QgsSettings
+from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QFile, QLocale, QSize, Qt, QUrl
 from qgis.PyQt.QtGui import QDesktopServices, QIcon, QPixmap
 from qgis.PyQt.QtSvg import QSvgWidget
 from qgis.PyQt.QtWidgets import QDialog, QLabel, QWidget
 from qgis.utils import pluginMetadata
 
-from .ui.ui_aboutdialogbase import (
-    Ui_AboutDialogBase,
-)
+CURRENT_PATH = Path(__file__).parent
+UI_PATH = Path(__file__).parent / "ui"
+RESOURCES_PATH = Path(__file__).parents[1] / "resources"
+
+if (UI_PATH / "about_dialog_base.ui").exists():
+    Ui_AboutDialogBase, _ = uic.loadUiType(
+        str(UI_PATH / "about_dialog_base.ui")
+    )
+elif (UI_PATH / "aboutdialogbase.ui").exists():
+    Ui_AboutDialogBase, _ = uic.loadUiType(str(UI_PATH / "aboutdialogbase.ui"))
+elif (RESOURCES_PATH / "about_dialog_base.ui").exists():
+    Ui_AboutDialogBase, _ = uic.loadUiType(
+        str(RESOURCES_PATH / "about_dialog_base.ui")
+    )
+elif (CURRENT_PATH / "about_dialog_base.ui").exists():
+    Ui_AboutDialogBase, _ = uic.loadUiType(
+        str(CURRENT_PATH / "about_dialog_base.ui")
+    )
+elif (UI_PATH / "about_dialog_base.py").exists():
+    from .ui.about_dialog_base import (  # type: ignore
+        Ui_AboutDialogBase,
+    )
+elif (UI_PATH / "aboutdialogbase.py").exists():
+    from .ui.aboutdialogbase import (  # type: ignore
+        Ui_AboutDialogBase,
+    )
+elif (UI_PATH / "ui_aboutdialogbase.py").exists():
+    from .ui.ui_aboutdialogbase import (  # type: ignore
+        Ui_AboutDialogBase,
+    )
+else:
+    raise ImportError
 
 
 class AboutTab(IntEnum):
@@ -159,8 +189,10 @@ class AboutDialog(QDialog, Ui_AboutDialogBase):
             if about.find(about_stop_phrase) > 0:
                 about = about[: about.find(about_stop_phrase)]
 
+        package_name = self.__package_name.replace("qgis_", "")
+
         main_url = f"https://nextgis.{'ru' if speaks_russian else 'com'}"
-        utm = f"utm_source=qgis_plugin&utm_medium=about&utm_campaign=constant&utm_term={self.__package_name}&utm_content={locale}"
+        utm = f"utm_source=qgis_plugin&utm_medium=about&utm_campaign=constant&utm_term={package_name}&utm_content={locale}"
 
         return {
             "plugin_name": metadata_value("name"),
