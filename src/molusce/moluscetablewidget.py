@@ -58,7 +58,7 @@ class MolusceTableWidget(QTableWidget):
         copy_selected_cells_action.triggered.connect(self.copy_selected_cells)
         copy_entire_table_action.triggered.connect(self.copy_full_table)
 
-        context_menu.exec_(self.viewport().mapToGlobal(pos))
+        context_menu.exec(self.viewport().mapToGlobal(pos))
 
     def copy_selected_cells(self) -> None:
         data = ""
@@ -68,22 +68,36 @@ class MolusceTableWidget(QTableWidget):
         # table header
         data += "\t"
         for cell in selected_cells:
-            if self.horizontalHeaderItem(cell.column()).text() not in data:
-                data += self.horizontalHeaderItem(cell.column()).text() + "\t"
+            column = cell.column()
+            data += self.horizontalHeaderItem(column).text() + "\t"
+            if column == max_column:
+                break
         data += "\n"
 
         # table contents
+        add_vertical_header_item = True
         for cell in selected_cells:
-            if self.verticalHeaderItem(cell.row()).text() not in data:
-                data += self.verticalHeaderItem(cell.row()).text() + "\t"
-            if cell.column() == 0:
-                data += (
-                    self.item(cell.row(), 0).background().color().name() + "\t"
-                )
+            row = cell.row()
+            column = cell.column()
+            if add_vertical_header_item:
+                data += self.verticalHeaderItem(row).text() + "\t"
+                add_vertical_header_item = False
+            if column == 0:
+                if self.item(row, 0) is not None:
+                    if self.item(row, 0).text() == "":
+                        data += (
+                            self.item(row, 0).background().color().name()
+                            + "\t"
+                        )
+                    else:
+                        data += self.item(row, 0).text() + "\t"
+                else:
+                    data += "\t"
             else:
-                data += self.item(cell.row(), cell.column()).text()
-                if cell.column() == max_column:
+                data += self.item(row, column).text()
+                if column == max_column:
                     data += "\n"
+                    add_vertical_header_item = True
                 else:
                     data += "\t"
 
@@ -101,13 +115,22 @@ class MolusceTableWidget(QTableWidget):
         data += "\n"
 
         # table contents
-        for r in range(self.rowCount()):
-            data += self.verticalHeaderItem(r).text() + "\t"
-            for c in range(self.columnCount()):
-                if c == 0:
-                    data += self.item(r, 0).background().color().name() + "\t"
+        for row in range(self.rowCount()):
+            data += self.verticalHeaderItem(row).text() + "\t"
+            for column in range(self.columnCount()):
+                if column == 0:
+                    if self.item(row, 0) is not None:
+                        if self.item(row, 0).text() == "":
+                            data += (
+                                self.item(row, 0).background().color().name()
+                                + "\t"
+                            )
+                        else:
+                            data += self.item(row, 0).text() + "\t"
+                    else:
+                        data += "\t"
                 else:
-                    data += self.item(r, c).text() + "\t"
+                    data += self.item(row, column).text() + "\t"
             data += "\n"
 
         if data != "":
