@@ -95,6 +95,17 @@ class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
         model.setMaxIter(self.spnMaxIterations.value())
 
         model.setState(self.inputs["initial"])
+        if self.inputs["initial"].getBandGradation(1) != self.inputs[
+            "final"
+        ].getBandGradation(1):
+            categories = list(
+                set(
+                    self.inputs["initial"].getBandGradation(1)
+                    + self.inputs["final"].getBandGradation(1)
+                )
+            )
+            categories.sort()
+            model.setCategoriesList(categories)
         model.setFactors(list(self.inputs["factors"].values()))
         model.setOutput(self.inputs["changeMap"])
         model.setMode(self.inputs["samplingMode"])
