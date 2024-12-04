@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="pt">
+<TS version="2.1" language="pt_BR">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -1004,7 +1004,7 @@ nível médio de informação sobre a quantidade.</translation>
         <translation>Avaliação da correlação</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="274"/>
+        <location filename="../ui/moluscedialogbase.ui" line="282"/>
         <source>Method</source>
         <translation>Método</translation>
     </message>
@@ -1059,159 +1059,172 @@ nível médio de informação sobre a quantidade.</translation>
         <translation>Criar mapa de alterações</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="268"/>
+        <location filename="../ui/moluscedialogbase.ui" line="276"/>
         <source>Transition Potential Modelling</source>
         <translation>Modelação do Potencial de Transição</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="281"/>
+        <location filename="../ui/moluscedialogbase.ui" line="289"/>
         <source>Define Samples</source>
         <translation>Definir Amostras</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="302"/>
+        <location filename="../ui/moluscedialogbase.ui" line="310"/>
         <source>Mode</source>
         <translation>Tipo de amostra</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="312"/>
+        <location filename="../ui/moluscedialogbase.ui" line="320"/>
         <source>Number of samples</source>
         <translation>Número de amostras</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="329"/>
+        <location filename="../ui/moluscedialogbase.ui" line="337"/>
         <source>Save Samples...</source>
         <translation>Salvar Amostras...</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="336"/>
+        <location filename="../ui/moluscedialogbase.ui" line="344"/>
         <source>Add to canvas</source>
         <translation>Adicionar amostras ao mapa como camada</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="389"/>
+        <location filename="../ui/moluscedialogbase.ui" line="397"/>
         <source>Cellular Automata Simulation</source>
         <translation>Simulação de Autómatos Celulares</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="708"/>
+        <location filename="../ui/moluscedialogbase.ui" line="716"/>
         <source>Browse...</source>
         <translation>Navegar...</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="557"/>
+        <location filename="../ui/moluscedialogbase.ui" line="565"/>
         <source>Certainty function</source>
         <translation>Mapa de previsão de confiança</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="537"/>
+        <location filename="../ui/moluscedialogbase.ui" line="545"/>
         <source>Simulation result</source>
         <translation>Resultado da simulação</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="523"/>
+        <location filename="../ui/moluscedialogbase.ui" line="531"/>
         <source>Number of simulation iterations</source>
         <translation>Número de iterações de simulação</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="442"/>
+        <location filename="../ui/moluscedialogbase.ui" line="450"/>
         <source>potential_</source>
         <translation>potential_</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="603"/>
+        <location filename="../ui/moluscedialogbase.ui" line="611"/>
         <source>Start</source>
         <translation>Início</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="626"/>
+        <location filename="../ui/moluscedialogbase.ui" line="634"/>
         <source>Validation</source>
         <translation>Validação</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="666"/>
+        <location filename="../ui/moluscedialogbase.ui" line="674"/>
         <source>Create...</source>
         <translation>Criar...</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="673"/>
+        <location filename="../ui/moluscedialogbase.ui" line="681"/>
         <source>Validation Map</source>
         <translation>Mapa de erros</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="680"/>
+        <location filename="../ui/moluscedialogbase.ui" line="688"/>
         <source>Simulated Map</source>
         <translation>Mapa de resultados da simulação</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="694"/>
+        <location filename="../ui/moluscedialogbase.ui" line="702"/>
         <source>Reference Map</source>
         <translation>Mapa dos valores verdadeiros</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="735"/>
+        <location filename="../ui/moluscedialogbase.ui" line="743"/>
         <source>Number of validation iterations</source>
         <translation>Número de iterações de validação</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="742"/>
+        <location filename="../ui/moluscedialogbase.ui" line="750"/>
         <source>Check persistent classes</source>
         <translation>Calcular classes persistentes</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="768"/>
+        <location filename="../ui/moluscedialogbase.ui" line="776"/>
         <source>% of Correctness</source>
         <translation>% de correcção</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="840"/>
+        <location filename="../ui/moluscedialogbase.ui" line="848"/>
         <source>Calculate kappa</source>
         <translation>Calcular kappa</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="847"/>
+        <location filename="../ui/moluscedialogbase.ui" line="855"/>
         <source>Start validation</source>
         <translation>Iniciar validação</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="857"/>
+        <location filename="../ui/moluscedialogbase.ui" line="865"/>
         <source>Messages</source>
         <translation>Mensagens</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="794"/>
+        <location filename="../ui/moluscedialogbase.ui" line="802"/>
         <source>Kappa (overall)</source>
         <translation>Kappa (geral)</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="820"/>
+        <location filename="../ui/moluscedialogbase.ui" line="828"/>
         <source>Kappa (histogram)</source>
         <translation>Kappa (histograma)</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="833"/>
+        <location filename="../ui/moluscedialogbase.ui" line="841"/>
         <source>Kappa (location)</source>
         <translation>Kappa (posição)</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="401"/>
+        <location filename="../ui/moluscedialogbase.ui" line="409"/>
         <source>Transition potential maps</source>
         <translation>Mapas de potencial de transição</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="428"/>
+        <location filename="../ui/moluscedialogbase.ui" line="436"/>
         <source>Directory path</source>
         <translation>Caminho do diretório</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="435"/>
+        <location filename="../ui/moluscedialogbase.ui" line="443"/>
         <source>Filename prefix</source>
         <translation>Prefixo do nome do ficheiro</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="467"/>
+        <location filename="../ui/moluscedialogbase.ui" line="475"/>
         <source>Select Directory...</source>
         <translation>Selecionar diretório...</translation>
+    </message>
+</context>
+<context>
+    <name>MolusceTableWidget</name>
+    <message>
+        <location filename="../moluscetablewidget.py" line="51"/>
+        <source>Copy entire table</source>
+        <translation>Copiar a tabela inteira</translation>
+    </message>
+    <message>
+        <location filename="../moluscetablewidget.py" line="50"/>
+        <source>Copy selected cells</source>
+        <translation>Copiar células seleccionadas</translation>
     </message>
 </context>
 <context>
