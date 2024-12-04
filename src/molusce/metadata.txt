@@ -9,7 +9,7 @@ about[ja] = プラグインは、ANN、LR、WoE、MCEなどの土地利用変化
 about[pt] = O Plugin fornece um conjunto de algoritmos para simulações de mudança de uso da terra, como ANN, LR, WoE, MCE. Há também validação utilizando estatísticas kappa. Desenvolvido por Asia Air Survey e NextGIS. Qualquer feedback é bem-vindo em https://nextgis.com/contact
 description = Modules for Land Use Change Simulations
 category = Raster
-version = 4.1.0
+version = 4.2.0
 qgisMinimumVersion = 3.22
 qgisMaximumVersion = 3.99
 
@@ -30,18 +30,20 @@ experimental = False
 deprecated = False
 
 changelog=
+        4.2.0
+            * Added the ability to copy data from a table or selected cells via a hotkey or context menu
         4.1.0
-                * Added plugin item to help menu
-                * Increased MAX_CATEGORIES to 256
-                * Updated the "About plugin" dialog
-                * Updated plugin icon
-                * Updated documentation
-                * Fixed usage of numpy 2.0
+            * Added plugin item to help menu
+            * Increased MAX_CATEGORIES to 256
+            * Updated the "About plugin" dialog
+            * Updated plugin icon
+            * Updated documentation
+            * Fixed usage of numpy 2.0
         4.0.0:
-                * MOLUSCE updated for use in QGIS 3
+            * MOLUSCE updated for use in QGIS 3
         3.0.13:
-                * BugFixing: disable analisys if rasterss are not matched
+            * BugFixing: disable analisys if rasterss are not matched
         3.0.12:
-                * BugFixing: fix import errors on Ubuntu 16.04
+            * BugFixing: fix import errors on Ubuntu 16.04
         3.0.11:
-                * Check if Init and Final state raster are nominal
+            * Check if Init and Final state raster are nominal
