@@ -16,12 +16,12 @@
     <message>
         <location filename="../aboutdialog.py" line="190"/>
         <source>Please report bugs at</source>
-        <translation>Пожалуйста, сообщайте о багах в</translation>
+        <translation>Пожалуйста, сообщайте об ошибках в</translation>
     </message>
     <message>
         <location filename="../aboutdialog.py" line="193"/>
         <source>Video with an overview of the plugin</source>
-        <translation>Видео с обзором на плагин</translation>
+        <translation>Видео с обзором плагина</translation>
     </message>
     <message>
         <location filename="../aboutdialog.py" line="194"/>
@@ -1627,16 +1627,16 @@ medium quantity inform.</source>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="293"/>
-        <source>	 factor: {} 
+        <source>	 factor: {}
 </source>
-        <translation>	 фактор влияния: {} 
+        <translation>	 фактор влияния: {}
 </translation>
     </message>
     <message>
         <location filename="../algorithms/models/woe/manager.py" line="296"/>
-        <source>		 Weights of band {}: {} 
+        <source>		 Weights of band {}: {}
 </source>
-        <translation>		 Веса канала {}: {} 
+        <translation>		 Веса канала {}: {}
 </translation>
     </message>
     <message>
