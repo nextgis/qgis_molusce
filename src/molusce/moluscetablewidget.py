@@ -40,12 +40,7 @@ class MolusceTableWidget(QTableWidget):
             e.modifiers() == Qt.ControlModifier
             or e.modifiers() == Qt.MetaModifier
         ) and e.key() == Qt.Key_C:
-            selected_items = len(self.selectedIndexes())
-            total_cells = self.rowCount() * self.columnCount()
-            if selected_items == total_cells:
-                self.copy_full_table()
-            else:
-                self.copy_selected_cells()
+            self.copy_selected_cells()
         else:
             QTableWidget.keyPressEvent(self, e)
 
