@@ -25,7 +25,7 @@
 
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import QAction, QMenu, QTableWidget
+from qgis.PyQt.QtWidgets import QAction, QMenu, QTableWidget, QTableWidgetItem
 
 
 class MolusceTableWidget(QTableWidget):
@@ -40,7 +40,12 @@ class MolusceTableWidget(QTableWidget):
             e.modifiers() == Qt.ControlModifier
             or e.modifiers() == Qt.MetaModifier
         ) and e.key() == Qt.Key_C:
-            self.copy_selected_cells()
+            selected_items = len(self.selectedIndexes())
+            total_cells = self.rowCount() * self.columnCount()
+            if selected_items == total_cells:
+                self.copy_full_table()
+            else:
+                self.copy_selected_cells()
         else:
             QTableWidget.keyPressEvent(self, e)
 
@@ -61,45 +66,17 @@ class MolusceTableWidget(QTableWidget):
         context_menu.exec(self.viewport().mapToGlobal(pos))
 
     def copy_selected_cells(self) -> None:
+        if len(self.selectedIndexes()) == 0:
+            return
+
         data = ""
         selected_cells = sorted(self.selectedIndexes())
         max_column = max(cell.column() for cell in selected_cells)
 
-        # table header
-        data += "\t"
-        for cell in selected_cells:
-            column = cell.column()
-            data += self.horizontalHeaderItem(column).text() + "\t"
-            if column == max_column:
-                break
-        data += "\n"
-
-        # table contents
-        add_vertical_header_item = True
         for cell in selected_cells:
             row = cell.row()
             column = cell.column()
-            if add_vertical_header_item:
-                data += self.verticalHeaderItem(row).text() + "\t"
-                add_vertical_header_item = False
-            if column == 0:
-                if self.item(row, 0) is not None:
-                    if self.item(row, 0).text() == "":
-                        data += (
-                            self.item(row, 0).background().color().name()
-                            + "\t"
-                        )
-                    else:
-                        data += self.item(row, 0).text() + "\t"
-                else:
-                    data += "\t"
-            else:
-                data += self.item(row, column).text()
-                if column == max_column:
-                    data += "\n"
-                    add_vertical_header_item = True
-                else:
-                    data += "\t"
+            data += self.__item_to_text(self.item(row, column), max_column)
 
         if data != "":
             clipBoard = QGuiApplication.clipboard()
@@ -107,6 +84,7 @@ class MolusceTableWidget(QTableWidget):
 
     def copy_full_table(self) -> None:
         data = ""
+        max_column = self.columnCount() - 1
 
         # table header
         data += "\t"
@@ -118,21 +96,20 @@ class MolusceTableWidget(QTableWidget):
         for row in range(self.rowCount()):
             data += self.verticalHeaderItem(row).text() + "\t"
             for column in range(self.columnCount()):
-                if column == 0:
-                    if self.item(row, 0) is not None:
-                        if self.item(row, 0).text() == "":
-                            data += (
-                                self.item(row, 0).background().color().name()
-                                + "\t"
-                            )
-                        else:
-                            data += self.item(row, 0).text() + "\t"
-                    else:
-                        data += "\t"
-                else:
-                    data += self.item(row, column).text() + "\t"
-            data += "\n"
+                data += self.__item_to_text(self.item(row, column), max_column)
 
         if data != "":
             clipBoard = QGuiApplication.clipboard()
             clipBoard.setText(data)
+
+    def __item_to_text(self, item: QTableWidgetItem, max_column: int) -> str:
+        if item is None:
+            return "\t"
+
+        if item.column() == 0 and item.text() == "":
+            return item.background().color().name() + "\t"
+
+        if item.column() == max_column:
+            return item.text() + "\n"
+
+        return item.text() + "\t"
