@@ -25,7 +25,7 @@
 
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import QAction, QMenu, QTableWidget
+from qgis.PyQt.QtWidgets import QAction, QMenu, QTableWidget, QTableWidgetItem
 
 
 class MolusceTableWidget(QTableWidget):
@@ -58,34 +58,20 @@ class MolusceTableWidget(QTableWidget):
         copy_selected_cells_action.triggered.connect(self.copy_selected_cells)
         copy_entire_table_action.triggered.connect(self.copy_full_table)
 
-        context_menu.exec_(self.viewport().mapToGlobal(pos))
+        context_menu.exec(self.viewport().mapToGlobal(pos))
 
     def copy_selected_cells(self) -> None:
+        if len(self.selectedIndexes()) == 0:
+            return
+
         data = ""
         selected_cells = sorted(self.selectedIndexes())
         max_column = max(cell.column() for cell in selected_cells)
 
-        # table header
-        data += "\t"
         for cell in selected_cells:
-            if self.horizontalHeaderItem(cell.column()).text() not in data:
-                data += self.horizontalHeaderItem(cell.column()).text() + "\t"
-        data += "\n"
-
-        # table contents
-        for cell in selected_cells:
-            if self.verticalHeaderItem(cell.row()).text() not in data:
-                data += self.verticalHeaderItem(cell.row()).text() + "\t"
-            if cell.column() == 0:
-                data += (
-                    self.item(cell.row(), 0).background().color().name() + "\t"
-                )
-            else:
-                data += self.item(cell.row(), cell.column()).text()
-                if cell.column() == max_column:
-                    data += "\n"
-                else:
-                    data += "\t"
+            row = cell.row()
+            column = cell.column()
+            data += self.__item_to_text(self.item(row, column), max_column)
 
         if data != "":
             clipBoard = QGuiApplication.clipboard()
@@ -93,6 +79,7 @@ class MolusceTableWidget(QTableWidget):
 
     def copy_full_table(self) -> None:
         data = ""
+        max_column = self.columnCount() - 1
 
         # table header
         data += "\t"
@@ -101,15 +88,23 @@ class MolusceTableWidget(QTableWidget):
         data += "\n"
 
         # table contents
-        for r in range(self.rowCount()):
-            data += self.verticalHeaderItem(r).text() + "\t"
-            for c in range(self.columnCount()):
-                if c == 0:
-                    data += self.item(r, 0).background().color().name() + "\t"
-                else:
-                    data += self.item(r, c).text() + "\t"
-            data += "\n"
+        for row in range(self.rowCount()):
+            data += self.verticalHeaderItem(row).text() + "\t"
+            for column in range(self.columnCount()):
+                data += self.__item_to_text(self.item(row, column), max_column)
 
         if data != "":
             clipBoard = QGuiApplication.clipboard()
             clipBoard.setText(data)
+
+    def __item_to_text(self, item: QTableWidgetItem, max_column: int) -> str:
+        if item is None:
+            return "\t"
+
+        if item.column() == 0 and item.text() == "":
+            return item.background().color().name() + "\t"
+
+        if item.column() == max_column:
+            return item.text() + "\n"
+
+        return item.text() + "\t"
