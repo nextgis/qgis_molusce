@@ -23,6 +23,8 @@
 #
 # ******************************************************************************
 
+from typing import Optional
+
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import QAction, QMenu, QTableWidget, QTableWidgetItem
@@ -89,7 +91,9 @@ class MolusceTableWidget(QTableWidget):
 
         # table contents
         for row in range(self.rowCount()):
-            data += self.verticalHeaderItem(row).text() + "\t"
+            header = self.verticalHeaderItem(row)
+            header_text = header.text() if header is not None else str(row)
+            data += f"{header_text}\t"
             for column in range(self.columnCount()):
                 data += self.__item_to_text(self.item(row, column), max_column)
 
@@ -97,7 +101,9 @@ class MolusceTableWidget(QTableWidget):
             clipBoard = QGuiApplication.clipboard()
             clipBoard.setText(data)
 
-    def __item_to_text(self, item: QTableWidgetItem, max_column: int) -> str:
+    def __item_to_text(
+        self, item: Optional[QTableWidgetItem], max_column: int
+    ) -> str:
         if item is None:
             return "\t"
 
