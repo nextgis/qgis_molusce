@@ -176,7 +176,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.logMessage(self.tr("Start logging"))
 
     @property
-    def geometry_matched(self):
+    def geometry_matched(self) -> bool:
         return self._geometry_matched
 
     @geometry_matched.setter
@@ -794,11 +794,24 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
+        categories_list = None
+        if self.inputs["initial"].getBandGradation(1) != self.inputs[
+            "final"
+        ].getBandGradation(1):
+            categories_list = list(
+                set(
+                    self.inputs["initial"].getBandGradation(1)
+                    + self.inputs["final"].getBandGradation(1)
+                )
+            )
+            categories_list.sort()
+
         self.simulator = Simulator(
             self.inputs["final"],
             list(self.inputs["factors"].values()),
             self.inputs["model"],
             self.inputs["crosstab"],
+            categories=categories_list,
         )
 
         self.simulator.setIterationCount(self.spnIterations.value())
@@ -1564,13 +1577,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         labels = []
         colors = []
         layer = utils.getLayerById(self.initRasterId)
-        rows = layer.height()
-        cols = layer.width()
-        data_provider = layer.dataProvider()
-        block = data_provider.block(1, data_provider.extent(), cols, rows)
-        unique_values = list(
-            set([block.value(r, c) for r in range(rows) for c in range(cols)])
-        )
         if layer.renderer().type().lower() in (
             "singlebandpseudocolor",
             "paletted",
@@ -1584,6 +1590,17 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     .rasterShaderFunction()
                     .colorRampItemList()
                 )
+            unique_values = self.inputs.get("initial").getBandGradation(1)
+            if self.inputs.get("initial").getBandGradation(
+                1
+            ) != self.inputs.get("final").getBandGradation(1):
+                unique_values = list(
+                    set(
+                        self.inputs.get("initial").getBandGradation(1)
+                        + self.inputs.get("final").getBandGradation(1)
+                    )
+                )
+                unique_values.sort()
             for i in legend:
                 if i.value in unique_values:
                     labels.append(i.label)
