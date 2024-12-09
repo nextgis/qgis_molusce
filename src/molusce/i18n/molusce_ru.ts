@@ -4,52 +4,52 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../aboutdialog.py" line="188"/>
+        <location filename="../aboutdialog.py" line="220"/>
         <source>Developers</source>
         <translation>Разработчики</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="189"/>
+        <location filename="../aboutdialog.py" line="221"/>
         <source>Homepage</source>
         <translation>Домашняя страница</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="190"/>
+        <location filename="../aboutdialog.py" line="222"/>
         <source>Please report bugs at</source>
         <translation>Пожалуйста, сообщайте об ошибках в</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="193"/>
+        <location filename="../aboutdialog.py" line="225"/>
         <source>Video with an overview of the plugin</source>
         <translation>Видео с обзором плагина</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="194"/>
+        <location filename="../aboutdialog.py" line="226"/>
         <source>Other helpful services by NextGIS</source>
         <translation>Другие полезные сервисы от NextGIS</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="195"/>
+        <location filename="../aboutdialog.py" line="227"/>
         <source>Convenient up-to-date data extracts for any place in the world</source>
         <translation>Удобная выборка актуальных данных из любой точки мира</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="198"/>
+        <location filename="../aboutdialog.py" line="230"/>
         <source>Fully featured Web GIS service</source>
         <translation>Полнофункциональный Веб ГИС-сервис</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="183"/>
+        <location filename="../aboutdialog.py" line="215"/>
         <source>REPORT_END</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="192"/>
+        <location filename="../aboutdialog.py" line="224"/>
         <source>bugtracker</source>
         <translation>багтрекер</translation>
     </message>
     <message>
-        <location filename="../aboutdialog.py" line="45"/>
+        <location filename="../aboutdialog.py" line="75"/>
         <source> by NextGIS</source>
         <translation> от NextGIS</translation>
     </message>
@@ -781,17 +781,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="452"/>
         <source>Geometries of the initial raster and raster &apos;{}&apos; are different!</source>
-        <translation>Пространственные характеристики растров начальных и конечных состояний &apos;{}&apos; не совпадают!</translation>
+        <translation>Пространственные характеристики растров начальных и конечных состояний '{}' не совпадают!</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1135"/>
         <source>Can&apos;t read file: &apos;{}&apos;</source>
-        <translation>Не удается прочитать файл: &apos;{}&apos;</translation>
+        <translation>Не удается прочитать файл: '{}'</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1786"/>
         <source>Can&apos;t save file: &apos;{}&apos;</source>
-        <translation>Не удается сохранить файл: &apos;{}&apos;</translation>
+        <translation>Не удается сохранить файл: '{}'</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1801"/>
@@ -813,7 +813,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../moluscedialog.py" line="1058"/>
         <source>Kappa is not applicable to the file: &apos;{}&apos; because it contains continuous value</source>
-        <translation>Расчет каппа-статистики неприменим к файлу: &apos;{}&apos;, поскольку он содержит непрерывное значение</translation>
+        <translation>Расчет каппа-статистики неприменим к файлу: '{}', поскольку он содержит непрерывное значение</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1751"/>
@@ -898,7 +898,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="1770"/>
         <source>File &apos;{}&apos; is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again</source>
-        <translation>Файл &apos;{}&apos; используется в проекте QGIS. Невозможно перезаписать файл, укажите другое имя файла и повторите попытку</translation>
+        <translation>Файл '{}' используется в проекте QGIS. Невозможно перезаписать файл, укажите другое имя файла и повторите попытку</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="642"/>
@@ -918,7 +918,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="742"/>
         <source>Can&apos;t save file in the specified path &apos;{}&apos;. Please specify output path correctly and try again</source>
-        <translation>Не удается сохранить файл по указанному пути &apos;{}&apos;. Пожалуйста, укажите путь сохранения корректно и повторите попытку</translation>
+        <translation>Не удается сохранить файл по указанному пути '{}'. Пожалуйста, укажите путь сохранения корректно и повторите попытку</translation>
     </message>
     <message>
         <location filename="../moluscedialog.py" line="1173"/>
@@ -948,7 +948,7 @@ medium quantity inform.</source>
     <message>
         <location filename="../moluscedialog.py" line="761"/>
         <source>Can&apos;t save files with the same output path &apos;{}&apos;. Please specify different output paths and try again</source>
-        <translation>Не удается сохранить файлы по одинаковому пути сохранения &apos;{}&apos;. Пожалуйста, укажите разные пути сохранения и повторите попытку</translation>
+        <translation>Не удается сохранить файлы по одинаковому пути сохранения '{}'. Пожалуйста, укажите разные пути сохранения и повторите попытку</translation>
     </message>
 </context>
 <context>
@@ -1004,7 +1004,7 @@ medium quantity inform.</source>
         <translation>Корреляции</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="282"/>
+        <location filename="../ui/moluscedialogbase.ui" line="291"/>
         <source>Method</source>
         <translation>Метод</translation>
     </message>
@@ -1059,157 +1059,157 @@ medium quantity inform.</source>
         <translation>Создать карту изменений</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="276"/>
+        <location filename="../ui/moluscedialogbase.ui" line="285"/>
         <source>Transition Potential Modelling</source>
         <translation>Моделирование</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="289"/>
+        <location filename="../ui/moluscedialogbase.ui" line="298"/>
         <source>Define Samples</source>
         <translation>Задать примеры</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="310"/>
+        <location filename="../ui/moluscedialogbase.ui" line="319"/>
         <source>Mode</source>
         <translation>Тип выборки</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="320"/>
+        <location filename="../ui/moluscedialogbase.ui" line="329"/>
         <source>Number of samples</source>
         <translation>Число примеров</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="337"/>
+        <location filename="../ui/moluscedialogbase.ui" line="346"/>
         <source>Save Samples...</source>
         <translation>Сохранить примеры...</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="344"/>
+        <location filename="../ui/moluscedialogbase.ui" line="353"/>
         <source>Add to canvas</source>
         <translation>Добавить примеры на карту как слой</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="397"/>
+        <location filename="../ui/moluscedialogbase.ui" line="406"/>
         <source>Cellular Automata Simulation</source>
         <translation>Симуляция</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="716"/>
+        <location filename="../ui/moluscedialogbase.ui" line="725"/>
         <source>Browse...</source>
         <translation>Выбор файлов...</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="565"/>
+        <location filename="../ui/moluscedialogbase.ui" line="574"/>
         <source>Certainty function</source>
         <translation>Карта уверенности в прогнозе</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="545"/>
+        <location filename="../ui/moluscedialogbase.ui" line="554"/>
         <source>Simulation result</source>
         <translation>Результат симуляции</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="531"/>
+        <location filename="../ui/moluscedialogbase.ui" line="540"/>
         <source>Number of simulation iterations</source>
         <translation>Число итераций симуляции</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="450"/>
+        <location filename="../ui/moluscedialogbase.ui" line="459"/>
         <source>potential_</source>
         <translation>potential_</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="611"/>
+        <location filename="../ui/moluscedialogbase.ui" line="620"/>
         <source>Start</source>
         <translation>Пуск</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="634"/>
+        <location filename="../ui/moluscedialogbase.ui" line="643"/>
         <source>Validation</source>
         <translation>Валидация</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="674"/>
+        <location filename="../ui/moluscedialogbase.ui" line="683"/>
         <source>Create...</source>
         <translation>Создать...</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="681"/>
+        <location filename="../ui/moluscedialogbase.ui" line="690"/>
         <source>Validation Map</source>
         <translation>Карта ошибок</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="688"/>
+        <location filename="../ui/moluscedialogbase.ui" line="697"/>
         <source>Simulated Map</source>
         <translation>Карта-результат симуляции</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="702"/>
+        <location filename="../ui/moluscedialogbase.ui" line="711"/>
         <source>Reference Map</source>
         <translation>Карта истинных значений</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="743"/>
+        <location filename="../ui/moluscedialogbase.ui" line="752"/>
         <source>Number of validation iterations</source>
         <translation>Число итераций валидации</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="750"/>
+        <location filename="../ui/moluscedialogbase.ui" line="759"/>
         <source>Check persistent classes</source>
         <translation>Рассчитать постоянные классы</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="776"/>
+        <location filename="../ui/moluscedialogbase.ui" line="785"/>
         <source>% of Correctness</source>
         <translation>% правильных ответов</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="848"/>
+        <location filename="../ui/moluscedialogbase.ui" line="857"/>
         <source>Calculate kappa</source>
         <translation>Рассчитать каппа-статистики</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="855"/>
+        <location filename="../ui/moluscedialogbase.ui" line="864"/>
         <source>Start validation</source>
         <translation>Начать валидацию</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="865"/>
+        <location filename="../ui/moluscedialogbase.ui" line="874"/>
         <source>Messages</source>
         <translation>Сообщения</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="802"/>
+        <location filename="../ui/moluscedialogbase.ui" line="811"/>
         <source>Kappa (overall)</source>
         <translation>Каппа (общая)</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="828"/>
+        <location filename="../ui/moluscedialogbase.ui" line="837"/>
         <source>Kappa (histogram)</source>
         <translation>Каппа (гистограмма)</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="841"/>
+        <location filename="../ui/moluscedialogbase.ui" line="850"/>
         <source>Kappa (location)</source>
         <translation>Каппа (положение)</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="409"/>
+        <location filename="../ui/moluscedialogbase.ui" line="418"/>
         <source>Transition potential maps</source>
         <translation>Карты потенциальных переходов</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="436"/>
+        <location filename="../ui/moluscedialogbase.ui" line="445"/>
         <source>Directory path</source>
         <translation>Путь директории сохранения</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="443"/>
+        <location filename="../ui/moluscedialogbase.ui" line="452"/>
         <source>Filename prefix</source>
         <translation>Префикс имени файла</translation>
     </message>
     <message>
-        <location filename="../ui/moluscedialogbase.ui" line="475"/>
+        <location filename="../ui/moluscedialogbase.ui" line="484"/>
         <source>Select Directory...</source>
         <translation>Выбрать директорию...</translation>
     </message>
@@ -1217,12 +1217,12 @@ medium quantity inform.</source>
 <context>
     <name>MolusceTableWidget</name>
     <message>
-        <location filename="../moluscetablewidget.py" line="51"/>
+        <location filename="../moluscetablewidget.py" line="55"/>
         <source>Copy entire table</source>
         <translation>Копировать таблицу полностью</translation>
     </message>
     <message>
-        <location filename="../moluscetablewidget.py" line="50"/>
+        <location filename="../moluscetablewidget.py" line="52"/>
         <source>Copy selected cells</source>
         <translation>Копировать выделенные ячейки</translation>
     </message>
@@ -1626,20 +1626,6 @@ medium quantity inform.</source>
 </translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="293"/>
-        <source>	 factor: {}
-</source>
-        <translation>	 фактор влияния: {}
-</translation>
-    </message>
-    <message>
-        <location filename="../algorithms/models/woe/manager.py" line="296"/>
-        <source>		 Weights of band {}: {}
-</source>
-        <translation>		 Веса канала {}: {}
-</translation>
-    </message>
-    <message>
         <location filename="../algorithms/models/woe/manager.py" line="300"/>
         <source>W for code {} ({} -&gt; {}) causes error</source>
         <translation>Вес для кода {} ({} -&gt; {}) привел к ошибке</translation>
@@ -1653,6 +1639,18 @@ medium quantity inform.</source>
         <location filename="../algorithms/models/woe/manager.py" line="271"/>
         <source>An unknown error occurs during WoE training</source>
         <translation>В процессе обучения модели значимости признака возникла неизвестная ошибка</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/manager.py" line="293"/>
+        <source><byte value="x9"/> factor: {} 
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/manager.py" line="296"/>
+        <source><byte value="x9"/><byte value="x9"/> Weights of band {}: {} 
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
