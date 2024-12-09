@@ -9,7 +9,7 @@ about[ja] = プラグインは、ANN、LR、WoE、MCEなどの土地利用変化
 about[pt] = O Plugin fornece um conjunto de algoritmos para simulações de mudança de uso da terra, como ANN, LR, WoE, MCE. Há também validação utilizando estatísticas kappa. Desenvolvido por Asia Air Survey e NextGIS. Qualquer feedback é bem-vindo em https://nextgis.com/contact
 description = Modules for Land Use Change Simulations
 category = Raster
-version = 4.2.0
+version = 4.2.1
 qgisMinimumVersion = 3.22
 qgisMaximumVersion = 3.99
 
@@ -30,6 +30,8 @@ experimental = False
 deprecated = False
 
 changelog=
+        4.2.1
+            * Fixed the ability to copy data from a table
         4.2.0
             * Added the ability to copy data from a table or selected cells via a hotkey or context menu
         4.1.0
