@@ -723,7 +723,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         except CrossTabManagerError as error:
             QMessageBox.warning(
                 self,
-                self.tr("Missed input data"),
+                self.tr("Invalid input data"),
                 str(error),
             )
             return
@@ -1378,7 +1378,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             gc.collect()
         except CoeffError as error:
             QMessageBox.warning(
-                None,
+                self,
                 self.tr("Model training failed"),
                 str(error),
             )
