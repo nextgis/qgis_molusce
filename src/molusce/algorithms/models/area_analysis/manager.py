@@ -124,7 +124,7 @@ class AreaAnalyst(QObject):
                 self.makeChangeMap()
             except AreaAnalizerError as error:
                 QMessageBox.warning(
-                    self,
+                    None,
                     self.tr("Invalid input rasters"),
                     str(error),
                 )
