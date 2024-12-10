@@ -45,7 +45,7 @@ from matplotlib import rcParams
 from matplotlib.figure import Figure
 
 from . import molusceutils as utils
-from .algorithms.models.mlp.manager import MlpManager
+from .algorithms.models.mlp.manager import MlpManager, MlpManagerError
 from .ui.ui_neuralnetworkwidgetbase import Ui_NeuralNetworkWidgetBase
 
 
@@ -156,21 +156,28 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
 
         model = MlpManager(ns=self.spnNeigbourhood.value())
         self.inputs["model"] = model
-        model.createMlp(
-            self.inputs["initial"],
-            list(self.inputs["factors"].values()),
-            self.inputs["changeMap"],
-            [int(n) for n in self.leTopology.text().split(" ")],
-        )
-
-        self.plugin.logMessage(self.tr("Set training data"))
-        model.setTrainingData(
-            self.inputs["initial"],
-            list(self.inputs["factors"].values()),
-            self.inputs["changeMap"],
-            mode=self.inputs["samplingMode"],
-            samples=self.plugin.spnSamplesCount.value(),
-        )
+        try:
+            model.createMlp(
+                self.inputs["initial"],
+                list(self.inputs["factors"].values()),
+                self.inputs["changeMap"],
+                [int(n) for n in self.leTopology.text().split(" ")],
+            )
+            self.plugin.logMessage(self.tr("Set training data"))
+            model.setTrainingData(
+                self.inputs["initial"],
+                list(self.inputs["factors"].values()),
+                self.inputs["changeMap"],
+                mode=self.inputs["samplingMode"],
+                samples=self.plugin.spnSamplesCount.value(),
+            )
+        except MlpManagerError as error:
+            QMessageBox.warning(
+                self,
+                self.tr("Output layer error"),
+                str(error),
+            )
+            return
 
         model.setEpochs(self.spnMaxIterations.value())
         model.setValPercent(20)
