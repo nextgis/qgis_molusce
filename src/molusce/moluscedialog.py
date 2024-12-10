@@ -716,9 +716,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        crossTabMan = CrossTableManager(
-            self.inputs["initial"], self.inputs["final"]
-        )
+        try:
+            crossTabMan = CrossTableManager(
+                self.inputs["initial"], self.inputs["final"]
+            )
+        except CrossTabManagerError as error:
+            QMessageBox.warning(
+                self,
+                self.tr("Missed input data"),
+                str(error),
+            )
+            return
+
         self.inputs["crosstab"] = crossTabMan
 
         # class statistics
