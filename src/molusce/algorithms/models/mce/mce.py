@@ -83,20 +83,22 @@ class MCE(QObject):
             f.normalize(mode="maxmin")
         if self.dim != len(wMatr):
             raise MCEError(
-                "Matrix size is different from the number of variables!"
+                self.tr(
+                    "Matrix size is different from the number of variables!"
+                )
             )
 
         # Check if the matrix is valid
         for i in range(self.dim):
             if len(wMatr[i]) != self.dim:
-                raise MCEError("The weight matrix is not NxN!")
+                raise MCEError(self.tr("The weight matrix is not NxN!"))
         EPSILON = 0.000001  # A small number
         for i in range(self.dim):
             if wMatr[i][i] != 1:
-                raise MCEError("w[i,i] not equal 1 !")
+                raise MCEError(self.tr("w[i,i] not equal 1 !"))
             for j in range(i + 1, self.dim):
                 if abs(wMatr[i][j] * wMatr[j][i] - 1) > EPSILON:
-                    raise MCEError("w[i,j] * w[j,i] not equal 1 !")
+                    raise MCEError(self.tr("w[i,j] * w[j,i] not equal 1 !"))
 
         self.wMatr = np.array(wMatr)
 
@@ -162,7 +164,9 @@ class MCE(QObject):
             for f in self.factors:
                 if not f.geoDataMatch(state):
                     raise MCEError(
-                        "Geometries of the state and factor rasters are different!"
+                        self.tr(
+                            "Geometries of the state and factor rasters are different!"
+                        )
                     )
                 f.normalize(mode="maxmin")
                 for i in range(f.getBandsCount()):
