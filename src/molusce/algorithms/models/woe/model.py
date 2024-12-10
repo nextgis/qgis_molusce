@@ -3,6 +3,7 @@ from collections import namedtuple
 
 import numpy as np
 from numpy import ma as ma
+from qgis.PyQt.QtCore import QCoreApplication
 
 from molusce.algorithms.utils import binaryzation, get_gradations
 
@@ -29,15 +30,26 @@ def _binary_woe(factor, sites, unitcell=1):
     # Check rasters type
     if factor.dtype != bool:
         raise WoeError(
-            "Factor raster must be binary in this mode of the method!"
+            QCoreApplication.translate(
+                "WeightOfEvidenceWidget",
+                "Factor raster must be binary in this mode of the method!",
+            )
         )
     if sites.dtype != bool:
         raise WoeError(
-            "Site raster must be binary in this mode of the method!"
+            QCoreApplication.translate(
+                "WeightOfEvidenceWidget",
+                "Site raster must be binary in this mode of the method!",
+            )
         )
     # Check rasters dimentions
     if factor.shape != sites.shape:
-        raise WoeError("Factor and sites rasters have different shapes!")
+        raise WoeError(
+            QCoreApplication.translate(
+                "WeightOfEvidenceWidget",
+                "Factor and sites rasters have different shapes!",
+            )
+        )
     # Check masked areas of sites and factors are the same
     if (
         factor.mask.shape != () and sites.mask.shape != ()
@@ -45,7 +57,10 @@ def _binary_woe(factor, sites, unitcell=1):
         factor.mask, sites.mask
     ):  # if mask = False ,then mask.shape==()
         raise WoeError(
-            "Masked areas of factor and sites rasters are different!"
+            QCoreApplication.translate(
+                "WeightOfEvidenceWidget",
+                "Masked areas of factor and sites rasters are different!",
+            )
         )
 
     fm = factor.compressed()  # masked factor
@@ -65,13 +80,32 @@ def _binary_woe(factor, sites, unitcell=1):
 
     # Check areas size
     if A == 0:
-        raise WoeError("Unmasked area is zero-size!")
+        raise WoeError(
+            QCoreApplication.translate(
+                "WeightOfEvidenceWidget", "Unmasked area is zero-size!"
+            )
+        )
     if B == 0:
-        raise WoeError("Unmasked area of factor (pattern) is zero-size!")
+        raise WoeError(
+            QCoreApplication.translate(
+                "WeightOfEvidenceWidget",
+                "Unmasked area of factor (pattern) is zero-size!",
+            )
+        )
     if N == 0:
-        raise WoeError("Unmasked area of sites is zero-size!")
+        raise WoeError(
+            QCoreApplication.translate(
+                "WeightOfEvidenceWidget",
+                "Unmasked area of sites is zero-size!",
+            )
+        )
     if (Nb > N) or (N >= A):
-        raise WoeError("Unit cell size is too big for your data!")
+        raise WoeError(
+            QCoreApplication.translate(
+                "WeightOfEvidenceWidget",
+                "Unit cell size is too big for your data!",
+            )
+        )
 
     pSiteFactor = Nb / N
     pNonSiteFactor = (B - Nb) / (A - N)
@@ -106,7 +140,11 @@ def woe(factor, sites, unit_cell=1):
     # Try to binarize sites:
     sCategories = get_gradations(sites.compressed())
     if len(sCategories) != 2:
-        raise WoeError("Site raster must be binary!")
+        raise WoeError(
+            QCoreApplication.translate(
+                "WeightOfEvidenceWidget", "Site raster must be binary!"
+            )
+        )
     sites = binaryzation(sites, [sCategories[1]])
 
     # List of the weights of evidence:
@@ -117,7 +155,12 @@ def woe(factor, sites, unit_cell=1):
             fct = binaryzation(factor, [cat])
             weights.append(_binary_woe(fct, sites, unit_cell))
     else:
-        raise WoeError("Wrong count of categories in the factor raster!")
+        raise WoeError(
+            QCoreApplication.translate(
+                "WeightOfEvidenceWidget",
+                "Wrong count of categories in the factor raster!",
+            )
+        )
 
     wTotalMin = sum([w[1] for w in weights])
     # List of total weights of evidence of the categories:
