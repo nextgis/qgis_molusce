@@ -37,13 +37,15 @@ class AreaAnalyst(QObject):
         QObject.__init__(self)
 
         if second is not None and (not first.geoDataMatch(second)):
-            raise AreaAnalizerError("Geometries of the rasters are different!")
+            raise AreaAnalizerError(
+                self.tr("Geometries of the rasters are different!")
+            )
 
         if first.getBandsCount() != 1:
-            raise AreaAnalizerError("First raster must have 1 band!")
+            raise AreaAnalizerError(self.tr("First raster must have 1 band!"))
 
         if second is not None and second.getBandsCount() != 1:
-            raise AreaAnalizerError("Second raster must have 1 band!")
+            raise AreaAnalizerError(self.tr("Second raster must have 1 band!"))
 
         self.geodata = first.getGeodata()
         self.categories = first.getBandGradation(1)
@@ -61,7 +63,9 @@ class AreaAnalyst(QObject):
             for cat in self.categoriesSecond:
                 if cat not in self.categories:
                     raise AreaAnalizerError(
-                        "List of categories of the first raster doesn't contains a category of the second raster!"
+                        self.tr(
+                            "List of categories of the first raster doesn't contains a category of the second raster!"
+                        )
                     )
 
         self.changeMap = None
@@ -87,7 +91,9 @@ class AreaAnalyst(QObject):
                 self.categories[finalClassIndex],
             )
         except ValueError as exc:
-            raise AreaAnalizerError("The code is not in list!") from exc
+            raise AreaAnalizerError(
+                self.tr("The code is not in list!")
+            ) from exc
         return (initClass, finalClass)
 
     def encode(self, initialClass, finalClass):
@@ -97,9 +103,16 @@ class AreaAnalyst(QObject):
         value k = initialClass*m + finalClass
         """
         m = len(self.categories)
-        return self.categories.index(initialClass) * m + self.categories.index(
-            finalClass
-        )
+        try:
+            code = self.categories.index(
+                initialClass
+            ) * m + self.categories.index(finalClass)
+        except ValueError as exc:
+            raise AreaAnalizerError(
+                self.tr("The category not in list of categories!")
+            ) from exc
+
+        return code
 
     def finalCodes(self, initialClass):
         """For given initial category return codes of possible final categories. (see 'encode')"""
@@ -107,7 +120,15 @@ class AreaAnalyst(QObject):
 
     def getChangeMap(self):
         if self.changeMap is None:
-            self.makeChangeMap()
+            try:
+                self.makeChangeMap()
+            except AreaAnalizerError as error:
+                QMessageBox.warning(
+                    self,
+                    self.tr("Invalid input rasters"),
+                    str(error),
+                )
+                return None
         return self.changeMap
 
     def makeChangeMap(self):
@@ -158,8 +179,10 @@ class AreaAnalyst(QObject):
 
     def setInitialRaster(self, initR):
         if not initR.geoDataMatch(raster=None, geodata=self.geodata):
-            raise AreaAnalizerError("Geometries of the rasters are different!")
+            raise AreaAnalizerError(
+                self.tr("Geometries of the rasters are different!")
+            )
         if initR.getBandsCount() != 1:
-            raise AreaAnalizerError("The raster must have 1 band!")
+            raise AreaAnalizerError(self.tr("The raster must have 1 band!"))
 
         self.initRaster = initR

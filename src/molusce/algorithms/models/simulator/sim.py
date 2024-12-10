@@ -2,7 +2,10 @@ import numpy as np
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
-from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
+from molusce.algorithms.models.area_analysis.manager import (
+    AreaAnalizerError,
+    AreaAnalyst,
+)
 
 
 class Simulator(QObject):
@@ -107,7 +110,15 @@ class Simulator(QObject):
 
         self.rangeChanged.emit(self.tr("Area Change Analysis %p%"), 2)
         self.updateProgress.emit()
-        analyst = AreaAnalyst(state, second=None)
+        try:
+            analyst = AreaAnalyst(state, second=None)
+        except AreaAnalizerError as error:
+            QMessageBox.warning(
+                self,
+                self.tr("Invalid input rasters"),
+                str(error),
+            )
+            return
         self.updateProgress.emit()
 
         categories = state.getBandGradation(1)
