@@ -130,7 +130,7 @@ class MlpManager(QObject):
         @param ns               Neighbourhood size.
         """
         if output.getBandsCount() != 1:
-            raise MlpManagerError("Output layer must have one band!")
+            raise MlpManagerError(self.tr("Output layer must have one band!"))
 
         input_neurons = 0
         for raster in factors:
@@ -257,7 +257,9 @@ class MlpManager(QObject):
             for r in factors:
                 if not state.geoDataMatch(r):
                     raise MlpManagerError(
-                        "Geometries of the input rasters are different!"
+                        self.tr(
+                            "Geometries of the input rasters are different!"
+                        )
                     )
 
             self.transitionPotentials = (
@@ -374,7 +376,7 @@ class MlpManager(QObject):
         @samples                Sample count of the training data (doesn't used in 'All' mode).
         """
         if not self.MLP:
-            raise MlpManagerError("You must create a MLP before!")
+            raise MlpManagerError(self.tr("You must create a MLP before!"))
 
         # Normalize factors before sampling:
         for f in factors:
