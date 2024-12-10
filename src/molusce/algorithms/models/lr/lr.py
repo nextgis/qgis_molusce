@@ -138,7 +138,9 @@ class LR(QObject):
             for r in factors:
                 if not state.geoDataMatch(r):
                     raise LRError(
-                        "Geometries of the input rasters are different!"
+                        self.tr(
+                            "Geometries of the input rasters are different!"
+                        )
                     )
 
             self.transitionPotentials = (
@@ -259,7 +261,7 @@ class LR(QObject):
         )
         if not self.logreg:
             raise LRError(
-                "You must create a Logistic Regression model before!"
+                self.tr("You must create a Logistic Regression model before!")
             )
 
         # Normalize factors before sampling:
@@ -310,6 +312,13 @@ class LR(QObject):
             QMessageBox.warning(
                 None,
                 self.tr("Model training failed"),
+                str(error),
+            )
+            return
+        except LRError as error:
+            QMessageBox.warning(
+                None,
+                self.tr("Missed LR model"),
                 str(error),
             )
             return
