@@ -69,7 +69,9 @@ class Sampler(QObject):
                 raster=None, geodata=self.factorsGeoData
             ):
                 raise SamplerError(
-                    "Geometries of the inputs and output rasters are different!"
+                    self.tr(
+                        "Geometries of the inputs and output rasters are different!"
+                    )
                 )
 
         self.stateCategories = state.getBandGradation(
@@ -237,7 +239,7 @@ class Sampler(QObject):
     def saveSamples(self, fileName):
         data = self.getData()
         if data is None:
-            raise SamplerError("Samples cannot be created!")
+            raise SamplerError(self.tr("Samples cannot be created!"))
 
         workdir = os.path.dirname(fileName)
         fileName = os.path.splitext(os.path.basename(fileName))[0]
@@ -249,7 +251,7 @@ class Sampler(QObject):
         ds = driver.CreateDataSource(workdir)
         lyr = ds.CreateLayer(fileName, sr, ogr.wkbPoint)
         if lyr is None:
-            raise SamplerError("Creating output file failed!")
+            raise SamplerError(self.tr("Creating output file failed!"))
 
         fieldnames = ["state" + str(i) for i in range(self.stateVecLen)]
         fieldnames = fieldnames + [
@@ -262,7 +264,7 @@ class Sampler(QObject):
         for name in fieldnames:
             field_defn = ogr.FieldDefn(name, ogr.OFTReal)
             if lyr.CreateField(field_defn) != 0:
-                raise SamplerError("Creating Name field failed!")
+                raise SamplerError(self.tr("Creating Name field failed!"))
 
         for row in data:
             x, y = row["coords"]
@@ -302,7 +304,7 @@ class Sampler(QObject):
                 feat.SetGeometry(pt)
                 if lyr.CreateFeature(feat) != 0:
                     raise SamplerError(
-                        "Failed to create feature in shapefile!"
+                        self.tr("Failed to create feature in shapefile!")
                     )
                 feat.Destroy()
         ds = None
@@ -324,7 +326,9 @@ class Sampler(QObject):
             for r in [state, output]:
                 if not r.geoDataMatch(raster=None, geodata=geodata):
                     raise SamplerError(
-                        "Geometries of the inputs or output rasters are distinct from factor's geometry!"
+                        self.tr(
+                            "Geometries of the inputs or output rasters are distinct from factor's geometry!"
+                        )
                     )
 
             # Real count of the samples
@@ -425,10 +429,17 @@ class Sampler(QObject):
                         else:
                             count = count + 1
             else:
-                raise SamplerError("The mode of sampling is unknown!")
+                raise SamplerError(self.tr("The mode of sampling is unknown!"))
 
             if shuffle:
                 np.random.shuffle(self.data)
+        except SamplerError as error:
+            QMessageBox.warning(
+                None,
+                self.tr("Sampling error"),
+                str(error),
+            )
+            return
         except MemoryError:
             self.errorReport.emit(
                 self.tr("The system is out of memory during sampling")
