@@ -140,6 +140,13 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
                 self.plugin.analyst,
                 bins=myBins,
             )
+        except AttributeError:
+            QMessageBox.warning(
+                self.plugin,
+                self.tr("Error"),
+                self.tr("Model training failed"),
+            )
+            return
         except WoeManagerError as err:
             QMessageBox.warning(
                 self.plugin, self.tr("Initialization error"), err.msg

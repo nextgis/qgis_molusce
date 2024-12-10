@@ -785,9 +785,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         self.inputs["changeMapName"] = fileName
 
-        self.analyst = AreaAnalyst(
-            self.inputs["initial"], self.inputs["final"]
-        )
+        try:
+            self.analyst = AreaAnalyst(
+                self.inputs["initial"], self.inputs["final"]
+            )
+        except AreaAnalizerError as error:
+            QMessageBox.warning(
+                self,
+                self.tr("Invalid input rasters"),
+                str(error),
+            )
+            return
+
         self.analyst.moveToThread(self.workThread)
         self.workThread.started.connect(self.analyst.getChangeMap)
         self.analyst.rangeChanged.connect(self.setProgressRange)
@@ -1140,18 +1149,35 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             directory_path = Path(self.leTransitionPotentialDirectory.text())
             prefix = self.leTransitionPotentialPrefix.text()
             if not hasattr(self, "analyst"):
-                self.analyst = AreaAnalyst(
-                    self.inputs["initial"], self.inputs["final"]
-                )
+                try:
+                    self.analyst = AreaAnalyst(
+                        self.inputs["initial"], self.inputs["final"]
+                    )
+                except AreaAnalizerError as error:
+                    QMessageBox.warning(
+                        self,
+                        self.tr("Invalid input rasters"),
+                        str(error),
+                    )
+                    return
             if potentials is not None:
                 for k, v in potentials.items():
-                    initcat, finalcat = map(
-                        lambda category: str(category).replace(".", "_"),
-                        self.analyst.decode(int(k)),
-                    )
-                    file_name = f"{prefix}_from_{initcat}_to_{finalcat}.tif"
-                    v.save(str(directory_path / file_name))
-
+                    try:
+                        initcat, finalcat = map(
+                            lambda category: str(category).replace(".", "_"),
+                            self.analyst.decode(int(k)),
+                        )
+                        file_name = (
+                            f"{prefix}_from_{initcat}_to_{finalcat}.tif"
+                        )
+                        v.save(str(directory_path / file_name))
+                    except AreaAnalizerError as error:
+                        QMessageBox.warning(
+                            self,
+                            self.tr("Invalid input rasters"),
+                            str(error),
+                        )
+                        return
             else:
                 QMessageBox.warning(
                     self,
