@@ -3,7 +3,7 @@
 import numpy as np
 from qgis.PyQt.QtCore import *
 
-from molusce.algorithms.models.crosstabs.model import CrossTable
+from molusce.algorithms.models.crosstabs.model import CrossTabError, CrossTable
 
 
 class CrossTabManagerError(Exception):
@@ -39,9 +39,15 @@ class CrossTableManager(QObject):
 
         self.pixelArea = initRaster.getPixelArea()
 
-        self.crosstable = CrossTable(
-            initRaster.getBand(1), finalRaster.getBand(1)
-        )
+        try:
+            self.crosstable = CrossTable(
+                initRaster.getBand(1), finalRaster.getBand(1)
+            )
+        except CrossTabError as error:
+            QMessageBox.warning(
+                None, self.tr("Different geometry"), str(error)
+            )
+            return
 
         self.crosstable.rangeChanged.connect(
             self.__crosstableProgressRangeChanged

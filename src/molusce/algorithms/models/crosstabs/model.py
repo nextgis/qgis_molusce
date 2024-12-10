@@ -36,7 +36,7 @@ class CrossTable(QObject):
         QObject.__init__(self)
 
         if not sizes_equal(band1, band2):
-            raise CrossTabError("Sizes of rasters are not equal!")
+            raise CrossTabError(self.tr("Sizes of rasters are not equal!"))
 
         band1, band2 = masks_identity(band1, band2, dtype=np.uint8)
 
