@@ -27,12 +27,14 @@ class CrossTableManager(QObject):
 
         if not initRaster.geoDataMatch(finalRaster):
             raise CrossTabManagerError(
-                "Geometries of the raster maps are different!"
+                self.tr("Geometries of the raster maps are different!")
             )
 
         if initRaster.getBandsCount() + finalRaster.getBandsCount() != 2:
             raise CrossTabManagerError(
-                "An input raster has more then one band. Use 1-band rasters!"
+                self.tr(
+                    "An input raster has more then one band. Use 1-band rasters!"
+                )
             )
 
         self.pixelArea = initRaster.getPixelArea()
