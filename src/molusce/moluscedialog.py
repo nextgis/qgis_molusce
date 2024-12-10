@@ -64,7 +64,7 @@ from .algorithms.models.area_analysis.manager import (
     AreaAnalizerError,
     AreaAnalyst,
 )
-from .algorithms.models.correlation.model import DependenceCoef
+from .algorithms.models.correlation.model import CoeffError, DependenceCoef
 from .algorithms.models.crosstabs.manager import (
     CrossTableManager,
     CrossTabManagerError,
@@ -1356,16 +1356,23 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.workThread.quit()
         self.restoreProgressState()
 
-        kappas = self.depCoef.kappa(mode="all")
-        self.leKappaOveral.setText("%6.5f" % (kappas["overal"]))
-        self.leKappaHisto.setText("%6.5f" % (kappas["histo"]))
-        self.leKappaLoc.setText("%6.5f" % (kappas["loc"]))
-        # % of Correctness
-        percent = self.depCoef.correctness()
-        self.leKappaCorrectness.setText("%6.5f" % (percent))
-        del self.depCoef
-        self.logMessage(self.tr("Kappa validation process is finished"))
-        gc.collect()
+        try:
+            kappas = self.depCoef.kappa(mode="all")
+            self.leKappaOveral.setText("%6.5f" % (kappas["overal"]))
+            self.leKappaHisto.setText("%6.5f" % (kappas["histo"]))
+            self.leKappaLoc.setText("%6.5f" % (kappas["loc"]))
+            # % of Correctness
+            percent = self.depCoef.correctness()
+            self.leKappaCorrectness.setText("%6.5f" % (percent))
+            del self.depCoef
+            self.logMessage(self.tr("Kappa validation process is finished"))
+            gc.collect()
+        except CoeffError as error:
+            QMessageBox.warning(
+                None,
+                self.tr("Model training failed"),
+                str(error),
+            )
 
     def createValidationMap(self):
         try:
