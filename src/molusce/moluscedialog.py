@@ -65,7 +65,10 @@ from .algorithms.models.area_analysis.manager import (
     AreaAnalyst,
 )
 from .algorithms.models.correlation.model import DependenceCoef
-from .algorithms.models.crosstabs.manager import CrossTableManager
+from .algorithms.models.crosstabs.manager import (
+    CrossTableManager,
+    CrossTabManagerError,
+)
 from .algorithms.models.crosstabs.model import CrossTabError
 from .algorithms.models.errorbudget.ebmodel import EBError, EBudget
 from .algorithms.models.sampler.sampler import SamplerError
@@ -1760,7 +1763,16 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         if "crosstab" not in self.inputs:
             return
 
-        stat = self.inputs["crosstab"].getTransitionStat()
+        try:
+            stat = self.inputs["crosstab"].getTransitionStat()
+        except CrossTabManagerError as error:
+            QMessageBox.warning(
+                self,
+                self.tr("Different number of categories"),
+                str(error),
+            )
+            return
+
         dimensions = len(stat["init"])
 
         units_translations = {

@@ -114,9 +114,17 @@ class CrossTableManager(QObject):
         stat["final"] = finalArea
         stat["finalPerc"] = finalPerc
 
-        deltas = finalArea - initArea
-        deltasPerc = finalPerc - initPerc
-        stat["deltas"] = deltas
-        stat["deltasPerc"] = deltasPerc
+        try:
+            deltas = finalArea - initArea
+            deltasPerc = finalPerc - initPerc
+            stat["deltas"] = deltas
+            stat["deltasPerc"] = deltasPerc
+        except ValueError as error:
+            raise CrossTabManagerError(
+                self.tr(
+                    "Input rasters contain different numbers of categories. "
+                    "MOLUSCE cannot process rasters with different number of categories yet"
+                )
+            ) from error
 
         return stat
