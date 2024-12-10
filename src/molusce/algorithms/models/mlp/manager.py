@@ -7,7 +7,10 @@ import numpy as np
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
-from molusce.algorithms.models.correlation.model import DependenceCoef
+from molusce.algorithms.models.correlation.model import (
+    CoeffError,
+    DependenceCoef,
+)
 from molusce.algorithms.models.mlp.model import MLP, sigmoid
 from molusce.algorithms.models.sampler.sampler import Sampler
 
@@ -446,13 +449,20 @@ class MlpManager(QObject):
 
     @pyqtSlot()
     def startTrain(self):
-        self.train(
-            self.epochs,
-            self.valPercent,
-            self.lrate,
-            self.momentum,
-            self.continueTrain,
-        )
+        try:
+            self.train(
+                self.epochs,
+                self.valPercent,
+                self.lrate,
+                self.momentum,
+                self.continueTrain,
+            )
+        except CoeffError as error:
+            QMessageBox.warning(
+                None,
+                self.tr("Model training failed"),
+                str(error),
+            )
 
     @pyqtSlot()
     def stopTrain(self):

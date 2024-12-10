@@ -95,7 +95,7 @@ class DependenceCoef(QObject):
         rows, cols = table.shape
         if rows != cols:
             raise CoeffError(
-                "The method is applicable for NxN crosstable only!"
+                self.tr("The method is applicable for NxN crosstable only!")
             )
         n = table.n
         s = 0.0
@@ -171,7 +171,9 @@ class DependenceCoef(QObject):
         table = self.getCrosstable()
         rows, cols = table.shape
         if rows != cols:
-            raise CoeffError("Kappa is applicable for NxN crosstable only!")
+            raise CoeffError(
+                self.tr("Kappa is applicable for NxN crosstable only!")
+            )
         t_expect = table.getProbtable()
         pa = 0
         for i in range(rows):
@@ -194,7 +196,7 @@ class DependenceCoef(QObject):
                 "overal": (pa - pexpect) / (1 - pexpect),
             }
         else:
-            raise CoeffError("Unknown mode of kappa statistics!")
+            raise CoeffError(self.tr("Unknown mode of kappa statistics!"))
 
         return result
 
