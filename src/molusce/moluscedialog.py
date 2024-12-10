@@ -767,6 +767,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
+        try:
+            self.analyst = AreaAnalyst(
+                self.inputs["initial"], self.inputs["final"]
+            )
+        except AreaAnalizerError as error:
+            QMessageBox.warning(
+                self,
+                self.tr("Invalid input rasters"),
+                str(error),
+            )
+            return
+
         fileName = utils.saveRasterDialog(
             self,
             self.settings,
@@ -793,18 +805,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             change_map_path.unlink()
 
         self.inputs["changeMapName"] = fileName
-
-        try:
-            self.analyst = AreaAnalyst(
-                self.inputs["initial"], self.inputs["final"]
-            )
-        except AreaAnalizerError as error:
-            QMessageBox.warning(
-                self,
-                self.tr("Invalid input rasters"),
-                str(error),
-            )
-            return
 
         self.analyst.moveToThread(self.workThread)
         self.workThread.started.connect(self.analyst.getChangeMap)
@@ -838,6 +838,32 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         gc.collect()
 
     def startSimulation(self):
+        if not utils.checkFactors(self.inputs):
+            QMessageBox.warning(
+                self,
+                self.tr("Missed input data"),
+                self.tr(
+                    "Factors rasters is not set. Please specify them and try again"
+                ),
+            )
+            return
+
+        if "model" not in self.inputs:
+            QMessageBox.warning(
+                self,
+                self.tr("Missed model"),
+                self.tr("Model not selected. Please select and train model."),
+            )
+            return
+
+        if "crosstab" not in self.inputs:
+            QMessageBox.warning(
+                self,
+                self.tr("Missed transition matrix"),
+                self.tr("Please calculate transition matrix and try again"),
+            )
+            return
+
         if not utils.checkInputRasters(self.inputs):
             QMessageBox.warning(
                 self,
@@ -847,6 +873,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 ),
             )
             return
+
+        is_risk_function_path_unlinking = False
+        is_monte_carlo_path_unlinking = False
 
         calcTransitions = False
         if self.chkTransitionPotentials.isChecked():
@@ -901,20 +930,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     self.leRiskFunctionPath.text(), ["tif"]
                 )
             )
-            if risk_function_path.exists():
-                if utils.is_file_used_by_project(risk_function_path):
-                    self.leRiskFunctionPath.setText(str(risk_function_path))
-                    QMessageBox.warning(
-                        self,
-                        self.tr("Can't rewrite file"),
-                        self.tr(
-                            "File '{}' is used in the QGIS project. It is not"
-                            " possible to overwrite the file, specify a"
-                            " different file name and try again"
-                        ).format(risk_function_path),
-                    )
-                    return
-                risk_function_path.unlink()
 
             parent_path = risk_function_path.parent
             if not parent_path.exists() or str(parent_path) == ".":
@@ -928,6 +943,21 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     ).format(risk_function_path),
                 )
                 return
+
+            if risk_function_path.exists():
+                if utils.is_file_used_by_project(risk_function_path):
+                    self.leRiskFunctionPath.setText(str(risk_function_path))
+                    QMessageBox.warning(
+                        self,
+                        self.tr("Can't rewrite file"),
+                        self.tr(
+                            "File '{}' is used in the QGIS project. It is not"
+                            " possible to overwrite the file, specify a"
+                            " different file name and try again"
+                        ).format(risk_function_path),
+                    )
+                    return
+                is_risk_function_path_unlinking = True
 
         self.leRiskFunctionPath.setText(
             QgsFileUtils.ensureFileNameHasExtension(
@@ -956,7 +986,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                         ).format(monte_carlo_path),
                     )
                     return
-                monte_carlo_path.unlink()
+                is_monte_carlo_path_unlinking = True
 
             parent_path = monte_carlo_path.parent
             if not parent_path.exists() or str(parent_path) == ".":
@@ -1030,17 +1060,23 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             QMessageBox.warning(
                 self,
                 self.tr("Missed model"),
-                self.tr("Model not selected. Please select and train model."),
+                self.tr("Model not selected. Please select and train model.")
             )
-            return
 
-        if "crosstab" not in self.inputs:
-            QMessageBox.warning(
-                self,
-                self.tr("Missed transition matrix"),
-                self.tr("Please calculate transition matrix and try again"),
+        if is_risk_function_path_unlinking:
+            risk_function_path = Path(
+                QgsFileUtils.ensureFileNameHasExtension(
+                    self.leRiskFunctionPath.text(), ["tif"]
+                )
             )
-            return
+            risk_function_path.unlink()
+        if is_monte_carlo_path_unlinking:
+            monte_carlo_path = Path(
+                QgsFileUtils.ensureFileNameHasExtension(
+                    self.leMonteCarloPath.text(), ["tif"]
+                )
+            )
+            monte_carlo_path.unlink()
 
         self.simulator = Simulator(
             self.inputs["final"],
@@ -1420,25 +1456,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)"),
         )
 
-        if fileName == "":
-            self.logMessage(self.tr("No file selected"))
-            return
-
-        validation_map_path = Path(fileName)
-        if validation_map_path.exists():
-            if utils.is_file_used_by_project(validation_map_path):
-                QMessageBox.warning(
-                    self,
-                    self.tr("Can't rewrite file"),
-                    self.tr(
-                        "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
-                    ).format(fileName),
-                )
-                return
-            validation_map_path.unlink()
-
-        self.inputs["valMapName"] = str(fileName)
-
         try:
             self.analystVM = AreaAnalyst(reference, simulated)
         except AreaAnalizerError:
@@ -1462,6 +1479,25 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 )
                 return
             self.analystVM.setInitialRaster(self.inputs["initial"])
+
+        if fileName == "":
+            self.logMessage(self.tr("No file selected"))
+            return
+
+        validation_map_path = Path(fileName)
+        if validation_map_path.exists():
+            if utils.is_file_used_by_project(validation_map_path):
+                QMessageBox.warning(
+                    self,
+                    self.tr("Can't rewrite file"),
+                    self.tr(
+                        "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                    ).format(fileName),
+                )
+                return
+            validation_map_path.unlink()
+
+        self.inputs["valMapName"] = str(fileName)
 
         self.analystVM.moveToThread(self.workThread)
         self.workThread.started.connect(self.analystVM.getChangeMap)
@@ -2046,6 +2082,16 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         if fileName == "":
             return
 
+        try:
+            model.saveSamples(str(fileName))
+        except SamplerError:
+            QMessageBox.warning(
+                self,
+                self.tr("Can't save file"),
+                self.tr("Can't save file: '{}'").format(fileName),
+            )
+            return
+
         samples_path = Path(fileName)
         if samples_path.exists():
             if utils.is_file_used_by_project(samples_path):
@@ -2061,16 +2107,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             samples_path.unlink()
             samples_path.with_suffix(".prj").unlink(missing_ok=True)
             samples_path.with_suffix(".dbf").unlink(missing_ok=True)
-
-        try:
-            model.saveSamples(str(fileName))
-        except SamplerError:
-            QMessageBox.warning(
-                self,
-                self.tr("Can't save file"),
-                self.tr("Can't save file: '{}'").format(fileName),
-            )
-            return
 
         if self.chkLoadSamples.isChecked():
             newLayer = QgsVectorLayer(
