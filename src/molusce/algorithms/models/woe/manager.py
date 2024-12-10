@@ -5,6 +5,7 @@ import numpy as np
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
+from molusce.algorithms.models.woe.model import WoeError
 from molusce.algorithms.utils import binaryzation, masks_identity, reclass
 
 from .model import woe
@@ -63,16 +64,18 @@ class WoeManager(QObject):
         self.confidence = None  # Raster of the results confidence(1 = the maximum confidence, 0 = the least confidence)
 
         if (bins is not None) and (len(self.factors) != len(bins)):
-            raise WoeManagerError("Lengths of bins and factors are different!")
+            raise WoeManagerError(
+                self.tr("Lengths of bins and factors are different!")
+            )
 
         for r in self.factors:
             if not self.changeMap.geoDataMatch(r):
                 raise WoeManagerError(
-                    "Geometries of the input rasters are different!"
+                    self.tr("Geometries of the input rasters are different!")
                 )
 
         if self.changeMap.getBandsCount() != 1:
-            raise WoeManagerError("Change map must have one band!")
+            raise WoeManagerError(self.tr("Change map must have one band!"))
 
         self.geodata = self.changeMap.getGeodata()
 
@@ -140,7 +143,9 @@ class WoeManager(QObject):
             rows, cols = self.geodata["ySize"], self.geodata["xSize"]
             if not self.changeMap.geoDataMatch(state):
                 raise WoeManagerError(
-                    "Geometries of the state and changeMap rasters are different!"
+                    self.tr(
+                        "Geometries of the state and changeMap rasters are different!"
+                    )
                 )
 
             prediction = np.zeros((rows, cols), dtype=np.uint8)
@@ -232,7 +237,9 @@ class WoeManager(QObject):
                             boundary_bin is not None
                         ) and fact.getBandsCount() != len(boundary_bin):
                             raise WoeManagerError(
-                                "Count of bins list for multiband factor is't equal to band count!"
+                                self.tr(
+                                    "Count of bins list for multiband factor is't equal to band count!"
+                                )
                             )
                     else:
                         boundary_bin = None
@@ -243,9 +250,17 @@ class WoeManager(QObject):
                         band, sites = masks_identity(
                             band, sites, dtype=np.uint8
                         )  # Combine masks of the rasters
-                        woeRes = woe(
-                            band, sites, self.unit_cell
-                        )  # WoE for the 'code' (initState->finalState) transition and current 'factor'.
+                        try:
+                            woeRes = woe(
+                                band, sites, self.unit_cell
+                            )  # WoE for the 'code' (initState->finalState) transition and current 'factor'.
+                        except WoeError as error:
+                            QMessageBox(
+                                None,
+                                self.tr("Error"),
+                                str(error),
+                            )
+                            return
                         weights = woeRes["map"]
                         wMap = wMap + weights
                         factorW[i] = woeRes["weights"]
