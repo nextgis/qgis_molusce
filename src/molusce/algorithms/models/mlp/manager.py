@@ -7,7 +7,10 @@ import numpy as np
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
-from molusce.algorithms.models.correlation.model import DependenceCoef
+from molusce.algorithms.models.correlation.model import (
+    CoeffError,
+    DependenceCoef,
+)
 from molusce.algorithms.models.mlp.model import MLP, sigmoid
 from molusce.algorithms.models.sampler.sampler import Sampler
 
@@ -127,7 +130,7 @@ class MlpManager(QObject):
         @param ns               Neighbourhood size.
         """
         if output.getBandsCount() != 1:
-            raise MlpManagerError("Output layer must have one band!")
+            raise MlpManagerError(self.tr("Output layer must have one band!"))
 
         input_neurons = 0
         for raster in factors:
@@ -254,7 +257,9 @@ class MlpManager(QObject):
             for r in factors:
                 if not state.geoDataMatch(r):
                     raise MlpManagerError(
-                        "Geometries of the input rasters are different!"
+                        self.tr(
+                            "Geometries of the input rasters are different!"
+                        )
                     )
 
             self.transitionPotentials = (
@@ -371,7 +376,7 @@ class MlpManager(QObject):
         @samples                Sample count of the training data (doesn't used in 'All' mode).
         """
         if not self.MLP:
-            raise MlpManagerError("You must create a MLP before!")
+            raise MlpManagerError(self.tr("You must create a MLP before!"))
 
         # Normalize factors before sampling:
         for f in factors:
@@ -446,13 +451,20 @@ class MlpManager(QObject):
 
     @pyqtSlot()
     def startTrain(self):
-        self.train(
-            self.epochs,
-            self.valPercent,
-            self.lrate,
-            self.momentum,
-            self.continueTrain,
-        )
+        try:
+            self.train(
+                self.epochs,
+                self.valPercent,
+                self.lrate,
+                self.momentum,
+                self.continueTrain,
+            )
+        except CoeffError as error:
+            QMessageBox.warning(
+                None,
+                self.tr("Model training failed"),
+                str(error),
+            )
 
     @pyqtSlot()
     def stopTrain(self):
