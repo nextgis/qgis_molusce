@@ -34,7 +34,7 @@ from .algorithms.models.area_analysis.manager import (
     AreaAnalizerError,
     AreaAnalyst,
 )
-from .algorithms.models.mce.mce import MCE
+from .algorithms.models.mce.mce import MCE, MCEError
 from .ui.ui_multicriteriaevaluationwidgetbase import (
     Ui_MultiCriteriaEvaluationWidgetBase,
 )
@@ -130,13 +130,21 @@ class MultiCriteriaEvaluationWidget(
 
         self.plugin.logMessage(self.tr("Init MCE model"))
 
-        model = MCE(
-            list(self.inputs["factors"].values()),
-            matrix,
-            self.spnInitialClass.value(),
-            self.spnFinalClass.value(),
-            areaAnalyst,
-        )
+        try:
+            model = MCE(
+                list(self.inputs["factors"].values()),
+                matrix,
+                self.spnInitialClass.value(),
+                self.spnFinalClass.value(),
+                areaAnalyst,
+            )
+        except MCEError as error:
+            QMessageBox.warning(
+                self,
+                self.tr("Model training faoled"),
+                str(error),
+            )
+            return
 
         self.inputs["model"] = model
 
