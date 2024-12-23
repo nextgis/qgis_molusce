@@ -1207,15 +1207,20 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         try:
             self.eb = EBudget(reference, simulated)
-        except EBError:
+        except EBError as error:
             QMessageBox.warning(
                 self,
-                self.tr("Different characteristics of rasters"),
-                self.tr(
-                    "Characteristics of the reference and simulated rasters are different!"
-                ),
+                self.tr("Invalid rasters"),
+                str(error),
             )
             return
+        except MemoryError:
+            self.logErrorReport(
+                self.tr(
+                    "The system is out of memory during validation procedure"
+                )
+            )
+            raise
 
         self.eb.moveToThread(self.workThread)
 
