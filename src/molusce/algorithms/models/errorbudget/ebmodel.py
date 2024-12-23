@@ -55,18 +55,24 @@ class EBudget(QObject):
 
         if referenceMap.getBandsCount() + simulatedMap.getBandsCount() != 2:
             raise EBError(
-                "The reference and simulated rasters must be 1-band rasters!"
+                self.tr(
+                    "The reference and simulated rasters must be 1-band rasters!"
+                )
             )
         if not referenceMap.geoDataMatch(simulatedMap):
             raise EBError(
-                "Geometries of the reference and simulated rasters are different!"
+                self.tr(
+                    "Geometries of the reference and simulated rasters are different!"
+                )
             )
 
         self.categories = referenceMap.getBandGradation(1)
         for s in simulatedMap.getBandGradation(1):
             if s not in self.categories:
                 raise EBError(
-                    "Categories in the reference and simulated rasters are different!"
+                    self.tr(
+                        "Categories in the reference and simulated rasters are different!"
+                    )
                 )
 
         R = referenceMap.getBand(1)

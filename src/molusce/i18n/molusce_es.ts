@@ -270,6 +270,21 @@ p, li { white-space: pre-wrap; }
         <source>An iteration of validation %p%</source>
         <translation>Una iteración de validación %p%</translation>
     </message>
+    <message>
+        <location filename="../algorithms/models/errorbudget/ebmodel.py" line="57"/>
+        <source>The reference and simulated rasters must be 1-band rasters!</source>
+        <translation>¡Los rásteres de referencia y simulados deben ser rásteres de 1 banda!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/errorbudget/ebmodel.py" line="61"/>
+        <source>Geometries of the reference and simulated rasters are different!</source>
+        <translation>Las geometrías de los rásteres de referencia y simulados son diferentes!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/errorbudget/ebmodel.py" line="68"/>
+        <source>Categories in the reference and simulated rasters are different!</source>
+        <translation>¡Las categorías en los rásteres de referencia y simulados son diferentes!</translation>
+    </message>
 </context>
 <context>
     <name>LR</name>
@@ -1159,19 +1174,24 @@ nivel medio de información sobre la cantidad.</translation>
         <translation>No hay datos de entrada</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="976"/>
+        <location filename="../moluscedialog.py" line="914"/>
         <source>Invalid input rasters</source>
         <translation>Rásteres de entrada inválida</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1172"/>
+        <location filename="../moluscedialog.py" line="1115"/>
         <source>Model training failed</source>
         <translation>Falló el entrenamiento del modelo</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1602"/>
+        <location filename="../moluscedialog.py" line="1537"/>
         <source>Different number of categories</source>
         <translation>Diferente número de categorías</translation>
+    </message>
+    <message>
+        <location filename="../moluscedialog.py" line="967"/>
+        <source>Invalid rasters</source>
+        <translation>Rásteres no válidos</translation>
     </message>
 </context>
 <context>
