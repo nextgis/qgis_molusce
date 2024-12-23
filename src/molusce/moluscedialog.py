@@ -585,22 +585,13 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)"),
         )
 
-        if fileName == "":
-            self.logMessage(self.tr("No file selected"))
-            return
-
         change_map_path = Path(fileName)
-        if change_map_path.exists():
-            if utils.is_file_used_by_project(change_map_path):
-                QMessageBox.warning(
-                    self,
-                    self.tr("Can't rewrite file"),
-                    self.tr(
-                        "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
-                    ).format(fileName),
-                )
-                return
-
+        is_change_map_path_unlinking = self.__checking_file_saving(
+            change_map_path
+        )
+        if is_change_map_path_unlinking is None:
+            return
+        if self.__checking_file_saving(change_map_path):
             change_map_path.unlink()
 
         self.inputs["changeMapName"] = fileName
@@ -673,9 +664,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        is_risk_function_path_unlinking = False
-        is_monte_carlo_path_unlinking = False
-
         calcTransitions = False
         if self.chkTransitionPotentials.isChecked():
             if self.leTransitionPotentialPrefix.text() == "":
@@ -720,43 +708,30 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
             calcTransitions = True
 
+        is_risk_function_path_unlinking = False
+        is_monte_carlo_path_unlinking = False
+
+        risk_function_path = Path(
+            QgsFileUtils.ensureFileNameHasExtension(
+                self.leRiskFunctionPath.text(), ["tif"]
+            )
+        )
+
+        monte_carlo_path = Path(
+            QgsFileUtils.ensureFileNameHasExtension(
+                self.leMonteCarloPath.text(), ["tif"]
+            )
+        )
+
         if (
             self.chkRiskFunction.isChecked()
             and self.leRiskFunctionPath.text() != ""
         ):
-            risk_function_path = Path(
-                QgsFileUtils.ensureFileNameHasExtension(
-                    self.leRiskFunctionPath.text(), ["tif"]
-                )
+            is_risk_function_path_unlinking = self.__checking_file_saving(
+                risk_function_path
             )
-
-            parent_path = risk_function_path.parent
-            if not parent_path.exists() or str(parent_path) == ".":
-                self.leRiskFunctionPath.setText(str(risk_function_path))
-                QMessageBox.warning(
-                    self,
-                    self.tr("Can't save file"),
-                    self.tr(
-                        "Can't save file in the specified path '{}'. Please"
-                        " specify output path correctly and try again"
-                    ).format(risk_function_path),
-                )
+            if is_risk_function_path_unlinking is None:
                 return
-
-            if risk_function_path.exists():
-                if utils.is_file_used_by_project(risk_function_path):
-                    self.leRiskFunctionPath.setText(str(risk_function_path))
-                    QMessageBox.warning(
-                        self,
-                        self.tr("Can't rewrite file"),
-                        self.tr(
-                            "File '{}' is used in the QGIS project. It is not"
-                            " possible to overwrite the file, specify a"
-                            " different file name and try again"
-                        ).format(risk_function_path),
-                    )
-                    return
-                is_risk_function_path_unlinking = True
 
         self.leRiskFunctionPath.setText(
             QgsFileUtils.ensureFileNameHasExtension(
@@ -768,35 +743,10 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.chkMonteCarlo.isChecked()
             and self.leMonteCarloPath.text() != ""
         ):
-            monte_carlo_path = Path(
-                QgsFileUtils.ensureFileNameHasExtension(
-                    self.leMonteCarloPath.text(), ["tif"]
-                )
+            is_monte_carlo_path_unlinking = self.__checking_file_saving(
+                monte_carlo_path
             )
-
-            if monte_carlo_path.exists():
-                if utils.is_file_used_by_project(monte_carlo_path):
-                    self.leMonteCarloPath.setText(str(monte_carlo_path))
-                    QMessageBox.warning(
-                        self,
-                        self.tr("Can't rewrite file"),
-                        self.tr(
-                            "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
-                        ).format(monte_carlo_path),
-                    )
-                    return
-                is_monte_carlo_path_unlinking = True
-
-            parent_path = monte_carlo_path.parent
-            if not parent_path.exists() or str(parent_path) == ".":
-                self.leMonteCarloPath.setText(str(monte_carlo_path))
-                QMessageBox.warning(
-                    self,
-                    self.tr("Can't save file"),
-                    self.tr(
-                        "Can't save file in the specified path '{}'. Please specify output path correctly and try again"
-                    ).format(monte_carlo_path),
-                )
+            if is_monte_carlo_path_unlinking is None:
                 return
 
         self.leMonteCarloPath.setText(
@@ -806,9 +756,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         )
 
         if self.chkRiskFunction.isChecked() and self.chkMonteCarlo.isChecked():
-            if Path(self.leRiskFunctionPath.text()) == Path(
-                self.leMonteCarloPath.text()
-            ):
+            if risk_function_path == monte_carlo_path:
                 QMessageBox.warning(
                     self,
                     self.tr("Can't save file"),
@@ -820,18 +768,8 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 return
 
         if is_risk_function_path_unlinking:
-            risk_function_path = Path(
-                QgsFileUtils.ensureFileNameHasExtension(
-                    self.leRiskFunctionPath.text(), ["tif"]
-                )
-            )
             risk_function_path.unlink()
         if is_monte_carlo_path_unlinking:
-            monte_carlo_path = Path(
-                QgsFileUtils.ensureFileNameHasExtension(
-                    self.leMonteCarloPath.text(), ["tif"]
-                )
-            )
             monte_carlo_path.unlink()
 
         self.simulator = Simulator(
@@ -1205,13 +1143,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        fileName = utils.saveRasterDialog(
-            self,
-            self.settings,
-            self.tr("Save validation map"),
-            self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)"),
-        )
-
         try:
             self.analystVM = AreaAnalyst(reference, simulated)
         except AreaAnalizerError:
@@ -1236,21 +1167,20 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 return
             self.analystVM.setInitialRaster(self.inputs["initial"])
 
-        if fileName == "":
-            self.logMessage(self.tr("No file selected"))
-            return
+        fileName = utils.saveRasterDialog(
+            self,
+            self.settings,
+            self.tr("Save validation map"),
+            self.tr("GeoTIFF (*.tif *.tiff *.TIF *.TIFF)"),
+        )
 
         validation_map_path = Path(fileName)
-        if validation_map_path.exists():
-            if utils.is_file_used_by_project(validation_map_path):
-                QMessageBox.warning(
-                    self,
-                    self.tr("Can't rewrite file"),
-                    self.tr(
-                        "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
-                    ).format(fileName),
-                )
-                return
+        is_validation_map_path_unlinking = self.__checking_file_saving(
+            validation_map_path
+        )
+        if is_validation_map_path_unlinking is None:
+            return
+        if self.__checking_file_saving(validation_map_path):
             validation_map_path.unlink()
 
         self.inputs["valMapName"] = str(fileName)
@@ -2222,3 +2152,28 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             if i.value == v:
                 return i.label
         return ""
+
+    def __checking_file_saving(self, filepath):
+        parent_path = filepath.parent
+        if not parent_path.exists() or str(parent_path) == ".":
+            QMessageBox.warning(
+                self,
+                self.tr("Can't save file"),
+                self.tr(
+                    "Can't save file in the specified path '{}'. Please specify output path correctly and try again"
+                ).format(filepath),
+            )
+            return None
+
+        if filepath.exists():
+            if utils.is_file_used_by_project(filepath):
+                QMessageBox.warning(
+                    self,
+                    self.tr("Can't rewrite file"),
+                    self.tr(
+                        "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
+                    ).format(filepath),
+                )
+                return None
+            return True
+        return False
