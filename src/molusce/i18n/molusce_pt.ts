@@ -270,6 +270,21 @@ p, li { white-space: pre-wrap; }
         <source>An iteration of validation %p%</source>
         <translation>Uma iteração de validação %p%</translation>
     </message>
+    <message>
+        <location filename="../algorithms/models/errorbudget/ebmodel.py" line="57"/>
+        <source>The reference and simulated rasters must be 1-band rasters!</source>
+        <translation>Os rasters de referência e simulados devem ser rasters de 1 banda!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/errorbudget/ebmodel.py" line="61"/>
+        <source>Geometries of the reference and simulated rasters are different!</source>
+        <translation>As geometrias dos rasters de referência e simulados são diferentes!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/errorbudget/ebmodel.py" line="68"/>
+        <source>Categories in the reference and simulated rasters are different!</source>
+        <translation>As Categorias nos rasters de referência e simulados são diferentes!</translation>
+    </message>
 </context>
 <context>
     <name>LR</name>
@@ -614,12 +629,12 @@ p, li { white-space: pre-wrap; }
         <translation>Lista de fatores de influência limpa</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1229"/>
+        <location filename="../moluscedialog.py" line="1165"/>
         <source>Missed input data</source>
         <translation>Nenhum conjunto de dados de entrada</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="641"/>
+        <location filename="../moluscedialog.py" line="632"/>
         <source>Factors rasters is not set. Please specify them and try again</source>
         <translation>Não há mapas de influência de fatores. Por favor, forneça mapas de influência e tente novamente</translation>
     </message>
@@ -629,7 +644,7 @@ p, li { white-space: pre-wrap; }
         <translation>Nenhum raster de estado inicial ou final foi especificado. Por favor, insira os dados de entrada e tente novamente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1132"/>
+        <location filename="../moluscedialog.py" line="1075"/>
         <source>Different geometry</source>
         <translation>Características espaciais que não se sobrepõem</translation>
     </message>
@@ -664,257 +679,252 @@ p, li { white-space: pre-wrap; }
         <translation>Guardar o mapa de alterações</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1918"/>
+        <location filename="../moluscedialog.py" line="1853"/>
         <source>GeoTIFF (*.tif *.tiff *.TIF *.TIFF)</source>
         <translation>GeoTIFF (*.tif *.tiff *.TIF *.TIFF)</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1240"/>
-        <source>No file selected</source>
-        <translation>Ficheiro não selecionado</translation>
-    </message>
-    <message>
-        <location filename="../moluscedialog.py" line="636"/>
+        <location filename="../moluscedialog.py" line="627"/>
         <source>Change Map is created</source>
         <translation>Mapa de alterações criado</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1229"/>
+        <location filename="../moluscedialog.py" line="1165"/>
         <source>Initial raster is not set. Please specify it and try again</source>
         <translation>Nenhum raster de estado inicial especificado. Por favor, insira o raster dos estados iniciais e tente novamente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="682"/>
+        <location filename="../moluscedialog.py" line="670"/>
         <source>Prefix of transition potential maps is not set. Please specify it and try again</source>
         <translation>O prefixo do ficheiro para os mapas de potencial de transição não foi especificado. Por favor, especifique um prefixo e tente novamente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1814"/>
+        <location filename="../moluscedialog.py" line="1749"/>
         <source>Missed model</source>
         <translation>Modelo não especificado</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="659"/>
+        <location filename="../moluscedialog.py" line="650"/>
         <source>Missed transition matrix</source>
         <translation>Matriz de transição não calculada</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="659"/>
+        <location filename="../moluscedialog.py" line="650"/>
         <source>Please calculate transition matrix and try again</source>
         <translation>Por favor, calcule a matriz de transições e tente novamente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="856"/>
+        <location filename="../moluscedialog.py" line="794"/>
         <source>Simulation process is started</source>
         <translation>Processo de simulação iniciado</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="892"/>
+        <location filename="../moluscedialog.py" line="830"/>
         <source>Output path for risk function map is not set. Skipping this step</source>
         <translation>Não está definido nenhum caminho de gravação para o mapa de confiança da previsão. Ignorar este passo</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="942"/>
+        <location filename="../moluscedialog.py" line="880"/>
         <source>Output path for simulated risk map is not set. Skipping this step</source>
         <translation>Não foi especificado o caminho de gravação para o mapa de previsão de alterações. Ignorar este passo</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="983"/>
+        <location filename="../moluscedialog.py" line="921"/>
         <source>Not implemented yet</source>
         <translation>Mapas de potencial de transição não implementados</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="983"/>
+        <location filename="../moluscedialog.py" line="921"/>
         <source>Transition potentials not implemented yet for the model.</source>
         <translation>Os mapas de potencial de transição para este modelo ainda não foram implementados.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1000"/>
+        <location filename="../moluscedialog.py" line="938"/>
         <source>Simulation process is finished</source>
         <translation>Processo de simulação concluído</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1199"/>
+        <location filename="../moluscedialog.py" line="1142"/>
         <source>Can&apos;t read file</source>
         <translation>Não é possível ler o ficheiro</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1045"/>
+        <location filename="../moluscedialog.py" line="988"/>
         <source>Validation process is started</source>
         <translation>Processo de validação iniciado</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1087"/>
+        <location filename="../moluscedialog.py" line="1030"/>
         <source>Validation process is finished</source>
         <translation>Processo de validação concluído</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1115"/>
+        <location filename="../moluscedialog.py" line="1058"/>
         <source>Kappa is not applicable</source>
         <translation>Kappa não é aplicável</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1149"/>
+        <location filename="../moluscedialog.py" line="1092"/>
         <source>Kappa validation process is started</source>
         <translation>O processo de validação kappa é iniciado</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1169"/>
+        <location filename="../moluscedialog.py" line="1112"/>
         <source>Kappa validation process is finished</source>
         <translation>O processo de validação kappa está concluído</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1208"/>
+        <location filename="../moluscedialog.py" line="1175"/>
         <source>Save validation map</source>
         <translation>Guardar o mapa de erros</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1266"/>
+        <location filename="../moluscedialog.py" line="1201"/>
         <source>Process of Validation Map creating is started</source>
         <translation>O processo de cálculo do mapa de erros foi iniciado</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1550"/>
+        <location filename="../moluscedialog.py" line="1485"/>
         <source>Pearson&apos;s Correlation</source>
         <translation>Correlação de Pearson</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1560"/>
+        <location filename="../moluscedialog.py" line="1495"/>
         <source>Cramer&apos;s Coefficient</source>
         <translation>Coeficiente de Cramer</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1575"/>
+        <location filename="../moluscedialog.py" line="1510"/>
         <source>Joint Information Uncertainty</source>
         <translation>Coeficiente JIU (incerteza total da informação)</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1346"/>
+        <location filename="../moluscedialog.py" line="1281"/>
         <source>raster units</source>
         <translation>unidades de raster</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1620"/>
+        <location filename="../moluscedialog.py" line="1555"/>
         <source>sq. km.</source>
         <translation>km²</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1622"/>
+        <location filename="../moluscedialog.py" line="1557"/>
         <source>ha</source>
         <translation>ha</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1773"/>
+        <location filename="../moluscedialog.py" line="1708"/>
         <source>Artificial Neural Network (Multi-layer Perceptron)</source>
         <translation>Redes neuronais (perceptron multicamada)</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1778"/>
+        <location filename="../moluscedialog.py" line="1713"/>
         <source>Weights of Evidence</source>
         <translation>Significado da caraterística</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1783"/>
+        <location filename="../moluscedialog.py" line="1718"/>
         <source>Multi Criteria Evaluation</source>
         <translation>Avaliação multicritério</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1768"/>
+        <location filename="../moluscedialog.py" line="1703"/>
         <source>Logistic Regression</source>
         <translation>Regressão logística</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1362"/>
+        <location filename="../moluscedialog.py" line="1297"/>
         <source>All</source>
         <translation>Сompleta</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1363"/>
+        <location filename="../moluscedialog.py" line="1298"/>
         <source>Random</source>
         <translation>Aleatória</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1364"/>
+        <location filename="../moluscedialog.py" line="1299"/>
         <source>Stratified</source>
         <translation>Estratificada</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1372"/>
+        <location filename="../moluscedialog.py" line="1307"/>
         <source>Multiple-resolution budget</source>
         <translation>Magnitudes de erro em diferentes escalas espaciais</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1470"/>
+        <location filename="../moluscedialog.py" line="1405"/>
         <source>Correlation checking</source>
         <translation>Cálculo de correlação</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1585"/>
+        <location filename="../moluscedialog.py" line="1520"/>
         <source>Not applicable</source>
         <translation>Não aplicável</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1626"/>
+        <location filename="../moluscedialog.py" line="1561"/>
         <source>sq. </source>
         <translation>quadro. </translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1670"/>
+        <location filename="../moluscedialog.py" line="1605"/>
         <source>Class color</source>
         <translation>Cor da classe</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1814"/>
+        <location filename="../moluscedialog.py" line="1749"/>
         <source>Nothing to save, samples were not yet generated as the model was not trained. Train the model first.</source>
         <translation>Não é possível guardar, ainda não foram gerados amostras porque o modelo não foi treinado. Treine o modelo primeiro.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1824"/>
+        <location filename="../moluscedialog.py" line="1759"/>
         <source>Missed samples</source>
         <translation>Os amostras não estão definidos</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1892"/>
+        <location filename="../moluscedialog.py" line="1827"/>
         <source>Save file</source>
         <translation>Guardar ficheiro</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1831"/>
+        <location filename="../moluscedialog.py" line="1766"/>
         <source>Shape files (*.shp *.SHP *.Shp)</source>
         <translation>Shape files (*.shp *.SHP *.Shp)</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1843"/>
+        <location filename="../moluscedialog.py" line="2164"/>
         <source>Can&apos;t save file</source>
         <translation>Não é possível guardar o ficheiro</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1874"/>
+        <location filename="../moluscedialog.py" line="1809"/>
         <source>Can&apos;t open file</source>
         <translation>Não é possível abrir o ficheiro</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1886"/>
+        <location filename="../moluscedialog.py" line="1821"/>
         <source>Select Directory name</source>
         <translation>Selecionar o nome do diretório</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1918"/>
+        <location filename="../moluscedialog.py" line="1853"/>
         <source>Open file</source>
         <translation>Abrir ficheiro</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1944"/>
+        <location filename="../moluscedialog.py" line="1879"/>
         <source>An unknown error occurs during validation procedure</source>
         <translation>Ocorreu um erro desconhecido durante o processo de validação</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1971"/>
+        <location filename="../moluscedialog.py" line="1906"/>
         <source>Can&apos;t load raster %s</source>
         <translation>Não é possível carregar o raster %s</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="2139"/>
+        <location filename="../moluscedialog.py" line="2074"/>
         <source>Persistent</source>
         <translation>Persistente</translation>
     </message>
@@ -934,17 +944,17 @@ p, li { white-space: pre-wrap; }
         <translation>As características espaciais dos rastros dos estados inicial e final '{} ' não coincidem!</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1199"/>
+        <location filename="../moluscedialog.py" line="1142"/>
         <source>Can&apos;t read file: &apos;{}&apos;</source>
         <translation>Não é possível ler o ficheiro: '{}'</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1843"/>
+        <location filename="../moluscedialog.py" line="1778"/>
         <source>Can&apos;t save file: &apos;{}&apos;</source>
         <translation>Não é possível gravar o ficheiro: '{}'</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1874"/>
+        <location filename="../moluscedialog.py" line="1809"/>
         <source>Error loading output shapefile:
 {}</source>
         <translation>Erro ao carregar o ficheiro de saída:
@@ -956,80 +966,80 @@ p, li { white-space: pre-wrap; }
         <translation>Não foi seleccionado nenhum mapa de influência. Por favor, forneça um mapa de influência e tente novamente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="651"/>
+        <location filename="../moluscedialog.py" line="642"/>
         <source>Model not selected. Please select and train model.</source>
         <translation>Modelo não selecionado. Por favor, escolha e ensine um modelo.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1115"/>
+        <location filename="../moluscedialog.py" line="1058"/>
         <source>Kappa is not applicable to the file: &apos;{}&apos; because it contains continuous value</source>
         <translation>Kappa não é aplicável ao ficheiro: '{}' porque contém um valor contínuo</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1824"/>
+        <location filename="../moluscedialog.py" line="1759"/>
         <source>Selected model doesn&apos;t use samples</source>
         <translation>O modelo selecionado não utiliza amostras</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1937"/>
+        <location filename="../moluscedialog.py" line="1872"/>
         <source>The system is out of memory during validation procedure</source>
         <translation>Ocorreu um estouro de memória durante o procedimento de validação</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1612"/>
+        <location filename="../moluscedialog.py" line="1547"/>
         <source>metre</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1613"/>
+        <location filename="../moluscedialog.py" line="1548"/>
         <source>meter</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1614"/>
+        <location filename="../moluscedialog.py" line="1549"/>
         <source>meters</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1615"/>
+        <location filename="../moluscedialog.py" line="1550"/>
         <source>metres</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1616"/>
+        <location filename="../moluscedialog.py" line="1551"/>
         <source>unknown</source>
         <translation>desconhecido</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1423"/>
+        <location filename="../moluscedialog.py" line="1358"/>
         <source>Perfect location,
 perfect quantity inform.</source>
         <translation>Nível ideal de informações de posição,
 nível ideal de informação de quantidade.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1423"/>
+        <location filename="../moluscedialog.py" line="1358"/>
         <source>No location,
 no quantity inform.</source>
         <translation>Nenhuma informação sobre a posição,
 não há informações sobre a quantidade.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1423"/>
+        <location filename="../moluscedialog.py" line="1358"/>
         <source>No location,
 medium quantity inform.</source>
         <translation>Nenhuma informação sobre a posição,
 nível médio de informação sobre a quantidade.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1423"/>
+        <location filename="../moluscedialog.py" line="1358"/>
         <source>Medium location,
 medium quantity inform.</source>
         <translation>Nível médio de informação sobre a posição,
 nível médio de informação sobre a quantidade.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1423"/>
+        <location filename="../moluscedialog.py" line="1358"/>
         <source>Perfect location,
 medium quantity inform.</source>
         <translation>Nível ideal de informações de posição,
@@ -1041,62 +1051,62 @@ nível médio de informação sobre a quantidade.</translation>
         <translation>Definir a camada inicial como %s</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1294"/>
+        <location filename="../moluscedialog.py" line="1229"/>
         <source>Process of Validation Map creating is finished</source>
         <translation>Processo de cálculo do mapa de erros concluído</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1853"/>
+        <location filename="../moluscedialog.py" line="2175"/>
         <source>File &apos;{}&apos; is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again</source>
         <translation>O ficheiro '{}' é utilizado no projeto QGIS. Não é possível substituir o ficheiro, é necessário especificar um nome de ficheiro diferente e tentar novamente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="692"/>
+        <location filename="../moluscedialog.py" line="680"/>
         <source>Directory of transition potential maps is not set. Please specify it and try again</source>
         <translation>O diretório dos mapas de potencial de transição não está definido. Especifique-o e tente novamente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="708"/>
+        <location filename="../moluscedialog.py" line="696"/>
         <source>Overwrite file</source>
         <translation>Substituir ficheiro</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="708"/>
+        <location filename="../moluscedialog.py" line="696"/>
         <source>Files with the specified prefix already exist in this directory. This may cause the files to be overwritten. Are you sure you want to continue?</source>
         <translation>Os ficheiros com o prefixo especificado já existem neste diretório. Isto pode fazer com que os ficheiros sejam substituídos. Tem a certeza de que pretende continuar?</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="793"/>
+        <location filename="../moluscedialog.py" line="2164"/>
         <source>Can&apos;t save file in the specified path &apos;{}&apos;. Please specify output path correctly and try again</source>
         <translation>Não é possível guardar o ficheiro no caminho especificado '{}'. Especifique corretamente o caminho de saída e tente novamente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1218"/>
+        <location filename="../moluscedialog.py" line="1154"/>
         <source>Different characteristics of rasters</source>
         <translation>Diferentes características dos rasters</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1218"/>
+        <location filename="../moluscedialog.py" line="1154"/>
         <source>Characteristics of the reference and simulated rasters are different!</source>
         <translation>As características dos traçados de referência e simulados são diferentes!</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1132"/>
+        <location filename="../moluscedialog.py" line="1075"/>
         <source>Geometries of the reference and simulated rasters are different!</source>
         <translation>As geometrias dos rasters de referência e simulados são diferentes!</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="2091"/>
+        <location filename="../moluscedialog.py" line="2026"/>
         <source>Init raster should be in PseudoColor or Paletted mode. Style not applied.</source>
         <translation>A rasterização inicial deve estar no modo PseudoColor ou Paletted. Estilo não aplicado.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1853"/>
+        <location filename="../moluscedialog.py" line="2175"/>
         <source>Can&apos;t rewrite file</source>
         <translation>Não é possível reescrever o ficheiro</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="812"/>
+        <location filename="../moluscedialog.py" line="760"/>
         <source>Can&apos;t save files with the same output path &apos;{}&apos;. Please specify different output paths and try again</source>
         <translation>Não é possível guardar ficheiros com o mesmo caminho de saída '{}'. Especifique caminhos de saída diferentes e tente novamente</translation>
     </message>
@@ -1106,19 +1116,24 @@ nível médio de informação sobre a quantidade.</translation>
         <translation>Nenhum conjunto de dados de entrada</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="976"/>
+        <location filename="../moluscedialog.py" line="914"/>
         <source>Invalid input rasters</source>
         <translation>Rasters de entrada inválidos</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1172"/>
+        <location filename="../moluscedialog.py" line="1115"/>
         <source>Model training failed</source>
         <translation>O treinamento do modelo falhou</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1602"/>
+        <location filename="../moluscedialog.py" line="1537"/>
         <source>Different number of categories</source>
         <translation>Número diferente de categorias</translation>
+    </message>
+    <message>
+        <location filename="../moluscedialog.py" line="967"/>
+        <source>Invalid rasters</source>
+        <translation>Rasters inválidos</translation>
     </message>
 </context>
 <context>
