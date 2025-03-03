@@ -380,8 +380,14 @@ class Raster:
                 nodata = maxVal
             xsize, ysize = self.getXSize(), self.getYSize()
             bandcount = self.getBandsCount()
+            creation_options = ["COMPRESS=LZW"]
             outRaster = driver.Create(
-                filename, xsize, ysize, bandcount, rastertype
+                filename,
+                xsize,
+                ysize,
+                bandcount,
+                rastertype,
+                options=creation_options,
             )
             geodata = self.getGeodata()
             outRaster.SetProjection(geodata["proj"])
