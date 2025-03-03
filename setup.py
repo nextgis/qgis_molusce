@@ -501,7 +501,9 @@ class QgisPluginBuilder:
     def __update_generated_file(self, file_path: Path) -> None:
         assert file_path.suffix == ".py"
         content = file_path.read_text(encoding="utf-8")
-        file_path.write_text(content.replace("from PyQt5", "from qgis.PyQt"))
+        file_path.write_text(
+            content.replace("from PyQt5", "from qgis.PyQt"), "utf-8"
+        )
 
     def __profile_path(self, qgis: str, profile: Optional[str]) -> Path:
         system = platform.system()

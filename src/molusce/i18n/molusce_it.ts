@@ -109,19 +109,59 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>AreaAnalyst</name>
     <message>
-        <location filename="../algorithms/models/area_analysis/manager.py" line="125"/>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="146"/>
         <source>Creating change map %p%</source>
         <translation>Creazione di una mappa delle modifiche %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/area_analysis/manager.py" line="149"/>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="170"/>
         <source>An unknown error occurs during change map creating</source>
         <translation>Si è verificato un errore sconosciuto durante la creazione della mappa delle modifiche</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/area_analysis/manager.py" line="142"/>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="163"/>
         <source>The system is out of memory during change map creating</source>
         <translation>L'algoritmo per la creazione di una mappa delle modifiche ha causato l'overflow della memoria allocata</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="182"/>
+        <source>Geometries of the rasters are different!</source>
+        <translation>Le geometrie dei raster sono diverse!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="45"/>
+        <source>First raster must have 1 band!</source>
+        <translation>Il primo raster deve avere 1 banda!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="48"/>
+        <source>Second raster must have 1 band!</source>
+        <translation>Secondo raster deve avere 1 banda!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="65"/>
+        <source>List of categories of the first raster doesn&apos;t contains a category of the second raster!</source>
+        <translation>Elenco delle categorie del primo raster non contiene una categoria del secondo raster!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="94"/>
+        <source>The code is not in list!</source>
+        <translation>Il codice non è nella lista!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="111"/>
+        <source>The category not in list of categories!</source>
+        <translation>La categoria non nella lista delle categorie!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="126"/>
+        <source>Invalid input rasters</source>
+        <translation>Raster di input non validi</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/area_analysis/manager.py" line="186"/>
+        <source>The raster must have 1 band!</source>
+        <translation>Il raster deve avere 1 banda!</translation>
     </message>
 </context>
 <context>
@@ -141,31 +181,76 @@ p, li { white-space: pre-wrap; }
         <source>An unknown error occurs during calculation of cross table</source>
         <translation>Si è verificato un errore sconosciuto durante il calcolo della tabella delle statistiche per classe</translation>
     </message>
+    <message>
+        <location filename="../algorithms/models/crosstabs/model.py" line="39"/>
+        <source>Sizes of rasters are not equal!</source>
+        <translation>Le dimensioni dei raster non sono uguali!</translation>
+    </message>
 </context>
 <context>
     <name>CrossTableManager</name>
     <message>
-        <location filename="../algorithms/models/crosstabs/manager.py" line="85"/>
+        <location filename="../algorithms/models/crosstabs/manager.py" line="93"/>
         <source>An unknown error occurs during calculation of cross table</source>
         <translation>Si è verificato un errore sconosciuto durante il calcolo della tabella delle statistiche per classe</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/crosstabs/manager.py" line="78"/>
+        <location filename="../algorithms/models/crosstabs/manager.py" line="86"/>
         <source>The system is out of memory during calculation of cross table</source>
         <translation>L'algoritmo per calcolare la tabella delle statistiche per classe ha portato a un overflow della memoria allocata</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/crosstabs/manager.py" line="29"/>
+        <source>Geometries of the raster maps are different!</source>
+        <translation>Le geometrie dei raster sono diverse!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/crosstabs/manager.py" line="34"/>
+        <source>An input raster has more then one band. Use 1-band rasters!</source>
+        <translation>Un raster di input ha più di una banda. Usa raster a 1 banda!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/crosstabs/manager.py" line="47"/>
+        <source>Different geometry</source>
+        <translation>Geometria diversa</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/crosstabs/manager.py" line="131"/>
+        <source>Input rasters contain different numbers of categories. MOLUSCE cannot process rasters with different number of categories yet</source>
+        <translation>I raster di input contengono diversi numeri di categorie. MOLUSSE non è ancora in grado di elaborare raster con un numero diverso di categorie</translation>
     </message>
 </context>
 <context>
     <name>DependenceCoef</name>
     <message>
-        <location filename="../algorithms/models/correlation/model.py" line="69"/>
+        <location filename="../algorithms/models/correlation/model.py" line="74"/>
         <source>An unknown error occurs during cross table calculation</source>
         <translation>Si è verificato un errore sconosciuto durante il calcolo della tabella delle statistiche per classe</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/correlation/model.py" line="62"/>
+        <location filename="../algorithms/models/correlation/model.py" line="67"/>
         <source>The system is out of memory during cross table calculation</source>
         <translation>L'algoritmo per calcolare la tabella delle statistiche per classe ha portato a un overflow della memoria allocata</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/correlation/model.py" line="62"/>
+        <source>Different geometry</source>
+        <translation>Geometria diversa</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/correlation/model.py" line="102"/>
+        <source>The method is applicable for NxN crosstable only!</source>
+        <translation>Il metodo è applicabile solo per la tabella delle statistiche sulle classi di dimensioni NxN!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/correlation/model.py" line="179"/>
+        <source>Kappa is applicable for NxN crosstable only!</source>
+        <translation>Il calcolo delle statistiche Kappa è applicabile solo alla tabella delle statistiche per classi di dimensioni NxN!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/correlation/model.py" line="204"/>
+        <source>Unknown mode of kappa statistics!</source>
+        <translation>Modalità sconosciuta delle statistiche kappa!</translation>
     </message>
 </context>
 <context>
@@ -185,38 +270,73 @@ p, li { white-space: pre-wrap; }
         <source>An iteration of validation %p%</source>
         <translation>Un'iterazione della validazione %p%</translation>
     </message>
+    <message>
+        <location filename="../algorithms/models/errorbudget/ebmodel.py" line="57"/>
+        <source>The reference and simulated rasters must be 1-band rasters!</source>
+        <translation>I raster di riferimento e simulati devono essere raster a 1 banda!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/errorbudget/ebmodel.py" line="61"/>
+        <source>Geometries of the reference and simulated rasters are different!</source>
+        <translation>Le geometrie dei raster di riferimento e di quelli simulati sono diverse!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/errorbudget/ebmodel.py" line="68"/>
+        <source>Categories in the reference and simulated rasters are different!</source>
+        <translation>Le categorie nei raster di riferimento e simulati sono diverse!</translation>
+    </message>
 </context>
 <context>
     <name>LR</name>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="132"/>
+        <location filename="../algorithms/models/lr/lr.py" line="135"/>
         <source>Initialize model %p%</source>
         <translation>Inizializzazione del modello %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="163"/>
+        <location filename="../algorithms/models/lr/lr.py" line="168"/>
         <source>Prediction %p%</source>
         <translation>Previsione %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="214"/>
+        <location filename="../algorithms/models/lr/lr.py" line="219"/>
         <source>An unknown error occurs during LR prediction</source>
         <translation>Nel processo di costruzione della previsione con il metodo della regressione logistica, si è verificato un errore sconosciuto</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="209"/>
+        <location filename="../algorithms/models/lr/lr.py" line="214"/>
         <source>The system is out of memory during LR prediction</source>
         <translation>L'algoritmo di previsione della regressione logistica ha portato a un overflow della memoria allocata</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="307"/>
+        <location filename="../algorithms/models/lr/lr.py" line="326"/>
         <source>The system is out of memory during LR training</source>
         <translation>L'algoritmo di addestramento per il modello di regressione logistica ha causato un overflow della memoria allocata</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/lr/lr.py" line="312"/>
+        <location filename="../algorithms/models/lr/lr.py" line="331"/>
         <source>An unknown error occurs during LR training</source>
         <translation>Si è verificato un errore sconosciuto durante il processo di addestramento del modello di regressione logistica</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/lr/lr.py" line="140"/>
+        <source>Geometries of the input rasters are different!</source>
+        <translation>Le geometrie dei raster sono diverse!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/lr/lr.py" line="263"/>
+        <source>You must create a Logistic Regression model before!</source>
+        <translation>È necessario creare un modello di regressione logistica prima!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/lr/lr.py" line="312"/>
+        <source>Model training failed</source>
+        <translation>Modello di formazione non riuscita</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/lr/lr.py" line="319"/>
+        <source>Missed LR model</source>
+        <translation>Non è stato stabilito alcun modello di regressione logistica</translation>
     </message>
 </context>
 <context>
@@ -323,14 +443,39 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MCE</name>
     <message>
-        <location filename="../algorithms/models/mce/mce.py" line="208"/>
+        <location filename="../algorithms/models/mce/mce.py" line="212"/>
         <source>An unknown error occurs during MCE prediction</source>
         <translation>Durante il processo di costruzione della previsione con il metodo di valutazione multi-criterio, si è verificato un errore sconosciuto</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mce/mce.py" line="203"/>
+        <location filename="../algorithms/models/mce/mce.py" line="207"/>
         <source>The system is out of memory during MCE prediction</source>
         <translation>L'algoritmo di costruzione della previsione con il metodo di valutazione multi-criterio ha portato all'overflow della memoria allocata</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mce/mce.py" line="85"/>
+        <source>Matrix size is different from the number of variables!</source>
+        <translation>La dimensione della matrice è diversa dal numero di variabili!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mce/mce.py" line="94"/>
+        <source>The weight matrix is not NxN!</source>
+        <translation>La matrice del peso non è NxN!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mce/mce.py" line="98"/>
+        <source>w[i,i] not equal 1 !</source>
+        <translation>w [i, i] non è uguale a 1!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mce/mce.py" line="101"/>
+        <source>w[i,j] * w[j,i] not equal 1 !</source>
+        <translation>w [i, j] * w[j, i] non è uguale a 1!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mce/mce.py" line="166"/>
+        <source>Geometries of the state and factor rasters are different!</source>
+        <translation>Le geometrie dei raster di stato e fattore sono diverse!</translation>
     </message>
 </context>
 <context>
@@ -366,145 +511,160 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MlpManager</name>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="251"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="254"/>
         <source>Initialize model %p%</source>
         <translation>Inizializzazione del modello %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="282"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="287"/>
         <source>Prediction %p%</source>
         <translation>Previsione %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="334"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="339"/>
         <source>An unknown error occurs during ANN prediction</source>
         <translation>Durante la costruzione della previsione con il metodo delle reti neurali, si è verificato un errore sconosciuto</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="506"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="518"/>
         <source>Train model %p%</source>
         <translation>Addestramento del modello %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="329"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="334"/>
         <source>The system is out of memory during ANN prediction</source>
         <translation>L'algoritmo di previsione con il metodo delle reti neurali ha portato all'overflow della memoria allocata</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="537"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="549"/>
         <source>The system is out of memory during ANN training</source>
         <translation>L'algoritmo di addestramento del modello con il metodo delle reti neurali ha portato all'overflow della memoria allocata</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/mlp/manager.py" line="542"/>
+        <location filename="../algorithms/models/mlp/manager.py" line="554"/>
         <source>An unknown error occurs during ANN training</source>
         <translation>Si è verificato un errore sconosciuto durante l'addestramento del modello di rete neurale</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mlp/manager.py" line="133"/>
+        <source>Output layer must have one band!</source>
+        <translation>Livello di uscita deve avere una banda!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mlp/manager.py" line="259"/>
+        <source>Geometries of the input rasters are different!</source>
+        <translation>Le geometrie dei raster sono diverse!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mlp/manager.py" line="379"/>
+        <source>You must create a MLP before!</source>
+        <translation>È necessario creare un modello di MLP prima!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/mlp/manager.py" line="463"/>
+        <source>Model training failed</source>
+        <translation>Modello di formazione non riuscita</translation>
     </message>
 </context>
 <context>
     <name>MolusceDialog</name>
     <message>
-        <location filename="../moluscedialog.py" line="176"/>
+        <location filename="../moluscedialog.py" line="179"/>
         <source>Start logging</source>
         <translation>Logging iniziato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="386"/>
+        <location filename="../moluscedialog.py" line="389"/>
         <source>Missed selected row</source>
         <translation>Riga selezionata mancante</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="224"/>
+        <location filename="../moluscedialog.py" line="227"/>
         <source>Initial raster is not selected. Please specify input data and try again</source>
         <translation>Il raster iniziale non è stato selezionato. Si prega di specificarlo e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="278"/>
+        <location filename="../moluscedialog.py" line="281"/>
         <source>Final raster is not selected. Please specify input data and try again</source>
         <translation>Il raster finale non è stato selezionato. Si prega di specificarlo e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="326"/>
+        <location filename="../moluscedialog.py" line="329"/>
         <source>Factor raster is not selected. Please specify input data and try again</source>
         <translation>I fattori raster non sono stati selezionati. Si prega di specificarli e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="427"/>
+        <location filename="../moluscedialog.py" line="430"/>
         <source>Factors list cleared</source>
         <translation>Lista dei fattori eliminata</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1184"/>
+        <location filename="../moluscedialog.py" line="1165"/>
         <source>Missed input data</source>
         <translation>Input data mancanti</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="548"/>
+        <location filename="../moluscedialog.py" line="560"/>
         <source>Initial or final raster is not set. Please specify input data and try again</source>
         <translation>Il raster iniziale o finale non è stato impostato correttamente. Si prega di specificare i dati di input e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1597"/>
+        <location filename="../moluscedialog.py" line="1605"/>
         <source>Class color</source>
         <translation>Classe colore</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="542"/>
+        <location filename="../moluscedialog.py" line="554"/>
         <source>Class statistics and transition matrix are updated</source>
         <translation>Statistiche di classe e matrice di transizione sono stati aggiornati</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="557"/>
+        <location filename="../moluscedialog.py" line="581"/>
         <source>Save change map</source>
         <translation>Salve la mappa dei cambiamenti</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1845"/>
+        <location filename="../moluscedialog.py" line="1853"/>
         <source>GeoTIFF (*.tif *.tiff *.TIF *.TIFF)</source>
         <translation>GeoTIFF (*.tif *.tiff *.TIF *.TIFF)</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1152"/>
-        <source>No file selected</source>
-        <translation>Nessun file selezionato</translation>
-    </message>
-    <message>
-        <location filename="../moluscedialog.py" line="1184"/>
+        <location filename="../moluscedialog.py" line="1165"/>
         <source>Initial raster is not set. Please specify it and try again</source>
         <translation>Il raster iniziale non è stato impostato correttamente. Si prega di specificarlo e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="772"/>
+        <location filename="../moluscedialog.py" line="632"/>
         <source>Factors rasters is not set. Please specify them and try again</source>
         <translation>I fattori raster non sono stati impostati correttamente. Si prega di specificarli e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1741"/>
+        <location filename="../moluscedialog.py" line="1749"/>
         <source>Missed model</source>
         <translation>Modello mancante</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="790"/>
+        <location filename="../moluscedialog.py" line="650"/>
         <source>Missed transition matrix</source>
         <translation>Matrice di transizione mancante</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="790"/>
+        <location filename="../moluscedialog.py" line="650"/>
         <source>Please calculate transition matrix and try again</source>
         <translation>Si prega di calcolare la matrice di transizione e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="852"/>
+        <location filename="../moluscedialog.py" line="830"/>
         <source>Output path for risk function map is not set. Skipping this step</source>
         <translation>Il percorso di ouput per la funzione di rischio non è stata impostata correttamente. Questo passaggio verrà saltato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="902"/>
+        <location filename="../moluscedialog.py" line="880"/>
         <source>Output path for simulated risk map is not set. Skipping this step</source>
         <translation>Il percorso di ouput per la simulazione della mappa del rischio non è stata impostata correttamente. Questo passaggio verrà saltato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1135"/>
+        <location filename="../moluscedialog.py" line="1142"/>
         <source>Can&apos;t read file</source>
         <translation>Il file non può essere letto</translation>
     </message>
@@ -514,102 +674,102 @@ p, li { white-space: pre-wrap; }
         <translation>Kappa non applicabile</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1496"/>
+        <location filename="../moluscedialog.py" line="1495"/>
         <source>Cramer&apos;s Coefficient</source>
         <translation>Coefficiente Cramer</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1511"/>
+        <location filename="../moluscedialog.py" line="1510"/>
         <source>Joint Information Uncertainty</source>
         <translation>Incertezza dell'Entropia Congiunta</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1705"/>
+        <location filename="../moluscedialog.py" line="1713"/>
         <source>Weights of Evidence</source>
         <translation>Significato del tratto</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1710"/>
+        <location filename="../moluscedialog.py" line="1718"/>
         <source>Multi Criteria Evaluation</source>
         <translation>Valutazione multi-criterio</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1695"/>
+        <location filename="../moluscedialog.py" line="1703"/>
         <source>Logistic Regression</source>
         <translation>Regressione logistica</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1298"/>
+        <location filename="../moluscedialog.py" line="1297"/>
         <source>All</source>
         <translation>Tutto</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1308"/>
+        <location filename="../moluscedialog.py" line="1307"/>
         <source>Multiple-resolution budget</source>
         <translation>Bidget risoluzione multipla</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1521"/>
+        <location filename="../moluscedialog.py" line="1520"/>
         <source>Not applicable</source>
         <translation>Non applicabile</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1741"/>
+        <location filename="../moluscedialog.py" line="1749"/>
         <source>Nothing to save, samples were not yet generated as the model was not trained. Train the model first.</source>
         <translation>Non c'è nulla da salvare, i campioni non sono ancora stati generati poiché il training del modello non è stato effettuato. Si prega di eseguire il training del modello.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1751"/>
+        <location filename="../moluscedialog.py" line="1759"/>
         <source>Missed samples</source>
         <translation>Campioni mancanti</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1819"/>
+        <location filename="../moluscedialog.py" line="1827"/>
         <source>Save file</source>
         <translation>Salva il file</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1758"/>
+        <location filename="../moluscedialog.py" line="1766"/>
         <source>Shape files (*.shp *.SHP *.Shp)</source>
         <translation>Shape files (*.shp *.SHP *.Shp)</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1801"/>
+        <location filename="../moluscedialog.py" line="1809"/>
         <source>Can&apos;t open file</source>
         <translation>Il file non può essere aperto</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1845"/>
+        <location filename="../moluscedialog.py" line="1853"/>
         <source>Open file</source>
         <translation>Apri il file</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="363"/>
+        <location filename="../moluscedialog.py" line="366"/>
         <source>Memory Error occurred (loading raster %s). Perhaps the system is low on memory.</source>
         <translation>Si è verificato un errore durante il caricamento del raster %s. Forse il sistema ha memoria insufficiente.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="296"/>
+        <location filename="../moluscedialog.py" line="299"/>
         <source>Set final layer to %s</source>
         <translation>%s impostato come layer finale</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="361"/>
+        <location filename="../moluscedialog.py" line="364"/>
         <source>Added factor layer %s</source>
         <translation>%s aggiunti come variabile spaziale</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="369"/>
+        <location filename="../moluscedialog.py" line="372"/>
         <source>Memory error</source>
         <translation>Errore di memoria</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="369"/>
+        <location filename="../moluscedialog.py" line="372"/>
         <source>Memory error occurred. Perhaps the system is low on memory.</source>
         <translation>Si è verificato un errore. Forse il sistema ha memoria insufficiente.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="413"/>
+        <location filename="../moluscedialog.py" line="416"/>
         <source>Removed factor layer %s</source>
         <translation>%s rimossi dalle variabili spaziali</translation>
     </message>
@@ -619,52 +779,52 @@ p, li { white-space: pre-wrap; }
         <translation>Geometria diversa</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="461"/>
+        <location filename="../moluscedialog.py" line="464"/>
         <source>Geometries of the initial raster and final raster are different!</source>
         <translation>Le geometrie del raster iniziare e finale sono diverse!</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="469"/>
+        <location filename="../moluscedialog.py" line="472"/>
         <source>Geometry is matched</source>
         <translation>La geometria corrisponde correttamente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="469"/>
+        <location filename="../moluscedialog.py" line="472"/>
         <source>Geometries of the rasters are matched!</source>
         <translation>Le geometrie dei file raster corrisponde correttamente!</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="493"/>
+        <location filename="../moluscedialog.py" line="496"/>
         <source>Memory Error occurred (correlation checking). Perhaps the system is low on memory.</source>
         <translation>Si è verificato un errore (controllo della correlazione). Forse il sistema ha memoria insufficiente.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="615"/>
+        <location filename="../moluscedialog.py" line="627"/>
         <source>Change Map is created</source>
         <translation>La mappa dei cambiamenti è stata creata con successo</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="632"/>
+        <location filename="../moluscedialog.py" line="670"/>
         <source>Prefix of transition potential maps is not set. Please specify it and try again</source>
         <translation>Prefisso delle mappe di transizione potenziali non è impostato. Si prega di specificarlo e riprovare nuovamente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="816"/>
+        <location filename="../moluscedialog.py" line="794"/>
         <source>Simulation process is started</source>
         <translation>Processo di simulatione iniziato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="926"/>
+        <location filename="../moluscedialog.py" line="921"/>
         <source>Not implemented yet</source>
         <translation>Non ancora implementato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="926"/>
+        <location filename="../moluscedialog.py" line="921"/>
         <source>Transition potentials not implemented yet for the model.</source>
         <translation>Le transizioni potenziali non sono state ancora implementate per il modello.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="943"/>
+        <location filename="../moluscedialog.py" line="938"/>
         <source>Simulation process is finished</source>
         <translation>Processo di simulazione concluso</translation>
     </message>
@@ -684,129 +844,129 @@ p, li { white-space: pre-wrap; }
         <translation>Processo di convalida kappa iniziato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1111"/>
+        <location filename="../moluscedialog.py" line="1112"/>
         <source>Kappa validation process is finished</source>
         <translation>Processo di convalida kappa concluso</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1144"/>
+        <location filename="../moluscedialog.py" line="1175"/>
         <source>Save validation map</source>
         <translation>Salva mappa di convalida</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1202"/>
+        <location filename="../moluscedialog.py" line="1201"/>
         <source>Process of Validation Map creating is started</source>
         <translation>Processo per la creazione della mappa di convalida iniziato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1486"/>
+        <location filename="../moluscedialog.py" line="1485"/>
         <source>Pearson&apos;s Correlation</source>
         <translation>Correlazione di Pearson</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1282"/>
+        <location filename="../moluscedialog.py" line="1281"/>
         <source>raster units</source>
         <translation>Unità raster</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1547"/>
+        <location filename="../moluscedialog.py" line="1555"/>
         <source>sq. km.</source>
         <translation>km²</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1549"/>
+        <location filename="../moluscedialog.py" line="1557"/>
         <source>ha</source>
         <translation>ha</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1700"/>
+        <location filename="../moluscedialog.py" line="1708"/>
         <source>Artificial Neural Network (Multi-layer Perceptron)</source>
         <translation>Reti neurali (percettrone multistrato)</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1299"/>
+        <location filename="../moluscedialog.py" line="1298"/>
         <source>Random</source>
         <translation>Random</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1300"/>
+        <location filename="../moluscedialog.py" line="1299"/>
         <source>Stratified</source>
         <translation>Stratificato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1406"/>
+        <location filename="../moluscedialog.py" line="1405"/>
         <source>Correlation checking</source>
         <translation>Controllo Correlazione</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1553"/>
+        <location filename="../moluscedialog.py" line="1561"/>
         <source>sq. </source>
         <translation>quadri </translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1786"/>
+        <location filename="../moluscedialog.py" line="2164"/>
         <source>Can&apos;t save file</source>
         <translation>Il file non può essere salvato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1813"/>
+        <location filename="../moluscedialog.py" line="1821"/>
         <source>Select Directory name</source>
         <translation>Selezionare il nome della directory</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1871"/>
+        <location filename="../moluscedialog.py" line="1879"/>
         <source>An unknown error occurs during validation procedure</source>
         <translation>Errore sconosciuto durante la procedura di convalida</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1898"/>
+        <location filename="../moluscedialog.py" line="1906"/>
         <source>Can&apos;t load raster %s</source>
         <translation>Il raster %s non può essere caricato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="2066"/>
+        <location filename="../moluscedialog.py" line="2074"/>
         <source>Persistent</source>
         <translation>Persistente</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="307"/>
+        <location filename="../moluscedialog.py" line="310"/>
         <source>Raster must store codes of a nominal variable</source>
         <translation>Il raster deve memorizzare i codici di una variabile nominale</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="307"/>
+        <location filename="../moluscedialog.py" line="310"/>
         <source>The raster has a lot of different values. Does the raster store a nominal variable?</source>
         <translation>Il raster ha molti valori diversi. Il raster memorizza una variabile nominale?</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="452"/>
+        <location filename="../moluscedialog.py" line="455"/>
         <source>Geometries of the initial raster and raster &apos;{}&apos; are different!</source>
         <translation>Le caratteristiche spaziali dei raster dello stato iniziale e finale '{}' non coincidono!</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1135"/>
+        <location filename="../moluscedialog.py" line="1142"/>
         <source>Can&apos;t read file: &apos;{}&apos;</source>
         <translation>Impossibile leggere il file: '{}'</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1786"/>
+        <location filename="../moluscedialog.py" line="1778"/>
         <source>Can&apos;t save file: &apos;{}&apos;</source>
         <translation>Impossibile salvare il file: '{}'</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1801"/>
+        <location filename="../moluscedialog.py" line="1809"/>
         <source>Error loading output shapefile:
 {}</source>
         <translation>Errore durante il caricamento del file di output:
 {}</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="386"/>
+        <location filename="../moluscedialog.py" line="389"/>
         <source>Factor raster is not selected. Please specify it and try again</source>
         <translation>Non è selezionata alcuna mappa di influenza fattore. Si prega di indicare la mappa di influenza del fattore e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="782"/>
+        <location filename="../moluscedialog.py" line="642"/>
         <source>Model not selected. Please select and train model.</source>
         <translation>Il modello non è selezionato. Si prega di scegliere e addestrare il modello.</translation>
     </message>
@@ -816,117 +976,117 @@ p, li { white-space: pre-wrap; }
         <translation>Kappa non è applicabile al file: '{}' in quanto contiene un valore continuo</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1751"/>
+        <location filename="../moluscedialog.py" line="1759"/>
         <source>Selected model doesn&apos;t use samples</source>
         <translation>Il modello selezionato non utilizza campioni</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1864"/>
+        <location filename="../moluscedialog.py" line="1872"/>
         <source>The system is out of memory during validation procedure</source>
         <translation>Durante la procedura di convalida si è verificato un overflow della memoria allocata</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1539"/>
+        <location filename="../moluscedialog.py" line="1547"/>
         <source>metre</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1540"/>
+        <location filename="../moluscedialog.py" line="1548"/>
         <source>meter</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1541"/>
+        <location filename="../moluscedialog.py" line="1549"/>
         <source>meters</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1542"/>
+        <location filename="../moluscedialog.py" line="1550"/>
         <source>metres</source>
         <translation>m</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1543"/>
+        <location filename="../moluscedialog.py" line="1551"/>
         <source>unknown</source>
         <translation>sconosciuto</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1359"/>
+        <location filename="../moluscedialog.py" line="1358"/>
         <source>Perfect location,
 perfect quantity inform.</source>
         <translation>Livello ideale di informazioni sulla posizione,
 livello ideale di informazioni sulla quantità.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1359"/>
+        <location filename="../moluscedialog.py" line="1358"/>
         <source>No location,
 no quantity inform.</source>
         <translation>Nessuna informazione sulla posizione,
 nessuna informazione sulla quantità.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1359"/>
+        <location filename="../moluscedialog.py" line="1358"/>
         <source>No location,
 medium quantity inform.</source>
         <translation>Nessuna informazione sulla posizione,
 livello medio di informazioni sulla quantità.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1359"/>
+        <location filename="../moluscedialog.py" line="1358"/>
         <source>Medium location,
 medium quantity inform.</source>
         <translation>Livello medio di informazioni sulla posizione,
 livello medio di informazioni sulla quantità.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1359"/>
+        <location filename="../moluscedialog.py" line="1358"/>
         <source>Perfect location,
 medium quantity inform.</source>
         <translation>Livello ideale di informazioni sulla posizione,
 livello medio di informazioni sulla quantità.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="243"/>
+        <location filename="../moluscedialog.py" line="246"/>
         <source>Set initial layer to %s</source>
         <translation>Imposta il livello iniziale a %s</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1230"/>
+        <location filename="../moluscedialog.py" line="1229"/>
         <source>Process of Validation Map creating is finished</source>
         <translation>Processo di creazione della mappa di convalida è terminato</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1770"/>
+        <location filename="../moluscedialog.py" line="2175"/>
         <source>File &apos;{}&apos; is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again</source>
         <translation>Il file '{}' è utilizzato nel progetto QGIS. Non è possibile sovrascrivere il file, specificare un nome di file diverso e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="642"/>
+        <location filename="../moluscedialog.py" line="680"/>
         <source>Directory of transition potential maps is not set. Please specify it and try again</source>
         <translation>La directory delle mappe del potenziale di transizione non è impostata. Specificarla e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="658"/>
+        <location filename="../moluscedialog.py" line="696"/>
         <source>Overwrite file</source>
         <translation>Sovrascrivere il file</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="658"/>
+        <location filename="../moluscedialog.py" line="696"/>
         <source>Files with the specified prefix already exist in this directory. This may cause the files to be overwritten. Are you sure you want to continue?</source>
         <translation>I file con il prefisso specificato esistono già in questa directory. Questo potrebbe causare la sovrascrittura dei file. Siete sicuri di voler continuare?</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="742"/>
+        <location filename="../moluscedialog.py" line="2164"/>
         <source>Can&apos;t save file in the specified path &apos;{}&apos;. Please specify output path correctly and try again</source>
         <translation>Impossibile salvare il file nel percorso specificato '{}'. Specificare correttamente il percorso di output e riprovare</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1173"/>
+        <location filename="../moluscedialog.py" line="1154"/>
         <source>Different characteristics of rasters</source>
         <translation>Caratteristiche diverse dei raster</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1173"/>
+        <location filename="../moluscedialog.py" line="1154"/>
         <source>Characteristics of the reference and simulated rasters are different!</source>
         <translation>Le caratteristiche dei raster di riferimento e di quelli simulati sono diverse!</translation>
     </message>
@@ -936,19 +1096,44 @@ livello medio di informazioni sulla quantità.</translation>
         <translation>Le geometrie dei raster di riferimento e di quelli simulati sono diverse!</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="2018"/>
+        <location filename="../moluscedialog.py" line="2026"/>
         <source>Init raster should be in PseudoColor or Paletted mode. Style not applied.</source>
         <translation>Il raster di ingresso deve essere in modalità PseudoColor o Paletted. Lo stile non viene applicato.</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="1770"/>
+        <location filename="../moluscedialog.py" line="2175"/>
         <source>Can&apos;t rewrite file</source>
         <translation>Impossibile riscrivere il file</translation>
     </message>
     <message>
-        <location filename="../moluscedialog.py" line="761"/>
+        <location filename="../moluscedialog.py" line="760"/>
         <source>Can&apos;t save files with the same output path &apos;{}&apos;. Please specify different output paths and try again</source>
         <translation>Non è possibile salvare i file con lo stesso percorso di output '{}'. Specificare percorsi di output diversi e riprovare</translation>
+    </message>
+    <message>
+        <location filename="../moluscedialog.py" line="523"/>
+        <source>Invalid input data</source>
+        <translation>Input data mancanti</translation>
+    </message>
+    <message>
+        <location filename="../moluscedialog.py" line="914"/>
+        <source>Invalid input rasters</source>
+        <translation>Raster di input non validi</translation>
+    </message>
+    <message>
+        <location filename="../moluscedialog.py" line="1115"/>
+        <source>Model training failed</source>
+        <translation>Modello di formazione non riuscita</translation>
+    </message>
+    <message>
+        <location filename="../moluscedialog.py" line="1537"/>
+        <source>Different number of categories</source>
+        <translation>Diverso numero di categorie</translation>
+    </message>
+    <message>
+        <location filename="../moluscedialog.py" line="967"/>
+        <source>Invalid rasters</source>
+        <translation>Raster non validi</translation>
     </message>
 </context>
 <context>
@@ -1230,69 +1415,79 @@ livello medio di informazioni sulla quantità.</translation>
 <context>
     <name>MultiCriteriaEvaluationWidget</name>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="95"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="98"/>
         <source>Missed input data</source>
         <translation>Input data mancanti</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="59"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="62"/>
         <source>Initial or final raster is not set. Please specify input data and try again</source>
         <translation>Il raster iniziale o finale non è stato impostato correttamente. Si prega di specificare i dati di input e riprovare</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="95"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="98"/>
         <source>Factors rasters is not set. Please specify them and try again</source>
         <translation>I fattori raster non sono stati impostati correttamente. Si prega di specificarli e riprovare</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="106"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="109"/>
         <source>Incorrect matrix</source>
         <translation>Matrice incorretta</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="106"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="109"/>
         <source>Please fill the matrix with values</source>
         <translation>Si prega di compilare la matrice</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="120"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="131"/>
         <source>Init MCE model</source>
         <translation>Modello di valutazione multi-criterio inizializzato</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="144"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="163"/>
         <source>Consistent matrix</source>
         <translation>Matrice consistente</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="153"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="172"/>
         <source>Inconsistent matrix</source>
         <translation>Matrice inconsistente</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="144"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="163"/>
         <source>Matrix filled correctly. Consistency value is: %f. The model can be used.</source>
         <translation>La matrice è stata riempita correttamente. Il valore di consistenza è %f. Il modello può essere usato.</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="153"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="172"/>
         <source>Please adjust matrix before starting simulation. Consistency value is: %f</source>
         <translation>Si prega di aggiustare la matrice prima di iniziale la simulazione. Il valore di consistenza è %f</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="186"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="205"/>
         <source>Weights</source>
         <translation>Pesi</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="132"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="151"/>
         <source>MCE model is trained</source>
         <translation>Modello di valutazione multi-criterio addestrato</translation>
     </message>
     <message>
-        <location filename="../multicriteriaevaluationwidget.py" line="176"/>
+        <location filename="../multicriteriaevaluationwidget.py" line="195"/>
         <source>{} (band {})</source>
         <translation>{} (banda {})</translation>
+    </message>
+    <message>
+        <location filename="../multicriteriaevaluationwidget.py" line="124"/>
+        <source>Invalid input rasters</source>
+        <translation>Raster di input non validi</translation>
+    </message>
+    <message>
+        <location filename="../multicriteriaevaluationwidget.py" line="142"/>
+        <source>Model training faoled</source>
+        <translation>Modello di formazione non riuscita</translation>
     </message>
 </context>
 <context>
@@ -1366,7 +1561,7 @@ livello medio di informazioni sulla quantità.</translation>
         <translation>Inserire i dati per il training</translation>
     </message>
     <message>
-        <location filename="../neuralnetworkwidget.py" line="231"/>
+        <location filename="../neuralnetworkwidget.py" line="238"/>
         <source>ANN model training interrupted</source>
         <translation>L'addestramento del modello di rete neurale viene interrotto</translation>
     </message>
@@ -1376,24 +1571,29 @@ livello medio di informazioni sulla quantità.</translation>
         <translation>Topologia del network sbagliata</translation>
     </message>
     <message>
-        <location filename="../neuralnetworkwidget.py" line="224"/>
+        <location filename="../neuralnetworkwidget.py" line="231"/>
         <source>ANN model is trained</source>
         <translation>Modello di rete neurale addestrato</translation>
     </message>
     <message>
-        <location filename="../neuralnetworkwidget.py" line="193"/>
+        <location filename="../neuralnetworkwidget.py" line="200"/>
         <source>Train</source>
         <translation>Curva di apprendimento</translation>
     </message>
     <message>
-        <location filename="../neuralnetworkwidget.py" line="193"/>
+        <location filename="../neuralnetworkwidget.py" line="200"/>
         <source>Validation</source>
         <translation>Curva di errore</translation>
     </message>
     <message>
-        <location filename="../neuralnetworkwidget.py" line="212"/>
+        <location filename="../neuralnetworkwidget.py" line="219"/>
         <source>Start training ANN model</source>
         <translation>Avviato il processo di apprendimento del modello di rete neurale</translation>
+    </message>
+    <message>
+        <location filename="../neuralnetworkwidget.py" line="175"/>
+        <source>Output layer error</source>
+        <translation>Errore del livello di output</translation>
     </message>
 </context>
 <context>
@@ -1457,47 +1657,92 @@ livello medio di informazioni sulla quantità.</translation>
 <context>
     <name>Sampler</name>
     <message>
-        <location filename="../algorithms/models/sampler/sampler.py" line="407"/>
+        <location filename="../algorithms/models/sampler/sampler.py" line="411"/>
         <source>Sampling...</source>
         <translation>Campionamento...</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/sampler/sampler.py" line="438"/>
+        <location filename="../algorithms/models/sampler/sampler.py" line="449"/>
         <source>An unknown error occurs during sampling</source>
         <translation>Si è verificato un errore sconosciuto durante il campionamento</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/sampler/sampler.py" line="433"/>
+        <location filename="../algorithms/models/sampler/sampler.py" line="444"/>
         <source>The system is out of memory during sampling</source>
         <translation>L'esecuzione del processo di recupero ha causato l'overflow della memoria allocata</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/sampler/sampler.py" line="71"/>
+        <source>Geometries of the inputs and output rasters are different!</source>
+        <translation>Le geometrie degli ingressi e dei raster di uscita sono diverse!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/sampler/sampler.py" line="242"/>
+        <source>Samples cannot be created!</source>
+        <translation>I campioni non possono essere creati!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/sampler/sampler.py" line="254"/>
+        <source>Creating output file failed!</source>
+        <translation>Creazione del file di output non riuscita!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/sampler/sampler.py" line="267"/>
+        <source>Creating Name field failed!</source>
+        <translation>Impossibile creare il nome del campo!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/sampler/sampler.py" line="306"/>
+        <source>Failed to create feature in shapefile!</source>
+        <translation>Creazione di funzionalità in shapefile non riuscita!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/sampler/sampler.py" line="328"/>
+        <source>Geometries of the inputs or output rasters are distinct from factor&apos;s geometry!</source>
+        <translation>Le geometrie degli input o dei raster di output sono distinte dalla geometria del fattore!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/sampler/sampler.py" line="432"/>
+        <source>The mode of sampling is unknown!</source>
+        <translation>La modalità di campionamento è sconosciuta!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/sampler/sampler.py" line="437"/>
+        <source>Sampling error</source>
+        <translation>Errore di campionamento</translation>
     </message>
 </context>
 <context>
     <name>Simulator</name>
     <message>
-        <location filename="../algorithms/models/simulator/sim.py" line="108"/>
+        <location filename="../algorithms/models/simulator/sim.py" line="111"/>
         <source>Area Change Analysis %p%</source>
         <translation>Analisi del cambiamento del territorio %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/simulator/sim.py" line="117"/>
+        <location filename="../algorithms/models/simulator/sim.py" line="128"/>
         <source>Simulation process %p%</source>
         <translation>Processo di simulazione %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/simulator/sim.py" line="144"/>
+        <location filename="../algorithms/models/simulator/sim.py" line="155"/>
         <source>There are more transitions in the transition matrix, then the model have found</source>
         <translation>Il modello ha individuato un numero maggiore di valori di transizione rispetto alla matrice di transizione</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/simulator/sim.py" line="198"/>
+        <location filename="../algorithms/models/simulator/sim.py" line="209"/>
         <source>An unknown error occurs during simulation</source>
         <translation>Si è verificato un errore sconosciuto durante il processo di simulazione</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/simulator/sim.py" line="193"/>
+        <location filename="../algorithms/models/simulator/sim.py" line="204"/>
         <source>The system is out of memory during simulation</source>
         <translation>L'esecuzione del processo di simulazione ha causato un overflow della memoria allocata</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/simulator/sim.py" line="116"/>
+        <source>Invalid input rasters</source>
+        <translation>Raster di input non validi</translation>
     </message>
 </context>
 <context>
@@ -1523,7 +1768,7 @@ livello medio di informazioni sulla quantità.</translation>
         <translation>Modello di significatività del tratto inizializzato</translation>
     </message>
     <message>
-        <location filename="../weightofevidencewidget.py" line="144"/>
+        <location filename="../weightofevidencewidget.py" line="151"/>
         <source>Initialization error</source>
         <translation>Errore nell'inizializzazione</translation>
     </message>
@@ -1533,19 +1778,39 @@ livello medio di informazioni sulla quantità.</translation>
         <translation>Il raster della mappa dei cambiamenti non è stato impostato. Si prega di crearlo e riprovare</translation>
     </message>
     <message>
-        <location filename="../weightofevidencewidget.py" line="202"/>
+        <location filename="../weightofevidencewidget.py" line="209"/>
         <source>Wrong ranges</source>
         <translation>Intervalli sbagliati</translation>
     </message>
     <message>
-        <location filename="../weightofevidencewidget.py" line="202"/>
+        <location filename="../weightofevidencewidget.py" line="209"/>
         <source>Ranges are not correctly specified. Please specify them and try again (use space as separator)</source>
         <translation>Intervalli non specificati correttamente. Si prega di verificarli e provare nuovamente (usa lo spazio come separatore)</translation>
     </message>
     <message>
-        <location filename="../weightofevidencewidget.py" line="180"/>
+        <location filename="../weightofevidencewidget.py" line="187"/>
         <source>WoE model is trained</source>
         <translation>Modello di significatività del tratto addestrato</translation>
+    </message>
+    <message>
+        <location filename="../weightofevidencewidget.py" line="144"/>
+        <source>Error</source>
+        <translation>Errore</translation>
+    </message>
+    <message>
+        <location filename="../weightofevidencewidget.py" line="144"/>
+        <source>Model training failed</source>
+        <translation>Modello di formazione non riuscita</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/model.py" line="83"/>
+        <source>Unmasked area is zero-size!</source>
+        <translation>L'area al di fuori della maschera è di dimensioni zero!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/model.py" line="143"/>
+        <source>Site raster must be binary!</source>
+        <translation>Il raster delle posizioni deve essere binario!</translation>
     </message>
 </context>
 <context>
@@ -1599,60 +1864,90 @@ livello medio di informazioni sulla quantità.</translation>
 <context>
     <name>WoeManager</name>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="138"/>
+        <location filename="../algorithms/models/woe/manager.py" line="141"/>
         <source>Initialize model %p%</source>
         <translation>Inizializzazione del modello %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="153"/>
+        <location filename="../algorithms/models/woe/manager.py" line="158"/>
         <source>Prediction %p%</source>
         <translation>Previsione %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="202"/>
+        <location filename="../algorithms/models/woe/manager.py" line="207"/>
         <source>An unknown error occurs during WoE prediction</source>
         <translation>Nel processo di costruzione della previsione con il metodo della significatività del tratto, si è verificato un errore sconosciuto</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="214"/>
+        <location filename="../algorithms/models/woe/manager.py" line="219"/>
         <source>Training WoE... %p%</source>
         <translation>Formazione del modello di significatività del tratto... %p%</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="285"/>
+        <location filename="../algorithms/models/woe/manager.py" line="300"/>
         <source>Transition {} -&gt; {}
 </source>
         <translation>Transizione {} -&gt; {}
 </translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="293"/>
+        <location filename="../algorithms/models/woe/manager.py" line="308"/>
         <source><byte value="x9"/> factor: {} 
 </source>
         <translation>	 fattore di influenza: {} 
 </translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="296"/>
+        <location filename="../algorithms/models/woe/manager.py" line="311"/>
         <source><byte value="x9"/><byte value="x9"/> Weights of band {}: {} 
 </source>
         <translation>		 Pesi della banda {}: {} 
 </translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="300"/>
+        <location filename="../algorithms/models/woe/manager.py" line="315"/>
         <source>W for code {} ({} -&gt; {}) causes error</source>
         <translation>W per il codice {} ({} -&gt; {}) causa errore</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="197"/>
+        <location filename="../algorithms/models/woe/manager.py" line="202"/>
         <source>The system is out of memory during WOE prediction</source>
         <translation>L'algoritmo di costruzione della previsione con il metodo di significatività del tratto ha portato a un overflow della memoria allocata</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/woe/manager.py" line="271"/>
+        <location filename="../algorithms/models/woe/manager.py" line="286"/>
         <source>An unknown error occurs during WoE training</source>
         <translation>Durante l'addestramento del modello di significatività del tratto, si è verificato un errore sconosciuto</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/manager.py" line="67"/>
+        <source>Lengths of bins and factors are different!</source>
+        <translation>Le dimensioni del dizionario delle celle raster e dell'elenco delle mappe dei fattori non sono le stesse!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/manager.py" line="73"/>
+        <source>Geometries of the input rasters are different!</source>
+        <translation>Le geometrie dei raster sono diverse!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/manager.py" line="78"/>
+        <source>Change map must have one band!</source>
+        <translation>Cambia mappa deve avere una banda!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/manager.py" line="145"/>
+        <source>Geometries of the state and changeMap rasters are different!</source>
+        <translation>Geometrie dello stato e cambiare raster mappa sono diversi!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/manager.py" line="239"/>
+        <source>Count of bins list for multiband factor is&apos;t equal to band count!</source>
+        <translation>Il numero di celle raster nell'elenco per il raster multicanale della mappa di influenza del fattore non è uguale al numero di canali!</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/woe/manager.py" line="258"/>
+        <source>Error</source>
+        <translation>Errore</translation>
     </message>
 </context>
 </TS>

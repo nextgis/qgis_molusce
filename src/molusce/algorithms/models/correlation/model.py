@@ -7,7 +7,7 @@ import numpy as np
 from numpy import ma as ma
 from qgis.PyQt.QtCore import *
 
-from molusce.algorithms.models.crosstabs.model import CrossTable
+from molusce.algorithms.models.crosstabs.model import CrossTabError, CrossTable
 from molusce.algorithms.utils import masks_identity
 
 
@@ -58,6 +58,11 @@ class DependenceCoef(QObject):
             self.updateProgress.emit()
             self.__propagateCrossTableSignals()
             self.crosstable.computeCrosstable()
+        except CrossTabError as error:
+            QMessageBox.warning(
+                None, self.tr("Different geometry"), str(error)
+            )
+            return
         except MemoryError:
             self.errorReport.emit(
                 self.tr(
@@ -95,7 +100,7 @@ class DependenceCoef(QObject):
         rows, cols = table.shape
         if rows != cols:
             raise CoeffError(
-                "The method is applicable for NxN crosstable only!"
+                self.tr("The method is applicable for NxN crosstable only!")
             )
         n = table.n
         s = 0.0
@@ -171,7 +176,9 @@ class DependenceCoef(QObject):
         table = self.getCrosstable()
         rows, cols = table.shape
         if rows != cols:
-            raise CoeffError("Kappa is applicable for NxN crosstable only!")
+            raise CoeffError(
+                self.tr("Kappa is applicable for NxN crosstable only!")
+            )
         t_expect = table.getProbtable()
         pa = 0
         for i in range(rows):
@@ -194,7 +201,7 @@ class DependenceCoef(QObject):
                 "overal": (pa - pexpect) / (1 - pexpect),
             }
         else:
-            raise CoeffError("Unknown mode of kappa statistics!")
+            raise CoeffError(self.tr("Unknown mode of kappa statistics!"))
 
         return result
 
