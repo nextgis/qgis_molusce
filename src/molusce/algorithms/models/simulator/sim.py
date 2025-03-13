@@ -10,7 +10,7 @@ class Simulator(QObject):
     over a number of cycles
     """
 
-    rangeChanged = pyqtSignal(str, int)
+    rangeChanged = pyqtSignal(str, int) 
     updateProgress = pyqtSignal()
     simFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
