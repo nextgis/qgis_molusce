@@ -424,7 +424,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     )
                     self.inputs["factors_sim"] = d
 
-                self.inputs["bandCount_sim"] = self.__bandCount()
+                self.inputs["bandCount_sim"] = self.__bandCount(sim=True)
 
                 self.logMessage(self.tr("Added factor (sim) layer %s") % (layerName))
             except MemoryError:
@@ -508,7 +508,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
                 self.consistency_sim_checked = False
             else:
-                self.inputs["bandCount_sim"] = self.__bandCount()
+                self.inputs["bandCount_sim"] = self.__bandCount(sim=True)
 
             self.logMessage(self.tr("Removed factor (sim) layer %s") % (layerName))
             gc.collect()
@@ -2092,10 +2092,14 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         else:
             self.logMessage(self.tr("Can't load raster %s") % (filePath))
 
-    def __bandCount(self):
+    def __bandCount(self, sim=False):
         bands = 0
-        for _k, v in self.inputs["factors"].items():
-            bands += v.getBandsCount()
+        if sim == False:
+            for _k, v in self.inputs["factors"].items():
+                bands += v.getBandsCount()
+        else:
+            for _k, v in self.inputs["factors_sim"].items():
+                bands += v.getBandsCount()
         return bands
 
     def setProgressRange(self, message, maxValue):
