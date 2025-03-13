@@ -196,8 +196,11 @@ def checkInputRasters(userData):
     return bool("initial" in userData and "final" in userData)
 
 
-def checkFactors(userData):
-    return "factors" in userData
+def checkFactors(userData, sim=False):
+    if not sim:
+        return "factors" in userData
+    else:
+        return "factors_sim" in userData
 
 
 def checkChangeMap(userData):

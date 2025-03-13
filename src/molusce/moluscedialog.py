@@ -126,10 +126,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         # connect signals and slots
         self.btnSetInitialRaster.clicked.connect(self.setInitialRaster)
         self.btnSetFinalRaster.clicked.connect(self.setFinalRaster)
+        
         self.btnAddFactor.clicked.connect(self.addFactor)
+        self.btnAddFactorSeparateVars.clicked.connect(self.addFactorSeparateVars)
+        
         self.btnRemoveFactor.clicked.connect(self.removeFactor)
+        self.btnRemoveFactorSeparateVars.clicked.connect(self.removeFactorSeparateVars)
+        
         self.btnRemoveAllFactors.clicked.connect(self.removeAllFactors)
+        self.btnRemoveAllFactorsSeparateVars.clicked.connect(self.removeAllFactorsSeparateVars)
+
         self.btnCheckGeometry.clicked.connect(self.checkGeometry)
+        self.btnCheckConsistencySeparateVars.clicked.connect(self.checkConsistencySeparateVars)
 
         self.chkAllCorr.stateChanged.connect(self.__toggleCorrLayers)
         self.btnStartCorrChecking.clicked.connect(self.correlationChecking)
@@ -379,6 +387,65 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.__updateAnalyticTabs(self.geometry_matched)
         gc.collect()
 
+    def addFactorSeparateVars(self):
+        layerNames = self.lstLayersSeparateVars.selectedItems()
+
+        if len(layerNames) <= 0:
+            QMessageBox.warning(
+                self,
+                self.tr("Missed selected row"),
+                self.tr(
+                    "Factor raster is not selected. Please specify input data and try again"
+                ),
+            )
+            return
+
+        for i in layerNames:
+            layerName = i.text()
+
+            if len(self.lstFactorsSeparateVars.findItems(layerName, Qt.MatchExactly)) > 0:
+                return
+
+            item = QListWidgetItem(i)
+            layerId = str(item.data(Qt.UserRole))
+            self.lstFactorsSeparateVars.insertItem(self.lstFactors.count() + 1, item)
+
+            try:
+                if "factors_sim" in self.inputs:
+                    self.inputs["factors_sim"][layerId] = Raster(
+                        str(utils.getLayerById(layerId).source()),
+                        utils.getLayerMaskById(layerId),
+                    )
+                else:
+                    d = dict()
+                    d[layerId] = Raster(
+                        str(utils.getLayerById(layerId).source()),
+                        utils.getLayerMaskById(layerId),
+                    )
+                    self.inputs["factors_sim"] = d
+
+                self.inputs["bandCount_sim"] = self.__bandCount()
+
+                self.logMessage(self.tr("Added factor (sim) layer %s") % (layerName))
+            except MemoryError:
+                self.logErrorReport(
+                    self.tr(
+                        "Memory Error occurred (loading raster %s). Perhaps the system is low on memory."
+                    )
+                    % (layerName)
+                )
+                QMessageBox.warning(
+                    self,
+                    self.tr("Memory error"),
+                    self.tr(
+                        "Memory error occurred. Perhaps the system is low on memory."
+                    ),
+                )
+                raise
+                return
+        self.consistency_sim_checked = False
+        gc.collect()
+
     def removeFactor(self):
         layerNames = self.lstFactors.selectedItems()
 
@@ -413,6 +480,39 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.logMessage(self.tr("Removed factor layer %s") % (layerName))
             gc.collect()
 
+    def removeFactorSeparateVars(self):
+        layerNames = self.lstFactorsSeparateVars.selectedItems()
+
+        if len(layerNames) <= 0:
+            QMessageBox.warning(
+                self,
+                self.tr("Missed selected row"),
+                self.tr(
+                    "Factor raster is not selected. Please specify it and try again"
+                ),
+            )
+            return
+
+        for i in layerNames:
+            layerId = str(i.data(Qt.UserRole))
+            layerName = i.text()
+
+            self.lstFactorsSeparateVars.takeItem(self.lstFactorsSeparateVars.row(i))
+
+            del self.inputs["factors_sim"][layerId]
+            gc.collect()
+
+            if self.inputs["factors_sim"] == {}:
+                del self.inputs["factors_sim"]
+                del self.inputs["bandCount_sim"]
+
+                self.consistency_sim_checked = False
+            else:
+                self.inputs["bandCount_sim"] = self.__bandCount()
+
+            self.logMessage(self.tr("Removed factor (sim) layer %s") % (layerName))
+            gc.collect()
+
     def removeAllFactors(self):
         self.lstFactors.clear()
         try:
@@ -425,6 +525,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.geometry_matched = False
         self.__updateAnalyticTabs(self.geometry_matched)
         self.logMessage(self.tr("Factors list cleared"))
+
+    def removeAllFactorsSeparateVars(self):
+        self.lstFactorsSeparateVars.clear()
+        try:
+            del self.inputs["factors_sim"]
+            del self.inputs["bandCount_sim"]
+            gc.collect()
+        except KeyError:
+            pass
+
+        self.consistency_sim_checked = False
+        self.logMessage(self.tr("Factors list (sim) cleared"))
 
     def checkGeometry(self):
         if not utils.checkFactors(self.inputs):
@@ -473,6 +585,62 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         )
         self.geometry_matched = True
         self.__updateAnalyticTabs(self.geometry_matched)
+
+    def checkConsistencySeparateVars(self):
+        # separate spatial variables for simulations should be:
+        # - same number of variables as training ones
+        # - same number of bands for each matching variable
+        # - match geometry of initial rasters and training variables
+        if not utils.checkFactors(self.inputs, sim=True):
+            QMessageBox.warning(
+                self,
+                self.tr("Missed input data"),
+                self.tr(
+                    "Factors rasters is not set. Please specify them and try again"
+                ),
+            )
+            return
+
+        if not (len(self.inputs['factors']) == len(self.inputs['factors_sim'])):
+            QMessageBox.warning(
+                    self,
+                    self.tr("Different number of variables"),
+                    self.tr(
+                        "Model is trained using {} variables, and simulation was set up with {} variables"
+                    ).format(len(self.inputs['factors']),len(self.inputs['factors_sim'])),
+                )
+            return
+
+        initRaster = self.inputs["initial"]
+        for (_k, v), (_k2, v2) in zip(self.inputs["factors_sim"].items(), self.inputs["factors"].items()):
+
+            if not initRaster.geoDataMatch(v):
+                QMessageBox.warning(
+                    self,
+                    self.tr("Different geometry"),
+                    self.tr(
+                        "Geometries of the initial raster and raster '{}' are different!"
+                    ).format(v.getFileName()),
+                )
+                return
+
+            if not (v.bandcount == v2.bandcount):
+                QMessageBox.warning(
+                    self,
+                    self.tr("Different number of bands"),
+                    self.tr(
+                        "Training variable {} and simulation variable {} have different number of bands, {} and {} respectively"
+                    ).format(v.getFileName(), v2.getFileName(), v.bandcount, v2.bandcount),
+                )
+                return
+
+        QMessageBox.warning(
+            self,
+            self.tr("Consistancy is checked"),
+            self.tr("Training variables and Simulation variables are matched!"),
+        )
+
+        self.consistency_sim_checked = True
 
     def correlationChecking(self):
         if not utils.checkFactors(self.inputs):
@@ -767,16 +935,42 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     ).format(self.leMonteCarloPath.text()),
                 )
                 return
+            
+        if self.chkSeparateVars.isChecked():
+            if not utils.checkFactors(self.inputs, sim=True):
+                QMessageBox.warning(
+                    self,
+                    self.tr("Missed input data"),
+                    self.tr(
+                        "Factors rasters for simulation are not set. Please specify them and try again, or disable their usage"
+                    ),
+                )
+                return
 
-        if not utils.checkFactors(self.inputs):
-            QMessageBox.warning(
-                self,
-                self.tr("Missed input data"),
-                self.tr(
-                    "Factors rasters is not set. Please specify them and try again"
-                ),
-            )
-            return
+            if not self.consistency_sim_checked:
+                QMessageBox.warning(
+                    self,
+                    self.tr("Missed input data"),
+                    self.tr(
+                        "Separate variables version consistency is not checked"
+                    ),
+                )
+                return
+
+            factors_values = list(self.inputs["factors_sim"].values())
+
+        else:
+            if not utils.checkFactors(self.inputs):
+                QMessageBox.warning(
+                    self,
+                    self.tr("Missed input data"),
+                    self.tr(
+                        "Factors rasters is not set. Please specify them and try again"
+                    ),
+                )
+                return
+
+            factors_values = list(self.inputs["factors"].values())
 
         if "model" not in self.inputs:
             QMessageBox.warning(
@@ -796,7 +990,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         self.simulator = Simulator(
             self.inputs["final"],
-            list(self.inputs["factors"].values()),
+            factors_values,
             self.inputs["model"],
             self.inputs["crosstab"],
         )
@@ -1260,6 +1454,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 item.setData(Qt.UserRole, layer[0])
 
             self.lstLayers.addItem(item)
+            self.lstLayersSeparateVars.addItem(item.clone())
 
     def __populateRasterNames(self):
         self.cmbFirstRaster.clear()
