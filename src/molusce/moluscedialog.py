@@ -387,10 +387,10 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.__updateAnalyticTabs(self.geometry_matched)
         gc.collect()
 
-    def addFactorSeparateVars(self):
-        layerNames = self.lstLayersSeparateVars.selectedItems()
+    def addFactorSeparateVars(self) -> None:
+        layer_names = self.lstLayersSeparateVars.selectedItems()
 
-        if len(layerNames) <= 0:
+        if len(layer_names) == 0:
             QMessageBox.warning(
                 self,
                 self.tr("Missed selected row"),
@@ -400,39 +400,39 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        for i in layerNames:
-            layerName = i.text()
+        for layer_name_record in layer_names:
+            layer_name = layer_name_record.text()
 
-            if len(self.lstFactorsSeparateVars.findItems(layerName, Qt.MatchExactly)) > 0:
+            if len(self.lstFactorsSeparateVars.findItems(layer_name, Qt.MatchFlag.MatchExactly)) > 0:
                 return
 
-            item = QListWidgetItem(i)
-            layerId = str(item.data(Qt.UserRole))
+            item = QListWidgetItem(layer_name_record)
+            layer_id = str(item.data(Qt.ItemDataRole.UserRole))
             self.lstFactorsSeparateVars.insertItem(self.lstFactors.count() + 1, item)
 
             try:
                 if "factors_sim" in self.inputs:
-                    self.inputs["factors_sim"][layerId] = Raster(
-                        str(utils.getLayerById(layerId).source()),
-                        utils.getLayerMaskById(layerId),
+                    self.inputs["factors_sim"][layer_id] = Raster(
+                        str(utils.getLayerById(layer_id).source()),
+                        utils.getLayerMaskById(layer_id),
                     )
                 else:
                     d = dict()
-                    d[layerId] = Raster(
-                        str(utils.getLayerById(layerId).source()),
-                        utils.getLayerMaskById(layerId),
+                    d[layer_id] = Raster(
+                        str(utils.getLayerById(layer_id).source()),
+                        utils.getLayerMaskById(layer_id),
                     )
                     self.inputs["factors_sim"] = d
 
                 self.inputs["bandCount_sim"] = self.__bandCount(sim=True)
 
-                self.logMessage(self.tr("Added factor (sim) layer %s") % (layerName))
+                self.logMessage(self.tr("Added factor (sim) layer %s") % (layer_name))
             except MemoryError:
                 self.logErrorReport(
                     self.tr(
                         "Memory Error occurred (loading raster %s). Perhaps the system is low on memory."
                     )
-                    % (layerName)
+                    % (layer_name)
                 )
                 QMessageBox.warning(
                     self,
@@ -441,10 +441,10 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                         "Memory error occurred. Perhaps the system is low on memory."
                     ),
                 )
+                self.consistency_sim_checked = False
                 raise
                 return
         self.consistency_sim_checked = False
-        gc.collect()
 
     def removeFactor(self):
         layerNames = self.lstFactors.selectedItems()
@@ -480,10 +480,10 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.logMessage(self.tr("Removed factor layer %s") % (layerName))
             gc.collect()
 
-    def removeFactorSeparateVars(self):
-        layerNames = self.lstFactorsSeparateVars.selectedItems()
+    def removeFactorSeparateVars(self) -> None:
+        layer_names = self.lstFactorsSeparateVars.selectedItems()
 
-        if len(layerNames) <= 0:
+        if len(layer_names) == 0:
             QMessageBox.warning(
                 self,
                 self.tr("Missed selected row"),
@@ -493,13 +493,13 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        for i in layerNames:
-            layerId = str(i.data(Qt.UserRole))
-            layerName = i.text()
+        for layer_name_record in layer_names:
+            layer_id = str(layer_name_record.data(Qt.ItemDataRole.UserRole))
+            layer_name = layer_name_record.text()
 
-            self.lstFactorsSeparateVars.takeItem(self.lstFactorsSeparateVars.row(i))
+            self.lstFactorsSeparateVars.takeItem(self.lstFactorsSeparateVars.row(layer_name_record))
 
-            del self.inputs["factors_sim"][layerId]
+            del self.inputs["factors_sim"][layer_id]
             gc.collect()
 
             if self.inputs["factors_sim"] == {}:
@@ -510,8 +510,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             else:
                 self.inputs["bandCount_sim"] = self.__bandCount(sim=True)
 
-            self.logMessage(self.tr("Removed factor (sim) layer %s") % (layerName))
-            gc.collect()
+            self.logMessage(self.tr("Removed factor (sim) layer %s") % (layer_name))
 
     def removeAllFactors(self):
         self.lstFactors.clear()
@@ -526,12 +525,11 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.__updateAnalyticTabs(self.geometry_matched)
         self.logMessage(self.tr("Factors list cleared"))
 
-    def removeAllFactorsSeparateVars(self):
+    def removeAllFactorsSeparateVars(self) -> None:
         self.lstFactorsSeparateVars.clear()
         try:
             del self.inputs["factors_sim"]
             del self.inputs["bandCount_sim"]
-            gc.collect()
         except KeyError:
             pass
 
@@ -586,7 +584,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.geometry_matched = True
         self.__updateAnalyticTabs(self.geometry_matched)
 
-    def checkConsistencySeparateVars(self):
+    def checkConsistencySeparateVars(self) -> None:
         # separate spatial variables for simulations should be:
         # - same number of variables as training ones
         # - same number of bands for each matching variable
@@ -611,10 +609,10 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 )
             return
 
-        initRaster = self.inputs["initial"]
-        for (_k, v), (_k2, v2) in zip(self.inputs["factors_sim"].items(), self.inputs["factors"].items()):
+        init_raster = self.inputs["initial"]
+        for (_k, v), (_k2, v2) in zip(self.inputs["factors_sim"].values(), self.inputs["factors"].values()):
 
-            if not initRaster.geoDataMatch(v):
+            if not init_raster.geoDataMatch(v):
                 QMessageBox.warning(
                     self,
                     self.tr("Different geometry"),
@@ -624,7 +622,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 )
                 return
 
-            if not (v.bandcount == v2.bandcount):
+            if v.bandcount != v2.bandcount:
                 QMessageBox.warning(
                     self,
                     self.tr("Different number of bands"),
@@ -2094,11 +2092,11 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
     def __bandCount(self, sim=False):
         bands = 0
-        if sim == False:
-            for _k, v in self.inputs["factors"].items():
+        if not sim:
+            for _k, v in self.inputs["factors"].values():
                 bands += v.getBandsCount()
         else:
-            for _k, v in self.inputs["factors_sim"].items():
+            for _k, v in self.inputs["factors_sim"].values():
                 bands += v.getBandsCount()
         return bands
 
