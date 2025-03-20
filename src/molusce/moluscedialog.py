@@ -610,7 +610,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             return
 
         init_raster = self.inputs["initial"]
-        for (_k, v), (_k2, v2) in zip(self.inputs["factors_sim"].values(), self.inputs["factors"].values()):
+        for v, v2 in zip(self.inputs["factors_sim"].values(), self.inputs["factors"].values()):
 
             if not init_raster.geoDataMatch(v):
                 QMessageBox.warning(
@@ -2093,10 +2093,10 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
     def __bandCount(self, sim=False):
         bands = 0
         if not sim:
-            for _k, v in self.inputs["factors"].values():
+            for v in self.inputs["factors"].values():
                 bands += v.getBandsCount()
         else:
-            for _k, v in self.inputs["factors_sim"].values():
+            for v in self.inputs["factors_sim"].values():
                 bands += v.getBandsCount()
         return bands
 
