@@ -126,18 +126,26 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         # connect signals and slots
         self.btnSetInitialRaster.clicked.connect(self.setInitialRaster)
         self.btnSetFinalRaster.clicked.connect(self.setFinalRaster)
-        
+
         self.btnAddFactor.clicked.connect(self.addFactor)
-        self.btnAddFactorSeparateVars.clicked.connect(self.addFactorSeparateVars)
-        
+        self.btnAddFactorSeparateVars.clicked.connect(
+            self.addFactorSeparateVars
+        )
+
         self.btnRemoveFactor.clicked.connect(self.removeFactor)
-        self.btnRemoveFactorSeparateVars.clicked.connect(self.removeFactorSeparateVars)
-        
+        self.btnRemoveFactorSeparateVars.clicked.connect(
+            self.removeFactorSeparateVars
+        )
+
         self.btnRemoveAllFactors.clicked.connect(self.removeAllFactors)
-        self.btnRemoveAllFactorsSeparateVars.clicked.connect(self.removeAllFactorsSeparateVars)
+        self.btnRemoveAllFactorsSeparateVars.clicked.connect(
+            self.removeAllFactorsSeparateVars
+        )
 
         self.btnCheckGeometry.clicked.connect(self.checkGeometry)
-        self.btnCheckConsistencySeparateVars.clicked.connect(self.checkConsistencySeparateVars)
+        self.btnCheckConsistencySeparateVars.clicked.connect(
+            self.checkConsistencySeparateVars
+        )
 
         self.chkAllCorr.stateChanged.connect(self.__toggleCorrLayers)
         self.btnStartCorrChecking.clicked.connect(self.correlationChecking)
@@ -403,12 +411,21 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         for layer_name_record in layer_names:
             layer_name = layer_name_record.text()
 
-            if len(self.lstFactorsSeparateVars.findItems(layer_name, Qt.MatchFlag.MatchExactly)) > 0:
+            if (
+                len(
+                    self.lstFactorsSeparateVars.findItems(
+                        layer_name, Qt.MatchFlag.MatchExactly
+                    )
+                )
+                > 0
+            ):
                 return
 
             item = QListWidgetItem(layer_name_record)
             layer_id = str(item.data(Qt.ItemDataRole.UserRole))
-            self.lstFactorsSeparateVars.insertItem(self.lstFactors.count() + 1, item)
+            self.lstFactorsSeparateVars.insertItem(
+                self.lstFactors.count() + 1, item
+            )
 
             try:
                 if "factors_sim" in self.inputs:
@@ -417,16 +434,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                         utils.getLayerMaskById(layer_id),
                     )
                 else:
-                    d = dict()
-                    d[layer_id] = Raster(
+                    factors_sim = dict()
+                    factors_sim[layer_id] = Raster(
                         str(utils.getLayerById(layer_id).source()),
                         utils.getLayerMaskById(layer_id),
                     )
-                    self.inputs["factors_sim"] = d
+                    self.inputs["factors_sim"] = factors_sim
 
                 self.inputs["bandCount_sim"] = self.__bandCount(sim=True)
 
-                self.logMessage(self.tr("Added factor (sim) layer %s") % (layer_name))
+                self.logMessage(
+                    self.tr("Added factor (sim) layer %s") % (layer_name)
+                )
             except MemoryError:
                 self.logErrorReport(
                     self.tr(
@@ -442,8 +461,8 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     ),
                 )
                 self.consistency_sim_checked = False
-                raise
                 return
+
         self.consistency_sim_checked = False
 
     def removeFactor(self):
@@ -497,7 +516,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             layer_id = str(layer_name_record.data(Qt.ItemDataRole.UserRole))
             layer_name = layer_name_record.text()
 
-            self.lstFactorsSeparateVars.takeItem(self.lstFactorsSeparateVars.row(layer_name_record))
+            self.lstFactorsSeparateVars.takeItem(
+                self.lstFactorsSeparateVars.row(layer_name_record)
+            )
 
             del self.inputs["factors_sim"][layer_id]
             gc.collect()
@@ -510,7 +531,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             else:
                 self.inputs["bandCount_sim"] = self.__bandCount(sim=True)
 
-            self.logMessage(self.tr("Removed factor (sim) layer %s") % (layer_name))
+            self.logMessage(
+                self.tr("Removed factor (sim) layer %s") % (layer_name)
+            )
 
     def removeAllFactors(self):
         self.lstFactors.clear()
@@ -599,19 +622,24 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        if not (len(self.inputs['factors']) == len(self.inputs['factors_sim'])):
+        if len(self.inputs["factors"]) != len(self.inputs["factors_sim"]):
             QMessageBox.warning(
-                    self,
-                    self.tr("Different number of variables"),
-                    self.tr(
-                        "Model is trained using {} variables, and simulation was set up with {} variables"
-                    ).format(len(self.inputs['factors']),len(self.inputs['factors_sim'])),
-                )
+                self,
+                self.tr("Different number of variables"),
+                self.tr(
+                    "Model is trained using {} variables, and simulation was set up with {} variables"
+                ).format(
+                    len(self.inputs["factors"]),
+                    len(self.inputs["factors_sim"]),
+                ),
+            )
             return
 
         init_raster = self.inputs["initial"]
-        for v, v2 in zip(self.inputs["factors_sim"].values(), self.inputs["factors"].values()):
-
+        for v, v2 in zip(
+            self.inputs["factors_sim"].values(),
+            self.inputs["factors"].values(),
+        ):
             if not init_raster.geoDataMatch(v):
                 QMessageBox.warning(
                     self,
@@ -628,19 +656,26 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     self.tr("Different number of bands"),
                     self.tr(
                         "Training variable {} and simulation variable {} have different number of bands, {} and {} respectively"
-                    ).format(v.getFileName(), v2.getFileName(), v.bandcount, v2.bandcount),
+                    ).format(
+                        v.getFileName(),
+                        v2.getFileName(),
+                        v.bandcount,
+                        v2.bandcount,
+                    ),
                 )
                 return
 
         QMessageBox.warning(
             self,
             self.tr("Consistancy is checked"),
-            self.tr("Training variables and Simulation variables are matched!"),
+            self.tr(
+                "Training variables and Simulation variables are matched!"
+            ),
         )
 
         self.consistency_sim_checked = True
 
-    def correlationChecking(self):
+    def correlationChecking(self) -> None:
         if not utils.checkFactors(self.inputs):
             QMessageBox.warning(
                 self,
@@ -933,7 +968,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     ).format(self.leMonteCarloPath.text()),
                 )
                 return
-            
+
         if self.chkSeparateVars.isChecked():
             if not utils.checkFactors(self.inputs, sim=True):
                 QMessageBox.warning(
@@ -1660,7 +1695,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         for i in range(dimensions[0]):
             raster = first["Raster"]
             if raster.getBandsCount() > 1:
-                name = f"{first['Name']} (band {str(i+1)}"
+                name = f"{first['Name']} (band {str(i + 1)}"
             else:
                 name = str(first["Name"])
             labels.append(name)
@@ -1669,7 +1704,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         for i in range(dimensions[1]):
             raster = second["Raster"]
             if raster.getBandsCount() > 1:
-                name = f"{second['Name']} (band {str(i+1)})"
+                name = f"{second['Name']} (band {str(i + 1)})"
             else:
                 name = str(second["Name"])
             labels.append(name)
@@ -2090,14 +2125,11 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         else:
             self.logMessage(self.tr("Can't load raster %s") % (filePath))
 
-    def __bandCount(self, sim=False):
+    def __bandCount(self, sim: bool = False) -> int:
         bands = 0
-        if not sim:
-            for v in self.inputs["factors"].values():
-                bands += v.getBandsCount()
-        else:
-            for v in self.inputs["factors_sim"].values():
-                bands += v.getBandsCount()
+        factors_key = "factors_sim" if sim else "factors"
+        for v in self.inputs.get(factors_key, {}).values():
+            bands += v.getBandsCount()
         return bands
 
     def setProgressRange(self, message, maxValue):

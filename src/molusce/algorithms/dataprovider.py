@@ -168,7 +168,7 @@ class Raster:
     def getBand(self, bandNo):
         return self.bands[bandNo - 1]
 
-    def getBandsCount(self):
+    def getBandsCount(self) -> int:
         return self.bandcount
 
     def getBandGradation(self, bandNo):
