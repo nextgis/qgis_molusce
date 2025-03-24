@@ -1,3 +1,5 @@
+from typing import List
+
 import numpy as np
 from qgis.PyQt.QtCore import *
 
@@ -16,7 +18,14 @@ class Simulator(QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    def __init__(self, state, factors, model, crosstable):
+    def __init__(
+        self,
+        state: Raster,
+        factors: List[Raster],
+        model,
+        crosstable,
+        categories: List[float] = None,
+    ):
         """@param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
         @param model            Model that is used for predict. The model must implement next methods:
@@ -36,6 +45,7 @@ class Simulator(QObject):
 
         self.model = model
         self.crosstable = crosstable
+        self.categories = categories
         self.calcTransitions = False
 
         if all(
@@ -111,6 +121,9 @@ class Simulator(QObject):
         self.updateProgress.emit()
 
         categories = state.getBandGradation(1)
+        if self.categories is not None:
+            categories = list(set(state.getBandGradation(1) + self.categories))
+            categories.sort()
 
         # Make transition between categories according to
         # number of moved pixel in crosstable

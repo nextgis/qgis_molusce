@@ -49,6 +49,33 @@ class TestCrossTableManager(unittest.TestCase):
         np.testing.assert_almost_equal(initArea, stat["init"])
         np.testing.assert_almost_equal(finalArea, stat["final"])
 
+    def test_different_classes_rasters(self):
+        n_class_raster = Raster(self.examples_path / "raster_n_classes.tif")
+        n_plus_1_class_raster = Raster(
+            self.examples_path / "raster_n_plus_1_classes.tif"
+        )
+
+        table = CrossTableManager(n_class_raster, n_plus_1_class_raster)
+
+        def get_inf_indices():
+            temp_table = table.getCrosstable().getCrosstable()
+            support_table = 1.0 / np.sum(temp_table, axis=1)
+            inf_indices = []
+            for index, item in enumerate(support_table):
+                if not np.isposinf(item):
+                    continue
+                inf_indices.append(index)
+            return inf_indices
+
+        transition_matrix = table.getTransitionMatrix()
+
+        for inf_index in get_inf_indices():
+            for column in range(transition_matrix.shape[1]):
+                value = 1.0 if column == inf_index else 0.0
+                self.assertAlmostEqual(
+                    transition_matrix[inf_index, column], value
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -50,14 +50,12 @@ class MlpManager(QObject):
 
         self.ns = ns  # Neighbourhood size of training rasters.
         self.data = None  # Training data
-        self.catlist = (
-            None  # List of unique output values of the output raster
-        )
+        # List of unique output values of the output raster
+        self.catlist = None
         self.train_error = None  # Error on training set
         self.val_error = None  # Error on validation set
-        self.minValError = (
-            None  # The minimum error that is achieved on the validation set
-        )
+        # The minimum error that is achieved on the validation set
+        self.minValError = None
         self.valKappa = 0  # Kappa on on the validation set
         self.sampler = None  # Sampler
 
@@ -67,11 +65,16 @@ class MlpManager(QObject):
         self.transitionPotentials = None  # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
         # Outputs of the activation function for small and big numbers
+
+        # Max and Min of the sigmoid function
         self.sigmax, self.sigmin = (
             sigmoid(100),
             sigmoid(-100),
-        )  # Max and Min of the sigmoid function
+        )
         self.sigrange = self.sigmax - self.sigmin  # Range of the sigmoid
+
+        # Complete list of classes of both input rasters
+        self.categories = None
 
     def computeMlpError(self, sample):
         """Get MLP error on the sample"""
@@ -136,9 +139,14 @@ class MlpManager(QObject):
             )
 
         # state raster contains categories. We need use n-1 dummy variables (where n = number of categories)
-        input_neurons = input_neurons + (
-            len(state.getBandGradation(1)) - 1
-        ) * state.getNeighbourhoodSize(self.ns)
+        if self.categories is not None:
+            input_neurons = input_neurons + (
+                len(self.categories) - 1
+            ) * state.getNeighbourhoodSize(self.ns)
+        else:
+            input_neurons = input_neurons + (
+                len(state.getBandGradation(1)) - 1
+            ) * state.getNeighbourhoodSize(self.ns)
 
         # Output category's (neuron) list and count
         self.catlist = output.getBandGradation(1)
@@ -274,7 +282,9 @@ class MlpManager(QObject):
                         [rows, cols], dtype=np.uint8
                     )
 
-            self.sampler = Sampler(state, factors, ns=self.ns)
+            self.sampler = Sampler(
+                state, factors, ns=self.ns, categories=self.categories
+            )
             mask = state.getBand(1).mask.copy()
             if mask.shape == ():
                 mask = np.zeros([rows, cols], dtype=bool)
@@ -377,7 +387,9 @@ class MlpManager(QObject):
         for f in factors:
             f.normalize(mode="mean")
 
-        self.sampler = Sampler(state, factors, output, self.ns)
+        self.sampler = Sampler(
+            state, factors, output, self.ns, categories=self.categories
+        )
         self.sampler.setTrainingData(
             state=state,
             output=output,
@@ -443,6 +455,9 @@ class MlpManager(QObject):
 
     def setContinueTrain(self, value=False):
         self.continueTrain = value
+
+    def setCategoriesList(self, categories):
+        self.categories = categories
 
     @pyqtSlot()
     def startTrain(self):
