@@ -7,7 +7,10 @@ import numpy as np
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
-from molusce.algorithms.models.correlation.model import DependenceCoef
+from molusce.algorithms.models.correlation.model import (
+    CoeffError,
+    DependenceCoef,
+)
 from molusce.algorithms.models.sampler.sampler import Sampler
 
 from . import multinomial_logistic_regression as mlr
@@ -135,7 +138,9 @@ class LR(QObject):
             for r in factors:
                 if not state.geoDataMatch(r):
                     raise LRError(
-                        "Geometries of the input rasters are different!"
+                        self.tr(
+                            "Geometries of the input rasters are different!"
+                        )
                     )
 
             self.transitionPotentials = (
@@ -256,7 +261,7 @@ class LR(QObject):
         )
         if not self.logreg:
             raise LRError(
-                "You must create a Logistic Regression model before!"
+                self.tr("You must create a Logistic Regression model before!")
             )
 
         # Normalize factors before sampling:
@@ -303,6 +308,20 @@ class LR(QObject):
         try:
             self.setTrainingData()
             self.train()
+        except CoeffError as error:
+            QMessageBox.warning(
+                None,
+                self.tr("Model training failed"),
+                str(error),
+            )
+            return
+        except LRError as error:
+            QMessageBox.warning(
+                None,
+                self.tr("Missed LR model"),
+                str(error),
+            )
+            return
         except MemoryError:
             self.errorReport.emit(
                 self.tr("The system is out of memory during LR training")

@@ -3,7 +3,7 @@
 import numpy as np
 from qgis.PyQt.QtCore import *
 
-from molusce.algorithms.models.crosstabs.model import CrossTable
+from molusce.algorithms.models.crosstabs.model import CrossTabError, CrossTable
 
 
 class CrossTabManagerError(Exception):
@@ -27,19 +27,27 @@ class CrossTableManager(QObject):
 
         if not initRaster.geoDataMatch(finalRaster):
             raise CrossTabManagerError(
-                "Geometries of the raster maps are different!"
+                self.tr("Geometries of the raster maps are different!")
             )
 
         if initRaster.getBandsCount() + finalRaster.getBandsCount() != 2:
             raise CrossTabManagerError(
-                "An input raster has more then one band. Use 1-band rasters!"
+                self.tr(
+                    "An input raster has more then one band. Use 1-band rasters!"
+                )
             )
 
         self.pixelArea = initRaster.getPixelArea()
 
-        self.crosstable = CrossTable(
-            initRaster.getBand(1), finalRaster.getBand(1)
-        )
+        try:
+            self.crosstable = CrossTable(
+                initRaster.getBand(1), finalRaster.getBand(1)
+            )
+        except CrossTabError as error:
+            QMessageBox.warning(
+                None, self.tr("Different geometry"), str(error)
+            )
+            return
 
         self.crosstable.rangeChanged.connect(
             self.__crosstableProgressRangeChanged
@@ -114,9 +122,17 @@ class CrossTableManager(QObject):
         stat["final"] = finalArea
         stat["finalPerc"] = finalPerc
 
-        deltas = finalArea - initArea
-        deltasPerc = finalPerc - initPerc
-        stat["deltas"] = deltas
-        stat["deltasPerc"] = deltasPerc
+        try:
+            deltas = finalArea - initArea
+            deltasPerc = finalPerc - initPerc
+            stat["deltas"] = deltas
+            stat["deltasPerc"] = deltasPerc
+        except ValueError as error:
+            raise CrossTabManagerError(
+                self.tr(
+                    "Input rasters contain different numbers of categories. "
+                    "MOLUSCE cannot process rasters with different number of categories yet"
+                )
+            ) from error
 
         return stat
