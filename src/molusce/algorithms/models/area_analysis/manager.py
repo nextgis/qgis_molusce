@@ -163,3 +163,11 @@ class AreaAnalyst(QObject):
             raise AreaAnalizerError("The raster must have 1 band!")
 
         self.initRaster = initR
+
+    # Make AreaAnalyst class available for pickle
+    def __getstate__(self)->dict:
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state: dict):
+        self.__dict__.update(state)
