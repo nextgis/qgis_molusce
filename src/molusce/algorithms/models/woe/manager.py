@@ -52,7 +52,7 @@ class WoeManager(QObject):
                                 List of list used because a factor can be a multiband raster, we need get a list of bins for every band. For example:
                                 factors = [f0, 2-band-factor], bins= {0: [[10, 100, 250]], 1:[[0.2, 1, 1.5, 4], [3, 4, 7]] }
         """
-        QObject.__init__(self)
+        super().__init__()
 
         self.factors = factors
         self.analyst = areaAnalyst
@@ -317,3 +317,12 @@ class WoeManager(QObject):
                 ).format(code, initClass, finalClass)
                 raise
         return text
+    
+    # Make WoeManager class available for pickle
+    def __getstate__(self)->dict:
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state: dict):
+        self.__dict__.update(state)
+        QObject.__init__(self)

@@ -42,7 +42,7 @@ class LR(QObject):
     maxiter: int
 
     def __init__(self, ns=0, logreg: Optional[mlr.MLR] = None) -> None:
-        QObject.__init__(self)
+        super().__init__()
 
         if logreg:
             self.logreg = logreg
@@ -334,3 +334,12 @@ class LR(QObject):
             raise
         finally:
             self.finished.emit()
+
+    # Make LR class available for pickle
+    def __getstate__(self)->dict:
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state: dict)->None:
+        self.__dict__.update(state)
+        QObject.__init__(self)

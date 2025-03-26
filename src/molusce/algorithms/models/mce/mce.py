@@ -69,7 +69,7 @@ class MCE(QObject):
         @param initStateNum     Number of initial state (the state before transition).
         @param finalStateNum    Number of final state (the state after transition).
         """
-        QObject.__init__(self)
+        super().__init__()
 
         self.factors = factors
         self.initStateNum = initStateNum
@@ -235,3 +235,12 @@ class MCE(QObject):
                 self.consistency = -1
         else:
             self.consistency = 0
+
+    # Make MCE class available for pickle
+    def __getstate__(self)->dict:
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state: dict):
+        self.__dict__.update(state)
+        QObject.__init__(self)

@@ -100,6 +100,12 @@ class MLP:
         # Return error
         return (error**2).sum()
 
+    def __getstate__(self)->dict:
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state)->None:
+        self.__dict__.update(state)
 
 # -----------------------------------------------------------------------------
 

@@ -42,7 +42,7 @@ class MlpManager(QObject):
     updateProgress = pyqtSignal()
 
     def __init__(self, ns=0, MLP=None):
-        QObject.__init__(self)
+        super().__init__()
 
         self.MLP = MLP
         self.interrupted = False
@@ -573,3 +573,12 @@ class MlpManager(QObject):
             input_data = np.hstack((sample["state"], sample["factors"]))
             self.getOutput(input_data)  # Forward propagation
             self.MLP.propagate_backward(sample["output"], lrate, momentum)
+
+    # Make MLPManager class available for pickle
+    def __getstate__(self)->dict:
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state:dict)->None:
+        self.__dict__.update(state)
+        QObject.__init__(self)
