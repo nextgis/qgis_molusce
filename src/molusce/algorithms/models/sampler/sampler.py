@@ -452,3 +452,11 @@ class Sampler(QObject):
             raise
         finally:
             self.samplingFinished.emit()
+
+    # Make Sampler class available for pickle
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
