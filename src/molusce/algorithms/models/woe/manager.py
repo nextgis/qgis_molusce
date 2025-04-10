@@ -317,9 +317,9 @@ class WoeManager(QObject):
                 ).format(code, initClass, finalClass)
                 raise
         return text
-    
+
     # Make WoeManager class available for pickle
-    def __getstate__(self)->dict:
+    def __getstate__(self) -> dict:
         state = self.__dict__.copy()
         return state
 

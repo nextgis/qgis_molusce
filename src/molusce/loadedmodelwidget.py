@@ -33,9 +33,7 @@ from .ui.ui_loadedmodelwidgetbase import (
 )
 
 
-class LoadedModelWidget(
-    QWidget, Ui_LoadedModelWidgetBase
-):
+class LoadedModelWidget(QWidget, Ui_LoadedModelWidgetBase):
     def __init__(self, plugin, parent=None):
         QWidget.__init__(self, parent)
         self.setupUi(self)
