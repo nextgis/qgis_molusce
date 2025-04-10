@@ -418,12 +418,14 @@ class Raster:
 
         self.geodata = geodata
 
-    def getUniqueValues(self)->set:
+    def getUniqueValues(self) -> set:
         # Get all unique pixel values contained in Raster
         unique_values = set()
         for band in range(self.getBandsCount()):
             band_data = self.getBand(band + 1)  # Get band (1-based index)
-            unique_band_values = np.unique(band_data.compressed())  # Get unique values, ignoring masked data
+            unique_band_values = np.unique(
+                band_data.compressed()
+            )  # Get unique values, ignoring masked data
             unique_values.update(unique_band_values)
 
         return unique_values

@@ -336,10 +336,10 @@ class LR(QObject):
             self.finished.emit()
 
     # Make LR class available for pickle
-    def __getstate__(self)->dict:
+    def __getstate__(self) -> dict:
         state = self.__dict__.copy()
         return state
 
-    def __setstate__(self, state: dict)->None:
+    def __setstate__(self, state: dict) -> None:
         self.__dict__.update(state)
         QObject.__init__(self)

@@ -625,20 +625,30 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         if not utils.checkFactors(self.inputs):
             return False
 
-        if not (imported_model['base_xsize'] == self.inputs["initial"].getXSize()) or not (imported_model['base_ysize'] == self.inputs["initial"].getYSize()):
+        if not (
+            imported_model["base_xsize"] == self.inputs["initial"].getXSize()
+        ) or not (
+            imported_model["base_ysize"] == self.inputs["initial"].getYSize()
+        ):
             return False
 
-        if not imported_model['base_classes'] == self.inputs["initial"].getUniqueValues():
+        if (
+            not imported_model["base_classes"]
+            == self.inputs["initial"].getUniqueValues()
+        ):
             return False
 
-        if len(imported_model["factors_metadata"]) != len(self.inputs["factors"]):
+        if len(imported_model["factors_metadata"]) != len(
+            self.inputs["factors"]
+        ):
             return False
-        for input_factor, loaded_factor in zip(self.inputs["factors"].values(), imported_model["factors_metadata"]):
-            if input_factor.bandcount != loaded_factor['bandcount']:
+        for input_factor, loaded_factor in zip(
+            self.inputs["factors"].values(), imported_model["factors_metadata"]
+        ):
+            if input_factor.bandcount != loaded_factor["bandcount"]:
                 return False
 
         return True
-
 
     def checkConsistencySeparateVars(self) -> None:
         # separate spatial variables for simulations should be:
@@ -1038,7 +1048,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             QMessageBox.warning(
                 self,
                 self.tr("Missed model"),
-                self.tr("Model not selected. Please select and train model.")
+                self.tr("Model not selected. Please select and train model."),
             )
 
         if is_risk_function_path_unlinking:
@@ -1568,11 +1578,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         if not scipyMissed:
             self.cmbSimulationMethod.addItem(self.tr("Logistic Regression"))
 
-        self.cmbSimulationMethod.addItems(
-            [
-                self.tr("Model from file")
-            ]
-        )
+        self.cmbSimulationMethod.addItems([self.tr("Model from file")])
 
     def __populateSamplingModes(self):
         self.cmbSamplingMode.addItem(self.tr("All"), 0)
@@ -2004,11 +2010,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             self.grpSampling.hide()
         elif modelName == self.tr("Model from file"):
-            self.modelWidget = (
-                loadedmodelwidget.LoadedModelWidget(
-                    self
-                )
-            )
+            self.modelWidget = loadedmodelwidget.LoadedModelWidget(self)
             self.grpSampling.hide()
 
         self.widgetStackMethods.addWidget(self.modelWidget)
@@ -2448,7 +2450,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         return ""
 
     def saveModel(self) -> None:
-        if not ("model" in self.inputs):
+        if "model" not in self.inputs:
             QMessageBox.warning(
                 self,
                 self.tr("Model is missed"),
@@ -2461,7 +2463,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.settings,
             self.tr("Save MOLUSCE model"),
             self.tr("MOLUSCE (*.molusce *.MOLUSCE)"),
-            "molusce"
+            "molusce",
         )
 
         if not file_name:
@@ -2479,7 +2481,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             QMessageBox.warning(
                 self,
                 self.tr("Model is unknown"),
-                self.tr("Model is currently not supported by save/load mechanism"),
+                self.tr(
+                    "Model is currently not supported by save/load mechanism"
+                ),
             )
             return
 
@@ -2491,14 +2495,13 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             "factors_metadata": [],
             "model_type": model_type,
             "creation_ts": datetime.datetime.now(),
-            "molusce_version": pluginMetadata("molusce", "version")
+            "molusce_version": pluginMetadata("molusce", "version"),
         }
 
         for factor_name, factor_content in self.inputs["factors"].items():
-            model_for_export["factors_metadata"].append({
-                "name": factor_name,
-                "bandcount": factor_content.bandcount
-            })
+            model_for_export["factors_metadata"].append(
+                {"name": factor_name, "bandcount": factor_content.bandcount}
+            )
 
         try:
             with open(file_name, "wb") as f:
@@ -2507,7 +2510,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     self,
                     self.tr("Model saved"),
                     self.tr("Model was succesfully saved"),
-            )
+                )
             return
         except Exception as e:
             QMessageBox.warning(
@@ -2538,7 +2541,19 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        if not all(k in imported_model for k in ("model","base_xsize","base_ysize","base_classes","factors_metadata","model_type","creation_ts","molusce_version")):
+        if not all(
+            k in imported_model
+            for k in (
+                "model",
+                "base_xsize",
+                "base_ysize",
+                "base_classes",
+                "factors_metadata",
+                "model_type",
+                "creation_ts",
+                "molusce_version",
+            )
+        ):
             QMessageBox.warning(
                 self,
                 self.tr("Invalid model"),
@@ -2546,10 +2561,12 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        if not isinstance(imported_model["model"], MlpManager) and \
-            not isinstance(imported_model["model"], WoeManager) and \
-                not isinstance(imported_model["model"], LR) and \
-                    not isinstance(imported_model["model"], MCE):
+        if (
+            not isinstance(imported_model["model"], MlpManager)
+            and not isinstance(imported_model["model"], WoeManager)
+            and not isinstance(imported_model["model"], LR)
+            and not isinstance(imported_model["model"], MCE)
+        ):
             QMessageBox.warning(
                 self,
                 self.tr("Invalid model"),
@@ -2559,33 +2576,109 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         consistency = self.checkConsistencyLoadedModel(imported_model)
 
-        index = self.cmbSimulationMethod.findText(self.tr("Model from file"), Qt.MatchFlag.MatchFixedString)
+        index = self.cmbSimulationMethod.findText(
+            self.tr("Model from file"), Qt.MatchFlag.MatchFixedString
+        )
         self.cmbSimulationMethod.setCurrentIndex(index)
 
         self.modelWidget.loadedModelTextEdit.clear()
-        self.modelWidget.loadedModelTextEdit.append(self.tr("<font color=\"black\">Model is loaded. Configuration:</font>\n"))
-        self.modelWidget.loadedModelTextEdit.append(self.tr("Model type: {}\n".format(imported_model["model_type"])))
-        self.modelWidget.loadedModelTextEdit.append(self.tr("Creation date: {}\n".format(imported_model["creation_ts"])))
-        self.modelWidget.loadedModelTextEdit.append(self.tr("MOLUSCE version: {}\n".format(imported_model["molusce_version"])))
-        if pluginMetadata("molusce", "version") != imported_model["molusce_version"]:
-            self.modelWidget.loadedModelTextEdit.append(self.tr("<font color=\"red\">[WARNING!] Model was created in different MOLUSCE version ({})</font>\n".format(imported_model["molusce_version"])))
-        self.modelWidget.loadedModelTextEdit.append(self.tr("Spatial domain dimensions: {}x{}\n".format(imported_model["base_xsize"], imported_model["base_ysize"])))
-        self.modelWidget.loadedModelTextEdit.append(self.tr("Classes: {}\n".format(imported_model["base_classes"])))
-        self.modelWidget.loadedModelTextEdit.append(self.tr("List of factors used for training:\n"))
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr(
+                '<font color="black">Model is loaded. Configuration:</font>\n'
+            )
+        )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr("Model type: {}\n".format(imported_model["model_type"]))
+        )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr(
+                "Creation date: {}\n".format(imported_model["creation_ts"])
+            )
+        )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr(
+                "MOLUSCE version: {}\n".format(
+                    imported_model["molusce_version"]
+                )
+            )
+        )
+        if (
+            pluginMetadata("molusce", "version")
+            != imported_model["molusce_version"]
+        ):
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    '<font color="red">[WARNING!] Model was created in different MOLUSCE version ({})</font>\n'.format(
+                        imported_model["molusce_version"]
+                    )
+                )
+            )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr(
+                "Spatial domain dimensions: {}x{}\n".format(
+                    imported_model["base_xsize"], imported_model["base_ysize"]
+                )
+            )
+        )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr("Classes: {}\n".format(imported_model["base_classes"]))
+        )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr("List of factors used for training:\n")
+        )
         for factor in imported_model["factors_metadata"]:
-            self.modelWidget.loadedModelTextEdit.append(self.tr("  * {} ({} bands)\n".format(factor["name"],factor["bandcount"])))
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    "  * {} ({} bands)\n".format(
+                        factor["name"], factor["bandcount"]
+                    )
+                )
+            )
         if consistency:
             self.inputs["model"] = imported_model["model"]
-            self.modelWidget.loadedModelTextEdit.append(self.tr("<font color=\"green\">[SUCCESS!] Model is compatible with current inputs setup. Successfully loaded</font>"))
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    '<font color="green">[SUCCESS!] Model is compatible with current inputs setup. Successfully loaded</font>'
+                )
+            )
         else:
-            self.modelWidget.loadedModelTextEdit.append(self.tr("<font color=\"red\">[WARNING!] Model is incompatible with current inputs setup. Impossible to use</font>"))
-            self.modelWidget.loadedModelTextEdit.append(self.tr("\n=======================\n"))
-            self.modelWidget.loadedModelTextEdit.append(self.tr("Current inputs setup:\n"))
-            self.modelWidget.loadedModelTextEdit.append(self.tr("Spatial domain dimensions: {}x{}\n".format(self.inputs["initial"].getXSize(), self.inputs["initial"].getYSize())))
-            self.modelWidget.loadedModelTextEdit.append(self.tr("Classes: {}\n".format(self.inputs["initial"].getUniqueValues())))
-            self.modelWidget.loadedModelTextEdit.append(self.tr("List of factors used for training:\n"))
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    '<font color="red">[WARNING!] Model is incompatible with current inputs setup. Impossible to use</font>'
+                )
+            )
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr("\n=======================\n")
+            )
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr("Current inputs setup:\n")
+            )
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    "Spatial domain dimensions: {}x{}\n".format(
+                        self.inputs["initial"].getXSize(),
+                        self.inputs["initial"].getYSize(),
+                    )
+                )
+            )
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    "Classes: {}\n".format(
+                        self.inputs["initial"].getUniqueValues()
+                    )
+                )
+            )
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr("List of factors used for training:\n")
+            )
             for factor_name, factor_content in self.inputs["factors"].items():
-                self.modelWidget.loadedModelTextEdit.append(self.tr("  * {} ({} bands)\n".format(factor_name, factor_content.bandcount)))
+                self.modelWidget.loadedModelTextEdit.append(
+                    self.tr(
+                        "  * {} ({} bands)\n".format(
+                            factor_name, factor_content.bandcount
+                        )
+                    )
+                )
 
     def __checking_file_saving(self, filepath):
         parent_path = filepath.parent

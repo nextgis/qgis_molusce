@@ -188,7 +188,7 @@ class AreaAnalyst(QObject):
         self.initRaster = initR
 
     # Make AreaAnalyst class available for pickle
-    def __getstate__(self)->dict:
+    def __getstate__(self) -> dict:
         state = self.__dict__.copy()
         return state
 

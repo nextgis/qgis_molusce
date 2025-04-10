@@ -237,7 +237,7 @@ class MCE(QObject):
             self.consistency = 0
 
     # Make MCE class available for pickle
-    def __getstate__(self)->dict:
+    def __getstate__(self) -> dict:
         state = self.__dict__.copy()
         return state
 
