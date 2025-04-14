@@ -199,8 +199,7 @@ def checkInputRasters(userData):
 def checkFactors(userData, sim=False):
     if not sim:
         return "factors" in userData
-    else:
-        return "factors_sim" in userData
+    return "factors_sim" in userData
 
 
 def checkChangeMap(userData):

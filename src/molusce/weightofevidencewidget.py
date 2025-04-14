@@ -86,9 +86,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
                 if v.isCountinues(b):
                     self.tblReclass.insertRow(row)
                     if v.getBandsCount() > 1:
-                        name = (
-                            f"{utils.getLayerById(k).name()} (band {str(b+1)})"
-                        )
+                        name = f"{utils.getLayerById(k).name()} (band {str(b + 1)})"
                     else:
                         name = utils.getLayerById(k).name()
                     stat = v.getBandStat(b)
@@ -195,9 +193,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
                 lst.append(None)
                 if v.isCountinues(b + 1):
                     if v.getBandsCount() > 1:
-                        name = (
-                            f"{utils.getLayerById(k).name()} (band {str(b+1)})"
-                        )
+                        name = f"{utils.getLayerById(k).name()} (band {str(b + 1)})"
                     else:
                         name = utils.getLayerById(k).name()
                     items = self.tblReclass.findItems(name, Qt.MatchExactly)

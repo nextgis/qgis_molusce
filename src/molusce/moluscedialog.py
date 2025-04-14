@@ -29,6 +29,7 @@ import gc
 import glob
 import locale
 import os.path
+from collections import OrderedDict
 from pathlib import Path
 
 import numpy
@@ -52,13 +53,15 @@ except ImportError:
 from importlib.util import find_spec
 
 from matplotlib.figure import Figure
+from qgis.utils import pluginMetadata
 
-from . import molusceutils as utils
 from . import (
+    loadedmodelwidget,
     multicriteriaevaluationwidget,
     neuralnetworkwidget,
     weightofevidencewidget,
 )
+from . import molusceutils as utils
 from .algorithms.dataprovider import ProviderError, Raster
 from .algorithms.models.area_analysis.manager import (
     AreaAnalizerError,
@@ -72,6 +75,10 @@ from .algorithms.models.crosstabs.manager import (
 from .algorithms.models.crosstabs.model import CrossTabError
 from .algorithms.models.errorbudget.ebmodel import EBError, EBudget
 from .algorithms.models.sampler.sampler import SamplerError
+from .algorithms.models.serializer.serializer import (
+    Serializer,
+    SerializerError,
+)
 from .algorithms.models.simulator.sim import Simulator
 from .ui.ui_moluscedialogbase import Ui_MolusceDialogBase
 
@@ -190,6 +197,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.btnKappaCalc.clicked.connect(self.startKappaValidation)
 
         self.tabWidget.currentChanged.connect(self.tabChanged)
+
+        self.saveModelBtn.clicked.connect(self.saveModel)
+        self.loadModelBtn.clicked.connect(self.loadModel)
 
         self.manageGui()
         self.logMessage(self.tr("Start logging"))
@@ -368,7 +378,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                         utils.getLayerMaskById(layerId),
                     )
                 else:
-                    d = dict()
+                    d = OrderedDict()
                     d[layerId] = Raster(
                         str(utils.getLayerById(layerId).source()),
                         utils.getLayerMaskById(layerId),
@@ -437,7 +447,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                         utils.getLayerMaskById(layer_id),
                     )
                 else:
-                    factors_sim = dict()
+                    factors_sim = OrderedDict()
                     factors_sim[layer_id] = Raster(
                         str(utils.getLayerById(layer_id).source()),
                         utils.getLayerMaskById(layer_id),
@@ -609,6 +619,37 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         )
         self.geometry_matched = True
         self.__updateAnalyticTabs(self.geometry_matched)
+
+    def checkConsistencyLoadedModel(
+        self, serialized_model: Serializer
+    ) -> bool:
+        if not utils.checkFactors(self.inputs):
+            return False
+
+        if not (
+            serialized_model.base_xsize == self.inputs["initial"].getXSize()
+        ) or not (
+            serialized_model.base_ysize == self.inputs["initial"].getYSize()
+        ):
+            return False
+
+        if (
+            not serialized_model.base_classes
+            == self.inputs["initial"].getUniqueValues()
+        ):
+            return False
+
+        if len(serialized_model.factors_metadata) != len(
+            self.inputs["factors"]
+        ):
+            return False
+        for input_factor, loaded_factor in zip(
+            self.inputs["factors"].values(), serialized_model.factors_metadata
+        ):
+            if input_factor.bandcount != loaded_factor["bandcount"]:
+                return False
+
+        return True
 
     def checkConsistencySeparateVars(self) -> None:
         # separate spatial variables for simulations should be:
@@ -1008,7 +1049,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             QMessageBox.warning(
                 self,
                 self.tr("Missed model"),
-                self.tr("Model not selected. Please select and train model.")
+                self.tr("Model not selected. Please select and train model."),
             )
 
         if is_risk_function_path_unlinking:
@@ -1538,6 +1579,8 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         if not scipyMissed:
             self.cmbSimulationMethod.addItem(self.tr("Logistic Regression"))
 
+        self.cmbSimulationMethod.addItems([self.tr("Model from file")])
+
     def __populateSamplingModes(self):
         self.cmbSamplingMode.addItem(self.tr("All"), 0)
         self.cmbSamplingMode.addItem(self.tr("Random"), 1)
@@ -1966,6 +2009,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     self
                 )
             )
+            self.grpSampling.hide()
+        elif modelName == self.tr("Model from file"):
+            self.modelWidget = loadedmodelwidget.LoadedModelWidget(self)
             self.grpSampling.hide()
 
         self.widgetStackMethods.addWidget(self.modelWidget)
@@ -2403,6 +2449,194 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             if i.value == v:
                 return i.label
         return ""
+
+    def saveModel(self) -> None:
+        if "model" not in self.inputs:
+            QMessageBox.warning(
+                self,
+                self.tr("Model is missed"),
+                self.tr("There is no trained model available"),
+            )
+            return
+
+        file_name = utils.saveDialog(
+            self,
+            self.settings,
+            self.tr("Save MOLUSCE model"),
+            self.tr("MOLUSCE (*.molusce *.MOLUSCE)"),
+            "molusce",
+        )
+
+        if not file_name:
+            return
+
+        try:
+            serialized_model = Serializer.from_data(
+                self.inputs["model"],
+                self.inputs["initial"],
+                self.inputs["factors"],
+            )
+        except SerializerError as e:
+            QMessageBox.warning(
+                self,
+                self.tr("Error"),
+                self.tr("Serialization error: %s" % str(e)),
+            )
+            return
+        except Exception as e:
+            QMessageBox.warning(
+                self,
+                self.tr("Error"),
+                self.tr("Unknown error: %s" % str(e)),
+            )
+            return
+
+        try:
+            serialized_model.to_file(file_name)
+        except Exception as e:
+            QMessageBox.warning(
+                self,
+                self.tr("Failed to save model"),
+                self.tr("Error: %s" % str(e)),
+            )
+            return
+
+        QMessageBox.warning(
+            self,
+            self.tr("Success!"),
+            self.tr("Model was succesfully saved"),
+        )
+
+    def loadModel(self) -> None:
+        file_name = utils.openRasterDialog(
+            self,
+            self.settings,
+            self.tr("Open file"),
+            self.tr("MOLUSCE (*.molusce *.MOLUSCE)"),
+        )
+        if file_name == "":
+            return
+
+        try:
+            serialized_model = Serializer.from_file(file_name)
+        except SerializerError as e:
+            QMessageBox.warning(
+                self,
+                self.tr("Error"),
+                self.tr("Serialization error: %s" % str(e)),
+            )
+            return
+        except Exception as e:
+            QMessageBox.warning(
+                self,
+                self.tr("Error"),
+                self.tr("Unknown error: %s" % str(e)),
+            )
+            return
+
+        consistency = self.checkConsistencyLoadedModel(serialized_model)
+
+        index = self.cmbSimulationMethod.findText(
+            self.tr("Model from file"), Qt.MatchFlag.MatchFixedString
+        )
+        self.cmbSimulationMethod.setCurrentIndex(index)
+
+        self.modelWidget.loadedModelTextEdit.clear()
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr(
+                '<font color="black">Model is loaded. Configuration:</font>\n'
+            )
+        )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr("Model type: {}\n".format(serialized_model.model_type))
+        )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr("Creation date: {}\n".format(serialized_model.creation_ts))
+        )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr(
+                "MOLUSCE version: {}\n".format(
+                    serialized_model.molusce_version
+                )
+            )
+        )
+        if (
+            pluginMetadata("molusce", "version")
+            != serialized_model.molusce_version
+        ):
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    '<font color="red">[WARNING!] Model was created in different MOLUSCE version ({})</font>\n'.format(
+                        serialized_model.molusce_version
+                    )
+                )
+            )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr(
+                "Spatial domain dimensions: {}x{}\n".format(
+                    serialized_model.base_xsize, serialized_model.base_ysize
+                )
+            )
+        )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr("Classes: {}\n".format(serialized_model.base_classes))
+        )
+        self.modelWidget.loadedModelTextEdit.append(
+            self.tr("List of factors used for training:\n")
+        )
+        for factor in serialized_model.factors_metadata:
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    "  * {} ({} bands)\n".format(
+                        factor["name"], factor["bandcount"]
+                    )
+                )
+            )
+        if consistency:
+            self.inputs["model"] = serialized_model.model
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    '<font color="green">[SUCCESS!] Model is compatible with current inputs setup. Successfully loaded</font>'
+                )
+            )
+        else:
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    '<font color="red">[WARNING!] Model is incompatible with current inputs setup. Impossible to use</font>'
+                )
+            )
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr("\n=======================\n")
+            )
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr("Current inputs setup:\n")
+            )
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    "Spatial domain dimensions: {}x{}\n".format(
+                        self.inputs["initial"].getXSize(),
+                        self.inputs["initial"].getYSize(),
+                    )
+                )
+            )
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr(
+                    "Classes: {}\n".format(
+                        self.inputs["initial"].getUniqueValues()
+                    )
+                )
+            )
+            self.modelWidget.loadedModelTextEdit.append(
+                self.tr("List of factors used for training:\n")
+            )
+            for factor_name, factor_content in self.inputs["factors"].items():
+                self.modelWidget.loadedModelTextEdit.append(
+                    self.tr(
+                        "  * {} ({} bands)\n".format(
+                            factor_name, factor_content.bandcount
+                        )
+                    )
+                )
 
     def __checking_file_saving(self, filepath):
         parent_path = filepath.parent
