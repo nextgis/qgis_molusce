@@ -50,7 +50,6 @@ except ImportError:
         NavigationToolbar2QT as NavigationToolbar,
     )
 
-import pickle
 from importlib.util import find_spec
 
 from matplotlib.figure import Figure
@@ -75,15 +74,13 @@ from .algorithms.models.crosstabs.manager import (
 )
 from .algorithms.models.crosstabs.model import CrossTabError
 from .algorithms.models.errorbudget.ebmodel import EBError, EBudget
-from .algorithms.models.lr.lr import LR
-from .algorithms.models.mce.mce import MCE
-from .algorithms.models.mlp.manager import MlpManager
 from .algorithms.models.sampler.sampler import SamplerError
+from .algorithms.models.serializer.serializer import (
+    Serializer,
+    SerializerError,
+)
 from .algorithms.models.simulator.sim import Simulator
-from .algorithms.models.woe.manager import WoeManager
 from .ui.ui_moluscedialogbase import Ui_MolusceDialogBase
-from .algorithms.models.serializer.serializer import Serializer, SerializerError
-
 
 scipyMissed = False
 if find_spec("scipy") is not None:
@@ -623,7 +620,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.geometry_matched = True
         self.__updateAnalyticTabs(self.geometry_matched)
 
-    def checkConsistencyLoadedModel(self, serialized_model: Serializer) -> bool:
+    def checkConsistencyLoadedModel(
+        self, serialized_model: Serializer
+    ) -> bool:
         if not utils.checkFactors(self.inputs):
             return False
 
@@ -2472,28 +2471,26 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             return
 
         try:
-            serialized_model = Serializer.from_data(self.inputs["model"],
-                                                    self.inputs["initial"],
-                                                    self.inputs["factors"])
+            serialized_model = Serializer.from_data(
+                self.inputs["model"],
+                self.inputs["initial"],
+                self.inputs["factors"],
+            )
         except SerializerError as e:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr(
-                    "Serialization error: %s" % str(e)
-                ),
+                self.tr("Serialization error: %s" % str(e)),
             )
             return
         except Exception as e:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr(
-                    "Unknown error: %s" % str(e)
-                ),
+                self.tr("Unknown error: %s" % str(e)),
             )
             return
-        
+
         try:
             serialized_model.to_file(file_name)
         except Exception as e:
@@ -2503,12 +2500,12 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 self.tr("Error: %s" % str(e)),
             )
             return
-        
+
         QMessageBox.warning(
-                self,
-                self.tr("Success!"),
-                self.tr("Model was succesfully saved"),
-            )
+            self,
+            self.tr("Success!"),
+            self.tr("Model was succesfully saved"),
+        )
 
     def loadModel(self) -> None:
         file_name = utils.openRasterDialog(
@@ -2526,18 +2523,14 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr(
-                    "Serialization error: %s" % str(e)
-                ),
+                self.tr("Serialization error: %s" % str(e)),
             )
             return
         except Exception as e:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr(
-                    "Unknown error: %s" % str(e)
-                ),
+                self.tr("Unknown error: %s" % str(e)),
             )
             return
 
@@ -2558,9 +2551,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.tr("Model type: {}\n".format(serialized_model.model_type))
         )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr(
-                "Creation date: {}\n".format(serialized_model.creation_ts)
-            )
+            self.tr("Creation date: {}\n".format(serialized_model.creation_ts))
         )
         self.modelWidget.loadedModelTextEdit.append(
             self.tr(
