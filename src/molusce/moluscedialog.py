@@ -82,6 +82,8 @@ from .algorithms.models.sampler.sampler import SamplerError
 from .algorithms.models.simulator.sim import Simulator
 from .algorithms.models.woe.manager import WoeManager
 from .ui.ui_moluscedialogbase import Ui_MolusceDialogBase
+from .algorithms.models.serializer.serializer import Serializer, SerializerError
+
 
 scipyMissed = False
 if find_spec("scipy") is not None:
@@ -621,29 +623,29 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.geometry_matched = True
         self.__updateAnalyticTabs(self.geometry_matched)
 
-    def checkConsistencyLoadedModel(self, imported_model: dict) -> bool:
+    def checkConsistencyLoadedModel(self, serialized_model: Serializer) -> bool:
         if not utils.checkFactors(self.inputs):
             return False
 
         if not (
-            imported_model["base_xsize"] == self.inputs["initial"].getXSize()
+            serialized_model.base_xsize == self.inputs["initial"].getXSize()
         ) or not (
-            imported_model["base_ysize"] == self.inputs["initial"].getYSize()
+            serialized_model.base_ysize == self.inputs["initial"].getYSize()
         ):
             return False
 
         if (
-            not imported_model["base_classes"]
+            not serialized_model.base_classes
             == self.inputs["initial"].getUniqueValues()
         ):
             return False
 
-        if len(imported_model["factors_metadata"]) != len(
+        if len(serialized_model.factors_metadata) != len(
             self.inputs["factors"]
         ):
             return False
         for input_factor, loaded_factor in zip(
-            self.inputs["factors"].values(), imported_model["factors_metadata"]
+            self.inputs["factors"].values(), serialized_model.factors_metadata
         ):
             if input_factor.bandcount != loaded_factor["bandcount"]:
                 return False
@@ -2469,49 +2471,31 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         if not file_name:
             return
 
-        if isinstance(self.inputs["model"], MlpManager):
-            model_type = "Artificial Neural Network (Multi-layer Perceptron)"
-        elif isinstance(self.inputs["model"], WoeManager):
-            model_type = "Weights of Evidence"
-        elif isinstance(self.inputs["model"], LR):
-            model_type = "Logistic Regression"
-        elif isinstance(self.inputs["model"], MCE):
-            model_type = "Multi Criteria Evaluation"
-        else:
+        try:
+            serialized_model = Serializer.from_data(self.inputs["model"],
+                                                    self.inputs["initial"],
+                                                    self.inputs["factors"])
+        except SerializerError as e:
             QMessageBox.warning(
                 self,
-                self.tr("Model is unknown"),
+                self.tr("Error"),
                 self.tr(
-                    "Model is currently not supported by save/load mechanism"
+                    "Serialization error: %s" % str(e)
                 ),
             )
             return
-
-        model_for_export = {
-            "model": self.inputs["model"],
-            "base_xsize": self.inputs["initial"].getXSize(),
-            "base_ysize": self.inputs["initial"].getYSize(),
-            "base_classes": self.inputs["initial"].getUniqueValues(),
-            "factors_metadata": [],
-            "model_type": model_type,
-            "creation_ts": datetime.datetime.now(),
-            "molusce_version": pluginMetadata("molusce", "version"),
-        }
-
-        for factor_name, factor_content in self.inputs["factors"].items():
-            model_for_export["factors_metadata"].append(
-                {"name": factor_name, "bandcount": factor_content.bandcount}
+        except Exception as e:
+            QMessageBox.warning(
+                self,
+                self.tr("Error"),
+                self.tr(
+                    "Unknown error: %s" % str(e)
+                ),
             )
-
-        try:
-            with open(file_name, "wb") as f:
-                pickle.dump(model_for_export, f)
-                QMessageBox.warning(
-                    self,
-                    self.tr("Model saved"),
-                    self.tr("Model was succesfully saved"),
-                )
             return
+        
+        try:
+            serialized_model.to_file(file_name)
         except Exception as e:
             QMessageBox.warning(
                 self,
@@ -2519,6 +2503,12 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 self.tr("Error: %s" % str(e)),
             )
             return
+        
+        QMessageBox.warning(
+                self,
+                self.tr("Success!"),
+                self.tr("Model was succesfully saved"),
+            )
 
     def loadModel(self) -> None:
         file_name = utils.openRasterDialog(
@@ -2531,50 +2521,27 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             return
 
         try:
-            with open(file_name, "rb") as f:
-                imported_model = pickle.load(f)
+            serialized_model = Serializer.from_file(file_name)
+        except SerializerError as e:
+            QMessageBox.warning(
+                self,
+                self.tr("Error"),
+                self.tr(
+                    "Serialization error: %s" % str(e)
+                ),
+            )
+            return
         except Exception as e:
             QMessageBox.warning(
                 self,
-                self.tr("Failed to load model"),
-                self.tr("Error: %s" % str(e)),
+                self.tr("Error"),
+                self.tr(
+                    "Unknown error: %s" % str(e)
+                ),
             )
             return
 
-        if not all(
-            k in imported_model
-            for k in (
-                "model",
-                "base_xsize",
-                "base_ysize",
-                "base_classes",
-                "factors_metadata",
-                "model_type",
-                "creation_ts",
-                "molusce_version",
-            )
-        ):
-            QMessageBox.warning(
-                self,
-                self.tr("Invalid model"),
-                self.tr("Loaded object is not a valid MOLUSCE model"),
-            )
-            return
-
-        if (
-            not isinstance(imported_model["model"], MlpManager)
-            and not isinstance(imported_model["model"], WoeManager)
-            and not isinstance(imported_model["model"], LR)
-            and not isinstance(imported_model["model"], MCE)
-        ):
-            QMessageBox.warning(
-                self,
-                self.tr("Invalid model"),
-                self.tr("Loaded object is not a valid MOLUSCE model"),
-            )
-            return
-
-        consistency = self.checkConsistencyLoadedModel(imported_model)
+        consistency = self.checkConsistencyLoadedModel(serialized_model)
 
         index = self.cmbSimulationMethod.findText(
             self.tr("Model from file"), Qt.MatchFlag.MatchFixedString
@@ -2588,45 +2555,45 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
         )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr("Model type: {}\n".format(imported_model["model_type"]))
+            self.tr("Model type: {}\n".format(serialized_model.model_type))
         )
         self.modelWidget.loadedModelTextEdit.append(
             self.tr(
-                "Creation date: {}\n".format(imported_model["creation_ts"])
+                "Creation date: {}\n".format(serialized_model.creation_ts)
             )
         )
         self.modelWidget.loadedModelTextEdit.append(
             self.tr(
                 "MOLUSCE version: {}\n".format(
-                    imported_model["molusce_version"]
+                    serialized_model.molusce_version
                 )
             )
         )
         if (
             pluginMetadata("molusce", "version")
-            != imported_model["molusce_version"]
+            != serialized_model.molusce_version
         ):
             self.modelWidget.loadedModelTextEdit.append(
                 self.tr(
                     '<font color="red">[WARNING!] Model was created in different MOLUSCE version ({})</font>\n'.format(
-                        imported_model["molusce_version"]
+                        serialized_model.molusce_version
                     )
                 )
             )
         self.modelWidget.loadedModelTextEdit.append(
             self.tr(
                 "Spatial domain dimensions: {}x{}\n".format(
-                    imported_model["base_xsize"], imported_model["base_ysize"]
+                    serialized_model.base_xsize, serialized_model.base_ysize
                 )
             )
         )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr("Classes: {}\n".format(imported_model["base_classes"]))
+            self.tr("Classes: {}\n".format(serialized_model.base_classes))
         )
         self.modelWidget.loadedModelTextEdit.append(
             self.tr("List of factors used for training:\n")
         )
-        for factor in imported_model["factors_metadata"]:
+        for factor in serialized_model.factors_metadata:
             self.modelWidget.loadedModelTextEdit.append(
                 self.tr(
                     "  * {} ({} bands)\n".format(
@@ -2635,7 +2602,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 )
             )
         if consistency:
-            self.inputs["model"] = imported_model["model"]
+            self.inputs["model"] = serialized_model.model
             self.modelWidget.loadedModelTextEdit.append(
                 self.tr(
                     '<font color="green">[SUCCESS!] Model is compatible with current inputs setup. Successfully loaded</font>'
