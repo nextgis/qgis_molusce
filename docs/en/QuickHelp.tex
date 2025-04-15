@@ -49,7 +49,7 @@ changes AAS also started to develop open source solutions aiming to further exte
 
 \section{What is MOLUSCE?}
 AAS released MOLUSCE (Modules for Land Use Change Evaluation) at FOSS4G 2013.
-MOLUSCE is a user-friendly plug-in for QGIS 2.0 and above. MOLUSE is designed to analyze,
+MOLUSCE is a user-friendly plug-in for QGIS 3.0 and above. MOLUSE is designed to analyze,
 model and simulate land use/cover changes. The plug-in incorporates well-known algorithms,
 which can be used in land use/cover change analysis, urban analysis as well as forestry applications
 and projects.
@@ -417,6 +417,42 @@ The user can run the model by pressing on the \verb+fit model+ button.
 Note: For additional information on the LR outputs please consult the “Technical information:
 Methods and Algorithms” manual.
 
+\section{Saving and loading models}
+
+Since version 4.5 it is possible to save the trained model to file (.molusce) and load models from files. Corresponding buttons are available at \verb+transition potential+ modeling tab, right to model type selector.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=0.95\textwidth]{img/saveload_buttons.png}
+	\caption{Model save and load buttons}
+	\label{fig:saveload_buttons}
+\end{figure}
+
+It is possible to save model of any type after fitting process is finished.
+
+To load model, it should be ensured that:
+\begin{itemize}
+	\item Loaded model was trained on the data having same spatial domain (raster size, extent, coordinate reference system) as in current Inputs context.
+	\item It was trained using the same number of spatial variables, having the same number of bands.
+\end{itemize}
+
+After loading the model log appears, containing information about loaded model. If it is incompatible with current Inputs setup, corresponding information is highlighted, as shown at Figure~\ref{fig:loaded_model_success} and Figure~\ref{fig:loaded_model_fail}.
+
+After successful model import it is possible to proceed simulation.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.95\textwidth]{img/loaded_model_success.png}
+	\caption{Successfully loaded model info}
+	\label{fig:loaded_model_success}
+\end{figure}
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[width=0.95\textwidth]{img/loaded_model_fail.png}
+	\caption{Failed model import info}
+	\label{fig:loaded_model_fail}
+\end{figure}
 
 \section{Cellular Automata Simulation}
 
@@ -451,6 +487,10 @@ output allows to save each map.
 \end{itemize}
 
 An example of simulation tab is shown in Figure~\ref{fig:simulation_tab}.
+
+Since version 4.5 it is also possible to set separate spatial variables version for simulation. This mechanism allows to address changing environment conditions influencing land cover dynamics, e.g. climate change, urbanization etc. To set up separate spatial variables version it is needed to activate corresponding checkbox and select new set of items.
+
+\emph{It is crucial for new set of spatial variables to have the same number of records and their order as Input spatial variables. After selecting new items, Check consistency button should be pressed to run process of checking compatibility between Input variables and newly set variables.}
 
 \section{Validation}
 
