@@ -7,6 +7,7 @@ from osgeo import ogr, osr
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import ProviderError
+from molusce.molusceutils import PickleQObjectMixin
 
 
 class SamplerError(Exception):
@@ -16,7 +17,7 @@ class SamplerError(Exception):
         self.msg = msg
 
 
-class Sampler(QObject):
+class Sampler(PickleQObjectMixin, QObject):
     """Create training set based on input-output rasters.
 
     A sample is a set of input data for a model and output data that has to be predicted via the model.
@@ -145,7 +146,7 @@ class Sampler(QObject):
             return None
         return np.hstack((state_data, factors_data))
 
-    def get_factors(self, row, col):
+    def get_factors(self, row: str, col: str) -> Optional[np.ma.MaskedArray]:
         """Get input sample at (row, col) pixel and return it as array. Return None if the sample is incomplete."""
         neighbours = self.factors[
             :,
@@ -452,11 +453,3 @@ class Sampler(QObject):
             raise
         finally:
             self.samplingFinished.emit()
-
-    # Make Sampler class available for pickle
-    def __getstate__(self):
-        state = self.__dict__.copy()
-        return state
-
-    def __setstate__(self, state):
-        self.__dict__.update(state)

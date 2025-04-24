@@ -31,6 +31,7 @@ import locale
 import os.path
 from collections import OrderedDict
 from pathlib import Path
+from typing import Optional
 
 import numpy
 from matplotlib.backends.backend_qt5agg import (
@@ -76,7 +77,8 @@ from .algorithms.models.crosstabs.model import CrossTabError
 from .algorithms.models.errorbudget.ebmodel import EBError, EBudget
 from .algorithms.models.sampler.sampler import SamplerError
 from .algorithms.models.serializer.serializer import (
-    Serializer,
+    ModelParams,
+    ModelParamsSerializer,
     SerializerError,
 )
 from .algorithms.models.simulator.sim import Simulator
@@ -403,7 +405,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     ),
                 )
                 raise
-                return
+
         self.geometry_matched = False
         self.__updateAnalyticTabs(self.geometry_matched)
         gc.collect()
@@ -620,36 +622,16 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.geometry_matched = True
         self.__updateAnalyticTabs(self.geometry_matched)
 
-    def checkConsistencyLoadedModel(
-        self, serialized_model: Serializer
-    ) -> bool:
+    def checkConsistencyLoadedModel(self, model_params: ModelParams) -> bool:
+        assert self.inputs is not None
+
         if not utils.checkFactors(self.inputs):
             return False
 
-        if not (
-            serialized_model.base_xsize == self.inputs["initial"].getXSize()
-        ) or not (
-            serialized_model.base_ysize == self.inputs["initial"].getYSize()
-        ):
-            return False
-
-        if (
-            not serialized_model.base_classes
-            == self.inputs["initial"].getUniqueValues()
-        ):
-            return False
-
-        if len(serialized_model.factors_metadata) != len(
-            self.inputs["factors"]
-        ):
-            return False
-        for input_factor, loaded_factor in zip(
-            self.inputs["factors"].values(), serialized_model.factors_metadata
-        ):
-            if input_factor.bandcount != loaded_factor["bandcount"]:
-                return False
-
-        return True
+        return model_params.is_consistent_with(
+            self.inputs["initial"],
+            self.inputs["factors"],
+        )
 
     def checkConsistencySeparateVars(self) -> None:
         # separate spatial variables for simulations should be:
@@ -2451,6 +2433,8 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         return ""
 
     def saveModel(self) -> None:
+        assert self.inputs is not None
+
         if "model" not in self.inputs:
             QMessageBox.warning(
                 self,
@@ -2471,7 +2455,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             return
 
         try:
-            serialized_model = Serializer.from_data(
+            model_params = ModelParams.from_data(
                 self.inputs["model"],
                 self.inputs["initial"],
                 self.inputs["factors"],
@@ -2492,7 +2476,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             return
 
         try:
-            serialized_model.to_file(file_name)
+            ModelParamsSerializer.to_file(model_params, file_name)
         except Exception as e:
             QMessageBox.warning(
                 self,
@@ -2508,17 +2492,19 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         )
 
     def loadModel(self) -> None:
+        assert self.inputs is not None
+
         file_name = utils.openRasterDialog(
             self,
             self.settings,
             self.tr("Open file"),
             self.tr("MOLUSCE (*.molusce *.MOLUSCE)"),
         )
-        if file_name == "":
+        if not file_name:
             return
 
         try:
-            serialized_model = Serializer.from_file(file_name)
+            model_params = ModelParamsSerializer.from_file(file_name)
         except SerializerError as e:
             QMessageBox.warning(
                 self,
@@ -2534,7 +2520,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        consistency = self.checkConsistencyLoadedModel(serialized_model)
+        consistency = self.checkConsistencyLoadedModel(model_params)
 
         index = self.cmbSimulationMethod.findText(
             self.tr("Model from file"), Qt.MatchFlag.MatchFixedString
@@ -2548,43 +2534,41 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
         )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr("Model type: {}\n".format(serialized_model.model_type))
+            self.tr("Model type: {}\n".format(model_params.model_type))
         )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr("Creation date: {}\n".format(serialized_model.creation_ts))
+            self.tr("Creation date: {}\n".format(model_params.creation_ts))
         )
         self.modelWidget.loadedModelTextEdit.append(
             self.tr(
-                "MOLUSCE version: {}\n".format(
-                    serialized_model.molusce_version
-                )
+                "MOLUSCE version: {}\n".format(model_params.molusce_version)
             )
         )
         if (
             pluginMetadata("molusce", "version")
-            != serialized_model.molusce_version
+            != model_params.molusce_version
         ):
             self.modelWidget.loadedModelTextEdit.append(
                 self.tr(
                     '<font color="red">[WARNING!] Model was created in different MOLUSCE version ({})</font>\n'.format(
-                        serialized_model.molusce_version
+                        model_params.molusce_version
                     )
                 )
             )
         self.modelWidget.loadedModelTextEdit.append(
             self.tr(
                 "Spatial domain dimensions: {}x{}\n".format(
-                    serialized_model.base_xsize, serialized_model.base_ysize
+                    model_params.base_xsize, model_params.base_ysize
                 )
             )
         )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr("Classes: {}\n".format(serialized_model.base_classes))
+            self.tr("Classes: {}\n".format(model_params.base_classes))
         )
         self.modelWidget.loadedModelTextEdit.append(
             self.tr("List of factors used for training:\n")
         )
-        for factor in serialized_model.factors_metadata:
+        for factor in model_params.factors_metadata:
             self.modelWidget.loadedModelTextEdit.append(
                 self.tr(
                     "  * {} ({} bands)\n".format(
@@ -2593,7 +2577,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 )
             )
         if consistency:
-            self.inputs["model"] = serialized_model.model
+            self.inputs["model"] = model_params.model
             self.modelWidget.loadedModelTextEdit.append(
                 self.tr(
                     '<font color="green">[SUCCESS!] Model is compatible with current inputs setup. Successfully loaded</font>'
@@ -2638,7 +2622,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     )
                 )
 
-    def __checking_file_saving(self, filepath):
+    def __checking_file_saving(self, filepath: Path) -> Optional[bool]:
         parent_path = filepath.parent
         if not parent_path.exists() or str(parent_path) == ".":
             QMessageBox.warning(

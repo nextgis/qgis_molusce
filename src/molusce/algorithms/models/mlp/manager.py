@@ -13,6 +13,7 @@ from molusce.algorithms.models.correlation.model import (
 )
 from molusce.algorithms.models.mlp.model import MLP, sigmoid
 from molusce.algorithms.models.sampler.sampler import Sampler
+from molusce.molusceutils import PickleQObjectMixin
 
 
 class MlpManagerError(Exception):
@@ -22,7 +23,7 @@ class MlpManagerError(Exception):
         self.msg = msg
 
 
-class MlpManager(QObject):
+class MlpManager(PickleQObjectMixin, QObject):
     """This class gets the data extracted from the UI and
     pass it to multi-layer perceptron, then gets and stores the result.
     """
@@ -573,12 +574,3 @@ class MlpManager(QObject):
             input_data = np.hstack((sample["state"], sample["factors"]))
             self.getOutput(input_data)  # Forward propagation
             self.MLP.propagate_backward(sample["output"], lrate, momentum)
-
-    # Make MLPManager class available for pickle
-    def __getstate__(self) -> dict:
-        state = self.__dict__.copy()
-        return state
-
-    def __setstate__(self, state: dict) -> None:
-        self.__dict__.update(state)
-        QObject.__init__(self)

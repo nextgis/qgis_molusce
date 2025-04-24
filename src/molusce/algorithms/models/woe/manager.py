@@ -7,6 +7,7 @@ from qgis.PyQt.QtCore import *
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.woe.model import WoeError
 from molusce.algorithms.utils import binaryzation, masks_identity, reclass
+from molusce.molusceutils import PickleQObjectMixin
 
 from .model import woe
 
@@ -32,7 +33,7 @@ class WoeManagerError(Exception):
         self.msg = msg
 
 
-class WoeManager(QObject):
+class WoeManager(PickleQObjectMixin, QObject):
     """This class gets the data extracted from the UI and
     pass it to woe function, then gets and stores the result.
     """
@@ -317,12 +318,3 @@ class WoeManager(QObject):
                 ).format(code, initClass, finalClass)
                 raise
         return text
-
-    # Make WoeManager class available for pickle
-    def __getstate__(self) -> dict:
-        state = self.__dict__.copy()
-        return state
-
-    def __setstate__(self, state: dict):
-        self.__dict__.update(state)
-        QObject.__init__(self)

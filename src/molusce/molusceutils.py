@@ -24,15 +24,21 @@
 # ******************************************************************************
 
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from qgis.core import *
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import *
-from qgis.PyQt.QtXml import *
+from qgis.core import (
+    Qgis,
+    QgsMapLayer,
+    QgsProject,
+    QgsRasterLayer,
+    QgsReadWriteContext,
+)
+from qgis.PyQt.QtCore import QFileInfo, QLocale, QObject, QSettings
+from qgis.PyQt.QtWidgets import QFileDialog
+from qgis.PyQt.QtXml import QDomDocument, QDomImplementation
 
 
-def getLocaleShortName():
+def getLocaleShortName() -> str:
     overrideLocale = QSettings().value("locale/overrideFlag", False)
     if not overrideLocale:
         localeFullName = QLocale.system().name()
@@ -43,21 +49,23 @@ def getLocaleShortName():
     return localeShortName
 
 
-def getRasterLayers():
+def getRasterLayers() -> Dict[str, str]:
     layerMap = QgsProject.instance().mapLayers()
-    layers = dict()
-    for _name, layer in layerMap.items():
+    layers: Dict[str, str] = dict()
+    for layer in layerMap.values():
         if (
-            layer.type() == QgsMapLayer.RasterLayer
+            isinstance(layer, QgsRasterLayer)
             and layer.providerType() == "gdal"
-            and layer.id() not in list(layers.keys())
+            and layer.id() not in layers
         ):
             layers[layer.id()] = str(layer.name())
     return layers
 
 
-def getLayerMask(layer):
-    if layer is None:
+def getLayerMask(
+    layer: Optional[QgsMapLayer],
+) -> Optional[Dict[int, List[float]]]:
+    if not isinstance(layer, QgsRasterLayer):
         return None
 
     provider = layer.dataProvider()
@@ -77,25 +85,25 @@ def getLayerMask(layer):
     return maskVals
 
 
-def getLayerMaskById(layerId):
+def getLayerMaskById(layerId: str) -> Optional[Dict[int, List[float]]]:
     layer = getLayerById(layerId)
     maskVals = getLayerMask(layer)
     return maskVals
 
 
-def getLayerMaskByName(layerName):
+def getLayerMaskByName(layerName: str) -> Optional[Dict[int, List[float]]]:
     layer = getLayerByName(layerName)
     maskVals = getLayerMask(layer)
     return maskVals
 
 
-def getLayerMaskBySource(layerSource):
+def getLayerMaskBySource(layerSource: str) -> Optional[Dict[int, List[float]]]:
     layer = getLayerBySource(layerSource)
     maskVals = getLayerMask(layer)
     return maskVals
 
 
-def getLayerById(layerId):
+def getLayerById(layerId: str) -> Optional[QgsMapLayer]:
     layerMap = QgsProject.instance().mapLayers()
     for _name, layer in layerMap.items():
         if layer.id() == layerId:
@@ -105,7 +113,7 @@ def getLayerById(layerId):
     return None
 
 
-def getLayerByName(layerName):
+def getLayerByName(layerName: str) -> Optional[QgsMapLayer]:
     layerMap = QgsProject.instance().mapLayers()
     for _name, layer in layerMap.items():
         if layer.name() == layerName:
@@ -115,7 +123,7 @@ def getLayerByName(layerName):
     return None
 
 
-def getLayerBySource(layerSource):
+def getLayerBySource(layerSource: str) -> Optional[QgsMapLayer]:
     layerMap = QgsProject.instance().mapLayers()
     for _name, layer in layerMap.items():
         if layer.source() == layerSource:
@@ -219,12 +227,15 @@ def copySymbology(src, dst):
         doc,
         errMsg,
         QgsReadWriteContext(),
-        QgsMapLayer.AllStyleCategories,
+        QgsMapLayer.StyleCategory.AllStyleCategories,
     ):
         return False
 
     return dst.readSymbology(
-        root, errMsg, QgsReadWriteContext(), QgsMapLayer.AllStyleCategories
+        root,
+        errMsg,
+        QgsReadWriteContext(),
+        QgsMapLayer.StyleCategory.AllStyleCategories,
     )
 
 
@@ -237,3 +248,17 @@ def is_file_used_by_project(destination_path: Path) -> bool:
     layers_paths = [Path(layer.source().split("|")[0]) for layer in layers]
 
     return any(path == destination_path for path in layers_paths)
+
+
+class PickleQObjectMixin:
+    """
+    A mixin class to enable pickling and unpickling of QObject-based classes.
+    """
+
+    def __getstate__(self) -> Dict[str, Any]:
+        state = self.__dict__.copy()
+        return state
+
+    def __setstate__(self, state: Dict[str, Any]):
+        self.__dict__.update(state)
+        QObject.__init__(self)  # type: ignore reportArgumentType
