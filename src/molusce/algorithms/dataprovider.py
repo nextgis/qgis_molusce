@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Set
 
 import numpy as np
 from numpy import ma as ma
@@ -165,13 +166,14 @@ class Raster:
             abs(s_height), abs(r_height)
         )
 
-    def getBand(self, bandNo):
+    def getBand(self, bandNo: int):
+        assert self.bands is not None
         return self.bands[bandNo - 1]
 
     def getBandsCount(self) -> int:
         return self.bandcount
 
-    def getBandGradation(self, bandNo):
+    def getBandGradation(self, bandNo: int):
         """Return list of categories of raster's band"""
         if bandNo < len(self.bandgradation):
             res = self.bandgradation[bandNo]
@@ -181,7 +183,7 @@ class Raster:
             self.bandgradation[bandNo] = res
         return res
 
-    def getBandStat(self, bandNo):
+    def getBandStat(self, bandNo: int):
         """Return mean and std of the raster's band"""
         band = self.getBand(bandNo)
         result = {}
@@ -255,10 +257,12 @@ class Raster:
     def getProjUnits(self):
         return self.geodata["units"]
 
-    def getXSize(self):
+    def getXSize(self) -> int:
+        assert self.geodata is not None and "xSize" in self.geodata
         return self.geodata["xSize"]
 
-    def getYSize(self):
+    def getYSize(self) -> int:
+        assert self.geodata is not None and "ySize" in self.geodata
         return self.geodata["ySize"]
 
     def isCountinues(self, bandNo):
@@ -418,7 +422,7 @@ class Raster:
 
         self.geodata = geodata
 
-    def getUniqueValues(self) -> set:
+    def getUniqueValues(self) -> Set:
         # Get all unique pixel values contained in Raster
         unique_values = set()
         for band in range(self.getBandsCount()):

@@ -6,6 +6,7 @@ from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.utils import masks_identity
+from molusce.molusceutils import PickleQObjectMixin
 
 
 class AreaAnalizerError(Exception):
@@ -15,7 +16,7 @@ class AreaAnalizerError(Exception):
         self.msg = msg
 
 
-class AreaAnalyst(QObject):
+class AreaAnalyst(PickleQObjectMixin, QObject):
     """Generates an output raster, with geometry
     copied from the initial land use map.  The output is a 1-band raster
     with categories corresponding the (r,c) elements of the m-matrix of
@@ -186,11 +187,3 @@ class AreaAnalyst(QObject):
             raise AreaAnalizerError(self.tr("The raster must have 1 band!"))
 
         self.initRaster = initR
-
-    # Make AreaAnalyst class available for pickle
-    def __getstate__(self) -> dict:
-        state = self.__dict__.copy()
-        return state
-
-    def __setstate__(self, state: dict):
-        self.__dict__.update(state)

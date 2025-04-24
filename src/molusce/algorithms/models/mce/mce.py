@@ -6,6 +6,7 @@ from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.utils import binaryzation
+from molusce.molusceutils import PickleQObjectMixin
 
 
 class MCEError(Exception):
@@ -15,7 +16,7 @@ class MCEError(Exception):
         self.msg = msg
 
 
-class MCE(QObject):
+class MCE(PickleQObjectMixin, QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
@@ -235,12 +236,3 @@ class MCE(QObject):
                 self.consistency = -1
         else:
             self.consistency = 0
-
-    # Make MCE class available for pickle
-    def __getstate__(self) -> dict:
-        state = self.__dict__.copy()
-        return state
-
-    def __setstate__(self, state: dict):
-        self.__dict__.update(state)
-        QObject.__init__(self)

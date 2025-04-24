@@ -1,5 +1,7 @@
 import pickle
+from dataclasses import dataclass
 from datetime import datetime
+from typing import Dict, List, Set, Union
 
 from qgis.utils import pluginMetadata
 
@@ -15,80 +17,48 @@ class SerializerError(Exception):
         self.msg = msg
 
 
-class Serializer:
-    model = None
-    base_xsize = None
-    base_ysize = None
-    base_classes = None
-    factors_metadata = None
-    model_type = None
-    creation_ts = None
-    molusce_version = None
+@dataclass
+class ModelParams:
+    model_type: str
+    model: Union[MlpManager, WoeManager, LR, MCE]
+    base_xsize: int
+    base_ysize: int
+    base_classes: Set
+    factors_metadata: List[Dict[str, int]]
+    molusce_version: str
+    creation_ts: datetime
 
-    def __init__(
+    def is_consistent_with(
         self,
-        model,
-        base_xsize,
-        base_ysize,
-        base_classes,
-        factors_metadata,
-        model_type,
-        creation_ts,
-        molusce_version,
-    ):
-        self.model = model
-        self.base_xsize = base_xsize
-        self.base_ysize = base_ysize
-        self.base_classes = base_classes
-        self.factors_metadata = factors_metadata
-        self.model_type = model_type
-        self.creation_ts = creation_ts
-        self.molusce_version = molusce_version
+        inputs_initial: Raster,
+        inputs_factors: Dict[str, Raster],
+    ) -> bool:
+        if (self.base_xsize, self.base_ysize) != (
+            inputs_initial.getXSize(),
+            inputs_initial.getYSize(),
+        ):
+            return False
 
-    @classmethod
-    def from_file(cls, file_path: str):
-        try:
-            with open(file_path, "rb") as f:
-                imported_model = pickle.load(f)
-        except Exception as e:
-            raise SerializerError("Invalid file. %s" % str(e)) from e
+        if self.base_classes != inputs_initial.getUniqueValues():
+            return False
 
-        if not all(
-            k in imported_model
-            for k in (
-                "model",
-                "base_xsize",
-                "base_ysize",
-                "base_classes",
-                "factors_metadata",
-                "model_type",
-                "creation_ts",
-                "molusce_version",
+        if len(self.factors_metadata) != len(inputs_factors) or not all(
+            loaded_factor["bandcount"] == input_factor.bandcount
+            for loaded_factor, input_factor in zip(
+                self.factors_metadata, inputs_factors.values()
             )
         ):
-            raise SerializerError("Invalid file")
+            return False
 
-        if (
-            not isinstance(imported_model["model"], MlpManager)
-            and not isinstance(imported_model["model"], WoeManager)
-            and not isinstance(imported_model["model"], LR)
-            and not isinstance(imported_model["model"], MCE)
-        ):
-            raise SerializerError("Invalid model type")
-
-        return cls(
-            imported_model["model"],
-            imported_model["base_xsize"],
-            imported_model["base_ysize"],
-            imported_model["base_classes"],
-            imported_model["factors_metadata"],
-            imported_model["model_type"],
-            imported_model["creation_ts"],
-            imported_model["molusce_version"],
-        )
+        return True
 
     @classmethod
-    def from_data(cls, inputs_model, inputs_initial, inputs_factors):
+    def from_data(
+        cls,
+        inputs_model: Union[MlpManager, WoeManager, LR, MCE],
+        inputs_initial: Raster,
+        inputs_factors: Dict[str, Raster],
+    ) -> "ModelParams":
         if isinstance(inputs_model, MlpManager):
             model_type = "Artificial Neural Network (Multi-layer Perceptron)"
         elif isinstance(inputs_model, WoeManager):
@@ -113,37 +83,51 @@ class Serializer:
                             "bandcount": factor_content.bandcount,
                         }
                     )
-                except Exception as e:
-                    raise SerializerError("Invalid factor. %s" % str(e)) from e
-        except Exception as e:
-            raise SerializerError("Invalid factors. %s" % str(e)) from e
+                except Exception as error:
+                    raise SerializerError(
+                        "Invalid factor. %s" % str(error)
+                    ) from error
 
-        creation_ts = datetime.now()
-        molusce_version = pluginMetadata("molusce", "version")
+        except Exception as error:
+            raise SerializerError(
+                "Invalid factors. %s" % str(error)
+            ) from error
 
-        return cls(
+        return ModelParams(
+            model_type,
             inputs_model,
             inputs_initial.getXSize(),
             inputs_initial.getYSize(),
             inputs_initial.getUniqueValues(),
             factors_metadata,
-            model_type,
-            creation_ts,
-            molusce_version,
+            molusce_version=pluginMetadata("molusce", "version"),
+            creation_ts=datetime.now(),
         )
 
-    def to_file(self, file_path: str) -> None:
-        with open(file_path, "wb") as f:
-            pickle.dump(
-                {
-                    "model": self.model,
-                    "base_xsize": self.base_xsize,
-                    "base_ysize": self.base_ysize,
-                    "base_classes": self.base_classes,
-                    "factors_metadata": self.factors_metadata,
-                    "model_type": self.model_type,
-                    "creation_ts": self.creation_ts,
-                    "molusce_version": self.molusce_version,
-                },
-                f,
-            )
+
+class ModelParamsSerializer:
+    @classmethod
+    def from_file(cls, file_path: str) -> ModelParams:
+        try:
+            with open(file_path, "rb") as file:
+                model_params: ModelParams = pickle.load(file)
+        except Exception as error:
+            raise SerializerError("Invalid file. %s" % str(error)) from error
+
+        if not isinstance(
+            model_params.model, (MlpManager, WoeManager, LR, MCE)
+        ):
+            raise SerializerError("Invalid model type")
+
+        return model_params
+
+    @classmethod
+    def to_file(cls, model_params: ModelParams, file_path: str) -> None:
+        try:
+            with open(file_path, "wb") as file:
+                pickle.dump(model_params, file)
+
+        except Exception as error:
+            raise SerializerError(
+                "An error occurred while writing data"
+            ) from error

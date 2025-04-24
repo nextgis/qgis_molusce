@@ -12,6 +12,7 @@ from molusce.algorithms.models.correlation.model import (
     DependenceCoef,
 )
 from molusce.algorithms.models.sampler.sampler import Sampler
+from molusce.molusceutils import PickleQObjectMixin
 
 from . import multinomial_logistic_regression as mlr
 
@@ -23,7 +24,7 @@ class LRError(Exception):
         self.msg = msg
 
 
-class LR(QObject):
+class LR(PickleQObjectMixin, QObject):
     """Implements Logistic Regression model definition and calibration
     (maximum liklihood parameter estimation).
     """
@@ -334,12 +335,3 @@ class LR(QObject):
             raise
         finally:
             self.finished.emit()
-
-    # Make LR class available for pickle
-    def __getstate__(self) -> dict:
-        state = self.__dict__.copy()
-        return state
-
-    def __setstate__(self, state: dict) -> None:
-        self.__dict__.update(state)
-        QObject.__init__(self)
