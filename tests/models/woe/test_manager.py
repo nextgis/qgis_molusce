@@ -1,5 +1,9 @@
 import unittest
+from datetime import datetime
 from pathlib import Path
+from tempfile import NamedTemporaryFile
+from unittest.mock import MagicMock, patch
+from uuid import uuid4
 
 import numpy as np
 from numpy import ma as ma
@@ -7,6 +11,10 @@ from numpy.testing import assert_array_equal
 
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import AreaAnalyst
+from molusce.algorithms.models.serializer.serializer import (
+    ModelParams,
+    ModelParamsSerializer,
+)
 from molusce.algorithms.models.woe.manager import WoeManager
 from molusce.algorithms.models.woe.model import woe
 
@@ -131,6 +139,70 @@ class TestWoEManager(unittest.TestCase):
         self.assertEqual(p.dtype, np.uint8)
         c = w.getConfidence().getBand(1)
         self.assertEqual(c.dtype, np.uint8)
+
+    @patch("molusce.algorithms.models.serializer.serializer.pluginMetadata")
+    @patch("molusce.algorithms.models.serializer.serializer.datetime")
+    def test_serialization(
+        self, datetime_mock: MagicMock, metadata_mock: MagicMock
+    ) -> None:
+        MOLUSCE_VERSION = "5.0.0"
+        metadata_mock.return_value = MOLUSCE_VERSION
+
+        FIXED_DATETIME = datetime(2006, 5, 4, 3, 2, 1)
+        datetime_mock.now.return_value = FIXED_DATETIME
+
+        area_analyst = AreaAnalyst(self.sites, self.sites)
+        woe_manager = WoeManager([self.factor], area_analyst)
+        woe_manager.train()
+
+        factors = {str(uuid4()): factor for factor in [self.factor]}
+        model_params = ModelParams.from_data(woe_manager, self.sites, factors)
+
+        with NamedTemporaryFile(delete=True) as temp_file:
+            ModelParamsSerializer.to_file(model_params, temp_file.name)
+            loaded_params = ModelParamsSerializer.from_file(temp_file.name)
+
+        self.assertTrue(
+            model_params.model_type
+            == loaded_params.model_type
+            == "Weights of Evidence"
+        )
+        self.assertTrue(isinstance(loaded_params.model, WoeManager))
+        self.assertTrue(
+            (model_params.base_xsize, model_params.base_xsize)
+            == (loaded_params.base_xsize, loaded_params.base_xsize)
+            == (self.sites.getXSize(), self.sites.getYSize())
+        )
+        self.assertTrue(
+            model_params.base_classes
+            == loaded_params.base_classes
+            == self.sites.getUniqueValues()
+        )
+        self.assertTrue(
+            model_params.factors_metadata
+            == loaded_params.factors_metadata
+            == [
+                {"name": uuid, "bandcount": bandcount.bandcount}
+                for uuid, bandcount in factors.items()
+            ]
+        )
+        self.assertTrue(
+            model_params.molusce_version
+            == loaded_params.molusce_version
+            == MOLUSCE_VERSION
+        )
+        self.assertTrue(
+            model_params.creation_ts
+            == loaded_params.creation_ts
+            == FIXED_DATETIME
+        )
+
+        # Check model
+        # loaded_model = cast("WoeManager", loaded_params.model)
+        # prediction = loaded_model.getPrediction(self.sites).getBand(1)
+        # answer = [[0, 3, 0], [0, 3, 0], [9, 0, 3]]
+        # answer = ma.array(data=answer, mask=self.mask)
+        # assert_array_equal(prediction, answer)
 
 
 if __name__ == "__main__":
