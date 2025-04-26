@@ -1,5 +1,6 @@
 import gc
 from os.path import basename
+from typing import Dict, List, Optional
 
 import numpy as np
 from qgis.PyQt.QtCore import *
@@ -7,6 +8,7 @@ from qgis.PyQt.QtCore import *
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import (
     AreaAnalizerCategoryError,
+    AreaAnalyst,
 )
 from molusce.algorithms.models.woe.model import WoeError
 from molusce.algorithms.utils import binaryzation, masks_identity, reclass
@@ -30,9 +32,13 @@ def sigmoid(x):
 
 
 class WoeManagerError(Exception):
-    """Base class for exceptions in this module."""
+    """
+    Base class for exceptions in the WoeManager module.
 
-    def __init__(self, msg):
+    :param msg: Error message describing the issue.
+    """
+
+    def __init__(self, msg: str):
         self.msg = msg
 
 
@@ -47,7 +53,13 @@ class WoeManager(PickleQObjectMixin, QObject):
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
 
-    def __init__(self, factors, areaAnalyst, unit_cell=1, bins=None):
+    def __init__(
+        self,
+        factors: List[Raster],
+        areaAnalyst: AreaAnalyst,
+        unit_cell: int = 1,
+        bins: Optional[Dict[int, List[List[float]]]] = None,
+    ) -> None:
         """@param factors      List of the pattern rasters used for prediction of point objects (sites).
         @param areaAnalyst  AreaAnalyst that contains map of the changes, encodes and decodes category numbers.
         @param unit_cell    Method parameter, pixelsize of resampled rasters.
@@ -106,8 +118,12 @@ class WoeManager(PickleQObjectMixin, QObject):
         #
         self.transitionPotentials = None  # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
-    def checkBins(self):
-        """Check if bins are applicable to the factors"""
+    def checkBins(self) -> bool:
+        """
+        Check if the provided bins are applicable to the factors.
+
+        :return: True if bins are valid, False otherwise.
+        """
         if self.bins is not None:
             for i, factor in enumerate(self.factors):
                 factor.denormalize()
@@ -125,22 +141,58 @@ class WoeManager(PickleQObjectMixin, QObject):
                             return False
         return True
 
-    def getConfidence(self):
+    def getConfidence(self) -> Optional[Raster]:
+        """
+        Get the confidence raster.
+
+        :return: Confidence raster.
+        """
         return self.confidence
 
-    def getPrediction(self, state, factors=None, calcTransitions=False):
-        """Most of the models use factors for prediction, but WoE takes list of factors only once (during the initialization)."""
+    def getPrediction(
+        self,
+        state: Raster,
+        factors: Optional[List[Raster]] = None,
+        calcTransitions: bool = False,
+    ) -> Raster:
+        """
+        Get the prediction raster based on the state and factors.
+        Most of the models use factors for prediction,
+        but WoE takes list of factors only once (during the initialization).
+
+        :param state: Raster representing the initial state.
+        :param factors: Optional list of factors for prediction.
+        :param calcTransitions: Whether to calculate transition potentials.
+        :return: Prediction raster.
+        """
         self._predict(state, calcTransitions)
         return self.prediction
 
-    def getTransitionPotentials(self):
+    def getTransitionPotentials(self) -> Optional[Dict[int, Raster]]:
+        """
+        Get the transition potentials.
+
+        :return: Dictionary of transition potential rasters.
+        """
         return self.transitionPotentials
 
-    def getWoe(self):
+    def getWoe(self) -> Dict[int, np.ndarray]:
+        """
+        Get the Weight of Evidence (WoE) maps.
+
+        :return: Dictionary of WoE maps for each transition code.
+        """
         return self.woe
 
-    def _predict(self, state, calcTransitions=False):
-        """Predict the changes."""
+    def _predict(self, state: Raster, calcTransitions: bool = False) -> None:
+        """
+        Perform prediction using the WoE model.
+
+        :param state: Raster representing the initial state.
+        :param calcTransitions: Whether to calculate transition potentials.
+
+        :raises WoeManagerError: If geometries mismatch or other errors occur.
+        """
         try:
             self.rangeChanged.emit(self.tr("Initialize model %p%"), 1)
 
@@ -215,8 +267,12 @@ class WoeManager(PickleQObjectMixin, QObject):
         finally:
             self.processFinished.emit()
 
-    def train(self):
-        """Train the model"""
+    def train(self) -> None:
+        """
+        Train the WoE model using the provided factors and change map.
+
+        :raises WoeManagerError: If training fails due to memory or other issues.
+        """
         self.transitionPotentials = {}
         try:
             iterCount = len(self.codes) * len(self.factors)
@@ -294,8 +350,12 @@ class WoeManager(PickleQObjectMixin, QObject):
         finally:
             self.processFinished.emit()
 
-    def weightsToText(self):
-        """Format self.weights as text report."""
+    def weightsToText(self) -> str:
+        """
+        Format the weights as a text report.
+
+        :return: Text representation of the weights.
+        """
         if self.weights == {}:
             return ""
         text = ""
