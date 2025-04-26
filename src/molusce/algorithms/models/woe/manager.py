@@ -5,6 +5,9 @@ import numpy as np
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
+from molusce.algorithms.models.area_analysis.manager import (
+    AreaAnalizerCategoryError,
+)
 from molusce.algorithms.models.woe.model import WoeError
 from molusce.algorithms.utils import binaryzation, masks_identity, reclass
 from molusce.molusceutils import PickleQObjectMixin
@@ -185,7 +188,7 @@ class WoeManager(PickleQObjectMixin, QObject):
                         confidence[r, c] = int(
                             100 * (sigmoid(currMax) - sigmoid(oldMax))
                         )
-                    except ValueError:
+                    except AreaAnalizerCategoryError:
                         mask[r, c] = 1
                 self.updateProgress.emit()
 
