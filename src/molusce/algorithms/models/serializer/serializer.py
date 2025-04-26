@@ -1,15 +1,24 @@
 import pickle
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Dict, List, Set, Union
+from importlib.util import find_spec
+from typing import TYPE_CHECKING, Dict, List, Set, Union
 
 from qgis.utils import pluginMetadata
 
 from molusce.algorithms.dataprovider import Raster
-from molusce.algorithms.models.lr.lr import LR
 from molusce.algorithms.models.mce.mce import MCE
 from molusce.algorithms.models.mlp.manager import MlpManager
 from molusce.algorithms.models.woe.manager import WoeManager
+
+if TYPE_CHECKING:
+    from molusce.algorithms.models.lr.lr import LR
+
+is_scipy_missed = False
+if find_spec("scipy") is not None:
+    from molusce.algorithms.models.lr.lr import LR
+else:
+    is_scipy_missed = True
 
 
 class SerializerError(Exception):
@@ -20,7 +29,7 @@ class SerializerError(Exception):
 @dataclass
 class ModelParams:
     model_type: str
-    model: Union[MlpManager, WoeManager, LR, MCE]
+    model: Union[MlpManager, WoeManager, "LR", MCE]
     base_xsize: int
     base_ysize: int
     base_classes: Set
@@ -55,7 +64,7 @@ class ModelParams:
     @classmethod
     def from_data(
         cls,
-        inputs_model: Union[MlpManager, WoeManager, LR, MCE],
+        inputs_model: Union[MlpManager, WoeManager, "LR", MCE],
         inputs_initial: Raster,
         inputs_factors: Dict[str, Raster],
     ) -> "ModelParams":
@@ -63,7 +72,7 @@ class ModelParams:
             model_type = "Artificial Neural Network (Multi-layer Perceptron)"
         elif isinstance(inputs_model, WoeManager):
             model_type = "Weights of Evidence"
-        elif isinstance(inputs_model, LR):
+        elif not is_scipy_missed and isinstance(inputs_model, LR):
             model_type = "Logistic Regression"
         elif isinstance(inputs_model, MCE):
             model_type = "Multi Criteria Evaluation"
@@ -114,9 +123,11 @@ class ModelParamsSerializer:
         except Exception as error:
             raise SerializerError("Invalid file. %s" % str(error)) from error
 
-        if not isinstance(
-            model_params.model, (MlpManager, WoeManager, LR, MCE)
-        ):
+        model_types = (MlpManager, WoeManager, MCE)
+        if not is_scipy_missed:
+            model_types += (LR,)
+
+        if not isinstance(model_params.model, model_types):
             raise SerializerError("Invalid model type")
 
         return model_params
