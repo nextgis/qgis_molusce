@@ -16,6 +16,10 @@ class AreaAnalizerError(Exception):
         self.msg = msg
 
 
+class AreaAnalizerCategoryError(AreaAnalizerError):
+    pass
+
+
 class AreaAnalyst(PickleQObjectMixin, QObject):
     """Generates an output raster, with geometry
     copied from the initial land use map.  The output is a 1-band raster
@@ -92,7 +96,7 @@ class AreaAnalyst(PickleQObjectMixin, QObject):
                 self.categories[finalClassIndex],
             )
         except ValueError as exc:
-            raise AreaAnalizerError(
+            raise AreaAnalizerCategoryError(
                 self.tr("The code is not in list!")
             ) from exc
         return (initClass, finalClass)
@@ -109,7 +113,7 @@ class AreaAnalyst(PickleQObjectMixin, QObject):
                 initialClass
             ) * m + self.categories.index(finalClass)
         except ValueError as exc:
-            raise AreaAnalizerError(
+            raise AreaAnalizerCategoryError(
                 self.tr("The category not in list of categories!")
             ) from exc
 
