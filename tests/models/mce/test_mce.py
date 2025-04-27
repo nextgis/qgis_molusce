@@ -116,9 +116,15 @@ class TestMCE(unittest.TestCase):
         factors = {str(uuid4()): factor for factor in [self.factor]}
         model_params = ModelParams.from_data(mce, self.state, factors)
 
-        with NamedTemporaryFile(delete=True) as temp_file:
-            ModelParamsSerializer.to_file(model_params, temp_file.name)
-            loaded_params = ModelParamsSerializer.from_file(temp_file.name)
+        with NamedTemporaryFile(delete=False) as temp_file:
+            temp_file_path_str = temp_file.name
+        try:
+            ModelParamsSerializer.to_file(model_params, temp_file_path_str)
+            loaded_params = ModelParamsSerializer.from_file(temp_file_path_str)
+        finally:
+            temp_file_path = Path(temp_file_path_str)
+            if temp_file_path.exists():
+                temp_file_path.unlink()
 
         self.assertTrue(
             model_params.model_type
