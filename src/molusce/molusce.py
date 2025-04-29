@@ -104,6 +104,7 @@ class MoluscePlugin:
             QIcon(":/plugins/molusce/icons/molusce_logo.svg")
         )
         self.actionRun.setWhatsThis("Start MOLUSCE plugin")
+
         self.actionQuickHelp = QAction(
             QCoreApplication.translate("MOLUSCE", "Quick Help..."),
             self.iface.mainWindow(),
@@ -120,31 +121,32 @@ class MoluscePlugin:
         self.actionAbout.setIcon(QIcon(":/plugins/molusce/icons/about.png"))
         self.actionAbout.setWhatsThis("About MOLUSCE")
 
-        self.actionHelp = QAction(
-            QIcon(":/plugins/molusce/icons/molusce_logo.svg"), "MOLUSCE"
+        self.__molusce_menu = QMenu(
+            QCoreApplication.translate("MOLUSCE", "MOLUSCE")
+        )
+        self.__molusce_menu.setIcon(
+            QIcon(":/plugins/molusce/icons/molusce_logo.svg")
         )
 
-        self.actionHelp.triggered.connect(self.about)
+        self.__molusce_menu.addAction(self.actionRun)
+        self.__molusce_menu.addAction(self.actionQuickHelp)
+        self.__molusce_menu.addAction(self.actionAbout)
 
-        plugin_help_menu = self.iface.pluginHelpMenu()
-        assert plugin_help_menu is not None
-        plugin_help_menu.addAction(self.actionHelp)
-
-        self.iface.addPluginToRasterMenu(
-            QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionRun
-        )
-        self.iface.addPluginToRasterMenu(
-            QCoreApplication.translate("MOLUSCE", "MOLUSCE"),
-            self.actionQuickHelp,
-        )
-        self.iface.addPluginToRasterMenu(
-            QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionAbout
-        )
+        self.iface.rasterMenu().addMenu(self.__molusce_menu)
         self.iface.addRasterToolBarIcon(self.actionRun)
 
         self.actionRun.triggered.connect(self.run)
         self.actionQuickHelp.triggered.connect(self.showQuickHelp)
         self.actionAbout.triggered.connect(self.about)
+
+        self.actionHelp = QAction(
+            QIcon(":/plugins/molusce/icons/molusce_logo.svg"), "MOLUSCE"
+        )
+        self.actionHelp.triggered.connect(self.about)
+
+        plugin_help_menu = self.iface.pluginHelpMenu()
+        assert plugin_help_menu is not None
+        plugin_help_menu.addAction(self.actionHelp)
 
     def unload(self):
         self.iface.unregisterMainWindowAction(self.actionRun)
@@ -160,6 +162,7 @@ class MoluscePlugin:
         self.iface.removePluginRasterMenu(
             QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionAbout
         )
+        self.__molusce_menu.deleteLater()
 
     def run(self):
         d = moluscedialog.MolusceDialog(self.iface)
