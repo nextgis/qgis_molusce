@@ -184,6 +184,13 @@ class ModelParamsSerializer:
         try:
             with open(file_path, "rb") as file:
                 model_params: ModelParams = pickle.load(file)
+        except ModuleNotFoundError as error:
+            raise SerializerError(
+                QCoreApplication.translate(
+                    "SerializerError",
+                    "scipy is required to load Logistic Regression model",
+                )
+            ) from error
         except Exception as error:
             raise SerializerError(
                 QCoreApplication.translate(
