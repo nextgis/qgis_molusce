@@ -2460,28 +2460,28 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 self.inputs["initial"],
                 self.inputs["factors"],
             )
-        except SerializerError as e:
+        except SerializerError as error:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr("Serialization error: %s" % str(e)),
+                self.tr("Serialization error: %s" % str(error)),
             )
             return
-        except Exception as e:
+        except Exception as error:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr("Unknown error: %s" % str(e)),
+                self.tr("Unknown error: %s" % str(error)),
             )
             return
 
         try:
             ModelParamsSerializer.to_file(model_params, file_name)
-        except Exception as e:
+        except Exception as error:
             QMessageBox.warning(
                 self,
                 self.tr("Failed to save model"),
-                self.tr("Error: %s" % str(e)),
+                self.tr("Error: %s" % str(error)),
             )
             return
 
@@ -2505,18 +2505,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         try:
             model_params = ModelParamsSerializer.from_file(file_name)
-        except SerializerError as e:
+        except SerializerError as error:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr("Serialization error: %s" % str(e)),
+                self.tr("Serialization error: %s" % str(error)),
             )
             return
-        except Exception as e:
+        except Exception as error:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr("Unknown error: %s" % str(e)),
+                self.tr("Unknown error: %s" % str(error)),
             )
             return
 
