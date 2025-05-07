@@ -117,15 +117,13 @@ class ModelParams:
             model_type = "Multi Criteria Evaluation"
         else:
             raise SerializerError(
-                QCoreApplication.translate(
-                    "SerializerError", "Model is unknown"
-                )
+                QCoreApplication.translate("Serializer", "Model is unknown")
             )
 
         if not isinstance(inputs_initial, Raster):
             raise SerializerError(
                 QCoreApplication.translate(
-                    "SerializerError", "Invalid initial raster"
+                    "Serializer", "Invalid initial raster"
                 )
             )
 
@@ -142,15 +140,15 @@ class ModelParams:
                 except Exception as error:
                     raise SerializerError(
                         QCoreApplication.translate(
-                            "SerializerError", f"Invalid factors. {error}"
-                        )
+                            "Serializer", "Invalid factors. {}"
+                        ).format(error)
                     ) from error
 
         except Exception as error:
             raise SerializerError(
                 QCoreApplication.translate(
-                    "SerializerError", f"Invalid factors. {error}"
-                )
+                    "Serializer", "Invalid factors. {}"
+                ).format(error)
             ) from error
 
         return ModelParams(
@@ -185,17 +183,19 @@ class ModelParamsSerializer:
             with open(file_path, "rb") as file:
                 model_params: ModelParams = pickle.load(file)
         except ModuleNotFoundError as error:
+            # fmt: off
             raise SerializerError(
                 QCoreApplication.translate(
-                    "SerializerError",
-                    "scipy is required to load Logistic Regression model",
+                    "Serializer",
+                    "scipy is required to load Logistic Regression model"
                 )
             ) from error
+            # fmt: on
         except Exception as error:
             raise SerializerError(
                 QCoreApplication.translate(
-                    "SerializerError", f"Invalid file. {error}"
-                )
+                    "Serializer", "Invalid file. {}"
+                ).format(error)
             ) from error
 
         model_types = (MlpManager, WoeManager, MCE)
@@ -204,9 +204,7 @@ class ModelParamsSerializer:
 
         if not isinstance(model_params.model, model_types):
             raise SerializerError(
-                QCoreApplication.translate(
-                    "SerializerError", "Invalid model type"
-                )
+                QCoreApplication.translate("Serializer", "Invalid model type")
             )
 
         return model_params
@@ -227,7 +225,6 @@ class ModelParamsSerializer:
         except Exception as error:
             raise SerializerError(
                 QCoreApplication.translate(
-                    "SerializerError",
-                    f"An error occurred while writing data: {error}",
-                )
+                    "Serializer", "An error occurred while writing data: {}"
+                ).format(error)
             ) from error
