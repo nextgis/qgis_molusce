@@ -1953,31 +1953,41 @@ niveau moyen d&apos;information sur la quantité.</translation>
     </message>
 </context>
 <context>
-    <name>SerializerError</name>
+    <name>Serializer</name>
     <message>
         <location filename="../algorithms/models/serializer/serializer.py" line="119"/>
         <source>Model is unknown</source>
         <translation>Type de modèle inconnu</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/serializer/serializer.py" line="126"/>
+        <location filename="../algorithms/models/serializer/serializer.py" line="124"/>
         <source>Invalid initial raster</source>
         <translation>Raster initial invalide</translation>
     </message>
     <message>
-        <location filename="../algorithms/models/serializer/serializer.py" line="150"/>
-        <source>Invalid factors. {error}</source>
-        <translation>Cartes de facteurs d&apos;influence inacceptables. {error}</translation>
-    </message>
-    <message>
-        <location filename="../algorithms/models/serializer/serializer.py" line="188"/>
-        <source>Invalid file. {error}</source>
-        <translation>Fichier non valide. {error}</translation>
-    </message>
-    <message>
-        <location filename="../algorithms/models/serializer/serializer.py" line="199"/>
+        <location filename="../algorithms/models/serializer/serializer.py" line="206"/>
         <source>Invalid model type</source>
         <translation>Type de modèle non valide</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/serializer/serializer.py" line="148"/>
+        <source>Invalid factors. {}</source>
+        <translation>Cartes d&apos;influence des facteurs non valides. {}</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/serializer/serializer.py" line="195"/>
+        <source>Invalid file. {}</source>
+        <translation>Fichier non valide. {}</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/serializer/serializer.py" line="226"/>
+        <source>An error occurred while writing data: {}</source>
+        <translation>Une erreur s&apos;est produite lors de l&apos;écriture des données: {}</translation>
+    </message>
+    <message>
+        <location filename="../algorithms/models/serializer/serializer.py" line="187"/>
+        <source>scipy is required to load Logistic Regression model</source>
+        <translation>scipy est nécessaire pour charger le modèle de régression logistique</translation>
     </message>
 </context>
 <context>
