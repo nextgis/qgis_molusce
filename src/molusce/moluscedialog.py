@@ -2460,28 +2460,28 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 self.inputs["initial"],
                 self.inputs["factors"],
             )
-        except SerializerError as e:
+        except SerializerError as error:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr("Serialization error: %s" % str(e)),
+                self.tr("Serialization error: %s" % str(error)),
             )
             return
-        except Exception as e:
+        except Exception as error:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr("Unknown error: %s" % str(e)),
+                self.tr("Unknown error: %s" % str(error)),
             )
             return
 
         try:
             ModelParamsSerializer.to_file(model_params, file_name)
-        except Exception as e:
+        except Exception as error:
             QMessageBox.warning(
                 self,
                 self.tr("Failed to save model"),
-                self.tr("Error: %s" % str(e)),
+                self.tr("Error: %s" % str(error)),
             )
             return
 
@@ -2505,18 +2505,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         try:
             model_params = ModelParamsSerializer.from_file(file_name)
-        except SerializerError as e:
+        except SerializerError as error:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr("Serialization error: %s" % str(e)),
+                self.tr("Serialization error: %s" % str(error)),
             )
             return
-        except Exception as e:
+        except Exception as error:
             QMessageBox.warning(
                 self,
                 self.tr("Error"),
-                self.tr("Unknown error: %s" % str(e)),
+                self.tr("Unknown error: %s" % str(error)),
             )
             return
 
@@ -2534,14 +2534,14 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
         )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr("Model type: {}\n".format(model_params.model_type))
+            self.tr("Model type: {}\n").format(model_params.model_type)
         )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr("Creation date: {}\n".format(model_params.creation_ts))
+            self.tr("Creation date: {}\n").format(model_params.creation_ts)
         )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr(
-                "MOLUSCE version: {}\n".format(model_params.molusce_version)
+            self.tr("MOLUSCE version: {}\n").format(
+                model_params.molusce_version
             )
         )
         if (
@@ -2556,24 +2556,20 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 )
             )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr(
-                "Spatial domain dimensions: {}x{}\n".format(
-                    model_params.base_xsize, model_params.base_ysize
-                )
+            self.tr("Spatial domain dimensions: {}x{}\n").format(
+                model_params.base_xsize, model_params.base_ysize
             )
         )
         self.modelWidget.loadedModelTextEdit.append(
-            self.tr("Classes: {}\n".format(model_params.base_classes))
+            self.tr("Classes: {}\n").format(model_params.base_classes)
         )
         self.modelWidget.loadedModelTextEdit.append(
             self.tr("List of factors used for training:\n")
         )
         for factor in model_params.factors_metadata:
             self.modelWidget.loadedModelTextEdit.append(
-                self.tr(
-                    "  * {} ({} bands)\n".format(
-                        factor["name"], factor["bandcount"]
-                    )
+                self.tr("  * {} ({} bands)\n").format(
+                    factor["name"], factor["bandcount"]
                 )
             )
         if consistency:
@@ -2596,18 +2592,14 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 self.tr("Current inputs setup:\n")
             )
             self.modelWidget.loadedModelTextEdit.append(
-                self.tr(
-                    "Spatial domain dimensions: {}x{}\n".format(
-                        self.inputs["initial"].getXSize(),
-                        self.inputs["initial"].getYSize(),
-                    )
+                self.tr("Spatial domain dimensions: {}x{}\n").format(
+                    self.inputs["initial"].getXSize(),
+                    self.inputs["initial"].getYSize(),
                 )
             )
             self.modelWidget.loadedModelTextEdit.append(
-                self.tr(
-                    "Classes: {}\n".format(
-                        self.inputs["initial"].getUniqueValues()
-                    )
+                self.tr("Classes: {}\n").format(
+                    self.inputs["initial"].getUniqueValues()
                 )
             )
             self.modelWidget.loadedModelTextEdit.append(
@@ -2615,10 +2607,8 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             for factor_name, factor_content in self.inputs["factors"].items():
                 self.modelWidget.loadedModelTextEdit.append(
-                    self.tr(
-                        "  * {} ({} bands)\n".format(
-                            factor_name, factor_content.bandcount
-                        )
+                    self.tr("  * {} ({} bands)\n").format(
+                        factor_name, factor_content.bandcount
                     )
                 )
 
