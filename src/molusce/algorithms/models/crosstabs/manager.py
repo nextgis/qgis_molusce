@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from pathlib import Path
+from typing import Dict, Union
+
 import numpy as np
 from qgis.PyQt.QtCore import *
 
@@ -44,10 +47,9 @@ class CrossTableManager(QObject):
                 initRaster.getBand(1), finalRaster.getBand(1)
             )
         except CrossTabError as error:
-            QMessageBox.warning(
-                None, self.tr("Different geometry"), str(error)
-            )
-            return
+            raise CrossTabManagerError(
+                self.tr("Geometries of the input rasters are different!")
+            ) from error
 
         self.crosstable.rangeChanged.connect(
             self.__crosstableProgressRangeChanged
@@ -105,7 +107,23 @@ class CrossTableManager(QObject):
         s = 1.0 / np.sum(tab, axis=1)
         return tab * s[:, None]
 
-    def getTransitionStat(self):
+    def getTransitionStat(self) -> Dict[str, Union[str, np.ndarray]]:
+        """
+        Calculate and return statistics about transitions between initial and
+        final states based on the cross table.
+
+        :returns: A dictionary containing the following keys:
+            - "unit": The unit of measurement for the area (e.g., "sq. km.") as a string.
+            - "init": A NumPy array of initial areas for each category.
+            - "initPerc": A NumPy array of percentages of the initial areas.
+            - "final": A NumPy array of final areas for each category.
+            - "finalPerc": A NumPy array of percentages of the final areas.
+            - "deltas": A NumPy array of differences between final and initial areas.
+            - "deltasPerc": A NumPy array of percentage differences between final and initial areas.
+
+        :raises CrossTabManagerError: If the input rasters contain different
+            numbers of categories, making it impossible to compute statistics.
+        """
         pixelArea = self.pixelArea["area"]
         stat = {"unit": self.pixelArea["unit"]}
         tab = self.getCrosstable()
@@ -128,11 +146,18 @@ class CrossTableManager(QObject):
             stat["deltas"] = deltas
             stat["deltasPerc"] = deltasPerc
         except ValueError as error:
+            quick_help_path = (
+                Path(__file__).parents[3] / "doc" / "en" / "QuickHelp.pdf"
+            )
+            quick_help_url = QUrl.fromLocalFile(
+                str(quick_help_path)
+            ).toString()
             raise CrossTabManagerError(
                 self.tr(
                     "Input rasters contain different numbers of categories. "
-                    "MOLUSCE cannot process rasters with different number of categories yet"
-                )
+                    "MOLUSCE cannot process rasters with different number of categories yet.<br>"
+                    "For more details, see the <a href={link}>documentation</a>"
+                ).format(link=quick_help_url)
             ) from error
 
         return stat
