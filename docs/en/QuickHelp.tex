@@ -119,7 +119,9 @@ Data can be loaded using the inputs tab. To load your data follow the next steps
 Note: It is important when layers are added to QGIS that the No Data Value (NDV) is set. If this is
 not done, MOLUSCE will process NDV areas as land use/cover classes, increasing processing time
 and confusing the model calibration. MOLUSCE picks up the NDV of the input (base) layer and
-propagates it to any output maps generated, along with the geometry of the base layer.
+propagates it to any output maps generated, along with the geometry of the base layer.\bigskip
+
+Note: In the current version of MOLUSCE, it is essential that the initial and final LULC rasters contain the same set of unique class values. For example, if the initial raster includes the values 1, 2, 3, and 4, then the final raster must also contain exactly these values: 1, 2, 3, and 4. If a new class value appears or an existing one disappears during the transition, MOLUSCE will not be able to process the data. As a workaround, users can artificially adjust the sets of unique values to match. One approach is to use the free \textbf{Serval} plugin, which allows editing of raster pixel values. You can, for instance, add a single pixel with the missing class value in a corner of the raster. This small change will not significantly affect the transition analysis but will ensure that MOLUSCE can process your data.
 
 \section{Evaluating correlation}
 
