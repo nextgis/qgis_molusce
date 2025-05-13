@@ -12,7 +12,7 @@ from molusce.algorithms.models.correlation.model import (
     DependenceCoef,
 )
 from molusce.algorithms.models.crosstabs.model import CrossTabError
-from molusce.algorithms.models.sampler.sampler import Sampler
+from molusce.algorithms.models.sampler.sampler import Sampler, SamplerError
 from molusce.molusceutils import PickleQObjectMixin
 
 from . import multinomial_logistic_regression as mlr
@@ -461,6 +461,9 @@ class LR(PickleQObjectMixin, QObject):
         try:
             self.setTrainingData()
             self.train()
+        except SamplerError as error:
+            self.error_occurred.emit(self.tr("Sampling error"), str(error))
+            return
         except CrossTabError as error:
             self.error_occurred.emit(
                 self.tr("Model training failed"), str(error)
