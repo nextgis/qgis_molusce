@@ -154,8 +154,8 @@ class CrossTableManager(QObject):
             ).toString()
             raise CrossTabManagerError(
                 self.tr(
-                    "Input rasters contain different numbers of categories. "
-                    "MOLUSCE cannot process rasters with different number of categories yet.<br>"
+                    "The lists of categories in the input rasters do not match! "
+                    "MOLUSCE cannot process rasters with different category lists yet.<br>"
                     "For more details, see the <a href={link}>documentation</a>"
                 ).format(link=quick_help_url)
             ) from error

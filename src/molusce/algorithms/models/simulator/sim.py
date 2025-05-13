@@ -196,7 +196,7 @@ class Simulator(QObject):
                 self.__sim()
         except AreaAnalizerError as error:
             self.error_occurred.emit(
-                self.tr("Model training failed"), str(error)
+                self.tr("Invalid input rasters"), str(error)
             )
             return
         except MemoryError:

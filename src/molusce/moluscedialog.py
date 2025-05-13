@@ -1882,7 +1882,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         except CrossTabManagerError as error:
             QMessageBox.warning(
                 self,
-                self.tr("Different number of categories"),
+                self.tr("Invalid input rasters"),
                 str(error),
             )
             return
