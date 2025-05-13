@@ -44,6 +44,8 @@ except ImportError:
 from matplotlib import rcParams
 from matplotlib.figure import Figure
 
+from molusce.algorithms.models.sampler.sampler import SamplerError
+
 from . import molusceutils as utils
 from .algorithms.models.mlp.manager import MlpManager, MlpManagerError
 from .ui.ui_neuralnetworkwidgetbase import Ui_NeuralNetworkWidgetBase
@@ -96,7 +98,27 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         )
         self.btnStop.setEnabled(False)
 
-    def trainNetwork(self):
+    @pyqtSlot()
+    def trainNetwork(self) -> None:
+        """
+        Validates the input data and initializes training of the Artificial Neural Network (ANN) model.
+
+        This function performs the following steps:
+        - Validates the presence of input rasters, factor rasters, and a change map.
+        - Validates the ANN topology string.
+        - Saves current UI ANN configuration settings to persistent storage.
+        - Initializes and configures the MLP model (neural network).
+        - Sets training data and hyperparameters such as learning rate, momentum, number of iterations.
+        - Sets up the training/validation graph UI.
+        - Moves the model to a worker thread and connects appropriate signals for training lifecycle.
+        - Starts training in a separate thread.
+
+        Emits log messages and error warnings when required.
+        Disables the "Train" button and enables "Stop" during training.
+
+        Raises:
+            MlpManagerError: If MLP model setup fails (e.g., due to invalid output layer configuration).
+        """
         if not utils.checkInputRasters(self.inputs):
             QMessageBox.warning(
                 self.plugin,
@@ -171,6 +193,13 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
                 mode=self.inputs["samplingMode"],
                 samples=self.plugin.spnSamplesCount.value(),
             )
+        except SamplerError as error:
+            QMessageBox.warning(
+                self,
+                self.tr("Sampling error"),
+                str(error),
+            )
+            return
         except MlpManagerError as error:
             QMessageBox.warning(
                 self,
@@ -212,6 +241,7 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         model.processInterrupted.connect(self.__trainInterrupted)
         model.rangeChanged.connect(self.plugin.setProgressRange)
         model.updateProgress.connect(self.plugin.showProgress)
+        model.error_occurred.connect(self.show_model_error)
         model.errorReport.connect(self.plugin.logErrorReport)
         model.processFinished.connect(self.__trainFinished)
         model.processFinished.connect(self.plugin.workThread.quit)
@@ -219,11 +249,23 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         self.plugin.logMessage(self.tr("Start training ANN model"))
         self.plugin.workThread.start()
 
-    def __trainFinished(self):
+    @pyqtSlot()
+    def __trainFinished(self) -> None:
+        """
+        Slot that handles the completion of the ANN model training process.
+
+        This method performs the following actions:
+        - Disconnects all signals connected to the model training process.
+        - Restores the progress bar state.
+        - Updates the UI by disabling the "Stop" button and enabling the "Train Network" button.
+        - Logs a message indicating that training has finished.
+        - Triggers the graph update to reflect the new model state.
+        """
         model = self.inputs["model"]
         self.plugin.workThread.started.disconnect(model.startTrain)
         model.rangeChanged.disconnect(self.plugin.setProgressRange)
         model.updateProgress.disconnect(self.plugin.showProgress)
+        model.error_occurred.disconnect(self.show_model_error)
         model.errorReport.disconnect(self.plugin.logErrorReport)
         self.plugin.restoreProgressState()
         self.btnStop.setEnabled(False)
@@ -269,3 +311,13 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         self.plotVal.set_ydata(numpy.array(self.dataVal))
 
         self.canvas.draw()
+
+    @pyqtSlot(str, str)
+    def show_model_error(self, title: str, message: str) -> None:
+        """
+        Display a warning message box with the model error details.
+
+        :param title: The title of the warning message box.
+        :param message: The error message to display.
+        """
+        QMessageBox.warning(self, title, message)

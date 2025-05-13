@@ -21,6 +21,8 @@ icon = icons/molusce_logo.svg
 tags = raster, land use planning
 
 homepage = https://nextgis.com/molusce/
+user_guide=https://docs.nextgis.com/docs_ngqgis/source/molusce.html
+user_guide[ru]=https://docs.nextgis.ru/docs_ngqgis/source/molusce.html
 tracker = https://github.com/nextgis/molusce/issues
 repository = https://github.com/nextgis/molusce
 

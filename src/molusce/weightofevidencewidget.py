@@ -108,7 +108,15 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
         self.tblReclass.resizeRowsToContents()
         self.tblReclass.resizeColumnsToContents()
 
-    def trainModel(self):
+    @pyqtSlot()
+    def trainModel(self) -> None:
+        """
+        Starts the training of the WoE (Weight of Evidence) model. The method checks if
+        the necessary input rasters and factor rasters are provided, initializes the model,
+        and starts the training process in a separate thread.
+
+        If any of the input conditions are not met, an appropriate warning message is displayed.
+        """
         if not utils.checkInputRasters(self.inputs):
             QMessageBox.warning(
                 self.plugin,
@@ -167,19 +175,30 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
         self.plugin.workThread.started.connect(model.train)
         model.updateProgress.connect(self.plugin.showProgress)
         model.rangeChanged.connect(self.plugin.setProgressRange)
+        model.error_occurred.connect(self.show_model_error)
         model.errorReport.connect(self.plugin.logErrorReport)
         model.processFinished.connect(self.__trainFinished)
         model.processFinished.connect(self.plugin.workThread.quit)
 
         self.plugin.workThread.start()
 
-    def __trainFinished(self):
+    @pyqtSlot()
+    def __trainFinished(self) -> None:
+        """
+        Slot that is triggered when the WoE model training process is finished.
+        It performs the following actions:
+        - Disconnects signals related to model training.
+        - Restores the progress state.
+        - Logs a message indicating that the model has been trained.
+        - Displays the model's weights in the text area.
+        """
         model = self.inputs["model"]
         self.plugin.workThread.started.disconnect(model.train)
         model.updateProgress.disconnect(self.plugin.showProgress)
         model.rangeChanged.connect(self.plugin.setProgressRange)
         model.processFinished.disconnect(self.__trainFinished)
         model.processFinished.disconnect(self.plugin.workThread.quit)
+        model.error_occurred.disconnect(self.show_model_error)
         model.errorReport.disconnect(self.plugin.logErrorReport)
         self.plugin.restoreProgressState()
         self.plugin.logMessage(self.tr("WoE model is trained"))
@@ -229,3 +248,13 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
             item = " ".join(item)
             item = QTableWidgetItem(item)
             self.tblReclass.setItem(row, 4, item)
+
+    @pyqtSlot(str, str)
+    def show_model_error(self, title: str, message: str) -> None:
+        """
+        Display a warning message box with the model error details.
+
+        :param title: The title of the warning message box.
+        :param message: The error message to display.
+        """
+        QMessageBox.warning(self, title, message)

@@ -23,6 +23,8 @@
 #
 # ******************************************************************************
 
+from typing import TYPE_CHECKING, Optional
+
 from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
@@ -32,10 +34,22 @@ from . import molusceutils as utils
 from .algorithms.models.lr.lr import LR
 from .ui.ui_logisticregressionwidgetbase import Ui_LogisticRegressionWidgetBase
 
+if TYPE_CHECKING:
+    from molusce.moluscedialog import MolusceDialog
+
 
 class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
-    def __init__(self, plugin, parent=None):
-        QWidget.__init__(self, parent)
+    def __init__(
+        self, plugin: "MolusceDialog", parent: Optional[QWidget] = None
+    ) -> None:
+        """
+        Initialize the Logistic Regression Widget.
+
+        :param plugin: The instance of the MolusceDialog class
+                       that provides access to inputs and settings.
+        :param parent: The parent widget, defaults to None.
+        """
+        super().__init__(parent)
         self.setupUi(self)
 
         self.plugin = plugin
@@ -47,13 +61,23 @@ class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
 
         self.manageGui()
 
-    def manageGui(self):
+    def manageGui(self) -> None:
+        """
+        Configure the GUI elements of the widget.
+        """
         self.tabLRResults.setCurrentIndex(0)
         self.spnNeighbourhood.setValue(
             int(self.settings.value("ui/LR/neighborhood", 1))
         )
 
-    def startFitModel(self):
+    @pyqtSlot()
+    def startFitModel(self) -> None:
+        """
+        Start the process of fitting the logistic regression model.
+        Checks input data validity and initializes the model training process.
+
+        :raises QMessageBox: If required input data is missing.
+        """
         if not utils.checkInputRasters(self.inputs):
             QMessageBox.warning(
                 self.plugin,
@@ -105,11 +129,17 @@ class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
         self.plugin.workThread.started.connect(model.startTrain)
         self.plugin.setProgressRange("Train LR model", 0)
         model.finished.connect(self.__trainFinished)
+        model.error_occurred.connect(self.show_model_error)
         model.errorReport.connect(self.plugin.logErrorReport)
         model.finished.connect(self.plugin.workThread.quit)
         self.plugin.workThread.start()
 
-    def __trainFinished(self):
+    @pyqtSlot()
+    def __trainFinished(self) -> None:
+        """
+        Handle the completion of the logistic regression model training.
+        Updates the GUI with the results and logs the completion.
+        """
         model = self.inputs["model"]
         self.plugin.workThread.started.disconnect(model.startTrain)
         self.plugin.restoreProgressState()
@@ -128,7 +158,13 @@ class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
 
         self.plugin.logMessage(self.tr("LR model is trained"))
 
-    def showCoefficients(self):
+    def showCoefficients(self) -> None:
+        """
+        Display the coefficients of the trained logistic regression model
+        in the coefficients table.
+
+        :raises QMessageBox: If the model is not initialized.
+        """
         model = self.inputs["model"]
         if model is None:
             QMessageBox.warning(
@@ -164,7 +200,13 @@ class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
 
         self.lePseudoR.setText(f"{accuracy:6.5f}")
 
-    def showStdDeviations(self):
+    def showStdDeviations(self) -> None:
+        """
+        Display the standard deviations of the trained logistic regression model
+        in the standard deviations table.
+
+        :raises QMessageBox: If the model is not initialized.
+        """
         model = self.inputs["model"]
         if model is None:
             QMessageBox.warning(
@@ -199,7 +241,13 @@ class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
         self.tblStdDev.resizeRowsToContents()
         self.tblStdDev.resizeColumnsToContents()
 
-    def showPValues(self):
+    def showPValues(self) -> None:
+        """
+        Display the p-values of the trained logistic regression model
+        in the p-values table.
+
+        :raises QMessageBox: If the model is not initialized.
+        """
         model = self.inputs["model"]
 
         def significance(p):
@@ -241,3 +289,13 @@ class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
 
         self.tblPValues.resizeRowsToContents()
         self.tblPValues.resizeColumnsToContents()
+
+    @pyqtSlot(str, str)
+    def show_model_error(self, title: str, message: str) -> None:
+        """
+        Display a warning message box with the model error details.
+
+        :param title: The title of the warning message box.
+        :param message: The error message to display.
+        """
+        QMessageBox.warning(self, title, message)

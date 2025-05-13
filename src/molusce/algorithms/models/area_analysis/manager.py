@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List, Optional, Tuple
 
 import numpy as np
@@ -40,6 +41,7 @@ class AreaAnalyst(PickleQObjectMixin, QObject):
     updateProgress = pyqtSignal()
     processFinished = pyqtSignal(object)
     errorReport = pyqtSignal(str)
+    error_occurred = pyqtSignal(str, str)
     logMessage = pyqtSignal(str)
 
     def __init__(self, first: Raster, second: Optional[Raster] = None) -> None:
@@ -76,13 +78,20 @@ class AreaAnalyst(PickleQObjectMixin, QObject):
         self.second = second
 
         if second is not None:
-            for cat in self.categoriesSecond:
-                if cat not in self.categories:
-                    raise AreaAnalizerError(
-                        self.tr(
-                            "List of categories of the first raster doesn't contains a category of the second raster!"
-                        )
-                    )
+            if set(self.categoriesSecond) != set(self.categories):
+                quick_help_path = (
+                    Path(__file__).parents[3] / "doc" / "en" / "QuickHelp.pdf"
+                )
+                quick_help_url = QUrl.fromLocalFile(
+                    str(quick_help_path)
+                ).toString()
+                raise AreaAnalizerError(
+                    self.tr(
+                        "The lists of categories in the input rasters do not match! "
+                        "MOLUSCE cannot process rasters with different category lists yet.<br>"
+                        "For more details, see the <a href={link}>documentation</a>"
+                    ).format(link=quick_help_url)
+                )
 
         self.changeMap = None
         self.initRaster = None
@@ -169,11 +178,9 @@ class AreaAnalyst(PickleQObjectMixin, QObject):
         if self.changeMap is None:
             try:
                 self.makeChangeMap()
-            except AreaAnalizerError as error:
-                QMessageBox.warning(
-                    None,
-                    self.tr("Invalid input rasters"),
-                    str(error),
+            except AreaAnalizerCategoryError as error:
+                self.error_occurred.emit(
+                    self.tr("Change map error"), str(error)
                 )
                 return None
         return self.changeMap

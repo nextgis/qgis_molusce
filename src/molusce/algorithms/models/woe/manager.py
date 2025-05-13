@@ -52,6 +52,7 @@ class WoeManager(PickleQObjectMixin, QObject):
     processFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
+    error_occurred = pyqtSignal(str, str)
 
     def __init__(
         self,
@@ -267,6 +268,7 @@ class WoeManager(PickleQObjectMixin, QObject):
         finally:
             self.processFinished.emit()
 
+    @pyqtSlot()
     def train(self) -> None:
         """
         Train the WoE model using the provided factors and change map.
@@ -310,17 +312,9 @@ class WoeManager(PickleQObjectMixin, QObject):
                         band, sites = masks_identity(
                             band, sites, dtype=np.uint8
                         )  # Combine masks of the rasters
-                        try:
-                            woeRes = woe(
-                                band, sites, self.unit_cell
-                            )  # WoE for the 'code' (initState->finalState) transition and current 'factor'.
-                        except WoeError as error:
-                            QMessageBox(
-                                None,
-                                self.tr("Error"),
-                                str(error),
-                            )
-                            return
+                        woeRes = woe(
+                            band, sites, self.unit_cell
+                        )  # WoE for the 'code' (initState->finalState) transition and current 'factor'.
                         weights = woeRes["map"]
                         wMap = wMap + weights
                         factorW[i] = woeRes["weights"]
@@ -337,6 +331,11 @@ class WoeManager(PickleQObjectMixin, QObject):
                 p.create([band], self.geodata)
                 self.transitionPotentials[code] = p
                 gc.collect()
+        except WoeError as error:
+            self.error_occurred.emit(
+                self.tr("Model training failed"), str(error)
+            )
+            return
         except MemoryError:
             self.errorReport.emit(
                 "The system is out of memory during WoE training"

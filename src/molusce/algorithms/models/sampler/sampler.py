@@ -6,7 +6,7 @@ from numpy import ma as ma
 from osgeo import ogr, osr
 from qgis.PyQt.QtCore import *
 
-from molusce.algorithms.dataprovider import ProviderError
+from molusce.algorithms.dataprovider import ProviderError, Raster
 from molusce.molusceutils import PickleQObjectMixin
 
 
@@ -311,8 +311,13 @@ class Sampler(PickleQObjectMixin, QObject):
         ds = None
 
     def setTrainingData(
-        self, state, output, shuffle=True, mode="All", samples=None
-    ):
+        self,
+        state: Raster,
+        output: Raster,
+        shuffle: bool = True,
+        mode: str = "All",
+        samples: Optional[int] = None,
+    ) -> None:
         """@param state            Raster of the current state (categories) values.
         @param output           Raster of the output (target) data
         @param shuffle          Perform random shuffle.
@@ -434,13 +439,6 @@ class Sampler(PickleQObjectMixin, QObject):
 
             if shuffle:
                 np.random.shuffle(self.data)
-        except SamplerError as error:
-            QMessageBox.warning(
-                None,
-                self.tr("Sampling error"),
-                str(error),
-            )
-            return
         except MemoryError:
             self.errorReport.emit(
                 self.tr("The system is out of memory during sampling")
