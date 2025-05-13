@@ -39,6 +39,7 @@ class MlpManager(PickleQObjectMixin, QObject):
     processInterrupted = pyqtSignal()
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
+    error_occurred = pyqtSignal(str, str)
     rangeChanged = pyqtSignal(str, int)
     updateProgress = pyqtSignal()
 
@@ -452,6 +453,9 @@ class MlpManager(PickleQObjectMixin, QObject):
 
     @pyqtSlot()
     def startTrain(self):
+        """
+        Start the training process for the Artificial Neural Network (ANN) model.
+        """
         try:
             self.train(
                 self.epochs,
@@ -461,10 +465,8 @@ class MlpManager(PickleQObjectMixin, QObject):
                 self.continueTrain,
             )
         except CoeffError as error:
-            QMessageBox.warning(
-                None,
-                self.tr("Model training failed"),
-                str(error),
+            self.error_occurred.emit(
+                self.tr("Model training failed"), str(error)
             )
 
     @pyqtSlot()
