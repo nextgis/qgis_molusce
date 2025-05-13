@@ -96,7 +96,27 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         )
         self.btnStop.setEnabled(False)
 
-    def trainNetwork(self):
+    @pyqtSlot()
+    def trainNetwork(self) -> None:
+        """
+        Validates the input data and initializes training of the Artificial Neural Network (ANN) model.
+
+        This function performs the following steps:
+        - Validates the presence of input rasters, factor rasters, and a change map.
+        - Validates the ANN topology string.
+        - Saves current UI ANN configuration settings to persistent storage.
+        - Initializes and configures the MLP model (neural network).
+        - Sets training data and hyperparameters such as learning rate, momentum, number of iterations.
+        - Sets up the training/validation graph UI.
+        - Moves the model to a worker thread and connects appropriate signals for training lifecycle.
+        - Starts training in a separate thread.
+
+        Emits log messages and error warnings when required.
+        Disables the "Train" button and enables "Stop" during training.
+
+        Raises:
+            MlpManagerError: If MLP model setup fails (e.g., due to invalid output layer configuration).
+        """
         if not utils.checkInputRasters(self.inputs):
             QMessageBox.warning(
                 self.plugin,
@@ -212,6 +232,7 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         model.processInterrupted.connect(self.__trainInterrupted)
         model.rangeChanged.connect(self.plugin.setProgressRange)
         model.updateProgress.connect(self.plugin.showProgress)
+        model.error_occurred.connect(self.show_model_error)
         model.errorReport.connect(self.plugin.logErrorReport)
         model.processFinished.connect(self.__trainFinished)
         model.processFinished.connect(self.plugin.workThread.quit)
@@ -269,3 +290,13 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         self.plotVal.set_ydata(numpy.array(self.dataVal))
 
         self.canvas.draw()
+
+    @pyqtSlot(str, str)
+    def show_model_error(self, title: str, message: str) -> None:
+        """
+        Display a warning message box with the model error details.
+
+        :param title: The title of the warning message box.
+        :param message: The error message to display.
+        """
+        QMessageBox.warning(self, title, message)

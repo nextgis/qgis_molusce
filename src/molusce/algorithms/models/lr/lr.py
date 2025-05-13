@@ -1,7 +1,7 @@
 # TODO: make abstract class for all models/managers
 # to prevent code coping of common methods (for example _predict method)
 
-from typing import Optional
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 from qgis.PyQt.QtCore import *
@@ -20,7 +20,12 @@ from . import multinomial_logistic_regression as mlr
 class LRError(Exception):
     """Base class for exceptions in this module."""
 
-    def __init__(self, msg):
+    def __init__(self, msg: str) -> None:
+        """
+        Initialize the exception with a message.
+
+        :param msg: The error message.
+        """
         self.msg = msg
 
 
@@ -36,13 +41,21 @@ class LR(PickleQObjectMixin, QObject):
     finished = pyqtSignal()
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
+    error_occurred = pyqtSignal(str, str)
 
     logreg: mlr.MLR
     sampler: Optional[Sampler]
     data: Optional[np.ndarray]
     maxiter: int
 
-    def __init__(self, ns=0, logreg: Optional[mlr.MLR] = None) -> None:
+    def __init__(self, ns: int = 0, logreg: Optional[mlr.MLR] = None) -> None:
+        """
+        Initialize the Logistic Regression model.
+
+        :param ns: Neighborhood size of training rasters, defaults to 0.
+        :param logreg: An optional instance of the
+                       multinomial logistic regression model.
+        """
         super().__init__()
 
         if logreg:
@@ -70,45 +83,109 @@ class LR(PickleQObjectMixin, QObject):
         self.pseudoR = 0  # Pseudo R-squared (Count) (http://www.ats.ucla.edu/stat/mult_pkg/faq/general/Psuedo_RSquareds.htm)
         self.transitionPotentials = None  # Dictionary of transition potencial maps: {category1: map1, category2: map2, ...}
 
-    def getCoef(self):
+    def getCoef(self) -> np.ndarray:
+        """
+        Get the coefficients of the logistic regression model.
+
+        :returns: A NumPy array of coefficients.
+        """
         return self.logreg.get_weights().T
 
-    def getConfidence(self):
+    def getConfidence(self) -> Optional[Raster]:
+        """
+        Get the confidence raster of the logistic regression results.
+
+        :returns: A raster representing confidence values.
+        """
         return self.confidence
 
-    def getIntercept(self):
+    def getIntercept(self) -> Optional[np.ndarray]:
+        """
+        Get the intercepts of the logistic regression model.
+
+        :returns: A NumPy array of intercepts.
+        """
         return self.logreg.get_intercept()
 
-    def getKappa(self):
+    def getKappa(self) -> Union[float, Dict[str, float]]:
+        """
+        Get the Kappa value of the logistic regression model.
+
+        :returns: The Kappa value.
+        """
         return self.Kappa
 
-    def getStdErrIntercept(self):
+    def getStdErrIntercept(self) -> np.ndarray:
+        """
+        Get the standard errors of the intercepts.
+
+        :returns: A NumPy array of standard errors for the intercepts.
+        """
         X = np.column_stack((self.data["state"], self.data["factors"]))
         return self.logreg.get_stderr_intercept(X)
 
-    def getStdErrWeights(self):
+    def getStdErrWeights(self) -> np.ndarray:
+        """
+        Get the standard errors of the weights.
+
+        :returns: A NumPy array of standard errors for the weights.
+        """
         X = np.column_stack((self.data["state"], self.data["factors"]))
         return self.logreg.get_stderr_weights(X).T
 
-    def get_PvalIntercept(self):
+    def get_PvalIntercept(self) -> np.ndarray:
+        """
+        Get the p-values of the intercepts.
+
+        :returns: A NumPy array of p-values for the intercepts.
+        """
         X = np.column_stack((self.data["state"], self.data["factors"]))
         return self.logreg.get_pval_intercept(X)
 
-    def get_PvalWeights(self):
+    def get_PvalWeights(self) -> np.ndarray:
+        """
+        Get the p-values of the weights.
+
+        :returns: A NumPy array of p-values for the weights.
+        """
         X = np.column_stack((self.data["state"], self.data["factors"]))
         return self.logreg.get_pval_weights(X).T
 
-    def getPrediction(self, state, factors, calcTransitions=False):
+    def getPrediction(
+        self,
+        state: Raster,
+        factors: List[Raster],
+        calcTransitions: bool = False,
+    ) -> Optional[Raster]:
+        """
+        Get the prediction raster based on the input state and factors.
+
+        :param state: The raster of the current state (categories).
+        :param factors: A list of factor rasters (predicting variables).
+        :param calcTransitions: Whether to calculate transition potentials, defaults to False.
+
+        :returns: A raster of prediction results.
+        """
         self._predict(state, factors, calcTransitions)
         return self.prediction
 
-    def getPseudoR(self):
+    def getPseudoR(self) -> float:
+        """
+        Get the pseudo R-squared value of the logistic regression model.
+
+        :returns: The pseudo R-squared value.
+        """
         return self.pseudoR
 
-    def getTransitionPotentials(self):
+    def getTransitionPotentials(self) -> Optional[Dict[int, Raster]]:
+        """
+        Get the transition potentials of the logistic regression model.
+
+        :returns: A dictionary of transition potentials.
+        """
         return self.transitionPotentials
 
-    def _outputConfidence(self, input_data):
+    def _outputConfidence(self, input_data: np.ndarray) -> int:
         """Return confidence (difference between 2 biggest probabilities) of the LR output.
         1 = the maximum confidence, 0 = the least confidence
         """
@@ -117,7 +194,7 @@ class LR(PickleQObjectMixin, QObject):
         out_scl.sort()
         return int(100 * (out_scl[-1] - out_scl[-2]))
 
-    def outputTransitions(self, input_data):
+    def outputTransitions(self, input_data: np.ndarray) -> Dict[int, int]:
         """Return transition potential of the outputs"""
         out_scl = self.logreg.predict_proba(input_data)[0]
         out_scl = [int(100 * x) for x in out_scl]
@@ -127,7 +204,12 @@ class LR(PickleQObjectMixin, QObject):
             result[cat] = v
         return result
 
-    def _predict(self, state, factors, calcTransitions=False):
+    def _predict(
+        self,
+        state: Raster,
+        factors: List[Raster],
+        calcTransitions: bool = False,
+    ) -> None:
         """Calculate output and confidence rasters using LR model and input rasters
         @param state            Raster of the current state (categories) values.
         @param factors          List of the factor rasters (predicting variables).
@@ -224,12 +306,19 @@ class LR(PickleQObjectMixin, QObject):
         finally:
             self.processFinished.emit()
 
-    def __propagateSamplerSignals(self):
+    def __propagateSamplerSignals(self) -> None:
+        """
+        Connect the sampler signals to the corresponding slot methods.
+        """
         self.sampler.rangeChanged.connect(self.__samplerProgressRangeChanged)
         self.sampler.updateProgress.connect(self.__samplerProgressChanged)
         self.sampler.samplingFinished.connect(self.__samplerFinished)
 
-    def __samplerFinished(self):
+    @pyqtSlot()
+    def __samplerFinished(self) -> None:
+        """
+        Handle the sampler finished signal and disconnect its connections.
+        """
         self.sampler.rangeChanged.disconnect(
             self.__samplerProgressRangeChanged
         )
@@ -237,22 +326,48 @@ class LR(PickleQObjectMixin, QObject):
         self.sampler.samplingFinished.disconnect(self.__samplerFinished)
         self.samplingFinished.emit()
 
-    def __samplerProgressRangeChanged(self, message, maxValue):
-        self.rangeChanged.emit(message, maxValue)
+    @pyqtSlot(str, int)
+    def __samplerProgressRangeChanged(
+        self, message: str, max_value: int
+    ) -> None:
+        """
+        Handle the sampler progress range changed signal.
 
-    def __samplerProgressChanged(self):
+        :param message: The message with progress information.
+        :param max_value: The maximum value of the range.
+        """
+        self.rangeChanged.emit(message, max_value)
+
+    @pyqtSlot()
+    def __samplerProgressChanged(self) -> None:
+        """
+        Handle the sampler progress changed signal.
+        """
         self.updateProgress.emit()
 
     def save(self):
         pass
 
-    def saveSamples(self, fileName):
-        self.sampler.saveSamples(fileName)
+    def saveSamples(self, file_name: str) -> None:
+        """
+        Save the sampled data to a file.
+
+        :param file_name: The name of the file where the samples should be saved.
+        """
+        self.sampler.saveSamples(file_name)
 
     def setMaxIter(self, maxiter: int) -> None:
+        """
+        Set the maximum number of iterations for the logistic regression model.
+
+        :param maxiter: The maximum number of iterations.
+        """
         self.maxiter = maxiter
 
-    def setTrainingData(self):
+    def setTrainingData(self) -> None:
+        """
+        Set the training data for the logistic regression model.
+        """
         state, factors, output, mode, samples = (
             self.state,
             self.factors,
@@ -266,8 +381,8 @@ class LR(PickleQObjectMixin, QObject):
             )
 
         # Normalize factors before sampling:
-        for f in factors:
-            f.normalize(mode="mean")
+        for factor in factors:
+            factor.normalize(mode="mean")
 
         self.sampler = Sampler(state, factors, output, ns=self.ns)
         self.__propagateSamplerSignals()
@@ -279,7 +394,10 @@ class LR(PickleQObjectMixin, QObject):
         assert self.data is not None
         self.catlist = np.unique(self.data["output"])
 
-    def train(self):
+    def train(self) -> None:
+        """
+        Train the logistic regression model with the current training data.
+        """
         assert self.data is not None
         X = np.column_stack((self.data["state"], self.data["factors"]))
         Y = self.data["output"]
@@ -290,38 +408,65 @@ class LR(PickleQObjectMixin, QObject):
         self.Kappa = depCoef.kappa(mode=None)
         self.pseudoR = depCoef.correctness(percent=False)
 
-    def setState(self, state):
+    def setState(self, state: Raster) -> None:
+        """
+        Set the state raster for the logistic regression model.
+
+        :param state: The state raster (categories).
+        """
         self.state = state
 
-    def setFactors(self, factors):
+    def setFactors(self, factors: List[Raster]) -> None:
+        """
+        Set the factor rasters for the logistic regression model.
+
+        :param factors: A list of factor rasters (predicting variables).
+        """
         self.factors = factors
 
-    def setOutput(self, output):
+    def setOutput(self, output: Raster) -> None:
+        """
+        Set the output raster for the logistic regression model.
+
+        :param output: The output raster (classifications).
+        """
         self.output = output
 
-    def setMode(self, mode):
+    def setMode(self, mode: str) -> None:
+        """
+        Set the mode for the logistic regression model.
+
+        :param mode: The mode for prediction (e.g., 'All', 'Histo', 'Loc').
+        """
         self.mode = mode
 
-    def setSamples(self, samples):
+    def setSamples(self, samples: int) -> None:
+        """
+        Set the number of samples for training.
+
+        :param samples: The number of samples.
+        """
         self.samples = samples
 
-    def startTrain(self):
+    @pyqtSlot()
+    def startTrain(self) -> None:
+        """
+        Start the training process for the Logistic Regression model.
+
+        This method performs the following steps:
+        - Sets up the training data.
+        - Trains the logistic regression model.
+        """
         try:
             self.setTrainingData()
             self.train()
         except CoeffError as error:
-            QMessageBox.warning(
-                None,
-                self.tr("Model training failed"),
-                str(error),
+            self.error_occurred.emit(
+                self.tr("Model training failed"), str(error)
             )
             return
         except LRError as error:
-            QMessageBox.warning(
-                None,
-                self.tr("Missed LR model"),
-                str(error),
-            )
+            self.error_occurred.emit(self.tr("Missed LR model"), str(error))
             return
         except MemoryError:
             self.errorReport.emit(
