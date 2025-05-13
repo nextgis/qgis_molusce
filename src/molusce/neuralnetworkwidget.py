@@ -44,6 +44,8 @@ except ImportError:
 from matplotlib import rcParams
 from matplotlib.figure import Figure
 
+from molusce.algorithms.models.sampler.sampler import SamplerError
+
 from . import molusceutils as utils
 from .algorithms.models.mlp.manager import MlpManager, MlpManagerError
 from .ui.ui_neuralnetworkwidgetbase import Ui_NeuralNetworkWidgetBase
@@ -191,6 +193,13 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
                 mode=self.inputs["samplingMode"],
                 samples=self.plugin.spnSamplesCount.value(),
             )
+        except SamplerError as error:
+            QMessageBox.warning(
+                self,
+                self.tr("Sampling error"),
+                str(error),
+            )
+            return
         except MlpManagerError as error:
             QMessageBox.warning(
                 self,
