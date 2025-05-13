@@ -7,7 +7,7 @@ import numpy as np
 from numpy import ma as ma
 from qgis.PyQt.QtCore import *
 
-from molusce.algorithms.models.crosstabs.model import CrossTabError, CrossTable
+from molusce.algorithms.models.crosstabs.model import CrossTable
 from molusce.algorithms.utils import masks_identity
 
 
@@ -58,11 +58,6 @@ class DependenceCoef(QObject):
             self.updateProgress.emit()
             self.__propagateCrossTableSignals()
             self.crosstable.computeCrosstable()
-        except CrossTabError as error:
-            QMessageBox.warning(
-                None, self.tr("Different geometry"), str(error)
-            )
-            return
         except MemoryError:
             self.errorReport.emit(
                 self.tr(
