@@ -18,6 +18,7 @@ class Simulator(QObject):
     simFinished = pyqtSignal()
     logMessage = pyqtSignal(str)
     errorReport = pyqtSignal(str)
+    error_occurred = pyqtSignal(str, str)
 
     def __init__(self, state, factors, model, crosstable):
         """@param state            Raster of the current state (categories) values.
@@ -93,7 +94,7 @@ class Simulator(QObject):
     def setIterationCount(self, Count):
         self.iterationCount = Count
 
-    def __sim(self):
+    def __sim(self) -> None:
         """1 iteracion of simulation."""
         transition = self.crosstable.getCrosstable()
 
@@ -110,15 +111,7 @@ class Simulator(QObject):
 
         self.rangeChanged.emit(self.tr("Area Change Analysis %p%"), 2)
         self.updateProgress.emit()
-        try:
-            analyst = AreaAnalyst(state, second=None)
-        except AreaAnalizerError as error:
-            QMessageBox.warning(
-                None,
-                self.tr("Invalid input rasters"),
-                str(error),
-            )
-            return
+        analyst = AreaAnalyst(state, second=None)
         self.updateProgress.emit()
 
         categories = state.getBandGradation(1)
@@ -195,11 +188,17 @@ class Simulator(QObject):
         result.create([new_state], state.getGeodata())
         self.state = result
 
-    def simN(self):
+    @pyqtSlot()
+    def simN(self) -> None:
         """Make N iterations of simulation."""
         try:
             for _i in range(self.iterationCount):
                 self.__sim()
+        except AreaAnalizerError as error:
+            self.error_occurred.emit(
+                self.tr("Model training failed"), str(error)
+            )
+            return
         except MemoryError:
             self.errorReport.emit(
                 self.tr("The system is out of memory during simulation")

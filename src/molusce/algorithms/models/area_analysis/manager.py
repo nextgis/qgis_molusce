@@ -40,6 +40,7 @@ class AreaAnalyst(PickleQObjectMixin, QObject):
     updateProgress = pyqtSignal()
     processFinished = pyqtSignal(object)
     errorReport = pyqtSignal(str)
+    error_occurred = pyqtSignal(str, str)
     logMessage = pyqtSignal(str)
 
     def __init__(self, first: Raster, second: Optional[Raster] = None) -> None:
@@ -169,11 +170,9 @@ class AreaAnalyst(PickleQObjectMixin, QObject):
         if self.changeMap is None:
             try:
                 self.makeChangeMap()
-            except AreaAnalizerError as error:
-                QMessageBox.warning(
-                    None,
-                    self.tr("Invalid input rasters"),
-                    str(error),
+            except AreaAnalizerCategoryError as error:
+                self.error_occurred.emit(
+                    self.tr("Change map error"), str(error)
                 )
                 return None
         return self.changeMap
