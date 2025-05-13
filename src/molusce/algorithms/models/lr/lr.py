@@ -11,6 +11,7 @@ from molusce.algorithms.models.correlation.model import (
     CoeffError,
     DependenceCoef,
 )
+from molusce.algorithms.models.crosstabs.model import CrossTabError
 from molusce.algorithms.models.sampler.sampler import Sampler
 from molusce.molusceutils import PickleQObjectMixin
 
@@ -460,6 +461,11 @@ class LR(PickleQObjectMixin, QObject):
         try:
             self.setTrainingData()
             self.train()
+        except CrossTabError as error:
+            self.error_occurred.emit(
+                self.tr("Model training failed"), str(error)
+            )
+            return
         except CoeffError as error:
             self.error_occurred.emit(
                 self.tr("Model training failed"), str(error)
