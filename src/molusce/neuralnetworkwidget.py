@@ -240,11 +240,23 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         self.plugin.logMessage(self.tr("Start training ANN model"))
         self.plugin.workThread.start()
 
-    def __trainFinished(self):
+    @pyqtSlot()
+    def __trainFinished(self) -> None:
+        """
+        Slot that handles the completion of the ANN model training process.
+
+        This method performs the following actions:
+        - Disconnects all signals connected to the model training process.
+        - Restores the progress bar state.
+        - Updates the UI by disabling the "Stop" button and enabling the "Train Network" button.
+        - Logs a message indicating that training has finished.
+        - Triggers the graph update to reflect the new model state.
+        """
         model = self.inputs["model"]
         self.plugin.workThread.started.disconnect(model.startTrain)
         model.rangeChanged.disconnect(self.plugin.setProgressRange)
         model.updateProgress.disconnect(self.plugin.showProgress)
+        model.error_occurred.disconnect(self.show_model_error)
         model.errorReport.disconnect(self.plugin.logErrorReport)
         self.plugin.restoreProgressState()
         self.btnStop.setEnabled(False)

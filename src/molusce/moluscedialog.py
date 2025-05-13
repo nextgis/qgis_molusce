@@ -779,7 +779,20 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.tr("Class statistics and transition matrix are updated")
         )
 
-    def createChangeMap(self):
+    @pyqtSlot()
+    def createChangeMap(self) -> None:
+        """
+        Validates input rasters and initiates the creation of a land cover change map.
+
+        This method performs the following:
+        - Checks that both the initial and final rasters are provided.
+        - Initializes the AreaAnalyst to compare the rasters.
+        - Prompts the user to select a file path to save the resulting change map.
+        - Deletes the file at the selected path if it already exists (after user confirmation).
+        - Moves the `AreaAnalyst` instance to a background thread for asynchronous processing.
+        - Connects signal-slot mechanisms for progress reporting, error handling, and completion.
+        - Starts the background thread to compute the change map.
+        """
         if not utils.checkInputRasters(self.inputs):
             QMessageBox.warning(
                 self,
@@ -824,12 +837,27 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.workThread.started.connect(self.analyst.getChangeMap)
         self.analyst.rangeChanged.connect(self.setProgressRange)
         self.analyst.updateProgress.connect(self.showProgress)
+        self.analyst.error_occurred.connect(self.show_error)
         self.analyst.errorReport.connect(self.logErrorReport)
         self.analyst.processFinished.connect(self.changeMapDone)
         self.analyst.processFinished.connect(self.workThread.quit)
         self.workThread.start()
 
-    def changeMapDone(self, raster):
+    def changeMapDone(self, raster: Raster) -> None:
+        """
+        Handles the completion of the change map creation process.
+
+        This method performs the following actions:
+        - Stores the resulting raster in the inputs dictionary.
+        - Saves the raster to the path specified in 'changeMapName'.
+        - Adds the raster to the QGIS canvas.
+        - Applies a color ramp style to the raster layer.
+        - Disconnects all signals connected to the change map processing.
+        - Restores the progress bar to its previous state.
+        - Logs the completion message and performs garbage collection.
+
+        param raster: The generated raster layer representing the change map.
+        """
         self.inputs["changeMap"] = raster
         self.inputs["changeMap"].save(self.inputs["changeMapName"])
         self.__addRasterToCanvas(self.inputs["changeMapName"])
@@ -844,6 +872,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.workThread.started.disconnect(self.analyst.getChangeMap)
         self.analyst.rangeChanged.disconnect(self.setProgressRange)
         self.analyst.updateProgress.disconnect(self.showProgress)
+        self.analyst.error_occurred.disconnect(self.show_error)
         self.analyst.errorReport.disconnect(self.logErrorReport)
         self.analyst.processFinished.disconnect(self.changeMapDone)
         self.analyst.processFinished.disconnect(self.workThread.quit)
@@ -851,7 +880,17 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.logMessage(self.tr("Change Map is created"))
         gc.collect()
 
-    def startSimulation(self):
+    @pyqtSlot()
+    def startSimulation(self) -> None:
+        """
+        Initializes and starts the land-use simulation process.
+
+        This method performs a comprehensive validation of required input data such as:
+        - Factor rasters
+        - Trained model
+        - Transition matrix
+        - Initial raster
+        """
         if not utils.checkFactors(self.inputs):
             QMessageBox.warning(
                 self,
@@ -1055,12 +1094,23 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.workThread.started.connect(self.simulator.simN)
         self.simulator.rangeChanged.connect(self.setProgressRange)
         self.simulator.updateProgress.connect(self.showProgress)
+        self.simulator.error_occurred.connect(self.show_error)
         self.simulator.errorReport.connect(self.logErrorReport)
         self.simulator.simFinished.connect(self.simulationDone)
         self.workThread.start()
         self.logMessage(self.tr("Simulation process is started"))
 
-    def simulationDone(self):
+    @pyqtSlot()
+    def simulationDone(self) -> None:
+        """
+        Handles the completion of the simulation process.
+
+        This method performs the following:
+        - Saves and displays the risk function raster if enabled.
+        - Saves and displays the Monte Carlo simulated raster if enabled.
+        - Saves transition potential maps if enabled.
+        - Disconnects signals, cleans up, and logs the simulation status.
+        """
         self.btnStartSimulation.setEnabled(True)
         if self.chkRiskFunction.isChecked():
             if self.leRiskFunctionPath.text() != "":
@@ -1196,6 +1246,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.workThread.started.disconnect(self.simulator.simN)
         self.simulator.rangeChanged.disconnect(self.setProgressRange)
         self.simulator.updateProgress.disconnect(self.showProgress)
+        self.simulator.error_occurred.disconnect(self.show_error)
         self.simulator.errorReport.disconnect(self.logErrorReport)
         self.simulator.simFinished.disconnect(self.simulationDone)
         self.workThread.quit()
@@ -1385,7 +1436,18 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 str(error),
             )
 
-    def createValidationMap(self):
+    @pyqtSlot()
+    def createValidationMap(self) -> None:
+        """
+        Starts the process of creating a validation map.
+
+        This method:
+        - Loads the reference and simulated rasters.
+        - Validates their compatibility.
+        - Optionally sets the initial raster if persistent classes are checked.
+        - Prompts the user to save the output file.
+        - Sets up and starts the worker thread for validation map generation.
+        """
         try:
             layerSource = str(self.leReferenceMapPath.text())
             reference = Raster(
@@ -1461,6 +1523,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.workThread.started.connect(self.analystVM.getChangeMap)
         self.analystVM.rangeChanged.connect(self.setProgressRange)
         self.analystVM.updateProgress.connect(self.showProgress)
+        self.analystVM.error_occurred.connect(self.show_error)
         self.analystVM.errorReport.connect(self.logErrorReport)
         self.analystVM.processFinished.connect(self.validationMapDone)
         self.analystVM.processFinished.connect(self.workThread.quit)
@@ -1469,7 +1532,19 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.tr("Process of Validation Map creating is started")
         )
 
-    def validationMapDone(self, raster):
+    def validationMapDone(self, raster: Raster) -> None:
+        """
+        Handles the completion of the validation map creation process.
+
+        This method:
+        - Saves the resulting raster.
+        - Adds it to the QGIS canvas.
+        - Applies a color ramp style based on the analysis.
+        - Disconnects all signals and performs cleanup.
+        - Logs the success message.
+
+        :param raster: The generated validation raster layer.
+        """
         validationMap = raster
         validationMap.save(self.inputs["valMapName"])
         self.__addRasterToCanvas(self.inputs["valMapName"])
@@ -1487,6 +1562,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.workThread.started.disconnect(self.analystVM.getChangeMap)
         self.analystVM.rangeChanged.disconnect(self.setProgressRange)
         self.analystVM.updateProgress.disconnect(self.showProgress)
+        self.analystVM.error_occurred.disconnect(self.show_error)
         self.analystVM.errorReport.disconnect(self.logErrorReport)
         self.analystVM.processFinished.disconnect(self.validationMapDone)
         self.analystVM.processFinished.disconnect(self.workThread.quit)
@@ -2636,3 +2712,13 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 return None
             return True
         return False
+
+    @pyqtSlot(str, str)
+    def show_error(self, title: str, message: str) -> None:
+        """
+        Display a warning message box with the error details.
+
+        :param title: The title of the warning message box.
+        :param message: The error message to display.
+        """
+        QMessageBox.warning(self, title, message)
