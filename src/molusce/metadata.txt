@@ -34,6 +34,7 @@ deprecated = False
 changelog=
         5.0.0
             * Added save/load mechanism for trained models
+            * Added different spatial variables versions support for training and forecasting periods
             * Improved exceptions handling
             * Fixed premature overwriting of files
             * Fixed saving rasters via GDAL with compression, which led to data loss
