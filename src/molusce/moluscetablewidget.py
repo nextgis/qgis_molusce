@@ -27,21 +27,48 @@ from typing import Optional
 
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import QAction, QMenu, QTableWidget, QTableWidgetItem
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QMenu,
+    QTableWidget,
+    QTableWidgetItem,
+    QWidget,
+)
 
 
 class MolusceTableWidget(QTableWidget):
-    def __init__(self, parent=None):
-        QTableWidget.__init__(self, parent)
+    """
+    Custom QTableWidget for MOLUSCE with extended copy and context menu features.
 
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+    This widget allows copying selected cells or the entire table to the clipboard
+    and provides a context menu for these actions.
+    """
+
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        """
+        Initialize the MolusceTableWidget.
+
+        :param parent: The parent widget, defaults to None.
+        :type parent: Optional[QWidget]
+        """
+        super().__init__(parent)
+
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_context_menu)
 
     def keyPressEvent(self, e: QKeyEvent) -> None:
+        """
+        Handle key press events for the table widget.
+
+        Copies selected cells to the clipboard if Ctrl+C or Cmd+C is pressed.
+
+        :param event: The key event.
+        :type event: QKeyEvent
+        """
         if (
-            e.modifiers() == Qt.ControlModifier
-            or e.modifiers() == Qt.MetaModifier
-        ) and e.key() == Qt.Key_C:
+            e.modifiers() == Qt.KeyboardModifier.ControlModifier
+            or e.modifiers() == Qt.KeyboardModifier.MetaModifier
+        ) and e.key() == Qt.Key.Key_C:
             self.copy_selected_cells()
         else:
             QTableWidget.keyPressEvent(self, e)
