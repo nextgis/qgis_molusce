@@ -38,6 +38,7 @@ from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
 )
 from qgis.core import *
+from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
 from qgis.PyQt.QtWidgets import *
@@ -94,14 +95,22 @@ QGIS_3_38 = 33800
 
 
 class MolusceDialog(QDialog, Ui_MolusceDialogBase):
-    def __init__(self, iface):
-        QDialog.__init__(self)
+    """
+    Main dialog class for the MOLUSCE plugin.
+
+    This class manages the user interface, input data, and workflow for
+    land use change simulations, including raster management, model training,
+    simulation, and validation.
+    """
+
+    def __init__(self, iface: QgisInterface) -> None:
+        super().__init__()
         self.setupUi(self)
 
         self.setWindowFlags(
-            Qt.WindowMinimizeButtonHint
-            | Qt.WindowMaximizeButtonHint
-            | Qt.WindowCloseButtonHint
+            Qt.WindowType.WindowMinimizeButtonHint
+            | Qt.WindowType.WindowMaximizeButtonHint
+            | Qt.WindowType.WindowCloseButtonHint
         )
 
         self.iface = iface
@@ -244,11 +253,15 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         QDialog.closeEvent(self, e)
 
-    def setInitialRaster(self):
+    @pyqtSlot()
+    def setInitialRaster(self) -> None:
+        """
+        Set the initial raster from the selected item in the raster list.
+        """
         try:
             layerName = self.lstLayers.selectedItems()[0].text()
             self.initRasterId = self.lstLayers.selectedItems()[0].data(
-                Qt.UserRole
+                Qt.ItemDataRole.UserRole
             )
             self.leInitRasterName.setText(layerName)
         except IndexError:
@@ -297,11 +310,15 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.__updateAnalyticTabs(self.geometry_matched)
         self.inputs["initial"] = initRaster
 
-    def setFinalRaster(self):
+    @pyqtSlot()
+    def setFinalRaster(self) -> None:
+        """
+        Set the final raster from the selected item in the raster list.
+        """
         try:
             layerName = self.lstLayers.selectedItems()[0].text()
             self.finalRasterId = self.lstLayers.selectedItems()[0].data(
-                Qt.UserRole
+                Qt.ItemDataRole.UserRole
             )
             self.leFinalRasterName.setText(layerName)
             # self.leReferenceMapPath.setText(unicode(utils.getLayerById(self.finalRasterId).source()))
@@ -350,7 +367,11 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.geometry_matched = False
         self.__updateAnalyticTabs(self.geometry_matched)
 
-    def addFactor(self):
+    @pyqtSlot()
+    def addFactor(self) -> None:
+        """
+        Add selected raster(s) as factor(s) for the model.
+        """
         layerNames = self.lstLayers.selectedItems()
 
         if len(layerNames) <= 0:
@@ -366,11 +387,11 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         for i in layerNames:
             layerName = i.text()
 
-            if len(self.lstFactors.findItems(layerName, Qt.MatchExactly)) > 0:
+            if self.lstFactors.findItems(layerName, Qt.MatchFlag.MatchExactly):
                 return
 
             item = QListWidgetItem(i)
-            layerId = str(item.data(Qt.UserRole))
+            layerId = str(item.data(Qt.ItemDataRole.UserRole))
             self.lstFactors.insertItem(self.lstFactors.count() + 1, item)
 
             try:
@@ -480,7 +501,11 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         self.consistency_sim_checked = False
 
-    def removeFactor(self):
+    @pyqtSlot()
+    def removeFactor(self) -> None:
+        """
+        Remove selected factor(s) from the model.
+        """
         layerNames = self.lstFactors.selectedItems()
 
         if len(layerNames) <= 0:
@@ -494,7 +519,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             return
 
         for i in layerNames:
-            layerId = str(i.data(Qt.UserRole))
+            layerId = str(i.data(Qt.ItemDataRole.UserRole))
             layerName = i.text()
 
             self.lstFactors.takeItem(self.lstFactors.row(i))
@@ -1582,7 +1607,10 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
     # ******************************************************************************
 
-    def __populateLayers(self):
+    def __populateLayers(self) -> None:
+        """
+        Populate the raster lists in the UI with available raster layers.
+        """
         layers = utils.getRasterLayers()
         # ~ relations = self.iface.legendInterface().groupLayerRelationship()
         for layer in sorted(
@@ -1596,21 +1624,31 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             item = QListWidgetItem()
             if groupName == "":
                 item.setText(layer[1])
-                item.setData(Qt.UserRole, layer[0])
+                item.setData(Qt.ItemDataRole.UserRole, layer[0])
             else:
                 item.setText(f"{layer[1]} - {groupName}")
-                item.setData(Qt.UserRole, layer[0])
+                item.setData(Qt.ItemDataRole.UserRole, layer[0])
 
             self.lstLayers.addItem(item)
             self.lstLayersSeparateVars.addItem(item.clone())
 
-    def __populateRasterNames(self):
+    def __populateRasterNames(self) -> None:
+        """
+        Populate the raster name combo boxes for correlation checking.
+
+        This method updates the combo boxes used for selecting rasters
+        in the correlation checking tab.
+        """
         self.cmbFirstRaster.clear()
         self.cmbSecondRaster.clear()
         for index in range(self.lstFactors.count()):
             item = self.lstFactors.item(index)
-            self.cmbFirstRaster.addItem(item.text(), item.data(Qt.UserRole))
-            self.cmbSecondRaster.addItem(item.text(), item.data(Qt.UserRole))
+            self.cmbFirstRaster.addItem(
+                item.text(), item.data(Qt.ItemDataRole.UserRole)
+            )
+            self.cmbSecondRaster.addItem(
+                item.text(), item.data(Qt.ItemDataRole.UserRole)
+            )
 
     def __populateCorrCheckingMet(self):
         self.cmbCorrCheckMethod.addItems(
@@ -1788,15 +1826,25 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             pass
         self.restoreProgressState()
 
-    def __checkTwoCorr(self):
+    def __checkTwoCorr(self) -> None:
+        """
+        Calculate and display correlation between two selected rasters.
+
+        This method computes the correlation matrix for the selected pair
+        of rasters and updates the correlation table in the UI.
+        """
         index = self.cmbFirstRaster.currentIndex()
-        layerId = str(self.cmbFirstRaster.itemData(index, Qt.UserRole))
+        layerId = str(
+            self.cmbFirstRaster.itemData(index, Qt.ItemDataRole.UserRole)
+        )
         first = {
             "Raster": self.inputs["factors"][layerId],
             "Name": self.cmbFirstRaster.currentText(),
         }
         index = self.cmbSecondRaster.currentIndex()
-        layerId = str(self.cmbSecondRaster.itemData(index, Qt.UserRole))
+        layerId = str(
+            self.cmbSecondRaster.itemData(index, Qt.ItemDataRole.UserRole)
+        )
         second = {
             "Raster": self.inputs["factors"][layerId],
             "Name": self.cmbSecondRaster.currentText(),
@@ -2188,8 +2236,15 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         elif senderName == "btnSelectMonteCarlo":
             self.leMonteCarloPath.setText(fileName)
 
-    def __toggleCorrLayers(self, state):
-        if state == Qt.Checked:
+    @pyqtSlot(Qt.CheckState)
+    def __toggleCorrLayers(self, state: Qt.CheckState) -> None:
+        """
+        Enable or disable raster selection combo boxes based on checkbox state.
+
+        :param state: The state of the checkbox (Qt.CheckState).
+        :type state: : Qt.CheckState
+        """
+        if state == Qt.CheckState.Checked:
             self.cmbFirstRaster.setEnabled(False)
             self.cmbSecondRaster.setEnabled(False)
         else:

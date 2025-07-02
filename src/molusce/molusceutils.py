@@ -32,9 +32,10 @@ from qgis.core import (
     QgsProject,
     QgsRasterLayer,
     QgsReadWriteContext,
+    QgsSettings,
 )
 from qgis.PyQt.QtCore import QFileInfo, QLocale, QObject, QSettings
-from qgis.PyQt.QtWidgets import QFileDialog
+from qgis.PyQt.QtWidgets import QFileDialog, QWidget
 from qgis.PyQt.QtXml import QDomDocument, QDomImplementation
 
 
@@ -190,10 +191,28 @@ def openRasterDialog(parent, settings, title, fileFilter):
     return fileName
 
 
-def openDirectoryDialog(parent, settings, title):
+def openDirectoryDialog(
+    parent: QWidget, settings: QgsSettings, title: str
+) -> str:
+    """
+    Open a dialog for selecting a directory.
+
+    The dialog remembers the last used directory and updates the settings
+    with the new path if a directory is selected.
+
+    :param parent: The parent widget for the dialog.
+    :type parent: QWidget
+    :param settings: QgsSettings instance for storing the last directory.
+    :type settings: QgsSettings
+    :param title: The title of the dialog window.
+    :type title: str
+
+    :returns: The selected directory path as a string, or an empty string if canceled.
+    :rtype: str
+    """
     lastDir = settings.value("ui/lastRasterDir", ".")
     destDir = QFileDialog.getExistingDirectory(
-        parent, title, lastDir, QFileDialog.ShowDirsOnly
+        parent, title, lastDir, QFileDialog.Option.ShowDirsOnly
     )
     if destDir == "":
         return ""

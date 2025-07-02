@@ -23,6 +23,8 @@
 #
 # ******************************************************************************
 
+from typing import Dict, List, Optional
+
 from qgis.core import *
 from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import *
@@ -51,7 +53,14 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
 
         self.manageGui()
 
-    def manageGui(self):
+    def manageGui(self) -> None:
+        """
+        Configure and initialize the GUI elements for the WoE widget.
+
+        This method checks the presence of required input data, prepares the
+        reclassification table for all factor rasters, and sets up delegates
+        for editing bin counts.
+        """
         if not utils.checkFactors(self.inputs):
             QMessageBox.warning(
                 self.plugin,
@@ -95,7 +104,9 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
                     ):
                         item = QTableWidgetItem(item_data)
                         if n < 3:
-                            item.setFlags(item.flags() ^ Qt.ItemIsEditable)
+                            item.setFlags(
+                                item.flags() ^ Qt.ItemFlag.ItemIsEditable
+                            )
                         self.tblReclass.setItem(row, n, item)
                     row += 1
         rowCount = row
@@ -204,7 +215,17 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
         self.plugin.logMessage(self.tr("WoE model is trained"))
         self.pteWeightsInform.appendPlainText(str(model.weightsToText()))
 
-    def __getBins(self):
+    def __getBins(self) -> Dict[int, List[Optional[List[int]]]]:
+        """
+        Collect bin definitions for all factor rasters
+        from the reclassification table.
+
+        :returns: Dictionary mapping factor indices to
+                  lists of optional bin boundaries for each band.
+                  Each list element is either None or
+                  a list of integers representing bins.
+        :rtype: Dict[int, List[Optional[List[int]]]]
+        """
         bins = dict()
         for n, (k, v) in enumerate(self.inputs["factors"].items()):
             lst = []
@@ -215,7 +236,9 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
                         name = f"{utils.getLayerById(k).name()} (band {str(b + 1)})"
                     else:
                         name = utils.getLayerById(k).name()
-                    items = self.tblReclass.findItems(name, Qt.MatchExactly)
+                    items = self.tblReclass.findItems(
+                        name, Qt.MatchFlag.MatchExactly
+                    )
                     idx = self.tblReclass.indexFromItem(items[0])
                     reclassList = self.tblReclass.item(idx.row(), 4).text()
                     try:

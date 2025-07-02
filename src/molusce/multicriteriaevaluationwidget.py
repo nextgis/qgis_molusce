@@ -178,7 +178,16 @@ class MultiCriteriaEvaluationWidget(
                 % (c),
             )
 
-    def __prepareTable(self):
+    def __prepareTable(self) -> None:
+        """
+        Prepare and initialize the pairwise comparison and weights tables.
+
+        This method sets up the matrix and weights tables for the multi-criteria
+        evaluation, including row and column counts, labels, default values,
+        and delegates for editing.
+
+        :returns: None
+        """
         bandCount = self.inputs["bandCount"]
         self.tblMatrix.clear()
         self.tblMatrix.setRowCount(bandCount)
@@ -210,7 +219,7 @@ class MultiCriteriaEvaluationWidget(
                 item = QTableWidgetItem()
                 if row == col:
                     item.setText("1")
-                    item.setFlags(item.flags() ^ Qt.ItemIsEditable)
+                    item.setFlags(item.flags() ^ Qt.ItemFlag.ItemIsEditable)
 
                 self.tblMatrix.setItem(row, col, item)
             self.tblMatrix.setItemDelegateForRow(row, self.delegate)
