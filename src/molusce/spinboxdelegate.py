@@ -25,9 +25,13 @@
 
 from typing import Optional
 
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import *
+from qgis.PyQt.QtCore import QAbstractItemModel, QModelIndex, Qt
+from qgis.PyQt.QtWidgets import (
+    QItemDelegate,
+    QSpinBox,
+    QStyleOptionViewItem,
+    QWidget,
+)
 
 
 class SpinBoxDelegate(QItemDelegate):
@@ -42,8 +46,8 @@ class SpinBoxDelegate(QItemDelegate):
     def __init__(
         self,
         parent: Optional[QWidget] = None,
-        minRange: int = 1,
-        maxRange: int = 9,
+        min_range: int = 1,
+        max_range: int = 9,
     ) -> None:
         """
         Initialize the SpinBoxDelegate.
@@ -54,14 +58,14 @@ class SpinBoxDelegate(QItemDelegate):
 
         :param parent: Optional parent widget for the delegate.
         :type parent: Optional[QWidget]
-        :param minRange: Minimum value allowed in the spin box (inclusive). Defaults to 1.
-        :type minRange: int
-        :param maxRange: Maximum value allowed in the spin box (inclusive). Defaults to 9.
-        :type maxRange: int
+        :param min_range: Minimum value allowed in the spin box (inclusive). Defaults to 1.
+        :type min_range: int
+        :param max_range: Maximum value allowed in the spin box (inclusive). Defaults to 9.
+        :type max_range: int
         """
         super().__init__(parent)
-        self.minRange = minRange
-        self.maxRange = maxRange
+        self.min_range = min_range
+        self.max_range = max_range
 
     def createEditor(
         self,
@@ -83,7 +87,7 @@ class SpinBoxDelegate(QItemDelegate):
         :rtype: QSpinBox
         """
         editor = QSpinBox(parent)
-        editor.setRange(self.minRange, self.maxRange)
+        editor.setRange(self.min_range, self.max_range)
         return editor
 
     def setEditorData(self, editor: QSpinBox, index: QModelIndex) -> None:
@@ -99,7 +103,7 @@ class SpinBoxDelegate(QItemDelegate):
         try:
             editor.setValue(value)
         except TypeError:  # Check None-value, ""-value, etc.
-            value = self.minRange
+            value = self.min_range
 
     def setModelData(
         self, editor: QSpinBox, model: QAbstractItemModel, index: QModelIndex

@@ -23,28 +23,48 @@
 #
 # ******************************************************************************
 
-from qgis.core import *
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import *
+from typing import TYPE_CHECKING, Optional
 
-from . import molusceutils as utils
-from . import spinboxdelegate
-from .algorithms.models.area_analysis.manager import (
+from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtWidgets import (
+    QMessageBox,
+    QTableWidgetItem,
+    QWidget,
+)
+
+from molusce import molusceutils as utils
+from molusce.algorithms.models.area_analysis.manager import (
     AreaAnalizerError,
     AreaAnalyst,
 )
-from .algorithms.models.mce.mce import MCE, MCEError
-from .ui.ui_multicriteriaevaluationwidgetbase import (
+from molusce.algorithms.models.mce.mce import MCE, MCEError
+from molusce.spinboxdelegate import SpinBoxDelegate
+from molusce.ui.ui_multicriteriaevaluationwidgetbase import (
     Ui_MultiCriteriaEvaluationWidgetBase,
 )
+
+if TYPE_CHECKING:
+    from molusce.moluscedialog import MolusceDialog
 
 
 class MultiCriteriaEvaluationWidget(
     QWidget, Ui_MultiCriteriaEvaluationWidgetBase
 ):
-    def __init__(self, plugin, parent=None):
-        QWidget.__init__(self, parent)
+    """
+    Widget for configuring and training the Multi Criteria Evaluation (MCE) model.
+    """
+
+    def __init__(
+        self, plugin: "MolusceDialog", parent: Optional[QWidget] = None
+    ) -> None:
+        """
+        Initialize the Multi Criteria Evaluation Widget.
+
+        :param plugin: The instance of the MolusceDialog class
+                       that provides access to inputs and settings.
+        :param parent: The parent widget, defaults to None.
+        """
+        super().__init__(parent)
         self.setupUi(self)
 
         self.plugin = plugin
@@ -141,7 +161,7 @@ class MultiCriteriaEvaluationWidget(
         except MCEError as error:
             QMessageBox.warning(
                 self,
-                self.tr("Model training faoled"),
+                self.tr("Model training failed"),
                 str(error),
             )
             return
@@ -188,40 +208,39 @@ class MultiCriteriaEvaluationWidget(
 
         :returns: None
         """
-        bandCount = self.inputs["bandCount"]
+        band_count = self.inputs["bandCount"]
         self.tblMatrix.clear()
-        self.tblMatrix.setRowCount(bandCount)
-        self.tblMatrix.setColumnCount(bandCount)
+        self.tblMatrix.setRowCount(band_count)
+        self.tblMatrix.setColumnCount(band_count)
 
         self.tblWeights.clear()
         self.tblWeights.setRowCount(1)
-        self.tblWeights.setColumnCount(bandCount)
+        self.tblWeights.setColumnCount(band_count)
 
-        labels = []
-        for k, v in self.inputs["factors"].items():
-            for b in range(v.getBandsCount()):
-                if v.getBandsCount() > 1:
-                    name = self.tr("{} (band {})").format(
-                        utils.getLayerById(k).name(), str(b + 1)
-                    )
-                else:
-                    name = utils.getLayerById(k).name()
-                labels.append(name)
+        labels = [
+            self.tr("{} (band {})").format(
+                utils.getLayerById(key).name(), str(band + 1)
+            )
+            if value.getBandsCount() > 1
+            else utils.getLayerById(key).name()
+            for key, value in self.inputs["factors"].items()
+            for band in range(value.getBandsCount())
+        ]
 
         self.tblMatrix.setVerticalHeaderLabels(labels)
         self.tblMatrix.setHorizontalHeaderLabels(labels)
         self.tblWeights.setHorizontalHeaderLabels(labels)
         self.tblWeights.setVerticalHeaderLabels([self.tr("Weights")])
 
-        self.delegate = spinboxdelegate.SpinBoxDelegate(self.tblMatrix.model())
-        for row in range(bandCount):
-            for col in range(bandCount):
+        self.delegate = SpinBoxDelegate(self.tblMatrix.model())
+        for row in range(band_count):
+            for column in range(band_count):
                 item = QTableWidgetItem()
-                if row == col:
+                if row == column:
                     item.setText("1")
                     item.setFlags(item.flags() ^ Qt.ItemFlag.ItemIsEditable)
 
-                self.tblMatrix.setItem(row, col, item)
+                self.tblMatrix.setItem(row, column, item)
             self.tblMatrix.setItemDelegateForRow(row, self.delegate)
 
         self.tblMatrix.resizeRowsToContents()

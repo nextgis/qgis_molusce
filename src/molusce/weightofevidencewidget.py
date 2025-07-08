@@ -23,23 +23,43 @@
 #
 # ******************************************************************************
 
-from typing import Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
 
-from qgis.core import *
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import *
+from qgis.PyQt.QtCore import QSettings, Qt, pyqtSlot
+from qgis.PyQt.QtWidgets import (
+    QMessageBox,
+    QTableWidgetItem,
+    QWidget,
+)
 
-from . import molusceutils as utils
-from . import spinboxdelegate
-from .algorithms import dataprovider
-from .algorithms.models.woe.manager import WoeManager, WoeManagerError
-from .ui.ui_weightofevidencewidgetbase import Ui_WeightOfEvidenceWidgetBase
+from molusce import molusceutils as utils
+from molusce.algorithms import dataprovider
+from molusce.algorithms.models.woe.manager import WoeManager, WoeManagerError
+from molusce.spinboxdelegate import SpinBoxDelegate
+from molusce.ui.ui_weightofevidencewidgetbase import (
+    Ui_WeightOfEvidenceWidgetBase,
+)
+
+if TYPE_CHECKING:
+    from molusce.moluscedialog import MolusceDialog
 
 
 class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
-    def __init__(self, plugin, parent=None):
-        QWidget.__init__(self, parent)
+    """
+    Widget for configuring and training the Weights of Evidence (WoE) model.
+    """
+
+    def __init__(
+        self, plugin: "MolusceDialog", parent: Optional[QWidget] = None
+    ) -> None:
+        """
+        Initialize the Multi Criteria Evaluation Widget.
+
+        :param plugin: The instance of the MolusceDialog class
+                       that provides access to inputs and settings.
+        :param parent: The parent widget, defaults to None.
+        """
+        super().__init__(parent)
         self.setupUi(self)
 
         self.plugin = plugin
@@ -82,40 +102,47 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
             return
 
         self.tblReclass.clearContents()
-        self.delegate = spinboxdelegate.SpinBoxDelegate(
+        self.delegate = SpinBoxDelegate(
             self.tblReclass.model(),
-            minRange=2,
-            maxRange=dataprovider.MAX_CATEGORIES,
+            min_range=2,
+            max_range=dataprovider.MAX_CATEGORIES,
         )
 
         row = 0
-        for k, v in self.inputs["factors"].items():
-            v.denormalize()  # Denormalize the factor's bands if they are normalized
-            for b in range(1, v.getBandsCount() + 1):
-                if v.isCountinues(b):
-                    self.tblReclass.insertRow(row)
-                    if v.getBandsCount() > 1:
-                        name = f"{utils.getLayerById(k).name()} (band {str(b + 1)})"
-                    else:
-                        name = utils.getLayerById(k).name()
-                    stat = v.getBandStat(b)
-                    for n, item_data in enumerate(
-                        [name, str(stat["min"]), str(stat["max"]), "", ""]
-                    ):
-                        item = QTableWidgetItem(item_data)
-                        if n < 3:
-                            item.setFlags(
-                                item.flags() ^ Qt.ItemFlag.ItemIsEditable
-                            )
-                        self.tblReclass.setItem(row, n, item)
-                    row += 1
-        rowCount = row
+        for layer_id, factor_raster in self.inputs["factors"].items():
+            factor_raster.denormalize()
+
+            for band in range(1, factor_raster.getBandsCount() + 1):
+                if not factor_raster.isCountinues(band):
+                    continue
+
+                self.tblReclass.insertRow(row)
+
+                band_name = (
+                    f"{utils.getLayerById(layer_id).name()} (band {band})"
+                    if factor_raster.getBandsCount() > 1
+                    else utils.getLayerById(layer_id).name()
+                )
+
+                stat = factor_raster.getBandStat(band)
+                values = [
+                    band_name,
+                    str(stat["min"]),
+                    str(stat["max"]),
+                    "2",
+                    "",
+                ]
+                for column, text in enumerate(values):
+                    item = QTableWidgetItem(text)
+                    if column < 3:
+                        item.setFlags(
+                            item.flags() ^ Qt.ItemFlag.ItemIsEditable
+                        )
+                    self.tblReclass.setItem(row, column, item)
+
+                row += 1
 
         self.tblReclass.setItemDelegateForColumn(3, self.delegate)
-        for row in range(rowCount):
-            # Set 2 bins as default value
-            self.tblReclass.setItem(row, 3, QTableWidgetItem("2"))
-
         self.tblReclass.resizeRowsToContents()
         self.tblReclass.resizeColumnsToContents()
 
@@ -215,44 +242,54 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
         self.plugin.logMessage(self.tr("WoE model is trained"))
         self.pteWeightsInform.appendPlainText(str(model.weightsToText()))
 
-    def __getBins(self) -> Dict[int, List[Optional[List[int]]]]:
+    def __getBins(self) -> Optional[Dict[int, List[List[int]]]]:
         """
-        Collect bin definitions for all factor rasters
-        from the reclassification table.
+        Extract bin boundaries for all continuous factor bands from the reclassification table.
 
-        :returns: Dictionary mapping factor indices to
-                  lists of optional bin boundaries for each band.
-                  Each list element is either None or
-                  a list of integers representing bins.
+        :return: Mapping from factor index to a list of bin thresholds per band.
+                Returns None if any range is malformed or missing.
         :rtype: Dict[int, List[Optional[List[int]]]]
         """
-        bins = dict()
-        for n, (k, v) in enumerate(self.inputs["factors"].items()):
-            lst = []
-            for b in range(v.getBandsCount()):
-                lst.append(None)
-                if v.isCountinues(b + 1):
-                    if v.getBandsCount() > 1:
-                        name = f"{utils.getLayerById(k).name()} (band {str(b + 1)})"
-                    else:
-                        name = utils.getLayerById(k).name()
-                    items = self.tblReclass.findItems(
-                        name, Qt.MatchFlag.MatchExactly
+        bins: Dict[int, List[List[int]]] = {}
+
+        for factor_index, (layer_id, raster) in enumerate(
+            self.inputs["factors"].items()
+        ):
+            band_bins: List[List[int]] = []
+
+            for band in range(raster.getBandsCount()):
+                if not raster.isCountinues(band + 1):
+                    band_bins.append([])
+                    continue
+
+                name = (
+                    f"{utils.getLayerById(layer_id).name()} (band {band + 1})"
+                    if raster.getBandsCount() > 1
+                    else utils.getLayerById(layer_id).name()
+                )
+
+                items = self.tblReclass.findItems(
+                    name, Qt.MatchFlag.MatchExactly
+                )
+                row = self.tblReclass.indexFromItem(items[0]).row()
+                item_text = self.tblReclass.item(row, 4).text()
+
+                try:
+                    bin_values = [
+                        int(value) for value in item_text.strip().split()
+                    ]
+                    band_bins.append(bin_values)
+                except ValueError:
+                    QMessageBox.warning(
+                        self.plugin,
+                        self.tr("Wrong ranges"),
+                        self.tr(
+                            "Ranges are not correctly specified. Please specify them and try again (use space as separator)"
+                        ),
                     )
-                    idx = self.tblReclass.indexFromItem(items[0])
-                    reclassList = self.tblReclass.item(idx.row(), 4).text()
-                    try:
-                        lst[b] = [int(j) for j in reclassList.split(" ")]
-                    except ValueError:
-                        QMessageBox.warning(
-                            self.plugin,
-                            self.tr("Wrong ranges"),
-                            self.tr(
-                                "Ranges are not correctly specified. Please specify them and try again (use space as separator)"
-                            ),
-                        )
-                        return {}
-            bins[n] = lst
+                    return None
+
+            bins[factor_index] = band_bins
 
         return bins
 
