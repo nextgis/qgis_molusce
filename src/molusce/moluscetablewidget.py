@@ -25,8 +25,8 @@
 
 from typing import Optional
 
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import *
+from qgis.PyQt.QtCore import QPoint, Qt
+from qgis.PyQt.QtGui import QGuiApplication, QKeyEvent
 from qgis.PyQt.QtWidgets import (
     QAction,
     QMenu,
@@ -56,7 +56,7 @@ class MolusceTableWidget(QTableWidget):
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_context_menu)
 
-    def keyPressEvent(self, e: QKeyEvent) -> None:
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         """
         Handle key press events for the table widget.
 
@@ -66,14 +66,20 @@ class MolusceTableWidget(QTableWidget):
         :type event: QKeyEvent
         """
         if (
-            e.modifiers() == Qt.KeyboardModifier.ControlModifier
-            or e.modifiers() == Qt.KeyboardModifier.MetaModifier
-        ) and e.key() == Qt.Key.Key_C:
+            event.modifiers() == Qt.KeyboardModifier.ControlModifier
+            or event.modifiers() == Qt.KeyboardModifier.MetaModifier
+        ) and event.key() == Qt.Key.Key_C:
             self.copy_selected_cells()
         else:
-            QTableWidget.keyPressEvent(self, e)
+            QTableWidget.keyPressEvent(self, event)
 
-    def show_context_menu(self, pos: QPoint) -> None:
+    def show_context_menu(self, position: QPoint) -> None:
+        """
+        Display context menu for copy actions.
+
+        :param position: Position where the menu should appear.
+        :type position: QPoint
+        """
         context_menu = QMenu(self)
 
         copy_selected_cells_action = QAction(
@@ -87,9 +93,12 @@ class MolusceTableWidget(QTableWidget):
         copy_selected_cells_action.triggered.connect(self.copy_selected_cells)
         copy_entire_table_action.triggered.connect(self.copy_full_table)
 
-        context_menu.exec(self.viewport().mapToGlobal(pos))
+        context_menu.exec(self.viewport().mapToGlobal(position))
 
     def copy_selected_cells(self) -> None:
+        """
+        Copy selected cells from the table to the clipboard.
+        """
         if len(self.selectedIndexes()) == 0:
             return
 
@@ -103,17 +112,20 @@ class MolusceTableWidget(QTableWidget):
             data += self.__item_to_text(self.item(row, column), max_column)
 
         if data != "":
-            clipBoard = QGuiApplication.clipboard()
-            clipBoard.setText(data)
+            clipboard = QGuiApplication.clipboard()
+            clipboard.setText(data)
 
     def copy_full_table(self) -> None:
+        """
+        Copy the entire table content to the clipboard, including headers.
+        """
         data = ""
         max_column = self.columnCount() - 1
 
         # table header
         data += "\t"
-        for i in range(self.columnCount()):
-            data += self.horizontalHeaderItem(i).text() + "\t"
+        for column_index in range(self.columnCount()):
+            data += self.horizontalHeaderItem(column_index).text() + "\t"
         data += "\n"
 
         # table contents
@@ -125,12 +137,23 @@ class MolusceTableWidget(QTableWidget):
                 data += self.__item_to_text(self.item(row, column), max_column)
 
         if data != "":
-            clipBoard = QGuiApplication.clipboard()
-            clipBoard.setText(data)
+            clipboard = QGuiApplication.clipboard()
+            clipboard.setText(data)
 
     def __item_to_text(
         self, item: Optional[QTableWidgetItem], max_column: int
     ) -> str:
+        """
+        Convert a table item to its text representation.
+
+        :param item: Table item to convert.
+        :type item: Optional[QTableWidgetItem]
+        :param max_column: Last column index of the row.
+        :type max_column: int
+
+        :return: String for clipboard output.
+        :rtype: str
+        """
         if item is None:
             return "\t"
 

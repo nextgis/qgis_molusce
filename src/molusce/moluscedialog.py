@@ -37,11 +37,39 @@ import numpy
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvasQTAgg as FigureCanvas,
 )
-from qgis.core import *
+from qgis.core import (
+    Qgis,
+    QgsColorRampShader,
+    QgsFileUtils,
+    QgsPalettedRasterRenderer,
+    QgsProject,
+    QgsRasterLayer,
+    QgsRasterMinMaxOrigin,
+    QgsRasterShader,
+    QgsSettings,
+    QgsSingleBandPseudoColorRenderer,
+    QgsStyle,
+    QgsVectorLayer,
+)
 from qgis.gui import QgisInterface
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import *
+from qgis.PyQt.QtCore import (
+    QFileInfo,
+    QRegularExpression,
+    Qt,
+    QThread,
+    pyqtSlot,
+)
+from qgis.PyQt.QtGui import (
+    QBrush,
+    QCloseEvent,
+    QColor,
+)
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QListWidgetItem,
+    QMessageBox,
+    QTableWidgetItem,
+)
 
 try:
     from matplotlib.backends.backend_qt5agg import (
@@ -57,37 +85,38 @@ from importlib.util import find_spec
 from matplotlib.figure import Figure
 from qgis.utils import pluginMetadata
 
-from . import (
-    loadedmodelwidget,
-    multicriteriaevaluationwidget,
-    neuralnetworkwidget,
-    weightofevidencewidget,
-)
-from . import molusceutils as utils
-from .algorithms.dataprovider import ProviderError, Raster
-from .algorithms.models.area_analysis.manager import (
+from molusce import molusceutils as utils
+from molusce.algorithms.dataprovider import ProviderError, Raster
+from molusce.algorithms.models.area_analysis.manager import (
     AreaAnalizerError,
     AreaAnalyst,
 )
-from .algorithms.models.correlation.model import CoeffError, DependenceCoef
-from .algorithms.models.crosstabs.manager import (
+from molusce.algorithms.models.correlation.model import (
+    CoeffError,
+    DependenceCoef,
+)
+from molusce.algorithms.models.crosstabs.manager import (
     CrossTableManager,
     CrossTabManagerError,
 )
-from .algorithms.models.crosstabs.model import CrossTabError
-from .algorithms.models.errorbudget.ebmodel import EBError, EBudget
-from .algorithms.models.sampler.sampler import SamplerError
-from .algorithms.models.serializer.serializer import (
+from molusce.algorithms.models.crosstabs.model import CrossTabError
+from molusce.algorithms.models.errorbudget.ebmodel import EBError, EBudget
+from molusce.algorithms.models.sampler.sampler import SamplerError
+from molusce.algorithms.models.serializer.serializer import (
     ModelParams,
     ModelParamsSerializer,
     SerializerError,
 )
-from .algorithms.models.simulator.sim import Simulator
-from .ui.ui_moluscedialogbase import Ui_MolusceDialogBase
+from molusce.algorithms.models.simulator.sim import Simulator
+from molusce.loadedmodelwidget import LoadedModelWidget
+from molusce.multicriteriaevaluationwidget import MultiCriteriaEvaluationWidget
+from molusce.neuralnetworkwidget import NeuralNetworkWidget
+from molusce.ui.ui_moluscedialogbase import Ui_MolusceDialogBase
+from molusce.weightofevidencewidget import WeightOfEvidenceWidget
 
 scipyMissed = False
 if find_spec("scipy") is not None:
-    from . import logisticregressionwidget
+    from molusce.logisticregressionwidget import LogisticRegressionWidget
 else:
     scipyMissed = True
 
@@ -244,14 +273,19 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         self.__readSettings()
 
-    def closeEvent(self, e):
+    def closeEvent(self, event: QCloseEvent) -> None:
+        """Handle dialog close event.
+
+        :param event: Close event.
+        :type event: QCloseEvent
+        """
         self.settings.setValue("/ui/geometry", self.saveGeometry())
 
         self.__writeSettings()
-        self.inputs = None
+        self.inputs.clear()
         gc.collect()
 
-        QDialog.closeEvent(self, e)
+        QDialog.closeEvent(self, event)
 
     @pyqtSlot()
     def setInitialRaster(self) -> None:
@@ -259,11 +293,11 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         Set the initial raster from the selected item in the raster list.
         """
         try:
-            layerName = self.lstLayers.selectedItems()[0].text()
+            layer_name = self.lstLayers.selectedItems()[0].text()
             self.initRasterId = self.lstLayers.selectedItems()[0].data(
                 Qt.ItemDataRole.UserRole
             )
-            self.leInitRasterName.setText(layerName)
+            self.leInitRasterName.setText(layer_name)
         except IndexError:
             QMessageBox.warning(
                 self,
@@ -273,28 +307,28 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 ),
             )
             return
-        rx = QRegExp(r"(19|2\d)\d\d")
-        rx.indexIn(layerName)
-        year = rx.cap()
+        rx = QRegularExpression(r"(19|2\d)\d\d")
+        match = rx.match(layer_name)
+        year = match.captured(0) if match.hasMatch() else ""
         self.leInitYear.setText(year)
 
         layer = utils.getLayerById(self.initRasterId)
         try:
-            initRaster = Raster(
+            initial_raster = Raster(
                 str(layer.source()),
                 maskVals=utils.getLayerMaskById(self.initRasterId),
             )
-            self.logMessage(self.tr("Set initial layer to %s") % (layerName))
+            self.logMessage(self.tr("Set initial layer to %s") % (layer_name))
         except MemoryError:
             self.logErrorReport(
                 self.tr(
                     "Memory Error occurred (loading raster %s). Perhaps the system is low on memory."
                 )
-                % (layerName)
+                % (layer_name)
             )
             raise
 
-        if initRaster.isCountinues(1):
+        if initial_raster.isCountinues(1):
             QMessageBox.warning(
                 self,
                 self.tr("Raster must store codes of a nominal variable"),
@@ -302,13 +336,13 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     "The raster has a lot of different values. Does the raster store a nominal variable?"
                 ),
             )
-            initRaster = None
+            initial_raster = None
             self.leInitRasterName.setText("")
             gc.collect()
             return
         self.geometry_matched = False
         self.__updateAnalyticTabs(self.geometry_matched)
-        self.inputs["initial"] = initRaster
+        self.inputs["initial"] = initial_raster
 
     @pyqtSlot()
     def setFinalRaster(self) -> None:
@@ -316,11 +350,11 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         Set the final raster from the selected item in the raster list.
         """
         try:
-            layerName = self.lstLayers.selectedItems()[0].text()
+            layer_name = self.lstLayers.selectedItems()[0].text()
             self.finalRasterId = self.lstLayers.selectedItems()[0].data(
                 Qt.ItemDataRole.UserRole
             )
-            self.leFinalRasterName.setText(layerName)
+            self.leFinalRasterName.setText(layer_name)
             # self.leReferenceMapPath.setText(unicode(utils.getLayerById(self.finalRasterId).source()))
         except IndexError:
             QMessageBox.warning(
@@ -331,27 +365,27 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                 ),
             )
             return
-        rx = QRegExp(r"(19|2\d)\d\d")
-        rx.indexIn(layerName)
-        year = rx.cap()
+        rx = QRegularExpression(r"(19|2\d)\d\d")
+        match = rx.match(layer_name)
+        year = match.captured(0) if match.hasMatch() else ""
         self.leFinalYear.setText(year)
 
         try:
-            finalRaster = Raster(
+            final_raster = Raster(
                 str(utils.getLayerById(self.finalRasterId).source()),
                 utils.getLayerMaskById(self.finalRasterId),
             )
-            self.logMessage(self.tr("Set final layer to %s") % (layerName))
+            self.logMessage(self.tr("Set final layer to %s") % (layer_name))
         except MemoryError:
             self.logErrorReport(
                 self.tr(
                     "Memory Error occurred (loading raster %s). Perhaps the system is low on memory."
                 )
-                % (layerName)
+                % (layer_name)
             )
             raise
 
-        if finalRaster.isCountinues(1):
+        if final_raster.isCountinues(1):
             QMessageBox.warning(
                 self,
                 self.tr("Raster must store codes of a nominal variable"),
@@ -359,11 +393,11 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
                     "The raster has a lot of different values. Does the raster store a nominal variable?"
                 ),
             )
-            finalRaster = None
+            final_raster = None
             self.leFinalRasterName.setText("")
             gc.collect()
             return
-        self.inputs["final"] = finalRaster
+        self.inputs["final"] = final_raster
         self.geometry_matched = False
         self.__updateAnalyticTabs(self.geometry_matched)
 
@@ -372,9 +406,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         """
         Add selected raster(s) as factor(s) for the model.
         """
-        layerNames = self.lstLayers.selectedItems()
+        factor_items = self.lstLayers.selectedItems()
 
-        if len(layerNames) <= 0:
+        if len(factor_items) <= 0:
             QMessageBox.warning(
                 self,
                 self.tr("Missed selected row"),
@@ -384,39 +418,43 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        for i in layerNames:
-            layerName = i.text()
+        for factor_item in factor_items:
+            factor_name = factor_item.text()
 
-            if self.lstFactors.findItems(layerName, Qt.MatchFlag.MatchExactly):
+            if self.lstFactors.findItems(
+                factor_name, Qt.MatchFlag.MatchExactly
+            ):
                 return
 
-            item = QListWidgetItem(i)
-            layerId = str(item.data(Qt.ItemDataRole.UserRole))
+            item = QListWidgetItem(factor_item)
+            layer_id = str(item.data(Qt.ItemDataRole.UserRole))
             self.lstFactors.insertItem(self.lstFactors.count() + 1, item)
 
             try:
                 if "factors" in self.inputs:
-                    self.inputs["factors"][layerId] = Raster(
-                        str(utils.getLayerById(layerId).source()),
-                        utils.getLayerMaskById(layerId),
+                    self.inputs["factors"][layer_id] = Raster(
+                        str(utils.getLayerById(layer_id).source()),
+                        utils.getLayerMaskById(layer_id),
                     )
                 else:
-                    d = OrderedDict()
-                    d[layerId] = Raster(
-                        str(utils.getLayerById(layerId).source()),
-                        utils.getLayerMaskById(layerId),
+                    factors_map = OrderedDict()
+                    factors_map[layer_id] = Raster(
+                        str(utils.getLayerById(layer_id).source()),
+                        utils.getLayerMaskById(layer_id),
                     )
-                    self.inputs["factors"] = d
+                    self.inputs["factors"] = factors_map
 
                 self.inputs["bandCount"] = self.__bandCount()
 
-                self.logMessage(self.tr("Added factor layer %s") % (layerName))
+                self.logMessage(
+                    self.tr("Added factor layer %s") % (factor_name)
+                )
             except MemoryError:
                 self.logErrorReport(
                     self.tr(
                         "Memory Error occurred (loading raster %s). Perhaps the system is low on memory."
                     )
-                    % (layerName)
+                    % (factor_name)
                 )
                 QMessageBox.warning(
                     self,
@@ -506,9 +544,9 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         """
         Remove selected factor(s) from the model.
         """
-        layerNames = self.lstFactors.selectedItems()
+        factor_items = self.lstFactors.selectedItems()
 
-        if len(layerNames) <= 0:
+        if len(factor_items) <= 0:
             QMessageBox.warning(
                 self,
                 self.tr("Missed selected row"),
@@ -518,13 +556,13 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        for i in layerNames:
-            layerId = str(i.data(Qt.ItemDataRole.UserRole))
-            layerName = i.text()
+        for factor_item in factor_items:
+            layer_id = str(factor_item.data(Qt.ItemDataRole.UserRole))
+            factor_name = factor_item.text()
 
-            self.lstFactors.takeItem(self.lstFactors.row(i))
+            self.lstFactors.takeItem(self.lstFactors.row(factor_item))
 
-            del self.inputs["factors"][layerId]
+            del self.inputs["factors"][layer_id]
             gc.collect()
 
             if self.inputs["factors"] == {}:
@@ -536,7 +574,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             else:
                 self.inputs["bandCount"] = self.__bandCount()
 
-            self.logMessage(self.tr("Removed factor layer %s") % (layerName))
+            self.logMessage(self.tr("Removed factor layer %s") % (factor_name))
             gc.collect()
 
     def removeFactorSeparateVars(self) -> None:
@@ -1620,13 +1658,13 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             ),
         ):
             # ~ groupName = utils.getLayerGroup(relations, layer[0])
-            groupName = ""
+            group_name = ""
             item = QListWidgetItem()
-            if groupName == "":
+            if group_name == "":
                 item.setText(layer[1])
                 item.setData(Qt.ItemDataRole.UserRole, layer[0])
             else:
-                item.setText(f"{layer[1]} - {groupName}")
+                item.setText(f"{layer[1]} - {group_name}")
                 item.setData(Qt.ItemDataRole.UserRole, layer[0])
 
             self.lstLayers.addItem(item)
@@ -1833,93 +1871,77 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         This method computes the correlation matrix for the selected pair
         of rasters and updates the correlation table in the UI.
         """
-        index = self.cmbFirstRaster.currentIndex()
-        layerId = str(
-            self.cmbFirstRaster.itemData(index, Qt.ItemDataRole.UserRole)
+        first_index = self.cmbFirstRaster.currentIndex()
+        first_layer_id = str(
+            self.cmbFirstRaster.itemData(first_index, Qt.ItemDataRole.UserRole)
         )
-        first = {
-            "Raster": self.inputs["factors"][layerId],
-            "Name": self.cmbFirstRaster.currentText(),
-        }
-        index = self.cmbSecondRaster.currentIndex()
-        layerId = str(
-            self.cmbSecondRaster.itemData(index, Qt.ItemDataRole.UserRole)
-        )
-        second = {
-            "Raster": self.inputs["factors"][layerId],
-            "Name": self.cmbSecondRaster.currentText(),
-        }
+        first_raster = self.inputs["factors"][first_layer_id]
+        first_name = self.cmbFirstRaster.currentText()
 
-        dimensions = (
-            first["Raster"].getBandsCount(),
-            second["Raster"].getBandsCount(),
+        second_index = self.cmbSecondRaster.currentIndex()
+        second_layer_id = str(
+            self.cmbSecondRaster.itemData(
+                second_index, Qt.ItemDataRole.UserRole
+            )
         )
-        self.tblCorrelation.setRowCount(dimensions[0])
-        self.tblCorrelation.setColumnCount(dimensions[1])
-        labels = []
-        for i in range(dimensions[0]):
-            raster = first["Raster"]
-            if raster.getBandsCount() > 1:
-                name = f"{first['Name']} (band {str(i + 1)}"
-            else:
-                name = str(first["Name"])
-            labels.append(name)
-        self.tblCorrelation.setVerticalHeaderLabels(labels)
-        labels = []
-        for i in range(dimensions[1]):
-            raster = second["Raster"]
-            if raster.getBandsCount() > 1:
-                name = f"{second['Name']} (band {str(i + 1)})"
-            else:
-                name = str(second["Name"])
-            labels.append(name)
-        self.tblCorrelation.setHorizontalHeaderLabels(labels)
+        second_raster = self.inputs["factors"][second_layer_id]
+        second_name = self.cmbSecondRaster.currentText()
+
+        band_rows = first_raster.getBandsCount()
+        band_columns = second_raster.getBandsCount()
+
+        self.tblCorrelation.setRowCount(band_rows)
+        self.tblCorrelation.setColumnCount(band_columns)
+
+        vertical_labels = [
+            f"{first_name} (band {band + 1})" if band_rows > 1 else first_name
+            for band in range(band_rows)
+        ]
+
+        horizontal_labels = [
+            f"{second_name} (band {band + 1})"
+            if band_columns > 1
+            else second_name
+            for band in range(band_columns)
+        ]
+
+        self.tblCorrelation.setVerticalHeaderLabels(vertical_labels)
+        self.tblCorrelation.setHorizontalHeaderLabels(horizontal_labels)
 
         method = self.cmbCorrCheckMethod.currentText()
-        if method == self.tr("Pearson's Correlation"):
-            for col in range(dimensions[1]):
-                for row in range(dimensions[0]):
-                    depCoef = DependenceCoef(
-                        first["Raster"].getBand(row + 1),
-                        second["Raster"].getBand(col + 1),
-                    )
-                    corr = depCoef.correlation()
-                    item = QTableWidgetItem(str(corr))
-                    self.tblCorrelation.setItem(row, col, item)
-        elif method == self.tr("Cramer's Coefficient"):
-            for col in range(dimensions[1]):
-                for row in range(dimensions[0]):
-                    depCoef = DependenceCoef(
-                        first["Raster"].getBand(row + 1),
-                        second["Raster"].getBand(col + 1),
-                    )
-                    if first["Raster"].isCountinues(row + 1) or second[
-                        "Raster"
-                    ].isCountinues(col + 1):
+
+        for column in range(band_columns):
+            for row in range(band_rows):
+                band_first = first_raster.getBand(row + 1)
+                band_second = second_raster.getBand(column + 1)
+                dependence = DependenceCoef(band_first, band_second)
+
+                is_continuous = first_raster.isCountinues(
+                    row + 1
+                ) or second_raster.isCountinues(column + 1)
+
+                if method == self.tr("Pearson's Correlation"):
+                    correlation = dependence.correlation()
+                    item = QTableWidgetItem(str(correlation))
+
+                elif method == self.tr("Cramer's Coefficient"):
+                    if is_continuous:
                         item = QTableWidgetItem(str(self.tr("Not applicable")))
                     else:
-                        corr = depCoef.cramer()
-                        item = QTableWidgetItem(str(corr))
-                    self.tblCorrelation.setItem(row, col, item)
-        elif method == self.tr("Joint Information Uncertainty"):
-            for col in range(dimensions[1]):
-                for row in range(dimensions[0]):
-                    depCoef = DependenceCoef(
-                        first["Raster"].getBand(row + 1),
-                        second["Raster"].getBand(col + 1),
-                    )
-                    if first["Raster"].isCountinues(row + 1) or second[
-                        "Raster"
-                    ].isCountinues(col + 1):
+                        correlation = dependence.cramer()
+                        item = QTableWidgetItem(str(correlation))
+
+                elif method == self.tr("Joint Information Uncertainty"):
+                    if is_continuous:
                         item = QTableWidgetItem(str(self.tr("Not applicable")))
                     else:
-                        corr = depCoef.jiu()
-                        item = QTableWidgetItem(str(corr))
-                    self.tblCorrelation.setItem(row, col, item)
-        try:
-            del depCoef
-        except NameError:
-            pass
+                        correlation = dependence.jiu()
+                        item = QTableWidgetItem(str(correlation))
+
+                else:
+                    continue
+
+                self.tblCorrelation.setItem(row, column, item)
 
     def __drawTransitionStat(self):
         if "crosstab" not in self.inputs:
@@ -2085,39 +2107,42 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         elif mode == 2:
             self.inputs["samplingMode"] = "Stratified"
 
-    def __modelChanged(self):
+    @pyqtSlot()
+    def __modelChanged(self) -> None:
+        """
+        Slot that handles changes in the selected simulation model.
+
+        This method is triggered when the user selects a different simulation
+        model in the combo box. It removes the current model widget from the
+        stack, creates a new widget corresponding to the selected model,
+        and updates the UI accordingly.
+
+        :returns: None
+        """
         if self.modelWidget is not None:
             self.widgetStackMethods.removeWidget(self.modelWidget)
 
             self.modelWidget = None
             del self.modelWidget
 
-        modelName = self.cmbSimulationMethod.currentText()
+        model_name = self.cmbSimulationMethod.currentText()
 
-        if modelName == self.tr("Logistic Regression"):
-            self.modelWidget = (
-                logisticregressionwidget.LogisticRegressionWidget(self)
-            )
+        if model_name == self.tr("Logistic Regression"):
+            self.modelWidget = LogisticRegressionWidget(self)
             self.grpSampling.show()
-        elif modelName == self.tr(
+        elif model_name == self.tr(
             "Artificial Neural Network (Multi-layer Perceptron)"
         ):
-            self.modelWidget = neuralnetworkwidget.NeuralNetworkWidget(self)
+            self.modelWidget = NeuralNetworkWidget(self)
             self.grpSampling.show()
-        elif modelName == self.tr("Weights of Evidence"):
-            self.modelWidget = weightofevidencewidget.WeightOfEvidenceWidget(
-                self
-            )
+        elif model_name == self.tr("Weights of Evidence"):
+            self.modelWidget = WeightOfEvidenceWidget(self)
             self.grpSampling.hide()
-        elif modelName == self.tr("Multi Criteria Evaluation"):
-            self.modelWidget = (
-                multicriteriaevaluationwidget.MultiCriteriaEvaluationWidget(
-                    self
-                )
-            )
+        elif model_name == self.tr("Multi Criteria Evaluation"):
+            self.modelWidget = MultiCriteriaEvaluationWidget(self)
             self.grpSampling.hide()
-        elif modelName == self.tr("Model from file"):
-            self.modelWidget = loadedmodelwidget.LoadedModelWidget(self)
+        elif model_name == self.tr("Model from file"):
+            self.modelWidget = LoadedModelWidget(self)
             self.grpSampling.hide()
 
         self.widgetStackMethods.addWidget(self.modelWidget)
@@ -2236,8 +2261,8 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         elif senderName == "btnSelectMonteCarlo":
             self.leMonteCarloPath.setText(fileName)
 
-    @pyqtSlot(Qt.CheckState)
-    def __toggleCorrLayers(self, state: Qt.CheckState) -> None:
+    @pyqtSlot(int)
+    def __toggleCorrLayers(self, state: int) -> None:
         """
         Enable or disable raster selection combo boxes based on checkbox state.
 

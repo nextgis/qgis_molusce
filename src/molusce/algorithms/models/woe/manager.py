@@ -1,20 +1,34 @@
+# QGIS DevTools Plugin
+# Copyright (C) 2025  NextGIS
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or any
+# later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <https://www.gnu.org/licenses/>.
+
 import gc
 from os.path import basename
 from typing import Dict, List, Optional
 
 import numpy as np
-from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtCore import QObject, pyqtSignal, pyqtSlot
 
 from molusce.algorithms.dataprovider import Raster
 from molusce.algorithms.models.area_analysis.manager import (
     AreaAnalizerCategoryError,
     AreaAnalyst,
 )
-from molusce.algorithms.models.woe.model import WoeError
+from molusce.algorithms.models.woe.model import WoeError, woe
 from molusce.algorithms.utils import binaryzation, masks_identity, reclass
 from molusce.molusceutils import PickleQObjectMixin
-
-from .model import woe
 
 
 def sigmoid(x):
@@ -59,7 +73,7 @@ class WoeManager(PickleQObjectMixin, QObject):
         factors: List[Raster],
         areaAnalyst: AreaAnalyst,
         unit_cell: int = 1,
-        bins: Optional[Dict[int, List[List[float]]]] = None,
+        bins: Optional[Dict[int, List[List[int]]]] = None,
     ) -> None:
         """@param factors      List of the pattern rasters used for prediction of point objects (sites).
         @param areaAnalyst  AreaAnalyst that contains map of the changes, encodes and decodes category numbers.

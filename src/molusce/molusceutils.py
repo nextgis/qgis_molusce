@@ -210,13 +210,13 @@ def openDirectoryDialog(
     :returns: The selected directory path as a string, or an empty string if canceled.
     :rtype: str
     """
-    lastDir = settings.value("ui/lastRasterDir", ".")
-    destDir = QFileDialog.getExistingDirectory(
-        parent, title, lastDir, QFileDialog.Option.ShowDirsOnly
+    last_directory = settings.value("ui/lastRasterDir", ".")
+    selected_directory = QFileDialog.getExistingDirectory(
+        parent, title, last_directory, QFileDialog.Option.ShowDirsOnly
     )
-    if destDir == "":
+    if selected_directory == "":
         return ""
-    return destDir
+    return selected_directory
 
 
 def checkInputRasters(userData):
