@@ -26,13 +26,26 @@
 import os
 from pathlib import Path
 
-from qgis.core import *
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import *
-from qgis.PyQt.QtWidgets import *
+from qgis.core import Qgis, QgsApplication
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QFileInfo,
+    QLocale,
+    QSettings,
+    QTranslator,
+    QUrl,
+)
+from qgis.PyQt.QtGui import QDesktopServices, QIcon
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QMenu,
+    QMessageBox,
+)
 
-from . import aboutdialog, moluscedialog, resources_rc  # noqa: F401
-from .molusceutils import getLocaleShortName
+from molusce import resources_rc  # noqa: F401
+from molusce.aboutdialog import AboutDialog
+from molusce.moluscedialog import MolusceDialog
+from molusce.molusceutils import getLocaleShortName
 
 
 class MoluscePlugin:
@@ -118,7 +131,9 @@ class MoluscePlugin:
             QCoreApplication.translate("MOLUSCE", "About MOLUSCE..."),
             self.iface.mainWindow(),
         )
-        self.actionAbout.setIcon(QIcon(":/plugins/molusce/icons/about.png"))
+        self.actionAbout.setIcon(
+            QgsApplication.getThemeIcon("mActionPropertiesWidget.svg")
+        )
         self.actionAbout.setWhatsThis("About MOLUSCE")
 
         self.__molusce_menu = QMenu(
@@ -165,13 +180,13 @@ class MoluscePlugin:
         self.__molusce_menu.deleteLater()
 
     def run(self):
-        d = moluscedialog.MolusceDialog(self.iface)
+        d = MolusceDialog(self.iface)
         d.show()
         d.exec()
 
     def about(self):
         package_name = str(Path(__file__).parent.name)
-        d = aboutdialog.AboutDialog(package_name)
+        d = AboutDialog(package_name)
         d.exec()
 
     def showQuickHelp(self):
