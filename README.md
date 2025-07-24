@@ -9,9 +9,9 @@ Homepage: https://nextgis.com/molusce/
 
 Quickhelp (PDF):
 
-* English: https://github.com/nextgis/qgis_molusce/tree/master/src/molusce/doc/en
+* [English](https://github.com/nextgis/qgis_molusce/blob/master/src/molusce/doc/en/QuickHelp.pdf)
 * Portuguese: [ecojustus.com.br](https://drive.google.com/file/d/0BzSbT3sqlulvaGYxekFRZU9CM28/view?usp=sharing&resourcekey=0-NEw-NNPyaQjqhgQb4dBuUA)
-* Russian: https://gis-lab.info/qa/molusce-intro-ru.html
+* [Russian](https://gis-lab.info/qa/molusce-intro-ru.html)
 
 License
 -------
