@@ -4,6 +4,15 @@ from typing import Optional
 import numpy as np
 from numpy import ma as ma
 from osgeo import ogr, osr
+from qgis.core import (
+    QgsCoordinateReferenceSystem,
+    QgsFeature,
+    QgsField,
+    QgsFields,
+    QgsGeometry,
+    QgsPointXY,
+    QgsVectorLayer,
+)
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import ProviderError, Raster
@@ -237,78 +246,80 @@ class Sampler(PickleQObjectMixin, QObject):
         data["coords"] = x, y
         return data  # (coords, state_data, factors_data, out_data)
 
-    def saveSamples(self, fileName):
+    def saveSamples(self) -> QgsVectorLayer:
+        """
+        Returns sample points as temporary QgsVectorLayer.
+        """
         data = self.getData()
         if data is None:
             raise SamplerError(self.tr("Samples cannot be created!"))
 
-        workdir = os.path.dirname(fileName)
-        fileName = os.path.splitext(os.path.basename(fileName))[0]
+        crs = QgsCoordinateReferenceSystem()
+        if not crs.createFromWkt(self.proj):
+            raise SamplerError(self.tr("Invalid projection (WKT) for samples!"))
 
-        driver = ogr.GetDriverByName("ESRI Shapefile")
-        sr = osr.SpatialReference()
-        sr.ImportFromWkt(self.proj)
+        layer_name = "samples"
+        layer = QgsVectorLayer("Point", layer_name, "memory")
+        layer.setCrs(crs)
 
-        ds = driver.CreateDataSource(workdir)
-        lyr = ds.CreateLayer(fileName, sr, ogr.wkbPoint)
-        if lyr is None:
-            raise SamplerError(self.tr("Creating output file failed!"))
+        provider = layer.dataProvider()
 
         fieldnames = ["state" + str(i) for i in range(self.stateVecLen)]
-        fieldnames = fieldnames + [
-            "factor" + str(i) for i in range(self.factorVectLen)
-        ]
-        fieldnames = fieldnames + [
-            "out" + str(i) for i in range(self.outputVecLen)
-        ]
+        fieldnames += ["factor" + str(i) for i in range(self.factorVectLen)]
+        fieldnames += ["out" + str(i) for i in range(self.outputVecLen)]
 
+        fields = QgsFields()
         for name in fieldnames:
-            field_defn = ogr.FieldDefn(name, ogr.OFTReal)
-            if lyr.CreateField(field_defn) != 0:
-                raise SamplerError(self.tr("Creating Name field failed!"))
+            fields.append(QgsField(name, QVariant.Double))
+
+        if not provider.addAttributes(fields):
+            raise SamplerError(self.tr("Creating fields failed!"))
+
+        layer.updateFields()
+
+        features = []
 
         for row in data:
             x, y = row["coords"]
-            if x and y:
-                feat = ogr.Feature(lyr.GetLayerDefn())
-                if self.stateVecLen > 1:
-                    for i in range(self.stateVecLen):
-                        name = fieldnames[i]
-                        r = row["state"][i]
-                        feat.SetField(name, r)
-                else:
-                    name = fieldnames[0]
-                    r = row["state"]
-                    feat.SetField(name, r)
-                if self.factorVectLen > 1:
-                    for i in range(self.factorVectLen):
-                        name = fieldnames[i + self.stateVecLen]
-                        r = row["factors"][i]
-                        feat.SetField(name, r)
-                else:
-                    name = fieldnames[self.stateVecLen]
-                    r = row["factors"]
-                    feat.SetField(name, r)
-                if self.outputVecLen > 1:
-                    for i in range(self.outputVecLen):
-                        name = fieldnames[
-                            i + self.stateVecLen + self.factorVectLen
-                        ]
-                        r = row["output"][i]
-                        feat.SetField(name, r)
-                else:
-                    name = fieldnames[self.stateVecLen + self.factorVectLen]
-                    r = row["output"]
-                    feat.SetField(name, r)
-                pt = ogr.Geometry(ogr.wkbPoint)
-                pt.SetPoint_2D(0, x, y)
-                feat.SetGeometry(pt)
-                if lyr.CreateFeature(feat) != 0:
-                    raise SamplerError(
-                        self.tr("Failed to create feature in shapefile!")
-                    )
-                feat.Destroy()
-        ds = None
+
+            if x is None or y is None:
+                continue
+
+            feat = QgsFeature()
+            feat.setFields(fields)
+            attrs = [None] * len(fieldnames)
+
+            if self.stateVecLen > 1:
+                for i in range(self.stateVecLen):
+                    attrs[i] = row["state"][i]
+            else:
+                attrs[0] = row["state"]
+
+            offset = self.stateVecLen
+            if self.factorVectLen > 1:
+                for i in range(self.factorVectLen):
+                    attrs[offset + i] = row["factors"][i]
+            else:
+                attrs[offset] = row["factors"]
+
+            offset = self.stateVecLen + self.factorVectLen
+            if self.outputVecLen > 1:
+                for i in range(self.outputVecLen):
+                    attrs[offset + i] = row["output"][i]
+            else:
+                attrs[offset] = row["output"]
+
+            feat.setAttributes(attrs)
+
+            feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(float(x), float(y))))
+
+            features.append(feat)
+
+        if not provider.addFeatures(features):
+            raise SamplerError(self.tr("Failed to create features in memory layer!"))
+
+        layer.updateExtents()
+        return layer
 
     def setTrainingData(
         self,
