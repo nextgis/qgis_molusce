@@ -47,6 +47,8 @@ from molusce.aboutdialog import AboutDialog
 from molusce.moluscedialog import MolusceDialog
 from molusce.molusceutils import getLocaleShortName
 
+# --- Processing provider for MOLUSCE ---
+from .processing.provider import MolusceProcessingProvider  
 
 class MoluscePlugin:
     def __init__(self, iface):
@@ -56,6 +58,9 @@ class MoluscePlugin:
             self.QgisVersion = str(Qgis.QGIS_VERSION_INT)
         except Exception:
             self.QgisVersion = str(Qgis.qgisVersion)[0]
+
+        # Processing provider instance (will be registered in initGui)
+        self.processing_provider = None
 
         # For i18n support
         userPluginPath = (
@@ -107,6 +112,13 @@ class MoluscePlugin:
                 ),
             )
             return
+        
+        # --- Register MOLUSCE Processing provider ---
+        if self.processing_provider is None:
+            self.processing_provider = MolusceProcessingProvider()
+            QgsApplication.processingRegistry().addProvider(
+                self.processing_provider
+            )
 
         self.actionRun = QAction(
             QCoreApplication.translate("MOLUSCE", "MOLUSCE"),
@@ -178,6 +190,13 @@ class MoluscePlugin:
             QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionAbout
         )
         self.__molusce_menu.deleteLater()
+
+        # --- Unregister MOLUSCE Processing provider ---
+        if self.processing_provider is not None:
+            QgsApplication.processingRegistry().removeProvider(
+                self.processing_provider
+            )
+            self.processing_provider = None
 
     def run(self):
         d = MolusceDialog(self.iface)

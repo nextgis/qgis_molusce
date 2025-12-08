@@ -9,7 +9,7 @@ about[ja] = このプラグインは、土地利用変化のモデリングの�
 about[pt] = O plugin fornece um conjunto de algoritmos para modelagem da mudança no uso da terra. Estão disponíveis redes neurais (perceptron multicamadas), regressão logística, método dos pesos de evidência, método de avaliação multicritério e validação usando estatísticas kappa. Desenvolvido por Asia Air Survey e NextGIS. Qualquer feedback é bem-vindo em https://nextgis.com/contact
 description = Modules for Land Use Change Simulations
 category = Raster
-version = 5.1.0
+version = 5.2.0
 qgisMinimumVersion = 3.22
 qgisMaximumVersion = 4.99
 
@@ -33,6 +33,9 @@ deprecated = False
 supportsQt6=True
 
 changelog=
+        5.2.0
+            * Added data preparation processing tools
+            * Sample points are now generated as temporary layer instead SHP
         5.1.0
             * Added support for Qt6
         5.0.0

@@ -2185,56 +2185,16 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
 
-        fileName = utils.saveVectorDialog(
-            self,
-            self.settings,
-            self.tr("Save file"),
-            self.tr("Shape files (*.shp *.SHP *.Shp)"),
-        )
-        if fileName == "":
-            return
-
         try:
-            model.saveSamples(str(fileName))
+            samplesLayer = model.saveSamples()
         except SamplerError:
             QMessageBox.warning(
                 self,
-                self.tr("Can't save file"),
-                self.tr("Can't save file: '{}'").format(fileName),
+                self.tr("Failed to create samples layer")
             )
             return
 
-        samples_path = Path(fileName)
-        if samples_path.exists():
-            if utils.is_file_used_by_project(samples_path):
-                QMessageBox.warning(
-                    self,
-                    self.tr("Can't rewrite file"),
-                    self.tr(
-                        "File '{}' is used in the QGIS project. It is not possible to overwrite the file, specify a different file name and try again"
-                    ).format(fileName),
-                )
-                return
-
-            samples_path.unlink()
-            samples_path.with_suffix(".prj").unlink(missing_ok=True)
-            samples_path.with_suffix(".dbf").unlink(missing_ok=True)
-
-        if self.chkLoadSamples.isChecked():
-            newLayer = QgsVectorLayer(
-                fileName, QFileInfo(fileName).baseName(), "ogr"
-            )
-
-            if newLayer.isValid():
-                QgsProject.instance().addMapLayer(newLayer)
-            else:
-                QMessageBox.warning(
-                    self,
-                    self.tr("Can't open file"),
-                    self.tr("Error loading output shapefile:\n{}").format(
-                        fileName
-                    ),
-                )
+        QgsProject.instance().addMapLayer(samplesLayer)
 
     def __selectSimulationOutput(self):
         senderName = self.sender().objectName()
@@ -2360,9 +2320,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             self.cmbSamplingMode.itemData(self.cmbSamplingMode.currentIndex()),
         )
         self.settings.setValue("ui/samplesCount", self.spnSamplesCount.value())
-        self.settings.setValue(
-            "ui/loadSamples", self.chkLoadSamples.isChecked()
-        )
 
         # simulation tab
         self.settings.setValue(
@@ -2391,9 +2348,6 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         )
         self.spnSamplesCount.setValue(
             int(self.settings.value("ui/samplesCount", 1000))
-        )
-        self.chkLoadSamples.setChecked(
-            bool(self.settings.value("ui/loadSamples", False))
         )
 
         # simulation tab

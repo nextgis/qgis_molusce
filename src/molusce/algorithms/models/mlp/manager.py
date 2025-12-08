@@ -357,8 +357,8 @@ class MlpManager(PickleQObjectMixin, QObject):
     def saveMlp(self):
         pass
 
-    def saveSamples(self, fileName):
-        self.sampler.saveSamples(fileName)
+    def saveSamples(self):
+        return self.sampler.saveSamples()
 
     def setMlpWeights(self, w):
         """Set weights of the MLP"""

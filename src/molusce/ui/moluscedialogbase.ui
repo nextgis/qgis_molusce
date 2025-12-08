@@ -20,7 +20,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabInputs">
       <attribute name="title">
@@ -347,13 +347,6 @@
            <widget class="QPushButton" name="btnSelectSamples">
             <property name="text">
              <string>Save Samples...</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="chkLoadSamples">
-            <property name="text">
-             <string>Add to canvas</string>
             </property>
            </widget>
           </item>

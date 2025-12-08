@@ -4,6 +4,7 @@
 from typing import Dict, List, Optional, Union
 
 import numpy as np
+from qgis.core import QgsVectorLayer
 from qgis.PyQt.QtCore import *
 
 from molusce.algorithms.dataprovider import Raster
@@ -349,13 +350,11 @@ class LR(PickleQObjectMixin, QObject):
     def save(self):
         pass
 
-    def saveSamples(self, file_name: str) -> None:
+    def saveSamples(self) -> QgsVectorLayer:
         """
-        Save the sampled data to a file.
-
-        :param file_name: The name of the file where the samples should be saved.
+        Returns sample points as temporary QgsVectorLayer.
         """
-        self.sampler.saveSamples(file_name)
+        return self.sampler.saveSamples()
 
     def setMaxIter(self, maxiter: int) -> None:
         """
