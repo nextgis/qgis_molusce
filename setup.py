@@ -1,4 +1,20 @@
 #!/usr/bin/env python3
+# QGIS MOLUSCE Plugin
+# Copyright (C) 2025  NextGIS
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or any
+# later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <https://www.gnu.org/licenses/>.
+
 
 import argparse
 import json
@@ -501,16 +517,14 @@ class QgisPluginBuilder:
     def __update_generated_file(self, file_path: Path) -> None:
         assert file_path.suffix == ".py"
         content = file_path.read_text(encoding="utf-8")
-        file_path.write_text(
-            content.replace("from PyQt5", "from qgis.PyQt"), "utf-8"
-        )
+        file_path.write_text(content.replace("from PyQt5", "from qgis.PyQt"))
 
     def __profile_path(self, qgis: str, profile: Optional[str]) -> Path:
         system = platform.system()
 
         if qgis in ("Vanilla", "VanillaFlatpak"):
             qgis_profiles = Path("QGIS/QGIS3/profiles")
-        elif qgis == "NextGIS":
+        elif qgis in ("NextGIS", "NextGISFlatpak"):
             qgis_profiles = Path("NextGIS/ngqgis/profiles")
         else:
             raise RuntimeError(f"Unknown QGIS: {qgis}")
@@ -520,9 +534,14 @@ class QgisPluginBuilder:
                 profiles_path = (
                     Path("~/.local/share/").expanduser() / qgis_profiles
                 )
-            else:
+            elif qgis == "VanillaFlatpak":
                 profiles_path = (
                     Path("~/.var/app/org.qgis.qgis/data/").expanduser()
+                    / qgis_profiles
+                )
+            elif qgis == "NextGISFlatpak":
+                profiles_path = (
+                    Path("~/.var/app/com.nextgis.ngqgis/data/").expanduser()
                     / qgis_profiles
                 )
 
@@ -633,7 +652,7 @@ class QgisPluginBuilder:
                 need_fill = False
             except Exception:
                 print(
-                    f"An error occured while reading {launch_file}. This file"
+                    f"An error occurred while reading {launch_file}. This file"
                     " will be overwrited"
                 )
 
@@ -688,7 +707,12 @@ class QgisPluginBuilder:
                 "id": "qgis",
                 "description": "QGIS build",
                 "type": "pickString",
-                "options": ["Vanilla", "NextGIS", "VanillaFlatpak"],
+                "options": [
+                    "Vanilla",
+                    "NextGIS",
+                    "VanillaFlatpak",
+                    "NextGISFlatpak",
+                ],
             }
         ]
         for new_input in new_inputs:
@@ -979,7 +1003,7 @@ def create_parser():
     parser_install.add_argument(
         "--qgis",
         default="Vanilla",
-        choices=["Vanilla", "NextGIS", "VanillaFlatpak"],
+        choices=["Vanilla", "NextGIS", "VanillaFlatpak", "NextGISFlatpak"],
         help="QGIS build",
     )
     parser_install.add_argument(
@@ -999,7 +1023,7 @@ def create_parser():
     parser_uninstall.add_argument(
         "--qgis",
         default="Vanilla",
-        choices=["Vanilla", "NextGIS", "VanillaFlatpak"],
+        choices=["Vanilla", "NextGIS", "VanillaFlatpak", "NextGISFlatpak"],
         help="QGIS build",
     )
     parser_uninstall.add_argument(
@@ -1025,7 +1049,7 @@ def create_parser():
     parser_config.add_argument(
         "--qgis",
         default="Vanilla",
-        choices=["Vanilla", "NextGIS", "VanillaFlatpak"],
+        choices=["Vanilla", "NextGIS", "VanillaFlatpak", "NextGISFlatpak"],
         help="QGIS build",
     )
     parser_config.add_argument(
