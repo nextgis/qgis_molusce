@@ -1,4 +1,4 @@
-# QGIS DevTools Plugin
+# QGIS MOLUSCE Plugin
 # Copyright (C) 2025  NextGIS
 #
 # This program is free software; you can redistribute it and/or modify
