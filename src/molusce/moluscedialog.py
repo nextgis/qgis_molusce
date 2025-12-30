@@ -1,27 +1,19 @@
-# ******************************************************************************
+# QGIS MOLUSCE Plugin
+# Copyright (C) 2025  NextGIS
 #
-# MOLUSCE
-# ---------------------------------------------------------
-# Modules for Land Use Change Simulations
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or any
+# later version.
 #
-# Copyright (C) 2012-2013 NextGIS (info@nextgis.org)
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# This source is free software; you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free
-# Software Foundation, either version 2 of the License, or (at your option)
-# any later version.
-#
-# This code is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-# details.
-#
-# A copy of the GNU General Public License is available on the World Wide Web
-# at <http://www.gnu.org/licenses/>. You can also obtain it by writing
-# to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
-# MA 02110-1335 USA.
-#
-# ******************************************************************************
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <https://www.gnu.org/licenses/>.
+
 
 import datetime
 import functools
@@ -49,7 +41,6 @@ from qgis.core import (
     QgsSettings,
     QgsSingleBandPseudoColorRenderer,
     QgsStyle,
-    QgsVectorLayer,
 )
 from qgis.gui import QgisInterface
 from qgis.PyQt.QtCore import (
@@ -2177,7 +2168,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             )
             return
         model = self.inputs["model"]
-        if not hasattr(model, "saveSamples"):
+        if not hasattr(model, "createSamplePointsLayer"):
             QMessageBox.warning(
                 self,
                 self.tr("Missed samples"),
@@ -2186,11 +2177,12 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             return
 
         try:
-            samplesLayer = model.saveSamples()
+            samplesLayer = model.createSamplePointsLayer()
         except SamplerError:
             QMessageBox.warning(
                 self,
-                self.tr("Failed to create samples layer")
+                self.tr("Error"),
+                self.tr("Failed to create samples layer"),
             )
             return
 

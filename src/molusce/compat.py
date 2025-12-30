@@ -23,6 +23,9 @@ from qgis.core import (
     QgsGeometry,
     QgsMapLayerProxyModel,
     QgsMapLayerType,
+    QgsProcessing,
+    QgsProcessingParameterField,
+    QgsProcessingParameterNumber,
     QgsWkbTypes,
 )
 from qgis.PyQt.QtCore import QMetaType, QVariant
@@ -99,10 +102,16 @@ else:
 if Qgis.versionInt() >= QGIS_3_36 or TYPE_CHECKING:
     FeatureRequestFlag = Qgis.FeatureRequestFlag
     FeatureRequestFlags = Qgis.FeatureRequestFlags
+    ProcessingSourceType = Qgis.ProcessingSourceType
+    ProcessingNumberParameterType = Qgis.ProcessingNumberParameterType
+    ProcessingFieldParameterDataType = Qgis.ProcessingFieldParameterDataType
 
 else:
     FeatureRequestFlag = QgsFeatureRequest.Flag
     FeatureRequestFlags = QgsFeatureRequest.Flags
+    ProcessingSourceType = QgsProcessing.SourceType
+    ProcessingNumberParameterType = QgsProcessingParameterNumber.Type
+    ProcessingFieldParameterDataType = QgsProcessingParameterField.DataType
 
 
 if Qgis.versionInt() >= QGIS_3_38 or TYPE_CHECKING:

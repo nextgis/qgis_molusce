@@ -1,27 +1,19 @@
-# ******************************************************************************
+# QGIS MOLUSCE Plugin
+# Copyright (C) 2025  NextGIS
 #
-# MOLUSCE
-# ---------------------------------------------------------
-# Modules for Land Use Change Simulations
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or any
+# later version.
 #
-# Copyright (C) 2012-2013 NextGIS (info@nextgis.org)
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# This source is free software; you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free
-# Software Foundation, either version 2 of the License, or (at your option)
-# any later version.
-#
-# This code is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-# details.
-#
-# A copy of the GNU General Public License is available on the World Wide Web
-# at <http://www.gnu.org/licenses/>. You can also obtain it by writing
-# to the Free Software Foundation, 51 Franklin Street, Suite 500 Boston,
-# MA 02110-1335 USA.
-#
-# ******************************************************************************
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <https://www.gnu.org/licenses/>.
+
 
 import os
 from pathlib import Path
@@ -46,9 +38,8 @@ from molusce import resources_rc  # noqa: F401
 from molusce.aboutdialog import AboutDialog
 from molusce.moluscedialog import MolusceDialog
 from molusce.molusceutils import getLocaleShortName
+from molusce.processing.provider import MolusceProcessingProvider
 
-# --- Processing provider for MOLUSCE ---
-from .processing.provider import MolusceProcessingProvider  
 
 class MoluscePlugin:
     def __init__(self, iface):
@@ -92,6 +83,12 @@ class MoluscePlugin:
             self.translator = translator
             QCoreApplication.installTranslator(self.translator)
 
+    def initProcessing(self) -> None:
+        self.processing_provider = MolusceProcessingProvider()
+        QgsApplication.processingRegistry().addProvider(
+            self.processing_provider
+        )
+
     def initGui(self):
         if int(self.QgisVersion) < 10900:
             qgisVersion = (
@@ -112,13 +109,8 @@ class MoluscePlugin:
                 ),
             )
             return
-        
-        # --- Register MOLUSCE Processing provider ---
-        if self.processing_provider is None:
-            self.processing_provider = MolusceProcessingProvider()
-            QgsApplication.processingRegistry().addProvider(
-                self.processing_provider
-            )
+
+        self.initProcessing()
 
         self.actionRun = QAction(
             QCoreApplication.translate("MOLUSCE", "MOLUSCE"),
