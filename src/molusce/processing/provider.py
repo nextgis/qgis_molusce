@@ -1,5 +1,20 @@
+# QGIS MOLUSCE Plugin
+# Copyright (C) 2025  NextGIS
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or any
+# later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <https://www.gnu.org/licenses/>.
+
 from qgis.core import QgsProcessingProvider
-from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
 from molusce.processing.prepare_raster import (
@@ -18,40 +33,25 @@ class MolusceProcessingProvider(QgsProcessingProvider):
     def __init__(self):
         super().__init__()
 
-    # --- Basic metadata ---
-
     def id(self):
-        # Unique provider id (used internally by QGIS)
+        """Returns the unique provider id, used for identifying the provider."""
         return "molusce"
 
     def name(self):
-        # Short provider name shown in GUI
+        """Returns the provider name, which is used to describe the provider within the GUI."""
         return self.tr("MOLUSCE")
 
     def longName(self):
-        # Optional, more descriptive name
+        """Returns the longer version of the provider name, which can include extra details."""
         return self.tr("MOLUSCE – Land Use Change Tools")
 
     def icon(self):
+        """Returns an icon for the provider."""
         return QIcon(":/plugins/molusce/icons/molusce_logo.svg")
 
-    # --- Algorithms registration ---
-
-    def loadAlgorithms(self, *args, **kwargs):
+    def loadAlgorithms(self):
         """
         Called by QGIS to let provider add its algorithms.
         """
         self.addAlgorithm(MoluscePrepareRasterAlgorithm())
         self.addAlgorithm(MoluscePrepareVectorAlgorithm())
-
-    # --- Utils ---
-
-    def tr(self, string):
-        return QCoreApplication.translate("MolusceProcessingProvider", string)
-
-    def unload(self):
-        """
-        Called when provider is removed from registry.
-        Nothing special required here for basic templates.
-        """
-        pass

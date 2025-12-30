@@ -1,4 +1,19 @@
-# -*- coding: utf-8 -*-
+# QGIS MOLUSCE Plugin
+# Copyright (C) 2025  NextGIS
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or any
+# later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <https://www.gnu.org/licenses/>.
+
 """
 Prepare vector dataset for MOLUSCE.
 
@@ -6,12 +21,18 @@ Creates a raster in the spatial domain of a reference raster layer based on
 vector data, using either presence (rasterization) or proximity mode.
 """
 
+from enum import IntEnum
+from typing import Any, Dict, Optional, Tuple
+
+from osgeo import gdal
 from qgis import processing
 from qgis.core import (
+    Qgis,
+    QgsCoordinateReferenceSystem,
     QgsProcessing,
     QgsProcessingAlgorithm,
     QgsProcessingContext,
-    QgsProcessingException,
+    QgsProcessingException,  # pyright: ignore[reportAttributeAccessIssue]
     QgsProcessingFeedback,
     QgsProcessingParameterEnum,
     QgsProcessingParameterField,
@@ -19,9 +40,16 @@ from qgis.core import (
     QgsProcessingParameterRasterDestination,
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterVectorLayer,
-    QgsWkbTypes,
+    QgsRasterLayer,
+    QgsVectorLayer,
 )
 from qgis.PyQt.QtCore import QCoreApplication
+
+from molusce.compat import (
+    ProcessingFieldParameterDataType,
+    ProcessingNumberParameterType,
+    ProcessingSourceType,
+)
 
 
 class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
@@ -38,14 +66,21 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
     MODE = "MODE"
     FIELD = "FIELD"
     BUFFER = "BUFFER"
-    PROX_MODE = "PROX_MODE"
+    PROXIMITY_MODE = "PROXIMITY_MODE"
     OUTPUT = "OUTPUT"
 
-    MODE_PRESENCE = 0
-    MODE_PROXIMITY = 1
+    class Mode(IntEnum):
+        PRESENCE = 0
+        PROXIMITY = 1
+
+    class ProximityMode(IntEnum):
+        GEOREFERENCED_UNITS = 0
+        PIXELS = 1
 
     def tr(self, string: str) -> str:
-        return QCoreApplication.translate("MoluscePrepareVectorAlgorithm", string)
+        return QCoreApplication.translate(
+            "MoluscePrepareVectorAlgorithm", string
+        )
 
     def name(self) -> str:
         return "molusce_prepare_vector"
@@ -66,14 +101,16 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
     def createInstance(self):
         return MoluscePrepareVectorAlgorithm()
 
-    def initAlgorithm(self, config=None):
+    def initAlgorithm(self, configuration: Dict[str, Any] = None) -> None:  # pyright: ignore[reportArgumentType]
         self.addParameter(
             QgsProcessingParameterVectorLayer(
                 self.INPUT_VECTOR,
                 self.tr("Vector layer to be processed"),
-                [QgsWkbTypes.PointGeometry,
-                 QgsWkbTypes.LineGeometry,
-                 QgsWkbTypes.PolygonGeometry],
+                [
+                    ProcessingSourceType.VectorPoint,
+                    ProcessingSourceType.VectorLine,
+                    ProcessingSourceType.VectorPolygon,
+                ],
             )
         )
 
@@ -92,7 +129,7 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
                     self.tr("Presence (rasterize features)"),
                     self.tr("Proximity (distance to nearest feature)"),
                 ],
-                defaultValue=self.MODE_PRESENCE,
+                defaultValue=self.Mode.PRESENCE.value,
             )
         )
 
@@ -103,7 +140,7 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
                     "Numeric field for raster values (Presence mode only, leave empty to use 1 for each feature)"
                 ),
                 parentLayerParameterName=self.INPUT_VECTOR,
-                type=QgsProcessingParameterField.Numeric,
+                type=ProcessingFieldParameterDataType.Numeric,
                 optional=True,
             )
         )
@@ -114,7 +151,7 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
                 self.tr(
                     "Buffer zone size (map units, Presence mode only; leave empty for no buffer)"
                 ),
-                type=QgsProcessingParameterNumber.Double,
+                type=ProcessingNumberParameterType.Double,
                 defaultValue=None,
                 optional=True,
             )
@@ -122,13 +159,13 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
 
         self.addParameter(
             QgsProcessingParameterEnum(
-                self.PROX_MODE,
+                self.PROXIMITY_MODE,
                 self.tr("Proximity units (Proximity mode only)"),
                 options=[
                     self.tr("Georeferenced units"),
                     self.tr("Pixels"),
                 ],
-                defaultValue=0,
+                defaultValue=self.ProximityMode.GEOREFERENCED_UNITS.value,
             )
         )
 
@@ -139,203 +176,365 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
-    def processAlgorithm(self, parameters, context: QgsProcessingContext, feedback: QgsProcessingFeedback):
-        vector_layer = self.parameterAsVectorLayer(parameters, self.INPUT_VECTOR, context)
-        ref_raster = self.parameterAsRasterLayer(parameters, self.REFERENCE_RASTER, context)
+    def processAlgorithm(
+        self,
+        parameters: Dict[str, Any],
+        context: QgsProcessingContext,
+        feedback: Optional[QgsProcessingFeedback],
+    ) -> Dict[str, Any]:
+        assert feedback is not None
 
-        if vector_layer is None:
-            raise QgsProcessingException(self.tr("Vector layer is not valid."))
-        if ref_raster is None:
-            raise QgsProcessingException(self.tr("Reference raster layer is not valid."))
+        vector_layer, raster_reference_layer = self._get_layers(
+            parameters, context
+        )
+        output_path = self._get_output_path(parameters, context)
 
-        output_path = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        if not output_path:
-            raise QgsProcessingException(self.tr("Could not determine output raster path."))
-
-        mode = self.parameterAsEnum(parameters, self.MODE, context)
-
-        # Numeric field (Presence mode)
-        field_name = self.parameterAsString(parameters, self.FIELD, context)
-        if field_name is None:
-            field_name = ""
-
-        # Buffer size (Presence mode)
-        buffer_size = None
-        raw_buffer = parameters.get(self.BUFFER, None)
-        if raw_buffer not in (None, ""):
-            try:
-                buffer_size = float(raw_buffer)
-            except Exception:
-                buffer_size = None
-
-        # Proximity units (Proximity mode)
-        prox_mode_index = self.parameterAsEnum(parameters, self.PROX_MODE, context)
+        mode = self.Mode(self.parameterAsEnum(parameters, self.MODE, context))
+        field_name = self._get_field_name(parameters, context)
+        buffer_size = self._get_buffer_size(parameters)
+        proximity_mode_index = self.ProximityMode(
+            self.parameterAsEnum(parameters, self.PROXIMITY_MODE, context)
+        )
 
         if feedback.isCanceled():
             return {}
 
-        ref_provider = ref_raster.dataProvider()
+        cols, rows, extent_string, target_crs = self._collect_reference_info(
+            raster_reference_layer
+        )
+
+        vector_layer = self._ensure_vector_layer_crs(
+            vector_layer, target_crs, context, feedback
+        )
+        if feedback.isCanceled():
+            return {}
+
+        if mode == self.Mode.PRESENCE:
+            return self._run_presence_mode(
+                vector_layer,
+                field_name,
+                cols,
+                rows,
+                extent_string,
+                buffer_size,
+                output_path,
+                context,
+                feedback,
+            )
+
+        if mode == self.Mode.PROXIMITY:
+            return self._run_proximity_mode(
+                vector_layer,
+                cols,
+                rows,
+                extent_string,
+                proximity_mode_index,
+                output_path,
+                context,
+                feedback,
+            )
+
+        raise QgsProcessingException(self.tr("Invalid mode selected."))
+
+    def _get_layers(
+        self,
+        parameters: Dict[str, Any],
+        context: QgsProcessingContext,
+    ) -> Tuple[QgsVectorLayer, QgsRasterLayer]:
+        vector_layer = self.parameterAsVectorLayer(
+            parameters, self.INPUT_VECTOR, context
+        )
+        raster_reference_layer = self.parameterAsRasterLayer(
+            parameters, self.REFERENCE_RASTER, context
+        )
+
+        if vector_layer is None:
+            raise QgsProcessingException(self.tr("Vector layer is not valid."))
+        if raster_reference_layer is None:
+            raise QgsProcessingException(
+                self.tr("Reference raster layer is not valid.")
+            )
+
+        return vector_layer, raster_reference_layer
+
+    def _get_output_path(
+        self,
+        parameters: Dict[str, Any],
+        context: QgsProcessingContext,
+    ) -> str:
+        output_path = self.parameterAsOutputLayer(
+            parameters, self.OUTPUT, context
+        )
+        if not output_path:
+            raise QgsProcessingException(
+                self.tr("Could not determine output raster path.")
+            )
+        return output_path
+
+    def _get_field_name(
+        self,
+        parameters: Dict[str, Any],
+        context: QgsProcessingContext,
+    ) -> str:
+        """Field name for presence mode"""
+        field_name = self.parameterAsString(parameters, self.FIELD, context)
+        return field_name if field_name is not None else ""
+
+    def _get_buffer_size(self, parameters: Dict[str, Any]) -> Optional[float]:
+        """Buffer size for presence mode"""
+        raw_buffer = parameters.get(self.BUFFER, None)
+        if raw_buffer in (None, ""):
+            return None
+
+        try:
+            return float(raw_buffer)
+        except Exception:
+            return None
+
+    def _collect_reference_info(
+        self, raster_reference_layer: QgsRasterLayer
+    ) -> Tuple[int, int, str, QgsCoordinateReferenceSystem]:
+        ref_provider = raster_reference_layer.dataProvider()
         cols = ref_provider.xSize()
         rows = ref_provider.ySize()
 
         if cols <= 0 or rows <= 0:
             raise QgsProcessingException(
-                self.tr("Reference raster has invalid size (width or height is zero).")
-            )
-
-        ref_extent = ref_raster.extent()
-        extent_string = "{},{},{},{}".format(
-            ref_extent.xMinimum(),
-            ref_extent.xMaximum(),
-            ref_extent.yMinimum(),
-            ref_extent.yMaximum(),
-        )
-
-        target_crs = ref_raster.crs()
-        if not target_crs.isValid():
-            raise QgsProcessingException(self.tr("Reference raster has invalid CRS."))
-
-        if vector_layer.crs() != target_crs:
-            feedback.pushInfo(
-                self.tr("Reprojecting vector layer to reference raster CRS...")
-            )
-            reproject_result = processing.run(
-                "native:reprojectlayer",
-                {
-                    "INPUT": vector_layer,
-                    "TARGET_CRS": target_crs,
-                    "OPERATION": "",
-                    "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
-                },
-                context=context,
-                feedback=feedback,
-                is_child_algorithm=True,
-            )
-            vector_layer = reproject_result["OUTPUT"]
-
-        vector_for_rasterize = vector_layer
-
-        if mode == self.MODE_PRESENCE and buffer_size is not None and buffer_size > 0:
-            feedback.pushInfo(
-                self.tr("Buffering features by {0} map units (Presence mode)...").format(
-                    buffer_size
+                self.tr(
+                    "Reference raster has invalid size (width or height is zero)."
                 )
             )
-            buffer_result = processing.run(
-                "native:buffer",
-                {
-                    "INPUT": vector_layer,
-                    "DISTANCE": buffer_size,
-                    "SEGMENTS": 5,
-                    "END_CAP_STYLE": 0,  # Round
-                    "JOIN_STYLE": 0,     # Round
-                    "MITER_LIMIT": 2,
-                    "DISSOLVE": False,
-                    "SEPARATE_DISJOINT": False,
-                    "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
-                },
-                context=context,
-                feedback=feedback,
-                is_child_algorithm=True,
-            )
-            vector_for_rasterize = buffer_result["OUTPUT"]
 
+        reference_layer_extent = raster_reference_layer.extent()
+        extent_string = "{},{},{},{}".format(
+            reference_layer_extent.xMinimum(),
+            reference_layer_extent.xMaximum(),
+            reference_layer_extent.yMinimum(),
+            reference_layer_extent.yMaximum(),
+        )
+
+        target_crs = raster_reference_layer.crs()
+        if not target_crs.isValid():
+            raise QgsProcessingException(
+                self.tr("Reference raster has invalid CRS.")
+            )
+
+        return cols, rows, extent_string, target_crs
+
+    def _ensure_vector_layer_crs(
+        self,
+        vector_layer: QgsVectorLayer,
+        target_crs: QgsCoordinateReferenceSystem,
+        context: QgsProcessingContext,
+        feedback: QgsProcessingFeedback,
+    ) -> QgsVectorLayer:
+        if vector_layer.crs() == target_crs:
+            return vector_layer
+
+        feedback.pushInfo(
+            self.tr("Reprojecting vector layer to reference raster CRS..."),
+        )
+        reproject_result = processing.run(
+            "native:reprojectlayer",
+            {
+                "INPUT": vector_layer,
+                "TARGET_CRS": target_crs,
+                "OPERATION": "",
+                "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
+            },
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
+        if feedback.isCanceled():
+            return QgsVectorLayer()
+
+        if reproject_result is None or "OUTPUT" not in reproject_result:
+            raise QgsProcessingException(
+                self.tr("Failed to reproject vector layer.")
+            )
+        return reproject_result["OUTPUT"]
+
+    def _buffer_vector_for_presence(
+        self,
+        vector_layer: QgsVectorLayer,
+        buffer_size: Optional[float],
+        context: QgsProcessingContext,
+        feedback: QgsProcessingFeedback,
+    ) -> QgsVectorLayer:
+        if buffer_size is None or buffer_size <= 0:
+            return vector_layer
+
+        feedback.pushInfo(
+            self.tr(
+                "Buffering features by {0} map units (Presence mode)..."
+            ).format(buffer_size),
+        )
+        buffer_result = processing.run(
+            "native:buffer",
+            {
+                "INPUT": vector_layer,
+                "DISTANCE": buffer_size,
+                "SEGMENTS": 5,
+                "END_CAP_STYLE": Qgis.EndCapStyle.Round,
+                "JOIN_STYLE": Qgis.JoinStyle.Round,
+                "MITER_LIMIT": 2,
+                "DISSOLVE": False,
+                "SEPARATE_DISJOINT": False,
+                "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
+            },
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
+        if feedback.isCanceled():
+            return QgsVectorLayer()
+        if buffer_result is None or "OUTPUT" not in buffer_result:
+            raise QgsProcessingException(
+                self.tr("Failed to buffer vector layer for Presence mode.")
+            )
+
+        return buffer_result["OUTPUT"]
+
+    def _run_proximity_mode(
+        self,
+        vector_layer: QgsVectorLayer,
+        cols: int,
+        rows: int,
+        extent_string: str,
+        proximity_mode_index: int,
+        output_path: str,
+        context: QgsProcessingContext,
+        feedback: QgsProcessingFeedback,
+    ) -> Dict[str, Any]:
+        # Build simple presence raster with BURN=1
+        feedback.pushInfo(
+            self.tr("Rasterizing vector layer (for Proximity mode)..."),
+        )
+
+        presence_raster_params = {
+            "INPUT": vector_layer,
+            "FIELD": None,  # ignore numeric field
+            "BURN": 1.0,
+            "USE_Z": False,
+            "UNITS": 0,  # 0 = Pixels
+            "WIDTH": cols,
+            "HEIGHT": rows,
+            "EXTENT": extent_string,
+            "NODATA": 0,
+            "OPTIONS": "",
+            "DATA_TYPE": gdal.GDT_Byte,
+            "INIT": 0,  # initialize background to 0
+            "INVERT": False,
+            "EXTRA": "",
+            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
+        }
+
+        presence_result = processing.run(
+            "gdal:rasterize",
+            presence_raster_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
+        if feedback.isCanceled():
+            return {}
+        if presence_result is None or "OUTPUT" not in presence_result:
+            raise QgsProcessingException(
+                self.tr("Failed to rasterize vector layer for Proximity mode.")
+            )
+
+        presence_raster_path = presence_result["OUTPUT"]
+
+        feedback.pushInfo(self.tr("Computing proximity raster..."))
+
+        # UNITS: 0 = Georeferenced units, 1 = Pixels
+        distunits = 0 if proximity_mode_index == 0 else 1
+
+        proximity_params = {
+            "INPUT": presence_raster_path,
+            "BAND": 1,
+            "VALUES": "1",
+            "UNITS": distunits,
+            "MAX_DISTANCE": 0,  # no limit
+            "NODATA": 0,
+            "OPTIONS": "",
+            "DATA_TYPE": gdal.GDT_Float32,
+            "EXTRA": "",
+            "OUTPUT": output_path,
+        }
+
+        proximity_result = processing.run(
+            "gdal:proximity",
+            proximity_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
+        if feedback.isCanceled():
+            return {}
+        if proximity_result is None or "OUTPUT" not in proximity_result:
+            raise QgsProcessingException(
+                self.tr("Failed to compute proximity raster.")
+            )
+
+        return {self.OUTPUT: proximity_result["OUTPUT"]}
+
+    def _run_presence_mode(
+        self,
+        vector_layer: QgsVectorLayer,
+        field_name: str,
+        cols: int,
+        rows: int,
+        extent_string: str,
+        buffer_size: Optional[float],
+        output_path: str,
+        context: QgsProcessingContext,
+        feedback: QgsProcessingFeedback,
+    ) -> Dict[str, Any]:
+        vector_layer = self._buffer_vector_for_presence(
+            vector_layer, buffer_size, context, feedback
+        )
         if feedback.isCanceled():
             return {}
 
-        if mode == self.MODE_PROXIMITY:
-            # Proximity mode: build simple presence raster with BURN=1
-            feedback.pushInfo(self.tr("Rasterizing vector layer (for Proximity mode)..."))
+        feedback.pushInfo(
+            self.tr("Rasterizing vector layer (Presence mode)...")
+        )
 
-            presence_raster_params = {
-                "INPUT": vector_layer,
-                "FIELD": None,  # ignore numeric field
-                "BURN": 1.0,
-                "USE_Z": False,
-                "UNITS": 0,  # 0 = Pixels
-                "WIDTH": cols,
-                "HEIGHT": rows,
-                "EXTENT": extent_string,
-                "NODATA": 0,
-                "OPTIONS": "",
-                "DATA_TYPE": 1,  # Byte
-                "INIT": 0,       # initialize background to 0
-                "INVERT": False,
-                "EXTRA": "",
-                "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
-            }
+        rasterize_params = {
+            "INPUT": vector_layer,
+            "USE_Z": False,
+            "UNITS": 0,
+            "WIDTH": cols,
+            "HEIGHT": rows,
+            "EXTENT": extent_string,
+            "NODATA": 0,
+            "OPTIONS": "",
+            "DATA_TYPE": gdal.GDT_Float32,
+            "INIT": 0,
+            "INVERT": False,
+            "EXTRA": "",
+            "OUTPUT": output_path,
+        }
 
-            presence_result = processing.run(
-                "gdal:rasterize",
-                presence_raster_params,
-                context=context,
-                feedback=feedback,
-                is_child_algorithm=True,
-            )
-            presence_raster_path = presence_result["OUTPUT"]
-
-            if feedback.isCanceled():
-                return {}
-
-            feedback.pushInfo(self.tr("Computing proximity raster..."))
-
-            # UNITS: 0 = Georeferenced units, 1 = Pixels
-            distunits = 0 if prox_mode_index == 0 else 1
-
-            proximity_params = {
-                "INPUT": presence_raster_path,
-                "BAND": 1,
-                "VALUES": "1",
-                "UNITS": distunits,
-                "MAX_DISTANCE": 0,    # no limit
-                "NODATA": 0,
-                "OPTIONS": "",
-                "DATA_TYPE": 5,       # Float32
-                "EXTRA": "",
-                "OUTPUT": output_path,
-            }
-
-            prox_result = processing.run(
-                "gdal:proximity",
-                proximity_params,
-                context=context,
-                feedback=feedback,
-                is_child_algorithm=True,
-            )
-
-            return {self.OUTPUT: prox_result["OUTPUT"]}
-
+        if field_name:
+            rasterize_params["FIELD"] = field_name
         else:
-            feedback.pushInfo(self.tr("Rasterizing vector layer (Presence mode)..."))
+            rasterize_params["FIELD"] = None
+            rasterize_params["BURN"] = 1.0
 
-            rasterize_params = {
-                "INPUT": vector_for_rasterize,
-                "USE_Z": False,
-                "UNITS": 0,
-                "WIDTH": cols,
-                "HEIGHT": rows,
-                "EXTENT": extent_string,
-                "NODATA": 0,
-                "OPTIONS": "",
-                "DATA_TYPE": 5,  # Float32
-                "INIT": 0,
-                "INVERT": False,
-                "EXTRA": "",
-                "OUTPUT": output_path,
-            }
-
-            if field_name:
-                rasterize_params["FIELD"] = field_name
-            else:
-                rasterize_params["FIELD"] = None
-                rasterize_params["BURN"] = 1.0
-
-            result = processing.run(
-                "gdal:rasterize",
-                rasterize_params,
-                context=context,
-                feedback=feedback,
-                is_child_algorithm=True,
+        result = processing.run(
+            "gdal:rasterize",
+            rasterize_params,
+            context=context,
+            feedback=feedback,
+            is_child_algorithm=True,
+        )
+        if feedback.isCanceled():
+            return {}
+        if result is None or "OUTPUT" not in result:
+            raise QgsProcessingException(
+                self.tr("Failed to rasterize vector layer.")
             )
-
-            return {self.OUTPUT: result["OUTPUT"]}
+        return {self.OUTPUT: result["OUTPUT"]}

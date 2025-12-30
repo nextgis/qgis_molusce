@@ -12,6 +12,7 @@ category = Raster
 version = 5.2.0
 qgisMinimumVersion = 3.22
 qgisMaximumVersion = 4.99
+hasProcessingProvider=True
 
 author = NextGIS
 email = info@nextgis.org

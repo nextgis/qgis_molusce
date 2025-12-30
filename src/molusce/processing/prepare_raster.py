@@ -1,17 +1,39 @@
-# -*- coding: utf-8 -*-
+# QGIS MOLUSCE Plugin
+# Copyright (C) 2025  NextGIS
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or any
+# later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <https://www.gnu.org/licenses/>.
 
 import math
+from enum import IntEnum, auto
+from typing import Any, Dict, Optional, Tuple
 
 from osgeo import gdal
 from qgis.core import (
+    QgsCoordinateReferenceSystem,
     QgsProcessingAlgorithm,
-    QgsProcessingException,
+    QgsProcessingContext,
+    QgsProcessingException,  # pyright: ignore[reportAttributeAccessIssue]
+    QgsProcessingFeedback,
     QgsProcessingParameterEnum,
     QgsProcessingParameterNumber,
     QgsProcessingParameterRasterDestination,
     QgsProcessingParameterRasterLayer,
+    QgsRasterLayer,
 )
 from qgis.PyQt.QtCore import QCoreApplication
+
+from molusce.compat import ProcessingNumberParameterType
 
 
 class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
@@ -22,30 +44,35 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
     - Output has the same extent, rows/cols and CRS as the reference raster
     """
 
+    class ResamplingAlgorithm(IntEnum):
+        # Use own numeric values because gdal has gaps in its enum values
+        NEAREST_NEIGHBOUR = auto()
+        BILINEAR = auto()
+        CUBIC = auto()
+        CUBIC_BSPLINE = auto()
+        LANCZOS = auto()
+        AVERAGE = auto()
+        MODE = auto()
+        MAXIMUM = auto()
+        MINIMUM = auto()
+        MEDIAN = auto()
+        FIRST_QUARTILE = auto()
+        THIRD_QUARTILE = auto()
+
     INPUT_RASTER = "INPUT_RASTER"
     REFERENCE_RASTER = "REFERENCE_RASTER"
     NODATA = "NODATA"
     RESAMPLING = "RESAMPLING"
     OUTPUT = "OUTPUT"
 
-    # Resampling labels, matching GDAL resampling algorithms order
-    RESAMPLING_METHODS = [
-        "Nearest neighbour",
-        "Bilinear (2x2 kernel)",
-        "Cubic (4x4 kernel)",
-        "Cubic B-Spline (4x4 kernel)",
-        "Lanczos (6x6 kernel)",
-        "Average",
-        "Mode",
-        "Maximum",
-        "Minimum",
-        "Median",
-        "First quartile (Q1)",
-        "Third quartile (Q3)",
-    ]
-
     def tr(self, string: str) -> str:
-        return QCoreApplication.translate("MoluscePrepareRasterAlgorithm", string)
+        return QCoreApplication.translate(
+            "MoluscePrepareRasterAlgorithm", string
+        )
+
+    def warp_tr(self, string: str) -> str:
+        """QGIS translation context for gdal:warpreproject."""
+        return QCoreApplication.translate("warp", string)
 
     def name(self) -> str:
         return "molusce_prepare_raster"
@@ -65,7 +92,34 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
     def createInstance(self):
         return MoluscePrepareRasterAlgorithm()
 
-    def initAlgorithm(self, configuration=None):
+    def initAlgorithm(self, configuration: Dict[str, Any] = None) -> None:  # pyright: ignore[reportArgumentType]
+        RESAMPLING_ALGORITHM_NAMES = {
+            self.ResamplingAlgorithm.NEAREST_NEIGHBOUR: self.warp_tr(
+                "Nearest Neighbour"
+            ),
+            self.ResamplingAlgorithm.BILINEAR: self.warp_tr(
+                "Bilinear (2x2 Kernel)"
+            ),
+            self.ResamplingAlgorithm.CUBIC: self.warp_tr("Cubic (4x4 Kernel)"),
+            self.ResamplingAlgorithm.CUBIC_BSPLINE: self.warp_tr(
+                "Cubic B-Spline (4x4 Kernel)"
+            ),
+            self.ResamplingAlgorithm.LANCZOS: self.warp_tr(
+                "Lanczos (6x6 Kernel)"
+            ),
+            self.ResamplingAlgorithm.AVERAGE: self.warp_tr("Average"),
+            self.ResamplingAlgorithm.MODE: self.warp_tr("Mode"),
+            self.ResamplingAlgorithm.MAXIMUM: self.warp_tr("Maximum"),
+            self.ResamplingAlgorithm.MINIMUM: self.warp_tr("Minimum"),
+            self.ResamplingAlgorithm.MEDIAN: self.warp_tr("Median"),
+            self.ResamplingAlgorithm.FIRST_QUARTILE: self.warp_tr(
+                "First Quartile (Q1)"
+            ),
+            self.ResamplingAlgorithm.THIRD_QUARTILE: self.warp_tr(
+                "Third Quartile (Q3)"
+            ),
+        }
+
         self.addParameter(
             QgsProcessingParameterRasterLayer(
                 self.INPUT_RASTER,
@@ -86,7 +140,7 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
                 self.tr(
                     "NoData value for output (leave empty to copy from input raster)"
                 ),
-                type=QgsProcessingParameterNumber.Double,
+                type=ProcessingNumberParameterType.Double,
                 optional=True,
             )
         )
@@ -95,8 +149,8 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
             QgsProcessingParameterEnum(
                 self.RESAMPLING,
                 self.tr("Resampling algorithm"),
-                options=self.RESAMPLING_METHODS,
-                defaultValue=0,  # Nearest neighbour
+                options=RESAMPLING_ALGORITHM_NAMES.values(),
+                defaultValue=self.ResamplingAlgorithm.NEAREST_NEIGHBOUR.value,
             )
         )
 
@@ -107,9 +161,63 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def processAlgorithm(
+        self,
+        parameters: Dict[str, Any],
+        context: QgsProcessingContext,
+        feedback: Optional[QgsProcessingFeedback],
+    ) -> Dict[str, Any]:
+        assert feedback is not None
+
         gdal.UseExceptions()
 
+        input_layer, reference_layer = self._get_layers(parameters, context)
+
+        input_source = input_layer.source()
+        input_crs = input_layer.crs()
+        if not input_crs.isValid():
+            raise QgsProcessingException(
+                self.tr("Input raster has invalid CRS.")
+            )
+
+        cols, rows, bounds, target_crs = self._collect_reference_info(
+            reference_layer
+        )
+
+        output_path = self._get_output_path(parameters, context)
+
+        nodata_value = self._parse_nodata(parameters)
+        resampling_algorithm = self.ResamplingAlgorithm(
+            self.parameterAsInt(parameters, self.RESAMPLING, context)
+        )
+        gdal_resampling_algorithm = self._gdal_resampling_algorithm(
+            resampling_algorithm
+        )
+
+        if feedback.isCanceled():
+            return {}
+
+        feedback.pushInfo(
+            self.tr("Running gdal.Warp to align raster to reference grid...")
+        )
+
+        self._run_warp(
+            input_source=input_source,
+            output_path=output_path,
+            input_crs=input_crs,
+            target_crs=target_crs,
+            bounds=bounds,
+            size=(cols, rows),
+            resampling_algorithm=gdal_resampling_algorithm,
+            nodata_value=nodata_value,
+        )
+        return {self.OUTPUT: output_path}
+
+    def _get_layers(
+        self,
+        parameters: Dict[str, Any],
+        context: QgsProcessingContext,
+    ) -> Tuple[QgsRasterLayer, QgsRasterLayer]:
         input_layer = self.parameterAsRasterLayer(
             parameters, self.INPUT_RASTER, context
         )
@@ -118,14 +226,21 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
                 self.tr("Input raster layer is not valid.")
             )
 
-        ref_layer = self.parameterAsRasterLayer(
+        reference_layer = self.parameterAsRasterLayer(
             parameters, self.REFERENCE_RASTER, context
         )
-        if ref_layer is None:
+        if reference_layer is None:
             raise QgsProcessingException(
                 self.tr("Reference raster layer is not valid.")
             )
 
+        return input_layer, reference_layer
+
+    def _get_output_path(
+        self,
+        parameters: Dict[str, Any],
+        context: QgsProcessingContext,
+    ) -> str:
         output_path = self.parameterAsOutputLayer(
             parameters, self.OUTPUT, context
         )
@@ -133,11 +248,20 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
             raise QgsProcessingException(
                 self.tr("Could not determine output raster path.")
             )
+        return output_path
 
-        ref_provider = ref_layer.dataProvider()
-        cols = ref_provider.xSize()
-        rows = ref_provider.ySize()
+    def _collect_reference_info(
+        self, raster_reference_layer: QgsRasterLayer
+    ) -> Tuple[
+        int,
+        int,
+        Tuple[float, float, float, float],
+        QgsCoordinateReferenceSystem,
+    ]:
+        provider = raster_reference_layer.dataProvider()
 
+        cols = provider.xSize()
+        rows = provider.ySize()
         if cols <= 0 or rows <= 0:
             raise QgsProcessingException(
                 self.tr(
@@ -145,99 +269,102 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
                 )
             )
 
-        ref_extent = ref_layer.extent()
-        xmin = ref_extent.xMinimum()
-        xmax = ref_extent.xMaximum()
-        ymin = ref_extent.yMinimum()
-        ymax = ref_extent.yMaximum()
+        extent = raster_reference_layer.extent()
+        bounds = (
+            extent.xMinimum(),
+            extent.yMinimum(),
+            extent.xMaximum(),
+            extent.yMaximum(),
+        )
 
-        target_crs = ref_layer.crs()
+        target_crs = raster_reference_layer.crs()
         if not target_crs.isValid():
             raise QgsProcessingException(
-                self.tr("Reference raster has invalid CRS.")
+                self.tr("Reference raster has invalid CRS."),
             )
 
-        input_crs = input_layer.crs()
-        if not input_crs.isValid():
-            raise QgsProcessingException(
-                self.tr("Input raster has invalid CRS.")
-            )
+        return (cols, rows, bounds, target_crs)
 
-        input_source = input_layer.source()
+    def _parse_nodata(self, parameters: Dict[str, Any]) -> Optional[float]:
+        if self.NODATA not in parameters:
+            return None
 
-        if feedback.isCanceled():
-            return {}
+        raw_value = parameters[self.NODATA]
+        if raw_value in (None, ""):
+            return None
 
-        nodata_value = None
-        if self.NODATA in parameters and parameters[self.NODATA] not in (
-            None,
-            "",
-        ):
-            try:
-                nodata_value = float(parameters[self.NODATA])
-            except Exception:
-                nodata_value = None
+        try:
+            return float(raw_value)
+        except Exception:
+            return None
 
-        resampling_index = self.parameterAsInt(
-            parameters, self.RESAMPLING, context
-        )
-
-        # Map to GDAL resampling algorithms
+    def _gdal_resampling_algorithm(
+        self, resampling_algorithm: ResamplingAlgorithm
+    ) -> int:
+        # Map our ResamplingAlgorithm to GDAL constants
         resampling_map = {
-            0: gdal.GRA_NearestNeighbour,
-            1: gdal.GRA_Bilinear,
-            2: gdal.GRA_Cubic,
-            3: gdal.GRA_CubicSpline,
-            4: gdal.GRA_Lanczos,
-            5: gdal.GRA_Average,
-            6: gdal.GRA_Mode,
-            7: gdal.GRA_Max,
-            8: gdal.GRA_Min,
-            9: gdal.GRA_Med,
-            10: gdal.GRA_Q1,
-            11: gdal.GRA_Q3,
+            self.ResamplingAlgorithm.NEAREST_NEIGHBOUR: gdal.GRA_NearestNeighbour,
+            self.ResamplingAlgorithm.BILINEAR: gdal.GRA_Bilinear,
+            self.ResamplingAlgorithm.CUBIC: gdal.GRA_Cubic,
+            self.ResamplingAlgorithm.CUBIC_BSPLINE: gdal.GRA_CubicSpline,
+            self.ResamplingAlgorithm.LANCZOS: gdal.GRA_Lanczos,
+            self.ResamplingAlgorithm.AVERAGE: gdal.GRA_Average,
+            self.ResamplingAlgorithm.MODE: gdal.GRA_Mode,
+            self.ResamplingAlgorithm.MAXIMUM: gdal.GRA_Max,
+            self.ResamplingAlgorithm.MINIMUM: gdal.GRA_Min,
+            self.ResamplingAlgorithm.MEDIAN: gdal.GRA_Med,
+            self.ResamplingAlgorithm.FIRST_QUARTILE: gdal.GRA_Q1,
+            self.ResamplingAlgorithm.THIRD_QUARTILE: gdal.GRA_Q3,
         }
-
-        resample_alg = resampling_map.get(resampling_index, gdal.GRA_NearestNeighbour)
-
-        feedback.pushInfo(
-            self.tr("Running gdal.Warp to align raster to reference grid...")
+        return resampling_map.get(
+            resampling_algorithm, gdal.GRA_NearestNeighbour
         )
 
+    def _run_warp(
+        self,
+        input_source: str,
+        output_path: str,
+        input_crs: QgsCoordinateReferenceSystem,
+        target_crs: QgsCoordinateReferenceSystem,
+        bounds: Tuple[float, float, float, float],
+        size: Tuple[int, int],
+        resampling_algorithm: int,
+        nodata_value: Optional[float],
+    ) -> None:
+        cols, rows = size
         try:
             warp_kwargs = {
                 "format": "GTiff",
                 "dstSRS": target_crs.toWkt(),
                 "srcSRS": input_crs.toWkt(),
-                "outputBounds": (xmin, ymin, xmax, ymax),
+                "outputBounds": bounds,
                 "width": cols,
                 "height": rows,
-                "resampleAlg": resample_alg,
+                "resampleAlg": resampling_algorithm,
                 "multithread": True,
             }
 
             if nodata_value is not None and not math.isnan(nodata_value):
                 warp_kwargs["dstNodata"] = nodata_value
 
-            ds = gdal.Warp(
+            dataset = gdal.Warp(
                 destNameOrDestDS=output_path,
                 srcDSOrSrcDSTab=input_source,
                 **warp_kwargs,
             )
 
-            if ds is None:
+            if dataset is None:
                 raise QgsProcessingException(
-                    self.tr("gdal.Warp returned None – failed to create output raster.")
+                    self.tr(
+                        "gdal.Warp returned None – failed to create output raster."
+                    )
                 )
 
             # Flush to disk
-            ds.FlushCache()
-            ds = None
+            dataset.FlushCache()
+            dataset = None
 
         except Exception as exc:
-            raise QgsProcessingException(self.tr("Error while running gdal.Warp: {}").format(str(exc)))
-
-        if feedback.isCanceled():
-            return {}
-
-        return {self.OUTPUT: output_path}
+            raise QgsProcessingException(
+                self.tr("Error while running gdal.Warp: {}").format(str(exc))
+            ) from exc

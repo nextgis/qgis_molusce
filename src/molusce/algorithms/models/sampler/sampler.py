@@ -1,9 +1,23 @@
-import os.path
+# QGIS MOLUSCE Plugin
+# Copyright (C) 2025  NextGIS
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or any
+# later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, see <https://www.gnu.org/licenses/>.
+
 from typing import Optional
 
 import numpy as np
 from numpy import ma as ma
-from osgeo import ogr, osr
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFeature,
@@ -246,7 +260,7 @@ class Sampler(PickleQObjectMixin, QObject):
         data["coords"] = x, y
         return data  # (coords, state_data, factors_data, out_data)
 
-    def saveSamples(self) -> QgsVectorLayer:
+    def createSamplePointsLayer(self) -> QgsVectorLayer:
         """
         Returns sample points as temporary QgsVectorLayer.
         """
@@ -256,7 +270,9 @@ class Sampler(PickleQObjectMixin, QObject):
 
         crs = QgsCoordinateReferenceSystem()
         if not crs.createFromWkt(self.proj):
-            raise SamplerError(self.tr("Invalid projection (WKT) for samples!"))
+            raise SamplerError(
+                self.tr("Invalid projection (WKT) for samples!")
+            )
 
         layer_name = "samples"
         layer = QgsVectorLayer("Point", layer_name, "memory")
@@ -311,12 +327,16 @@ class Sampler(PickleQObjectMixin, QObject):
 
             feat.setAttributes(attrs)
 
-            feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(float(x), float(y))))
+            feat.setGeometry(
+                QgsGeometry.fromPointXY(QgsPointXY(float(x), float(y)))
+            )
 
             features.append(feat)
 
         if not provider.addFeatures(features):
-            raise SamplerError(self.tr("Failed to create features in memory layer!"))
+            raise SamplerError(
+                self.tr("Failed to create features in memory layer!")
+            )
 
         layer.updateExtents()
         return layer
