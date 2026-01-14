@@ -1,5 +1,5 @@
 # QGIS MOLUSCE Plugin
-# Copyright (C) 2025  NextGIS
+# Copyright (C) 2026  NextGIS
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -102,14 +102,33 @@ else:
 if Qgis.versionInt() >= QGIS_3_36 or TYPE_CHECKING:
     FeatureRequestFlag = Qgis.FeatureRequestFlag
     FeatureRequestFlags = Qgis.FeatureRequestFlags
+
     ProcessingSourceType = Qgis.ProcessingSourceType
+
     ProcessingNumberParameterType = Qgis.ProcessingNumberParameterType
     ProcessingFieldParameterDataType = Qgis.ProcessingFieldParameterDataType
 
 else:
     FeatureRequestFlag = QgsFeatureRequest.Flag
     FeatureRequestFlags = QgsFeatureRequest.Flags
+
     ProcessingSourceType = QgsProcessing.SourceType
+    ProcessingSourceType.MapLayer = ProcessingSourceType.TypeMapLayer  # type: ignore
+    ProcessingSourceType.VectorAnyGeometry = (
+        ProcessingSourceType.TypeVectorAnyGeometry
+    )  # type: ignore
+    ProcessingSourceType.VectorPoint = ProcessingSourceType.TypeVectorPoint  # type: ignore
+    ProcessingSourceType.VectorLine = ProcessingSourceType.TypeVectorLine  # type: ignore
+    ProcessingSourceType.VectorPolygon = ProcessingSourceType.TypeVectorPolygon  # type: ignore
+    ProcessingSourceType.Raster = ProcessingSourceType.TypeRaster  # type: ignore
+    ProcessingSourceType.File = ProcessingSourceType.TypeFile  # type: ignore
+    ProcessingSourceType.Vector = ProcessingSourceType.TypeVector  # type: ignore
+    ProcessingSourceType.Mesh = ProcessingSourceType.TypeMesh  # type: ignore
+    ProcessingSourceType.Plugin = ProcessingSourceType.TypePlugin  # type: ignore
+    ProcessingSourceType.PointCloud = ProcessingSourceType.TypePointCloud  # type: ignore
+    ProcessingSourceType.Annotation = ProcessingSourceType.TypeAnnotation  # type: ignore
+    ProcessingSourceType.VectorTile = ProcessingSourceType.TypeVectorTile  # type: ignore
+
     ProcessingNumberParameterType = QgsProcessingParameterNumber.Type
     ProcessingFieldParameterDataType = QgsProcessingParameterField.DataType
 
