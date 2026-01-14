@@ -1,5 +1,5 @@
 # QGIS MOLUSCE Plugin
-# Copyright (C) 2025  NextGIS
+# Copyright (C) 2026  NextGIS
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ from qgis.core import (
     QgsProcessingParameterRasterDestination,
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterVectorLayer,
+    QgsProcessingUtils,
     QgsRasterLayer,
     QgsVectorLayer,
 )
@@ -370,14 +371,20 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
                 "Buffering features by {0} map units (Presence mode)..."
             ).format(buffer_size),
         )
+
+        end_cap_style = self._end_cap_style_to_processing(
+            Qgis.EndCapStyle.Round
+        )
+        join_style = self._join_style_to_processing(Qgis.JoinStyle.Round)
+
         buffer_result = processing.run(
             "native:buffer",
             {
                 "INPUT": vector_layer,
                 "DISTANCE": buffer_size,
                 "SEGMENTS": 5,
-                "END_CAP_STYLE": Qgis.EndCapStyle.Round,
-                "JOIN_STYLE": Qgis.JoinStyle.Round,
+                "END_CAP_STYLE": end_cap_style,
+                "JOIN_STYLE": join_style,
                 "MITER_LIMIT": 2,
                 "DISSOLVE": False,
                 "SEPARATE_DISJOINT": False,
@@ -412,6 +419,8 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
             self.tr("Rasterizing vector layer (for Proximity mode)..."),
         )
 
+        tmp_presence = QgsProcessingUtils.generateTempFilename("presence.tif")
+
         presence_raster_params = {
             "INPUT": vector_layer,
             "FIELD": None,  # ignore numeric field
@@ -427,7 +436,7 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
             "INIT": 0,  # initialize background to 0
             "INVERT": False,
             "EXTRA": "",
-            "OUTPUT": QgsProcessing.TEMPORARY_OUTPUT,
+            "OUTPUT": tmp_presence,
         }
 
         presence_result = processing.run(
@@ -538,3 +547,37 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
                 self.tr("Failed to rasterize vector layer.")
             )
         return {self.OUTPUT: result["OUTPUT"]}
+
+    @staticmethod
+    def _end_cap_style_to_processing(end_cap: Qgis.EndCapStyle) -> int:
+        """
+        Convert a Qgis.EndCapStyle value to a Processing enum index
+        suitable for the native:buffer algorithm.
+
+        Qgis.EndCapStyle values start at 1, while Processing enum
+        parameters are zero-based indices.
+
+        :param end_cap: End cap style defined by the QGIS geometry API.
+        :type end_cap: Qgis.EndCapStyle
+
+        :returns: Zero-based Processing enum value for END_CAP_STYLE.
+        :rtype: int
+        """
+        return int(end_cap) - 1
+
+    @staticmethod
+    def _join_style_to_processing(join_style: Qgis.JoinStyle) -> int:
+        """
+        Convert a Qgis.JoinStyle value to a Processing enum index
+        suitable for the native:buffer algorithm.
+
+        Qgis.JoinStyle values start at 1, while Processing enum
+        parameters are zero-based indices.
+
+        :param join_style: Join style defined by the QGIS geometry API.
+        :type join_style: Qgis.JoinStyle
+
+        :returns: Zero-based Processing enum value for JOIN_STYLE.
+        :rtype: int
+        """
+        return int(join_style) - 1
