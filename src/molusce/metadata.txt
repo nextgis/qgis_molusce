@@ -10,7 +10,7 @@ about[pt] = O plugin fornece um conjunto de algoritmos para modelagem da mudanç
 description = Modules for Land Use Change Simulations
 category = Raster
 version = 5.2.0
-qgisMinimumVersion = 3.22
+qgisMinimumVersion = 3.32
 qgisMaximumVersion = 4.99
 hasProcessingProvider=True
 
