@@ -53,6 +53,16 @@ from molusce.compat import (
 )
 
 
+class Mode(IntEnum):
+    PRESENCE = 0
+    PROXIMITY = 1
+
+
+class ProximityMode(IntEnum):
+    GEOREFERENCED_UNITS = 0
+    PIXELS = 1
+
+
 class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
     """
     Prepare vector dataset for MOLUSCE.
@@ -70,18 +80,8 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
     PROXIMITY_MODE = "PROXIMITY_MODE"
     OUTPUT = "OUTPUT"
 
-    class Mode(IntEnum):
-        PRESENCE = 0
-        PROXIMITY = 1
-
-    class ProximityMode(IntEnum):
-        GEOREFERENCED_UNITS = 0
-        PIXELS = 1
-
     def tr(self, string: str) -> str:
-        return QCoreApplication.translate(
-            "MoluscePrepareVectorAlgorithm", string
-        )
+        return QCoreApplication.translate(self.__class__.__name__, string)
 
     def name(self) -> str:
         return "molusce_prepare_vector"
@@ -130,7 +130,7 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
                     self.tr("Presence (rasterize features)"),
                     self.tr("Proximity (distance to nearest feature)"),
                 ],
-                defaultValue=self.Mode.PRESENCE.value,
+                defaultValue=Mode.PRESENCE.value,
             )
         )
 
@@ -166,7 +166,7 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
                     self.tr("Georeferenced units"),
                     self.tr("Pixels"),
                 ],
-                defaultValue=self.ProximityMode.GEOREFERENCED_UNITS.value,
+                defaultValue=ProximityMode.GEOREFERENCED_UNITS.value,
             )
         )
 
@@ -190,10 +190,10 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
         )
         output_path = self._get_output_path(parameters, context)
 
-        mode = self.Mode(self.parameterAsEnum(parameters, self.MODE, context))
+        mode = Mode(self.parameterAsEnum(parameters, self.MODE, context))
         field_name = self._get_field_name(parameters, context)
         buffer_size = self._get_buffer_size(parameters)
-        proximity_mode_index = self.ProximityMode(
+        proximity_mode_index = ProximityMode(
             self.parameterAsEnum(parameters, self.PROXIMITY_MODE, context)
         )
 
@@ -210,7 +210,7 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
         if feedback.isCanceled():
             return {}
 
-        if mode == self.Mode.PRESENCE:
+        if mode == Mode.PRESENCE:
             return self._run_presence_mode(
                 vector_layer,
                 field_name,
@@ -223,7 +223,7 @@ class MoluscePrepareVectorAlgorithm(QgsProcessingAlgorithm):
                 feedback,
             )
 
-        if mode == self.Mode.PROXIMITY:
+        if mode == Mode.PROXIMITY:
             return self._run_proximity_mode(
                 vector_layer,
                 cols,

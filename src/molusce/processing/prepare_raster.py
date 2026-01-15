@@ -36,6 +36,22 @@ from qgis.PyQt.QtCore import QCoreApplication
 from molusce.compat import ProcessingNumberParameterType
 
 
+class ResamplingAlgorithm(IntEnum):
+    # Use own numeric values because gdal has gaps in its enum values
+    NEAREST_NEIGHBOUR = auto()
+    BILINEAR = auto()
+    CUBIC = auto()
+    CUBIC_BSPLINE = auto()
+    LANCZOS = auto()
+    AVERAGE = auto()
+    MODE = auto()
+    MAXIMUM = auto()
+    MINIMUM = auto()
+    MEDIAN = auto()
+    FIRST_QUARTILE = auto()
+    THIRD_QUARTILE = auto()
+
+
 class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
     """
     Prepare raster dataset for MOLUSCE.
@@ -44,21 +60,6 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
     - Output has the same extent, rows/cols and CRS as the reference raster
     """
 
-    class ResamplingAlgorithm(IntEnum):
-        # Use own numeric values because gdal has gaps in its enum values
-        NEAREST_NEIGHBOUR = auto()
-        BILINEAR = auto()
-        CUBIC = auto()
-        CUBIC_BSPLINE = auto()
-        LANCZOS = auto()
-        AVERAGE = auto()
-        MODE = auto()
-        MAXIMUM = auto()
-        MINIMUM = auto()
-        MEDIAN = auto()
-        FIRST_QUARTILE = auto()
-        THIRD_QUARTILE = auto()
-
     INPUT_RASTER = "INPUT_RASTER"
     REFERENCE_RASTER = "REFERENCE_RASTER"
     NODATA = "NODATA"
@@ -66,9 +67,7 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
     OUTPUT = "OUTPUT"
 
     def tr(self, string: str) -> str:
-        return QCoreApplication.translate(
-            "MoluscePrepareRasterAlgorithm", string
-        )
+        return QCoreApplication.translate(self.__class__.__name__, string)
 
     def warp_tr(self, string: str) -> str:
         """QGIS translation context for gdal:warpreproject."""
@@ -94,28 +93,26 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, configuration: Dict[str, Any] = None) -> None:  # pyright: ignore[reportArgumentType]
         RESAMPLING_ALGORITHM_NAMES = {
-            self.ResamplingAlgorithm.NEAREST_NEIGHBOUR: self.warp_tr(
+            ResamplingAlgorithm.NEAREST_NEIGHBOUR: self.warp_tr(
                 "Nearest Neighbour"
             ),
-            self.ResamplingAlgorithm.BILINEAR: self.warp_tr(
+            ResamplingAlgorithm.BILINEAR: self.warp_tr(
                 "Bilinear (2x2 Kernel)"
             ),
-            self.ResamplingAlgorithm.CUBIC: self.warp_tr("Cubic (4x4 Kernel)"),
-            self.ResamplingAlgorithm.CUBIC_BSPLINE: self.warp_tr(
+            ResamplingAlgorithm.CUBIC: self.warp_tr("Cubic (4x4 Kernel)"),
+            ResamplingAlgorithm.CUBIC_BSPLINE: self.warp_tr(
                 "Cubic B-Spline (4x4 Kernel)"
             ),
-            self.ResamplingAlgorithm.LANCZOS: self.warp_tr(
-                "Lanczos (6x6 Kernel)"
-            ),
-            self.ResamplingAlgorithm.AVERAGE: self.warp_tr("Average"),
-            self.ResamplingAlgorithm.MODE: self.warp_tr("Mode"),
-            self.ResamplingAlgorithm.MAXIMUM: self.warp_tr("Maximum"),
-            self.ResamplingAlgorithm.MINIMUM: self.warp_tr("Minimum"),
-            self.ResamplingAlgorithm.MEDIAN: self.warp_tr("Median"),
-            self.ResamplingAlgorithm.FIRST_QUARTILE: self.warp_tr(
+            ResamplingAlgorithm.LANCZOS: self.warp_tr("Lanczos (6x6 Kernel)"),
+            ResamplingAlgorithm.AVERAGE: self.warp_tr("Average"),
+            ResamplingAlgorithm.MODE: self.warp_tr("Mode"),
+            ResamplingAlgorithm.MAXIMUM: self.warp_tr("Maximum"),
+            ResamplingAlgorithm.MINIMUM: self.warp_tr("Minimum"),
+            ResamplingAlgorithm.MEDIAN: self.warp_tr("Median"),
+            ResamplingAlgorithm.FIRST_QUARTILE: self.warp_tr(
                 "First Quartile (Q1)"
             ),
-            self.ResamplingAlgorithm.THIRD_QUARTILE: self.warp_tr(
+            ResamplingAlgorithm.THIRD_QUARTILE: self.warp_tr(
                 "Third Quartile (Q3)"
             ),
         }
@@ -150,7 +147,7 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
                 self.RESAMPLING,
                 self.tr("Resampling algorithm"),
                 options=RESAMPLING_ALGORITHM_NAMES.values(),
-                defaultValue=self.ResamplingAlgorithm.NEAREST_NEIGHBOUR.value,
+                defaultValue=ResamplingAlgorithm.NEAREST_NEIGHBOUR.value,
             )
         )
 
@@ -187,7 +184,7 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
         output_path = self._get_output_path(parameters, context)
 
         nodata_value = self._parse_nodata(parameters)
-        resampling_algorithm = self.ResamplingAlgorithm(
+        resampling_algorithm = ResamplingAlgorithm(
             self.parameterAsInt(parameters, self.RESAMPLING, context)
         )
         gdal_resampling_algorithm = self._gdal_resampling_algorithm(
@@ -303,18 +300,18 @@ class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
     ) -> int:
         # Map our ResamplingAlgorithm to GDAL constants
         resampling_map = {
-            self.ResamplingAlgorithm.NEAREST_NEIGHBOUR: gdal.GRA_NearestNeighbour,
-            self.ResamplingAlgorithm.BILINEAR: gdal.GRA_Bilinear,
-            self.ResamplingAlgorithm.CUBIC: gdal.GRA_Cubic,
-            self.ResamplingAlgorithm.CUBIC_BSPLINE: gdal.GRA_CubicSpline,
-            self.ResamplingAlgorithm.LANCZOS: gdal.GRA_Lanczos,
-            self.ResamplingAlgorithm.AVERAGE: gdal.GRA_Average,
-            self.ResamplingAlgorithm.MODE: gdal.GRA_Mode,
-            self.ResamplingAlgorithm.MAXIMUM: gdal.GRA_Max,
-            self.ResamplingAlgorithm.MINIMUM: gdal.GRA_Min,
-            self.ResamplingAlgorithm.MEDIAN: gdal.GRA_Med,
-            self.ResamplingAlgorithm.FIRST_QUARTILE: gdal.GRA_Q1,
-            self.ResamplingAlgorithm.THIRD_QUARTILE: gdal.GRA_Q3,
+            ResamplingAlgorithm.NEAREST_NEIGHBOUR: gdal.GRA_NearestNeighbour,
+            ResamplingAlgorithm.BILINEAR: gdal.GRA_Bilinear,
+            ResamplingAlgorithm.CUBIC: gdal.GRA_Cubic,
+            ResamplingAlgorithm.CUBIC_BSPLINE: gdal.GRA_CubicSpline,
+            ResamplingAlgorithm.LANCZOS: gdal.GRA_Lanczos,
+            ResamplingAlgorithm.AVERAGE: gdal.GRA_Average,
+            ResamplingAlgorithm.MODE: gdal.GRA_Mode,
+            ResamplingAlgorithm.MAXIMUM: gdal.GRA_Max,
+            ResamplingAlgorithm.MINIMUM: gdal.GRA_Min,
+            ResamplingAlgorithm.MEDIAN: gdal.GRA_Med,
+            ResamplingAlgorithm.FIRST_QUARTILE: gdal.GRA_Q1,
+            ResamplingAlgorithm.THIRD_QUARTILE: gdal.GRA_Q3,
         }
         return resampling_map.get(
             resampling_algorithm, gdal.GRA_NearestNeighbour
