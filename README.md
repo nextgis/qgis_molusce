@@ -1,26 +1,96 @@
-MOLUSCE (Modules for Land Use Change Simulations)
--------------------------------------------------
+[![License: GPL v2+](https://img.shields.io/badge/license-GPLv2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![QGIS plugin](https://img.shields.io/badge/QGIS-Plugin-green)](https://plugins.qgis.org/plugins/molusce/)
+[![Community](https://img.shields.io/badge/Community-Forum-brightgreen)](https://community.nextgis.com)
+[![Docs](https://img.shields.io/badge/docs-available-brightgreen)](https://docs.nextgis.com/docs_ngqgis/source/molusce.html)
 
-QGIS 3 plugin that provides a set of algorithms for land use change simulations such as ANN, LR, WoE, MCE as well as validation using kappa statistics.
+MOLUSCE (Modules for Land Use Change Simulations) is a QGIS plugin for **land use change analysis and prediction**, providing tools for evaluating spatial change dynamics and modeling future land-use scenarios.
 
-Developed by NextGIS (https://nextgis.com) with the help of Asia Air Survey (http://www.asiaairsurvey.com).
+Designed for researchers, planners, and GIS analysts, MOLUSCE makes it easy to analyze historical land-use changes and build predictive models. All within QGIS.
 
-Homepage: https://nextgis.com/molusce/
+![NextGIS logo](assets/nextgis_logo_blue.png)
 
-Quickhelp (PDF):
+## Table of contents
 
-* [English](https://github.com/nextgis/qgis_molusce/blob/master/src/molusce/doc/en/QuickHelp.pdf)
-* Portuguese: [ecojustus.com.br](https://drive.google.com/file/d/0BzSbT3sqlulvaGYxekFRZU9CM28/view?usp=sharing&resourcekey=0-NEw-NNPyaQjqhgQb4dBuUA)
-* [Russian](https://gis-lab.info/qa/molusce-intro-ru.html)
+- [Table of contents](#table-of-contents)
+- [Key capabilities](#key-capabilities)
+  - [Analysis of land use change dynamics](#analysis-of-land-use-change-dynamics)
+  - [Predictive Modeling](#predictive-modeling)
+  - [Validation](#validation)
+  - [Built-in data preparation tools](#built-in-data-preparation-tools)
+- [Installation](#installation)
+- [Documentation](#documentation)
+- [Community](#community)
+- [License](#license)
 
-License
--------
-This program is licensed under GNU GPL v2 or any later version
+## Key capabilities
 
-Commercial support
-------------------
-Need to fix a bug or add a feature to MOLUSCE? 
+### Analysis of land use change dynamics
 
-We provide custom development and support for this software. [Contact us](https://nextgis.com/contact/) to discuss options!
+![Historical change analysis](assets/history_analysis.webp)
 
-[![https://nextgis.com](https://nextgis.com/img/nextgis.png)](https://nextgis.com)
+- **Calculate transition matricies and class statistics**  
+  Precise comparison of historical land use raster
+
+- **Build rasters describing the change**  
+
+### Predictive Modeling
+
+![Predictive modeling](assets/ann_modeling.webp)
+
+- **Build land-use change models using machine learning methods**  
+  Using Artificial Neural Networks, Logistic Regression, Weights of Evidence or Milti Criteria Evaluation methods
+
+- **Detailed analysis of model certainty and transition probabilities**
+
+![Predicted map](assets/predicted.webp)
+
+- **Produce maps of predicted change**  
+
+### Validation
+
+- **Built-in mechanism to validate predictive models**
+
+![Validation](assets/validation.webp)
+
+### Built-in data preparation tools
+
+- **QGIS Toolbox tools to prepare raster and vector datasets for MOLUSCE workflows**
+  
+![Data preparation tools](assets/processing_prepare.webp)
+
+## Installation
+
+Install **MOLUSCE** from the official QGIS Plugin Repository:
+
+🔍 QGIS → *Plugins* → *Manage and Install Plugins…* → search for **MOLUSCE**
+
+---
+
+## Documentation
+
+📘 [User documentation](https://docs.nextgis.com/docs_ngqgis/source/molusce.html)
+
+📗 [Quick help](https://github.com/nextgis/qgis_molusce/blob/master/src/molusce/doc/en/QuickHelp.pdf)
+
+🎥 Videos:
+
+* [MOLUSCE 4 — LULC change detection and prediction with free QGIS tool. Land Use Change Simulations](https://www.youtube.com/watch?v=F4j1fTyCuy4)
+
+* [MOLUSCE 4 at QGIS Open Day](https://www.youtube.com/watch?v=nFaXCLhQ7qQ)
+
+* [MOLUSCE 5 — New Features: Separate spatial variables for simulation and Model Save/Load](https://www.youtube.com/watch?v=GVrk_uLJbuA)
+
+* [MOLUSCE 5.2 — New Features: Data preparation toolbox tools, Sample points as temporary layer, Qt6](https://www.youtube.com/watch?v=Qyv-_LIxn14)
+
+
+
+## Community
+
+- [Community forum](https://community.nextgis.com)
+- [GitHub issues and discussionss](https://github.com/nextgis/qgis_molusce/issues)
+
+---
+
+## License
+
+MOLUSCE is licensed under **GNU GPL v2** or any later version
