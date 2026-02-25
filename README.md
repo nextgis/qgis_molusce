@@ -1,5 +1,5 @@
 [![License: GPL v2+](https://img.shields.io/badge/license-GPLv2%2B-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
-[![QGIS plugin](https://img.shields.io/badge/QGIS-Plugin-green)](https://plugins.qgis.org/plugins/nextgis_connect/)
+[![QGIS plugin](https://img.shields.io/badge/QGIS-Plugin-green)](https://plugins.qgis.org/plugins/molusce/)
 [![Community](https://img.shields.io/badge/Community-Forum-brightgreen)](https://community.nextgis.com)
 [![Docs](https://img.shields.io/badge/docs-available-brightgreen)](https://docs.nextgis.com/docs_ngqgis/source/molusce.html)
 
@@ -11,6 +11,7 @@ Designed for researchers, planners, and GIS analysts, MOLUSCE makes it easy to a
 
 ## Table of contents
 
+- [Table of contents](#table-of-contents)
 - [Key capabilities](#key-capabilities)
   - [Analysis of land use change dynamics](#analysis-of-land-use-change-dynamics)
   - [Predictive Modeling](#predictive-modeling)
@@ -54,6 +55,8 @@ Designed for researchers, planners, and GIS analysts, MOLUSCE makes it easy to a
 ### Built-in data preparation tools
 
 - **QGIS Toolbox tools to prepare raster and vector datasets for MOLUSCE workflows**
+  
+![Data preparation tools](assets/processing_prepare.webp)
 
 ## Installation
 
