@@ -132,6 +132,8 @@ class LogisticRegressionWidget(QWidget, Ui_LogisticRegressionWidgetBase):
         model.error_occurred.connect(self.show_model_error)
         model.errorReport.connect(self.plugin.logErrorReport)
         model.finished.connect(self.plugin.workThread.quit)
+
+        self.plugin.progressBar.setVisible(True)
         self.plugin.workThread.start()
 
     @pyqtSlot()

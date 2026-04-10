@@ -247,6 +247,7 @@ class NeuralNetworkWidget(QWidget, Ui_NeuralNetworkWidgetBase):
         model.processFinished.connect(self.plugin.workThread.quit)
 
         self.plugin.logMessage(self.tr("Start training ANN model"))
+        self.plugin.progressBar.setVisible(True)
         self.plugin.workThread.start()
 
     @pyqtSlot()
