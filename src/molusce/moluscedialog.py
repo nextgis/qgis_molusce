@@ -253,6 +253,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             pass
 
         self.tabWidget.setCurrentIndex(0)
+        self.progressBar.setVisible(False)
 
         self.__populateLayers()
         self.__populateCorrCheckingMet()
@@ -815,6 +816,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         crossTabMan.errorReport.connect(self.logErrorReport)
         crossTabMan.updateProgress.connect(self.showProgress)
         crossTabMan.crossTableFinished.connect(self.updateStatisticsTableDone)
+        self.progressBar.setVisible(True)
         self.workThread.start()
 
     def updateStatisticsTableDone(self):
@@ -895,6 +897,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.analyst.errorReport.connect(self.logErrorReport)
         self.analyst.processFinished.connect(self.changeMapDone)
         self.analyst.processFinished.connect(self.workThread.quit)
+        self.progressBar.setVisible(True)
         self.workThread.start()
 
     def changeMapDone(self, raster: Raster) -> None:
@@ -1151,6 +1154,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.simulator.error_occurred.connect(self.show_error)
         self.simulator.errorReport.connect(self.logErrorReport)
         self.simulator.simFinished.connect(self.simulationDone)
+        self.progressBar.setVisible(True)
         self.workThread.start()
         self.logMessage(self.tr("Simulation process is started"))
 
@@ -1356,6 +1360,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.eb.rangeChanged.connect(self.setProgressRange)
         self.eb.updateProgress.connect(self.showProgress)
         self.eb.validationFinished.connect(self.validationDone)
+        self.progressBar.setVisible(True)
         self.workThread.start()
         self.logMessage(self.tr("Validation process is started"))
 
@@ -1460,6 +1465,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.depCoef.updateProgress.connect(self.showProgress)
         self.depCoef.errorReport.connect(self.logErrorReport)
         self.depCoef.processFinished.connect(self.kappaValDone)
+        self.progressBar.setVisible(True)
         self.workThread.start()
         self.logMessage(self.tr("Kappa validation process is started"))
 
@@ -1581,6 +1587,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.analystVM.errorReport.connect(self.logErrorReport)
         self.analystVM.processFinished.connect(self.validationMapDone)
         self.analystVM.processFinished.connect(self.workThread.quit)
+        self.progressBar.setVisible(True)
         self.workThread.start()
         self.logMessage(
             self.tr("Process of Validation Map creating is started")
@@ -2304,6 +2311,8 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.progressBar.setFormat("%p%")
         self.progressBar.setRange(0, 1)
         self.progressBar.setValue(0)
+
+        self.progressBar.setVisible(False)
 
     def __writeSettings(self):
         # samples and model tab

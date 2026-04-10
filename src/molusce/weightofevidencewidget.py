@@ -218,6 +218,7 @@ class WeightOfEvidenceWidget(QWidget, Ui_WeightOfEvidenceWidgetBase):
         model.processFinished.connect(self.__trainFinished)
         model.processFinished.connect(self.plugin.workThread.quit)
 
+        self.plugin.progressBar.setVisible(True)
         self.plugin.workThread.start()
 
     @pyqtSlot()
