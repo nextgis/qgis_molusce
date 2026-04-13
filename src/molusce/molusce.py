@@ -127,7 +127,7 @@ class MoluscePlugin:
             self.iface.mainWindow(),
         )
         self.actionQuickHelp.setIcon(
-            QIcon(":/plugins/molusce/icons/quickhelp.png")
+            QgsApplication.getThemeIcon("mActionHelpContents.svg")
         )
         self.actionQuickHelp.setWhatsThis("Show Quick Help")
 

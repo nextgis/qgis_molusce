@@ -7,7 +7,7 @@ license = { file = "LICENSE" }
 
 [tool.qgspb.package-data]
 "molusce.doc.en" = ["QuickHelp.pdf"]
-"molusce.icons" = ["molusce_logo.svg"]
+"molusce.icons" = ["*.svg"]
 
 [tool.qgspb.forms]
 ui-files = ["src/molusce/ui/*.ui"]
