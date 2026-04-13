@@ -113,17 +113,17 @@ class MoluscePlugin:
         self.initProcessing()
 
         self.actionRun = QAction(
-            QCoreApplication.translate("MOLUSCE", "MOLUSCE"),
+            QCoreApplication.translate("MOLUSCE", "NextGIS MOLUSCE"),
             self.iface.mainWindow(),
         )
         self.iface.registerMainWindowAction(self.actionRun, "Shift+M")
         self.actionRun.setIcon(
             QIcon(":/plugins/molusce/icons/molusce_logo.svg")
         )
-        self.actionRun.setWhatsThis("Start MOLUSCE plugin")
+        self.actionRun.setWhatsThis("Start NextGIS MOLUSCE plugin")
 
         self.actionQuickHelp = QAction(
-            QCoreApplication.translate("MOLUSCE", "Quick Help..."),
+            QCoreApplication.translate("MOLUSCE", "Quick Help…"),
             self.iface.mainWindow(),
         )
         self.actionQuickHelp.setIcon(
@@ -132,26 +132,26 @@ class MoluscePlugin:
         self.actionQuickHelp.setWhatsThis("Show Quick Help")
 
         self.actionAbout = QAction(
-            QCoreApplication.translate("MOLUSCE", "About MOLUSCE..."),
+            QCoreApplication.translate("MOLUSCE", "About NextGIS MOLUSCE…"),
             self.iface.mainWindow(),
         )
         self.actionAbout.setIcon(
             QgsApplication.getThemeIcon("mActionPropertiesWidget.svg")
         )
-        self.actionAbout.setWhatsThis("About MOLUSCE")
+        self.actionAbout.setWhatsThis("About NextGIS MOLUSCE")
 
-        self.__molusce_menu = QMenu(
-            QCoreApplication.translate("MOLUSCE", "MOLUSCE")
+        self._molusce_menu = QMenu(
+            QCoreApplication.translate("MOLUSCE", "NextGIS MOLUSCE")
         )
-        self.__molusce_menu.setIcon(
+        self._molusce_menu.setIcon(
             QIcon(":/plugins/molusce/icons/molusce_logo.svg")
         )
 
-        self.__molusce_menu.addAction(self.actionRun)
-        self.__molusce_menu.addAction(self.actionQuickHelp)
-        self.__molusce_menu.addAction(self.actionAbout)
+        self._molusce_menu.addAction(self.actionRun)
+        self._molusce_menu.addAction(self.actionQuickHelp)
+        self._molusce_menu.addAction(self.actionAbout)
 
-        self.iface.rasterMenu().addMenu(self.__molusce_menu)
+        self.iface.rasterMenu().addMenu(self._molusce_menu)
         self.iface.addRasterToolBarIcon(self.actionRun)
 
         self.actionRun.triggered.connect(self.run)
@@ -159,7 +159,8 @@ class MoluscePlugin:
         self.actionAbout.triggered.connect(self.about)
 
         self.actionHelp = QAction(
-            QIcon(":/plugins/molusce/icons/molusce_logo.svg"), "MOLUSCE"
+            QIcon(":/plugins/molusce/icons/molusce_logo.svg"),
+            "NextGIS MOLUSCE",
         )
         self.actionHelp.triggered.connect(self.about)
 
@@ -172,16 +173,18 @@ class MoluscePlugin:
 
         self.iface.removeRasterToolBarIcon(self.actionRun)
         self.iface.removePluginRasterMenu(
-            QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionRun
+            QCoreApplication.translate("MOLUSCE", "NextGIS MOLUSCE"),
+            self.actionRun,
         )
         self.iface.removePluginRasterMenu(
-            QCoreApplication.translate("MOLUSCE", "MOLUSCE"),
+            QCoreApplication.translate("MOLUSCE", "NextGIS MOLUSCE"),
             self.actionQuickHelp,
         )
         self.iface.removePluginRasterMenu(
-            QCoreApplication.translate("MOLUSCE", "MOLUSCE"), self.actionAbout
+            QCoreApplication.translate("MOLUSCE", "NextGIS MOLUSCE"),
+            self.actionAbout,
         )
-        self.__molusce_menu.deleteLater()
+        self._molusce_menu.deleteLater()
 
         # --- Unregister MOLUSCE Processing provider ---
         if self.processing_provider is not None:

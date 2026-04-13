@@ -39,7 +39,7 @@ class MolusceProcessingProvider(QgsProcessingProvider):
 
     def name(self):
         """Returns the provider name, which is used to describe the provider within the GUI."""
-        return self.tr("MOLUSCE")
+        return self.tr("NextGIS MOLUSCE")
 
     def longName(self):
         """Returns the longer version of the provider name, which can include extra details."""

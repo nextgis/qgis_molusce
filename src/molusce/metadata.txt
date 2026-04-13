@@ -1,5 +1,5 @@
 [general]
-name = MOLUSCE
+name = NextGIS MOLUSCE
 about = The plugin provides a set of algorithms for modeling land use change. Neural networks (multilayer perceptron), logistic regression, weights of evidence method, multi-criteria evaluation method, and validation using kappa statistics are available. Developed by Asia Air Survey and NextGIS. Any feedback is welcome at https://nextgis.com/contact
 about[ru] = Плагин предоставляет набор алгоритмов для моделирования изменений в землепользовании. Доступны нейронные сети (многослойный перцептрон), логистическая регрессия, метод значимости признака, метод многокритериальной оценки, а также валидация с использованием статистики каппа. Разработан Asia Air Survey и NextGIS. Любые отзывы приветствуются на https://nextgis.com/contact
 about[es] = El complemento proporciona un conjunto de algoritmos para modelar el cambio en el uso del suelo. Están disponibles redes neuronales (perceptrón multicapa), regresión logística, método de pesos de evidencia, método de evaluación multicriterio y validación utilizando estadísticas kappa. Desarrollado por Asia Air Survey y NextGIS. Cualquier comentario será bienvenido en https://nextgis.com/contact
