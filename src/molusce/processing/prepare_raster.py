@@ -38,18 +38,18 @@ from molusce.compat import ProcessingNumberParameterType
 
 class ResamplingAlgorithm(IntEnum):
     # Use own numeric values because gdal has gaps in its enum values
-    NEAREST_NEIGHBOUR = auto()
-    BILINEAR = auto()
-    CUBIC = auto()
-    CUBIC_BSPLINE = auto()
-    LANCZOS = auto()
-    AVERAGE = auto()
-    MODE = auto()
-    MAXIMUM = auto()
-    MINIMUM = auto()
-    MEDIAN = auto()
-    FIRST_QUARTILE = auto()
-    THIRD_QUARTILE = auto()
+    NEAREST_NEIGHBOUR = 0
+    BILINEAR = 1
+    CUBIC = 2
+    CUBIC_BSPLINE = 3
+    LANCZOS = 4
+    AVERAGE = 5
+    MODE = 6
+    MAXIMUM = 7
+    MINIMUM = 8
+    MEDIAN = 9
+    FIRST_QUARTILE = 10
+    THIRD_QUARTILE = 11
 
 
 class MoluscePrepareRasterAlgorithm(QgsProcessingAlgorithm):
