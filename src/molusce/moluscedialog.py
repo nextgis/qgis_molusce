@@ -55,6 +55,7 @@ from qgis.PyQt.QtGui import (
     QBrush,
     QCloseEvent,
     QColor,
+    QIcon,
 )
 from qgis.PyQt.QtWidgets import (
     QDialog,
@@ -134,6 +135,7 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
             | Qt.WindowType.WindowMaximizeButtonHint
             | Qt.WindowType.WindowCloseButtonHint
         )
+        self.setWindowIcon(QIcon(":/plugins/molusce/icons/molusce_logo.svg"))
 
         self.iface = iface
         self.modelWidget = None
