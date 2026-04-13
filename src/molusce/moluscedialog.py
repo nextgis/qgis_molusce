@@ -31,6 +31,7 @@ from matplotlib.backends.backend_qt5agg import (
 )
 from qgis.core import (
     Qgis,
+    QgsApplication,
     QgsColorRampShader,
     QgsFileUtils,
     QgsPalettedRasterRenderer,
@@ -77,6 +78,7 @@ from matplotlib.figure import Figure
 from qgis.utils import pluginMetadata
 
 from molusce import molusceutils as utils
+from molusce.aboutdialog import AboutDialog
 from molusce.algorithms.dataprovider import ProviderError, Raster
 from molusce.algorithms.models.area_analysis.manager import (
     AreaAnalizerError,
@@ -232,6 +234,8 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         self.saveModelBtn.clicked.connect(self.saveModel)
         self.loadModelBtn.clicked.connect(self.loadModel)
 
+        self.about_button.clicked.connect(self._show_about)
+
         self.manageGui()
         self.logMessage(self.tr("Start logging"))
 
@@ -254,6 +258,10 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
 
         self.tabWidget.setCurrentIndex(0)
         self.progressBar.setVisible(False)
+
+        self.about_button.setIcon(
+            QgsApplication.getThemeIcon("mActionPropertiesWidget.svg")
+        )
 
         self.__populateLayers()
         self.__populateCorrCheckingMet()
@@ -278,6 +286,15 @@ class MolusceDialog(QDialog, Ui_MolusceDialogBase):
         gc.collect()
 
         QDialog.closeEvent(self, event)
+
+    @pyqtSlot()
+    def _show_about(self) -> None:
+        """
+        Displays the About dialog for the NextGIS MOLUSCE plugin.
+        """
+        package_name = str(Path(__file__).parent.name)
+        about_dialog = AboutDialog(package_name)
+        about_dialog.exec()
 
     @pyqtSlot()
     def setInitialRaster(self) -> None:
